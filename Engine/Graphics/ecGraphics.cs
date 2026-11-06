@@ -89,6 +89,8 @@ public sealed class ecGraphics
         // original: 1 = narrow (portrait phone), 2 = phone, 3 = tablet
         widthMode = logicalW <= 320 ? 1 : (logicalH <= 640 ? 2 : 3);
         blendMode = 0;
+        // how this GPU samples Alpha8 (it switches render targets: done here, never inside a frame)
+        if (device != null && alphaSampling == AlphaSampling.Unknown) alphaSampling = ProbeAlpha8();
     }
 
     /// <summary>Pixel offset of the logical screen inside the window (letterbox bars).</summary>
