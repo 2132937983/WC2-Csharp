@@ -86,3 +86,4 @@ against the dumps (the AI tests).
 | `NoPurchaseTests.cs` | no purchase code, billing permission, purchase types or buy button |
 | `AiProfileTests.cs` | classic equals the original numbers; inheritance; the command line override |
 | `MapPackTests.cs` | the Natural Earth pack (consistency, coverage, capitals, Marseille); the pipeline and the classic export on a synthetic world |
+| `BuiltInModTests.cs` | mods built into the package mount and merge like folder mods, a folder mod replaces one with the same id, the world map is built in |

@@ -30,8 +30,17 @@ The port itself is done; these rules apply to changes made on top of it (see `NE
    hosts (`Hosts/Desktop`, `Hosts/Android`) only wire input, output and the life cycle.
 7. **Keep the goldens green.** `Tests/run-tests.ps1` must pass; record new goldens (`-Record`) only for
    an intended rule or data change, and say so in the commit.
+8. **AI numbers are data.** Every number the AI decides with is a field of `AiProfile`
+   (`Data/AiProfiles.cs`, `data/json/ai/profiles.json`); `classic` holds the original's numbers and
+   must keep reproducing the goldens. New behaviour is a term whose weight is 0 in `classic`.
+9. **Generated content comes from the tools.** The map pack and the world map mod are written by
+   `WC2.Tools build-map` (`Tools/map/build-natural-earth.ps1`); change the pipeline or its
+   configuration and regenerate, never edit the output by hand. The same for `generated/`.
+10. **Input and drawing stay on the logical screen.** Touches outside it are dropped, hit tests and
+   drawing are clipped to it; a control hidden by moving it off the screen is unreachable by design
+   (`hittest` script command, `HitTestTests`).
 
-## Golden rules (original porting phase; paths were `WC2/Engine`, `WC2/Game`, now `WC2.Engine`, `WC2.Game`)
+## Golden rules (original porting phase; paths were `WC2/Engine`, `WC2/Game`, now `Engine`, `Game`)
 
 1. **Port 1:1.** Keep the algorithm, constants, magic numbers, coordinates, string keys and comments
    (translate Chinese comments to short English). Do not redesign, "fix" gameplay or drop features
