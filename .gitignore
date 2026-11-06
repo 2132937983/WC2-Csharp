@@ -85,3 +85,6 @@ captures/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Natural Earth downloads of the map pipeline (MAP_PIPELINE.md)
+Tools/map/source/

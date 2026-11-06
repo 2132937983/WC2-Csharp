@@ -33,6 +33,7 @@ assets/
                            scenarios/ (campaign battles, conquests, tutorial), text/ (string tables),
                            maps/1/ (area tax table), battle/ (animation definitions), legacy/
     binary/                original binary data: maps/1/ (area geometry), scenarios/ (area masks)
+    maps/<id>/             generated map packs (MAP_PIPELINE.md): natural-earth (regions, adjacency, raster)
     strings/<lang>/        Localizable.strings, InfoPlist.strings
     legacy/                map.ini
   scripts/

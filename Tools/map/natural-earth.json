@@ -1,0 +1,44 @@
+{
+  // WC2.Tools build-map configuration for the Natural Earth world map (MAP_PIPELINE.md).
+  "id": "natural-earth",
+  "name": "World (Natural Earth)",
+
+  // Coverage: north to southern Greenland (Cape Farewell 59.8 N), south to southern Madagascar
+  // (25.6 S) and northern Australia; west to Alaska, east to the date line.
+  "bounds": { "west": -170, "east": 180, "north": 62, "south": -26 },
+  "raster": { "width": 4096 },
+
+  // Provinces (Natural Earth admin-1) merge within their country until a region has minAreaKm2 and
+  // a country has at most maxPerCountry regions. Islands smaller than minIslandKm2 are left out.
+  "regions": { "minAreaKm2": 40000, "maxPerCountry": 30, "minIslandKm2": 2500 },
+
+  // Finer regions where the game's wars are fought (game ids): Europe and its neighbours.
+  "regionOverrides": {
+    "de": { "minAreaKm2": 18000 }, "fr": { "minAreaKm2": 20000 }, "gb": { "minAreaKm2": 15000 },
+    "it": { "minAreaKm2": 18000 }, "es": { "minAreaKm2": 25000 }, "pl": { "minAreaKm2": 20000 },
+    "nl": { "minAreaKm2": 10000 }, "be": { "minAreaKm2": 10000 }, "ch": { "minAreaKm2": 10000 },
+    "ro": { "minAreaKm2": 20000 }, "hu": { "minAreaKm2": 15000 }, "gr": { "minAreaKm2": 15000 },
+    "tr": { "minAreaKm2": 30000 }, "ru": { "maxPerCountry": 45 }, "ja": { "minAreaKm2": 20000 }
+  },
+
+  // Sea zones: a grid of cellDegrees, each cell split into its connected water parts; parts smaller
+  // than minSeaPixels join a neighbouring zone.
+  "sea": { "cellDegrees": 8, "minSeaPixels": 600 },
+  "minBorderPixels": 2,
+
+  // Populated places with POP_MAX >= minPopulation make a region a city (>= largeCityPopulation:
+  // large city); a country's capital (ADM0CAP) makes its region the capital.
+  "cities": { "minPopulation": 1000000, "largeCityPopulation": 5000000 },
+  "ports": { "maxScalerank": 5 },
+  "airfields": { "types": ["major", "major and military"], "maxScalerank": 4 },
+
+  // Natural Earth ADM0_A3 -> the game's country ids (data/json/countries/countries.json); every other
+  // country keeps its ISO code in lower case.
+  "countries": {
+    "GBR": "gb", "RUS": "ru", "USA": "am", "FRA": "fr", "JPN": "ja", "ITA": "it", "DEU": "de",
+    "CAN": "ca", "FIN": "fl", "ROU": "ro", "BGR": "bg", "BEL": "be", "GRC": "gr", "CHN": "cn",
+    "TWN": "tw", "IND": "in", "AUS": "au", "POL": "pl", "HUN": "hu", "SRB": "yu", "CHE": "ch",
+    "SWE": "se", "PRT": "pt", "DNK": "dk", "NOR": "no", "NLD": "nl", "ESP": "es", "MEX": "mx",
+    "PRK": "nk", "KOR": "rk", "TUR": "tr"
+  }
+}

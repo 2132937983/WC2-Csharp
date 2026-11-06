@@ -387,6 +387,12 @@
     "data/json/schemas/map-areas.schema.json": {
       "size": 1055
     },
+    "data/json/schemas/map-pack.schema.json": {
+      "size": 2652
+    },
+    "data/json/schemas/map-regions.schema.json": {
+      "size": 2857
+    },
     "data/json/schemas/medals.schema.json": {
       "size": 2855
     },
@@ -492,6 +498,18 @@
     "data/legacy/map.ini": {
       "size": 1,
       "legacy": "map.ini"
+    },
+    "data/maps/natural-earth/map.json": {
+      "size": 13472
+    },
+    "data/maps/natural-earth/preview.png": {
+      "size": 307193
+    },
+    "data/maps/natural-earth/regions.json": {
+      "size": 281591
+    },
+    "data/maps/natural-earth/regions.raster": {
+      "size": 153945
     },
     "data/strings/cn/InfoPlist.strings": {
       "size": 263,

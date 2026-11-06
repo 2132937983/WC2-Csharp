@@ -47,7 +47,7 @@ public class DataFileTests
         Support.MountRepositoryAssets();
         int checkedFiles = 0;
         var problems = new List<string>();
-        foreach (var path in AssetSystem.List("data/json/").Where(p => p.EndsWith(".json")))
+        foreach (var path in AssetSystem.List("data/").Where(p => p.EndsWith(".json")))
         {
             string schemaPath = DataPaths.SchemaFor(path);
             if (schemaPath == null) continue;
@@ -65,7 +65,7 @@ public class DataFileTests
     public void EveryDataFileHasASchema()
     {
         Support.MountRepositoryAssets();
-        var without = AssetSystem.List("data/json/")
+        var without = AssetSystem.List("data/")
             .Where(p => p.EndsWith(".json") && !p.StartsWith("data/json/schemas/") && DataPaths.SchemaFor(p) == null).ToList();
         Assert.Empty(without);
     }

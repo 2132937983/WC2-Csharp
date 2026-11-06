@@ -45,6 +45,7 @@ public static class DataPaths
         (Rules, null, "rules"), (OptionsLayout, null, "options-layout"), (LayoutProfiles, null, "layout-profiles"),
         (Audio, null, "audio"), (Countries, null, "countries"), (ScenarioIndex, null, "scenario-index"), (AiProfiles, null, "ai"),
         ("data/json/maps/", "/areas.json", "map-areas"), ("data/json/text/", ".json", "text"),
+        ("data/maps/", "/map.json", "map-pack"), ("data/maps/", "/regions.json", "map-regions"),
     };
 
     /// <summary>The schema a data file is checked against when it loads (null: none).</summary>

@@ -278,7 +278,7 @@ public static class DataMigration
         // every JSON data file against its schema (loading validates; mods included)
         JsonData.ValidationProblems.Clear();
         int checkedFiles = 0;
-        foreach (var path in AssetSystem.List("data/json/").Where(p => p.EndsWith(".json", StringComparison.OrdinalIgnoreCase)).ToList())
+        foreach (var path in AssetSystem.List("data/").Where(p => p.EndsWith(".json", StringComparison.OrdinalIgnoreCase)).ToList())
         {
             if (DataPaths.SchemaFor(path) == null) continue;
             JsonData.LoadMerged(path);

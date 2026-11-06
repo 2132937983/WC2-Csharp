@@ -5,6 +5,9 @@ using WC2.Tools;
 //       Builds the runtime asset package from the asset tree (assets/): copies it (the originals are
 //       never modified), generates runtime formats under generated/, and writes
 //       generated/asset_index.json (every file, every original name -> path). See ASSET_LAYOUT.md.
+//   build-map --config FILE --source DIR --out DIR
+//       Builds a map pack (regions, adjacency, ownership, cities, ports, airfields) from Natural
+//       Earth GeoJSON (MAP_PIPELINE.md).
 //   compare-image --golden REF.png --actual SHOT.png [--max-percent P] [--diff OUT.png] [--record]
 //       Screenshot regression: compares a screenshot with its reference (see ImageCompare).
 //   validate --pack DIR [--source DIR]
@@ -29,6 +32,9 @@ namespace WC2.Tools
                             opts.ContainsKey("force"));
                     case "validate":
                         return PackValidator.Validate(Require(opts, "pack"), opts.GetValueOrDefault("source"));
+                    case "build-map":
+                        Require(opts, "config"); Require(opts, "source"); Require(opts, "out");
+                        return MapPipeline.Run(opts);
                     case "compare-image":
                         Require(opts, "golden"); Require(opts, "actual");
                         return ImageCompare.Run(opts);
@@ -64,6 +70,7 @@ namespace WC2.Tools
         {
             Console.WriteLine("usage: WC2.Tools build-pack --assets DIR --out DIR [--index-copy FILE] [--force]");
             Console.WriteLine("       WC2.Tools validate --pack DIR [--source DIR]");
+            Console.WriteLine("       WC2.Tools build-map --config Tools/map/natural-earth.json --source DIR --out DIR [--preview-width 2048]");
             Console.WriteLine("       WC2.Tools compare-image --golden REF.png --actual SHOT.png [--max-percent 1.0] [--pixel-tolerance 40] [--diff OUT.png] [--record [--width 320]]");
         }
     }
