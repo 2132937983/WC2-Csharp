@@ -10,6 +10,7 @@ wait 2
 click 552 15
 wait 1
 shot C1_pause
+hittest pause_box
 click 284 190
 wait 1.5
 shot C2_options
@@ -20,6 +21,7 @@ wait 1
 click 284 228
 wait 1.5
 shot C3_save
+hittest save_box
 back
 wait 1
 shot C4_after

@@ -1,5 +1,6 @@
 wait 4.5
 shot T0_menu
+hittest tutorial
 click 510 188
 wait 7
 shot T1_tutorial

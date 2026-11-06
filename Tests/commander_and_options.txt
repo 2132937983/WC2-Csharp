@@ -2,11 +2,13 @@ wait 4.5
 click 510 227
 wait 3
 shot E1_commander
+hittest commander
 back
 wait 2
 click 510 262
 wait 3
 shot E2_options
+hittest options
 back
 wait 2
 shot E3_menu

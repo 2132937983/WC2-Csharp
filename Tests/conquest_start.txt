@@ -6,6 +6,7 @@ wait 5
 click 552 302
 wait 6
 shot s4_game
+hittest conquest_game
 wait 3
 shot s5_game
 exit

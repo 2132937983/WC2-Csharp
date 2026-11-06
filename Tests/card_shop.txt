@@ -10,6 +10,7 @@ wait 2
 click 15 300
 wait 1.5
 shot B1_cards
+hittest card_shop
 click 120 300
 wait 1
 # the tap above hit the medal counter's buy button, which opened the store; the store is removed, the shop stays
