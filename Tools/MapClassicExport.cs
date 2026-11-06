@@ -26,18 +26,18 @@ internal static partial class MapPipeline
     /// <summary>The conquest list button: 320 x 109 pixels like the original's, named @2x (the menu atlases
     /// are high resolution: a sprite shows at half its pixel size); the map around the centre, a dark
     /// band and the title.</summary>
-    private static void WriteConquestButton(string path, int[] raster, int width, int height, List<Region> regions, string title, int cx, int cy)
+    private static void WriteConquestButton(string path, int[] raster, int width, int height, List<Region> regions, string title, int cx, int cy, int step)
     {
         const int W = 320, H = 109;
         using var bmp = new SKBitmap(W, H, SKColorType.Rgba8888, SKAlphaType.Premul);
-        // 1 button pixel = 3 raster pixels around the centre
+        // 1 button pixel = step raster pixels (6 map units) around the centre
         for (int y = 0; y < H; y++)
             for (int x = 0; x < W; x++)
             {
-                int rx = Math.Clamp(cx + (x - W / 2) * 3, 0, width - 1), ry = Math.Clamp(cy + (y - H / 2) * 3, 0, height - 1);
+                int rx = Math.Clamp(cx + (x - W / 2) * step, 0, width - 1), ry = Math.Clamp(cy + (y - H / 2) * step, 0, height - 1);
                 int v = raster[ry * width + rx];
                 bool sea = v == 0 || regions[v - 1].sea;
-                int right = raster[ry * width + Math.Min(width - 1, rx + 3)];
+                int right = raster[ry * width + Math.Min(width - 1, rx + step)];
                 bool edge = right != v;
                 var c = sea ? new SKColor(40, 70, 100) : new SKColor(170, 150, 110);
                 if (edge && !sea) c = new SKColor(90, 70, 50);
@@ -58,12 +58,13 @@ internal static partial class MapPipeline
         data.SaveTo(file);
     }
 
+    /// <param name="scale">map units per pixel of <paramref name="raster"/> (1: the raster is drawn at map resolution)</param>
     private static void ExportClassic(string outDir, JsonObject config, List<Region> regions, int[] raster, int width, int height,
-                                      Dictionary<string, string> countryNames)
+                                      Dictionary<string, string> countryNames, int scale)
     {
         var cfg = config["classicExport"]!.AsObject();
         int mapId = cfg["mapId"]!.GetValue<int>();
-        int S = cfg["scale"]?.GetValue<int>() ?? 2;
+        int S = scale;
         int mapW = width * S, mapH = height * S;
         Directory.CreateDirectory(outDir);
         int n = regions.Count;
@@ -348,7 +349,7 @@ internal static partial class MapPipeline
                 },
             }.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
             WriteConquestButton(Path.Combine(outDir, $"button_conquest{number}@2x.png"), raster, width, height, regions,
-                                menu["title"]!.GetValue<string>(), (int)(cxUnits / S), (int)(cyUnits / S));
+                                menu["title"]!.GetValue<string>(), (int)(cxUnits / S), (int)(cyUnits / S), 6 / S);
             var strings = new JsonObject { [$"conquest name {number}"] = menu["title"]!.GetValue<string>() };
             foreach (var (id, _) in active)
             {

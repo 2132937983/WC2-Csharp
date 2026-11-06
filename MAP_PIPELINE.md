@@ -97,7 +97,7 @@ conquest, into a mod: `mods/map-natural-earth/` (3.2 MB, enabled; the build scri
 
 | File | Read by | Content |
 |---|---|---|
-| `area2.bin` | `CScene.LoadAreaData` | per area: zone image position and size, army, building and installation anchors (the pixel farthest from the region's edge), land or sea; map units = raster pixels x 2 (8192 x 2060) |
+| `area2.bin` | `CScene.LoadAreaData` | per area: zone image position and size, army, building and installation anchors (the pixel farthest from the region's edge), land or sea; 8192 x 2060 map units (the provinces are drawn again at that resolution, one pixel per unit, so shapes are twice as fine as the region raster) |
 | `adjion2.bin` | `CScene.LoadAdjoin` | up to 16 neighbours per area: the longest borders, kept only when both sides keep them |
 | `areamark2.raw` | `CAreaMark` | the area under every 8 x 8 block of map units (touch picking) |
 | `data/json/maps/2/areas.json` | `LoadAreaTax` | area types and base taxes (3 to 31: size, city, capital) |
@@ -127,8 +127,8 @@ synthetic world (record sizes, symmetric adjacency, area ids in the mask, scenar
 
 * The menu texts of the world conquest are English in every language; the main-menu minimaps are the
   classic map's.
-* Finer art: the region shapes come from the raster (one map unit = half a raster pixel), so coasts
-  and borders show steps when zoomed in; drawing the province polygons directly into the tiles would
-  smooth them.
-* Sea zones are a plain grid; ports have no fleets at the start; the scenario has no dialogues.
+* Finer art: shapes are rasterized at one pixel per map unit without antialiasing, so coasts and
+  borders still show small steps when zoomed in; the tiles have no relief or texture.
+* Sea zones are a plain grid; the scenario has no dialogues (each country starts with a destroyer
+  at up to three of its ports).
 * Balance: start money, taxes and armies are simple rules of the export, not tuned by play.

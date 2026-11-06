@@ -267,6 +267,7 @@ internal static partial class MapPipeline
             final.Add(r);
         }
         for (int i = 0; i < regionRaster.Length; i++) regionRaster[i] = newId[regionRaster[i]];
+        var regionsBeforeRenumbering = regions;   // Province.region indexes this list
         regions = final;
         foreach (var r in regions) { r.pixels = 0; r.areaKm2 = 0; r.sumX = 0; r.sumY = 0; }
         for (int y = 0; y < height; y++)
@@ -416,14 +417,108 @@ internal static partial class MapPipeline
         WriteRaster(Path.Combine(outDir, "regions.raster"), regionRaster, width, height);
         WritePreview(Path.Combine(outDir, "preview.png"), regionRaster, width, height, regions, opts.GetValueOrDefault("preview-width", "2048"));
         if (opts.TryGetValue("classic-out", out var classicOut) && config["classicExport"] != null)
-            ExportClassic(classicOut, config, regions, regionRaster, width, height,
-                provinces.GroupBy(p => p.country).ToDictionary(g => g.Key, g => g.First().admin));
+        {
+            // the map in the scene's units is drawn from the provinces again at that resolution (one
+            // pixel per map unit), so coasts and borders are twice as fine as the region raster
+            int S = config["classicExport"]!["scale"]?.GetValue<int>() ?? 2;
+            int hiW = width * S, hiH = height * S;
+            var hiProvince = RasterizeProvinces(Path.Combine(source, "ne_10m_admin_1_states_provinces.geojson"), west, east, north, south, pxPerDeg * S, hiW, hiH);
+            var kept = new HashSet<Region>(regions);
+            var hi = new int[hiW * hiH];
+            for (int y = 0; y < hiH; y++)
+                for (int x = 0; x < hiW; x++)
+                {
+                    int lx = x / S, ly = y / S, lo = regionRaster[ly * width + lx];
+                    int land = 0, p = hiProvince[y * hiW + x];
+                    if (p > 0 && p <= provinces.Count && provinces[p - 1].region >= 0)
+                    {
+                        var reg = regionsBeforeRenumbering[provinces[p - 1].region];
+                        if (kept.Contains(reg)) land = reg.id + 1;
+                    }
+                    int value;
+                    // a land pixel counts where its region is near in the region raster (dropped islands
+                    // and far parts stay water); water takes the nearest sea zone
+                    if (land > 0 && NearValue(regionRaster, width, height, lx, ly, v => v == land)) value = land;
+                    else if (lo > 0 && regions[lo - 1].sea) value = lo;
+                    else
+                    {
+                        int sea = 0;
+                        for (int dy = -1; dy <= 1 && sea == 0; dy++)
+                            for (int dx = -1; dx <= 1 && sea == 0; dx++)
+                            {
+                                int nx = lx + dx, ny = ly + dy;
+                                if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+                                int v = regionRaster[ny * width + nx];
+                                if (v > 0 && regions[v - 1].sea) sea = v;
+                            }
+                        value = land == 0 && sea > 0 ? sea : lo;
+                    }
+                    hi[y * hiW + x] = value;
+                }
+            ExportClassic(classicOut, config, regions, hi, hiW, hiH,
+                provinces.GroupBy(p => p.country).ToDictionary(g => g.Key, g => g.First().admin), 1);
+        }
         Console.WriteLine($"build-map: {regions.Count(r => !r.sea)} land regions in {countries.Count} countries, {regions.Count(r => r.sea)} sea zones, " +
                           $"{regions.Count(r => r.type == "capital")} capitals, {regions.Count(r => r.port)} ports, {regions.Count(r => r.airfield)} airfields, " +
                           $"{sw.ElapsedMilliseconds} ms -> {outDir}");
         return 0;
 
         bool InBounds(double lon, double lat) => lon >= west && lon <= east && lat >= south && lat <= north;
+    }
+
+    private static bool NearValue(int[] raster, int width, int height, int x, int y, Func<int, bool> match)
+    {
+        for (int dy = -1; dy <= 1; dy++)
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                int nx = x + dx, ny = y + dy;
+                if (nx >= 0 && ny >= 0 && nx < width && ny < height && match(raster[ny * width + nx])) return true;
+            }
+        return false;
+    }
+
+    /// <summary>
+    /// The provinces inside the bounds drawn into a raster (province index + 1, in the order the main
+    /// pass numbers them: the features with a point inside the bounds).
+    /// </summary>
+    private static int[] RasterizeProvinces(string file, double west, double east, double north, double south, double pxPerDeg, int width, int height)
+    {
+        using var bitmap = new SKBitmap(new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul));
+        using (var canvas = new SKCanvas(bitmap))
+        {
+            canvas.Clear(new SKColor(0, 0, 0, 0));
+            using var paint = new SKPaint { IsAntialias = false, Style = SKPaintStyle.Fill, BlendMode = SKBlendMode.Src };
+            using var doc = JsonDocument.Parse(File.OpenRead(file));
+            int code = 0;
+            foreach (var f in doc.RootElement.GetProperty("features").EnumerateArray())
+            {
+                var geometry = f.GetProperty("geometry");
+                if (geometry.ValueKind != JsonValueKind.Object) continue;
+                using var path = new SKPath { FillType = SKPathFillType.EvenOdd };
+                bool inside = false;
+                foreach (var ring in Rings(geometry))
+                {
+                    bool first = true;
+                    foreach (var (lon, lat) in ring)
+                    {
+                        if (lon >= west && lon <= east && lat >= south && lat <= north) inside = true;
+                        float x = (float)((lon - west) * pxPerDeg), y = (float)((north - lat) * pxPerDeg);
+                        if (first) { path.MoveTo(x, y); first = false; }
+                        else path.LineTo(x, y);
+                    }
+                    path.Close();
+                }
+                if (!inside) continue;
+                code++;
+                paint.Color = new SKColor((byte)(code & 0xFF), (byte)((code >> 8) & 0xFF), (byte)((code >> 16) & 0xFF), 255);
+                canvas.DrawPath(path, paint);
+            }
+        }
+        var raster = new int[width * height];
+        var pixels = bitmap.GetPixelSpan();
+        for (int i = 0; i < raster.Length; i++)
+            raster[i] = pixels[i * 4 + 3] == 0 ? 0 : pixels[i * 4] | (pixels[i * 4 + 1] << 8) | (pixels[i * 4 + 2] << 16);
+        return raster;
     }
 
     private static JsonObject WithoutKey(JsonObject o, string key)
