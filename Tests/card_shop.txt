@@ -12,5 +12,6 @@ wait 1.5
 shot B1_cards
 click 120 300
 wait 1
+# the tap above hit the medal counter's buy button, which opened the store; the store is removed, the shop stays
 shot B2_cards_tab
 exit

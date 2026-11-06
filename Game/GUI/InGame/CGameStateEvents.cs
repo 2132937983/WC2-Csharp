@@ -491,25 +491,6 @@ public sealed partial class CGameState
         }
     }
 
-    /// <summary>Creates the in-app purchase overlay (driven by GUI OTHER events).</summary>
-    public void guiIapSort()
-    {
-        guiIap = new GUIIap();
-        var rect_other_13 = new GUIRect(0.0f, 0.0f, ecGraphics.Instance().screenW, ecGraphics.Instance().screenH);
-        guiIap.Init(rect_other_13);
-        GUIManager.Instance().AddChild(guiIap, false);
-    }
-
-    /// <summary>Frees the in-app purchase overlay and clears the reference so it can be created again.</summary>
-    public void freeGUIIap()
-    {
-        if (guiIap != null)
-        {
-            GUIManager.Instance().SafeFreeChild(guiIap);
-            guiIap = null;
-        }
-    }
-
     /// <summary>
     /// Creates the one shot save / load overlay. With load the confirmation fades to the LOAD
     /// state; otherwise the overlay is just closed, GUISave does the saving itself.

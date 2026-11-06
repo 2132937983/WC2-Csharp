@@ -1,8 +1,9 @@
 namespace WC2;
 
 /// <summary>
-/// Panels of the original game that depend on in-app purchases or networking. The desktop port
-/// keeps them as empty, closable panels so the surrounding flow (menu/game state) still works.
+/// Panels of the original game that depend on networking (service, multiplayer). The port keeps them
+/// as empty, closable panels so the surrounding flow (menu/game state) still works. The original's
+/// in-app store is removed entirely: this build sells nothing.
 /// </summary>
 public class GUIStubPanel : GUIElement
 {
@@ -35,33 +36,6 @@ public class GUIStubPanel : GUIElement
         return base.OnEvent(evt);
     }
 }
-
-/// <summary>In-app purchase shop (medals). Purchases are not available on desktop.</summary>
-public sealed class GUIIap : GUIStubPanel
-{
-    public GUIButton[] buttonBuy = new GUIButton[4];
-    public GUIMedalPlaceholder guiMedal;
-
-    public void Init(in GUIRect rectIn) => InitStub(rectIn, "Store is not available in this version");
-
-    public override bool OnEvent(Event evt)
-    {
-        if (evt.type == Event.GUI && evt.info.gui.type == Event.Info.GUIInfo.BUTTON && ReferenceEquals(evt.info.gui.ptr, buttonBack))
-        {
-            // OTHER(14) = close the shop
-            var close = Event.Gui(Event.Info.GUIInfo.OTHER, this, 14);
-            return base.OnEvent(close);
-        }
-        return base.OnEvent(evt);
-    }
-
-    public void SetLocalePirce(int productId, string price) { }
-    public void OnListComplete(object unused) { }
-    public void SetProductPrice() { }
-}
-
-/// <summary>Placeholder type for the medal widget reference inside GUIIap.</summary>
-public sealed class GUIMedalPlaceholder : GUIElement { }
 
 /// <summary>Customer service panel.</summary>
 public sealed class GUIService : GUIStubPanel

@@ -151,7 +151,6 @@ public sealed partial class CGameState
         guiResult = null;
         guiBattleIntro = null;
         guiVictory = null;
-        guiIap = null;
         guiBank = null;
         guiEnd = null;
         guiWarning = null;
@@ -318,7 +317,6 @@ public sealed partial class CGameState
         guiBattleIntro = null;
         guiVictory = null;
         guiTutorails = null;
-        guiIap = null;
         guiDialogue = null;
         guiBank = null;
         guiActionInfo = null;
@@ -525,15 +523,7 @@ public sealed partial class CGameState
                         closeBattleIntro();
                         break;
 
-                    case 13:
-                        // in-app purchase panel
-                        guiIapSort();
-                        break;
-
-                    case 14:
-                        // free the in-app purchase panel
-                        freeGUIIap();
-                        break;
+                    // (13 / 14 opened and closed the in-app store of the original: removed, nothing is sold)
 
                     case 16:
                         // dialogue and victory animation

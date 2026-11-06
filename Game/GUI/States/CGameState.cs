@@ -38,7 +38,6 @@ public sealed partial class CGameState : CBaseState
     public GUIBattleIntro guiBattleIntro;
     public GUIVictory guiVictory;
     public GUITutorails guiTutorails;
-    public GUIIap guiIap;
     public GUIDialogue guiDialogue;
     public GUIBank guiBank;
     public GUIActionInfo guiActionInfo;

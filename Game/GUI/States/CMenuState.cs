@@ -13,7 +13,6 @@ public sealed class CMenuState : CBaseState
     public GUISelCountry guiSelCountry;    // conquest country selection panel
     public GUISave guiSave;
     public GUICommander guiCommander;
-    public GUIIap guiIap;
     public GUIWarning guiWarning;
     public GUILockedWarning guiLockedWarning;
     public GUIService guiService;
@@ -98,7 +97,6 @@ public sealed class CMenuState : CBaseState
         guiHostList = null;
         guiSave = null;
         guiCommander = null;
-        guiIap = null;
         guiWarning = null;
         guiLockedWarning = null;
         guiService = null;
@@ -242,21 +240,7 @@ public sealed class CMenuState : CBaseState
         {
             switch (eventInfo)
             {
-                case 13: // open the in-app purchase panel
-                {
-                    guiIap = new GUIIap();
-                    guiIap.Init(GetMenuScreenRect());
-                    GUIManager.Instance().AddChild(guiIap, false);
-                    break;
-                }
-
-                case 14: // close the in-app purchase panel
-                    if (guiIap != null)
-                    {
-                        GUIManager.Instance().SafeFreeChild(guiIap);
-                        guiIap = null;
-                    }
-                    break;
+                // (13 / 14 opened and closed the in-app store of the original: removed, nothing is sold)
 
                 case 17: // close the campaign locked hint
                     if (guiLockedWarning != null)

@@ -137,11 +137,6 @@ public static class Globals
     public static void ecMailServiceJNI() { }
     public static void GetDataFromServerJNI() { }
     public static void MainMenuLoadedJNI() { }
-    public static void InAppPurchase(int productId) { }
-    public static void ecInAppPurchase(int productId) { }
-    public static void ecPurchasedProduct(int productId) { }
-    public static string ecGetProductPrice(int productId) => "";
-    public static void ecSetProductPrice(int productId, string price) { }
     public static bool isAndroidEmulator() => false;
     public static string getVersionName() => strVersionName;
     public static void ecSetIdleTimerDisabled(bool disabled) { }

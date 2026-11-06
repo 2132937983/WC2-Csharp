@@ -226,14 +226,6 @@ public sealed partial class CCommander
     /// <summary>Whether the commander is at the max level.</summary>
     public bool IsMaxLevel() => level >= MAX_COMMANDER_LEVEL;
 
-    /// <summary>Medal purchase.</summary>
-    public void BuyMedal(int medalIn)
-    {
-        boughtMedal += medalIn;
-        medal += medalIn;
-        CCSoundBox.GetInstance().PlaySE(AudioDefs.Ui("buy"));
-    }
-
     /// <summary>Level of a war medal.</summary>
     public int GetWarMedalLevel(WARMEDAL_ID warMedalId) => warMedal[(int)warMedalId];
 
