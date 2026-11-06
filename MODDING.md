@@ -74,7 +74,7 @@ atlas entry, or a new atlas the mod adds).
 ## Checking a mod
 
 ```powershell
-dotnet run --project WC2 -- --verify-data --mods <folder that contains your mod>
+dotnet run --project Hosts/Desktop -- --verify-data --mods <folder that contains your mod>
 ```
 
 lists every definition the mods change compared with the original game data, field by field. The

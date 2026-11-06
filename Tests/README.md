@@ -1,13 +1,17 @@
 # Tests
 
-`run-tests.ps1` (after `dotnet build` in `WC2`) runs, in this order:
+`run-tests.ps1` (after `dotnet build Hosts/Desktop` in the repository root) runs, in this order:
 
+0. **unit**: `dotnet test Tests` — the in-process unit tests in `Unit/` (schema validator, every data
+   file against its schema, invalid mod data falls back, asset layer resolution order, original names,
+   variant folders, layout buckets, hit testing rules, the IAP removal, AI evaluation, map pipeline).
 1. **audio**: `--test-audio` decodes every music file and loads every sound effect.
-2. **data**: `--verify-data` loads every JSON data file and the original XML it was converted from and
-   compares the definitions field by field. A deliberate data change shows up here; that is intended
+2. **data**: `--verify-data` checks every JSON data file against its schema, then loads every type from
+   the JSON and from the original XML (or built-in table) it was converted from and compares the
+   definitions field by field. A deliberate data change shows up here; that is intended
    (the game data is meant to match the original until someone changes it on purpose).
 3. **assets**: `WC2.Tools validate` checks the built package: every original is reachable by its old
-   name, every index entry exists.
+   name, every index entry exists, every asset the data names exists, the whole tree is packaged.
 4. **scripts**: every `*.txt` here, in deterministic mode: `--seed 20261106 --fixed-step` and a fresh
    documents folder per script (`out/<script>/docs`). Each `dump NAME` writes the rule state
    (countries, areas, units, commander) as JSON; the runner compares it byte for byte with
@@ -17,11 +21,11 @@
    A script whose first line is `#! ARGS` gets ARGS on the command line (window size).
 
 ```powershell
-.\tests\run-tests.ps1                 # everything
-.\tests\run-tests.ps1 -Filter conquest
-.\tests\run-tests.ps1 -Record         # store this run's dumps as the new goldens
-.\tests\run-tests.ps1 -RecordShots    # store this run's screenshots as the new references
-.\tests\run-tests.ps1 -RealTime       # real clock, no goldens (the old smoke-test behaviour)
+.\Tests\run-tests.ps1                 # everything
+.\Tests\run-tests.ps1 -Filter conquest
+.\Tests\run-tests.ps1 -Record         # store this run's dumps as the new goldens
+.\Tests\run-tests.ps1 -RecordShots    # store this run's screenshots as the new references
+.\Tests\run-tests.ps1 -RealTime       # real clock, no goldens (the old smoke-test behaviour)
 ```
 
 Record new goldens only when a rule change is intended, and new reference screenshots only when a

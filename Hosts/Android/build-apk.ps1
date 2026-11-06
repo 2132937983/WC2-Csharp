@@ -1,5 +1,5 @@
 # Builds the Android APK and copies it to the repository root (WC2-android-arm64.apk).
-# Usage: .\WC2.Android\build-apk.ps1 [-Configuration Release] [-AndroidSdk C:\Android] [-JavaSdk "C:\Program Files\Java\jdk-17.0.2"]
+# Usage: .\Hosts\Android\build-apk.ps1 [-Configuration Release] [-AndroidSdk C:\Android] [-JavaSdk "C:\Program Files\Java\jdk-17.0.2"]
 # Requirements: .NET 9 SDK with the android workload (dotnet workload install android), Android SDK
 # platform 35 + build-tools, JDK 17. The project file already points at C:\Android and the JDK 17
 # folder when they exist; the parameters override that.
@@ -9,7 +9,7 @@ param(
     [string]$JavaSdk = ""
 )
 $ErrorActionPreference = 'Stop'
-$root = Split-Path -Parent $PSScriptRoot
+$root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)   # the repository root
 $project = Join-Path $PSScriptRoot 'WC2.Android.csproj'
 
 $dotnet = Get-Command dotnet -ErrorAction SilentlyContinue

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Game data definitions: data paths, schema mapping, terrain, rules, layout profiles, audio,
+       countries, AI profiles, and the comparison used by verify-data. Depends on the engine only (JSON,
+       asset layer); the game references it. The Android project compiles these sources directly. -->
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>WC2</RootNamespace>
+    <AssemblyName>WC2.Data</AssemblyName>
+    <!-- The port keeps the original C++ field names and some unused members on purpose. -->
+    <NoWarn>$(NoWarn);CS0108;CS0114;CS0169;CS0168;CS0219;CS0414;CS0649;CS0659;CS0661;CS8981;CS1717;CS0162;CS0067</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="WC2.Game" />
+    <InternalsVisibleTo Include="WC2" />
+    <InternalsVisibleTo Include="WC2.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Engine/WC2.Engine.csproj" />
+  </ItemGroup>
+</Project>

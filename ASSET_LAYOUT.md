@@ -73,8 +73,9 @@ the index. Add an entry only when a file the code requests by an old name moves;
 
 ## Build: the runtime package
 
-`WC2.Tools build-pack` runs after every build of `WC2` (output `WC2/bin/<cfg>/net9.0/pack/`) and of
-`WC2.Android` (output `WC2.Android/obj/pack/`, shipped as `assets/pack/` in the APK). It:
+`WC2.Tools build-pack` runs after every build of the desktop host (output
+`Hosts/Desktop/bin/<cfg>/net9.0/pack/`) and of the Android host (output `Hosts/Android/obj/pack/`,
+shipped as `assets/pack/` in the APK). It:
 
 1. copies the tree to the package (same paths; `build.json`, `legacy-names.json` and Markdown files
    stay out), incrementally;
@@ -97,7 +98,7 @@ image still wins.
 
 ## How the game reads assets (the asset layer)
 
-Every read goes through `AssetSystem` (`WC2.Engine/IO/AssetSystem.cs`): textures, sounds, fonts, XML,
+Every read goes through `AssetSystem` (`Engine/IO/AssetSystem.cs`): textures, sounds, fonts, XML,
 JSON, string tables. Layers are mounted in order: the base package, then the mods by priority. A name
 resolves, in this order:
 
@@ -122,7 +123,7 @@ Sources of the base package:
 
 ## Checks
 
-`WC2.Tools validate --pack <package> --source assets` (run by `WC2/tests/run-tests.ps1`):
+`WC2.Tools validate --pack <package> --source assets` (run by `Tests/run-tests.ps1`):
 
 * the index and the files agree (every listed file exists with its size, every file is listed);
 * every original name points to an existing file;

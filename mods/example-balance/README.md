@@ -16,5 +16,5 @@ What it shows (see `MODDING.md` in the repository root for the rules):
 * `data/json/text/en/stringtable_en.json` changes one English text ("Tank" becomes "Medium Tank").
 * `mod.json` names the mod; `priority` orders several mods (higher wins), `enabled: false` turns it off.
 
-`dotnet run --project WC2 -- --verify-data --mods mods --all-mods` lists exactly what the mods change
+`dotnet run --project Hosts/Desktop -- --verify-data --mods mods --all-mods` lists exactly what the mods change
 compared with the original game data (`--all-mods` also loads disabled mods).

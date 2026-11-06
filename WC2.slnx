@@ -1,7 +1,9 @@
 <Solution>
-  <Project Path="WC2.Android/WC2.Android.csproj" />
-  <Project Path="WC2.Engine/WC2.Engine.csproj" />
-  <Project Path="WC2.Game/WC2.Game.csproj" />
-  <Project Path="WC2.Tools/WC2.Tools.csproj" />
-  <Project Path="WC2/WC2.csproj" />
+  <Project Path="Engine/WC2.Engine.csproj" />
+  <Project Path="Data/WC2.Data.csproj" />
+  <Project Path="Game/WC2.Game.csproj" />
+  <Project Path="Hosts/Desktop/WC2.Desktop.csproj" />
+  <Project Path="Hosts/Android/WC2.Android.csproj" />
+  <Project Path="Tools/WC2.Tools.csproj" />
+  <Project Path="Tests/WC2.Tests.csproj" />
 </Solution>

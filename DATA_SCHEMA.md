@@ -27,16 +27,16 @@ Every data file has a JSON Schema (draft 2020-12) in `assets/data/json/schemas/`
 | `scenario-index.schema.json` | `scenarios/index.json` |
 | `text.schema.json` | `text/<code>/*.json` |
 
-* **At load time** (`JsonData.LoadMerged`, `WC2.Engine/IO/JsonSchema.cs`) the merged file (game plus
+* **At load time** (`JsonData.LoadMerged`, `Engine/IO/JsonSchema.cs`) the merged file (game plus
   mods) is checked against its schema. Problems are logged with their JSON path
   (`data/json/cards/cards.json: $.countries.others.Tank.price: -5 is below the minimum 0`). When only
   the mods' version is invalid, the mods' changes to that file are dropped and the game's own data is
   used.
-* `dotnet run --project WC2 -- --verify-data` (part of `WC2/tests/run-tests.ps1`) checks every data file
+* `dotnet run --project Hosts/Desktop -- --verify-data` (part of `Tests/run-tests.ps1`) checks every data file
   against its schema, then loads every type twice, from the original XML (or the built-in tables) and
   from the JSON, and compares the resulting definitions field by field. A deliberate change to the JSON
   therefore shows up there; with `--mods <folder>` it lists exactly what a mod changes.
-* `dotnet run --project WC2 -- --convert-data` regenerates the JSON from the originals (files whose
+* `dotnet run --project Hosts/Desktop -- --convert-data` regenerates the JSON from the originals (files whose
   content does not change are left alone).
 
 Records reject unknown fields (`additionalProperties: false`), so a misspelt field is an error;

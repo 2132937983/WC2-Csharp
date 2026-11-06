@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Unit tests that run in-process without a window (dotnet test Tests): schema validation, the asset
+       layer, data files against their schemas, layout profiles, hit testing, the package tools, the
+       IAP removal, the AI and the map pipeline. The scripted regression suite (run-tests.ps1, the
+       *.txt scripts and golden/) lives in this folder too; it drives the real game. -->
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>WC2.Tests</RootNamespace>
+    <AssemblyName>WC2.Tests</AssemblyName>
+    <NoWarn>$(NoWarn);CS0618;xUnit1013</NoWarn>
+    <!-- script outputs and references are not project items -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);out/**;golden/**;*.txt</DefaultItemExcludes>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Engine/WC2.Engine.csproj" />
+    <ProjectReference Include="../Data/WC2.Data.csproj" />
+    <ProjectReference Include="../Game/WC2.Game.csproj" />
+    <ProjectReference Include="../Tools/WC2.Tools.csproj" />
+  </ItemGroup>
+</Project>

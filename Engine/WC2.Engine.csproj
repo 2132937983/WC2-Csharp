@@ -2,7 +2,7 @@
   <!-- The engine layer: the port of the easytech engine API (renderer, GUI toolkit, fonts, sound,
        state machine) plus the asset system, mods and JSON layering. It has no reference to the game,
        so the compiler keeps the layering honest. The desktop build uses this library; the Android
-       project compiles the same sources directly (see WC2.Android.csproj). -->
+       project compiles the same sources directly (see Hosts/Android/WC2.Android.csproj). -->
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>disable</Nullable>
@@ -15,8 +15,10 @@
     <NoWarn>$(NoWarn);CS0108;CS0114;CS0169;CS0168;CS0219;CS0414;CS0649;CS0659;CS0661;CS8981;CS1717;CS0162;CS0067</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="WC2.Data" />
     <InternalsVisibleTo Include="WC2.Game" />
     <InternalsVisibleTo Include="WC2" />
+    <InternalsVisibleTo Include="WC2.Tests" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.6.1" />

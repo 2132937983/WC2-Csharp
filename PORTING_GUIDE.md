@@ -10,24 +10,25 @@ The port itself is done; these rules apply to changes made on top of it (see `NE
 
 1. **Rules code keeps the original names** (classes, methods, fields of the game logic) so it stays
    comparable with the decompiled original, the remake and the audits.
-2. **Assets only through `AssetSystem`** (`WC2.Engine/IO/AssetSystem.cs`): `AssetSystem.Exists/OpenRead/
+2. **Assets only through `AssetSystem`** (`Engine/IO/AssetSystem.cs`): `AssetSystem.Exists/OpenRead/
    ReadAllBytes/ReadAllText`, or `GetPath(name)` handed to `ecFile` / `TiXmlDocument`. Never `File.*` on
    an asset: the package may be a folder, a zip, an APK or overlaid by mods. Real files (saves, settings,
    exports) use `GetDocumentPath`.
 3. **Game data is JSON** (`docs/DATA.md`): read it with `JsonData.LoadMerged(path)` so mods merge, with
    the `JsonData` accessors (they parse numbers exactly like the original XML attributes). Paths live in
-   `WC2.Game/Data/DataPaths.cs`. A new data file needs a reader, a converter or built-in default, and an
-   entry in `WC2.Game/Data/DataMigration.cs` so `--verify-data` covers it.
+   `Data/DataPaths.cs`. A new data file needs a reader, a converter or built-in default, an entry in
+   `Game/Data/DataMigration.cs` so `--verify-data` covers it, and a schema in
+   `assets/data/json/schemas/` (mapped in `DataPaths.SchemaFor`).
 4. **No terrain constants in rules**: ask `Terrain.Area(type)`, `Terrain.Construction(type)`,
-   `Terrain.Installation(type)`, `Terrain.Rules` (`WC2.Game/Data/TerrainDefs.cs`) instead of testing for
+   `Terrain.Installation(type)`, `Terrain.Rules` (`Data/TerrainDefs.cs`) instead of testing for
    `CAPITAL`, `PORT`, `FORT` or hard-coding healing, levels and AI area values.
 5. **Original files are never edited.** The originals in `assets/` keep their bytes (they were only
    moved and renamed, `assets/legacy-names.json`); authored data goes to `assets/data/json/`, generated
    formats are listed in `assets/build.json` (ASSET_LAYOUT.md).
-6. **Layering**: `WC2.Engine` must not use game types (it does not reference `WC2.Game`, so this is a
-   compile error). Engine code lives in `WC2.Engine/`, game code in `WC2.Game/`.
-7. **Keep the goldens green.** `tests
-un-tests.ps1` must pass; record new goldens (`-Record`) only for
+6. **Layering**: `WC2.Engine` must not use game types (it does not reference `WC2.Game` or `WC2.Data`, so this is a
+   compile error). `Data` references only the engine; `Game` references both and never a host; the
+   hosts (`Hosts/Desktop`, `Hosts/Android`) only wire input, output and the life cycle.
+7. **Keep the goldens green.** `Tests/run-tests.ps1` must pass; record new goldens (`-Record`) only for
    an intended rule or data change, and say so in the commit.
 
 ## Golden rules (original porting phase; paths were `WC2/Engine`, `WC2/Game`, now `WC2.Engine`, `WC2.Game`)

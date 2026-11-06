@@ -30,19 +30,20 @@
   <ItemGroup>
     <!-- The engine and game libraries target desktop MonoGame, so the APK compiles their sources
          directly against MonoGame.Framework.Android (one assembly, the game's global usings). -->
-    <Compile Include="..\WC2.Game\GlobalUsings.cs" Link="GlobalUsings.cs" />
-    <Compile Include="..\WC2.Engine\**\*.cs" Exclude="..\WC2.Engine\obj\**;..\WC2.Engine\bin\**;..\WC2.Engine\GlobalUsings.cs" Link="Engine\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Compile Include="..\WC2.Game\**\*.cs" Exclude="..\WC2.Game\obj\**;..\WC2.Game\bin\**;..\WC2.Game\GlobalUsings.cs" Link="Game\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\..\Game\GlobalUsings.cs" Link="GlobalUsings.cs" />
+    <Compile Include="..\..\Engine\**\*.cs" Exclude="..\..\Engine\obj\**;..\..\Engine\bin\**;..\..\Engine\GlobalUsings.cs" Link="Engine\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\..\Data\**\*.cs" Exclude="..\..\Data\obj\**;..\..\Data\bin\**;..\..\Data\GlobalUsings.cs" Link="Data\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\..\Game\**\*.cs" Exclude="..\..\Game\obj\**;..\..\Game\bin\**;..\..\Game\GlobalUsings.cs" Link="Game\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- Build order only: the package tool must exist before BuildAssetPack runs. -->
-    <ProjectReference Include="../WC2.Tools/WC2.Tools.csproj" ReferenceOutputAssembly="false" Private="false" SkipGetTargetFrameworkProperties="true" SetTargetFramework="TargetFramework=net9.0" GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained" />
+    <ProjectReference Include="../../Tools/WC2.Tools.csproj" ReferenceOutputAssembly="false" Private="false" SkipGetTargetFrameworkProperties="true" SetTargetFramework="TargetFramework=net9.0" GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained" />
   </ItemGroup>
   <PropertyGroup>
-    <AssetPackTool>$(MSBuildThisFileDirectory)../WC2.Tools/bin/$(Configuration)/net9.0/WC2.Tools.dll</AssetPackTool>
+    <AssetPackTool>$(MSBuildThisFileDirectory)../../Tools/bin/$(Configuration)/net9.0/WC2.Tools.dll</AssetPackTool>
     <AssetPackDir>$(MSBuildThisFileDirectory)obj/pack/</AssetPackDir>
-    <AssetPackSource>$(MSBuildThisFileDirectory)../assets</AssetPackSource>
+    <AssetPackSource>$(MSBuildThisFileDirectory)../../assets</AssetPackSource>
   </PropertyGroup>
   <!-- The asset tree (originals plus authored data, ASSET_LAYOUT.md) becomes the runtime package
        (WC2.Tools build-pack), which ships as assets/pack/... in the APK and is read in place at run time. -->

@@ -24,7 +24,8 @@ public static class DebugTools
             case "--convert-data":
                 // writes the JSON game data converted from the original XML (default: the repository's asset tree)
                 ecGame.ConfigurePaths(null, null);
-                DataMigration.Convert(args.Length > 1 && !args[1].StartsWith("--") ? args[1] : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "assets")));
+                DataMigration.Convert(args.Length > 1 && !args[1].StartsWith("--") ? args[1]
+                    : Path.Combine(ecGame.RepositoryRoot ?? Directory.GetCurrentDirectory(), "assets"));
                 return true;
             case "--verify-data":
                 ecGame.ConfigurePaths(null, args.Length > 1 && !args[1].StartsWith("--") ? args[1] : null);

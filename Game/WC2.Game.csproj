@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- The game: the port of the remake's game code (rules, AI, scene, screens), the JSON data layer,
-       terrain definitions, and the host pieces shared by desktop and Android (MonoGame Game host,
-       script driver). The Android project compiles these sources directly (see WC2.Android.csproj). -->
+  <!-- The game: the port of the remake's game code (rules, AI, scene, screens), the readers of the
+       JSON data, and the host pieces shared by desktop and Android (MonoGame Game host, script driver).
+       It must not reference a host. The Android project compiles these sources directly
+       (see Hosts/Android/WC2.Android.csproj). -->
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>disable</Nullable>
@@ -15,8 +16,10 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="WC2" />
+    <InternalsVisibleTo Include="WC2.Tests" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../WC2.Engine/WC2.Engine.csproj" />
+    <ProjectReference Include="../Engine/WC2.Engine.csproj" />
+    <ProjectReference Include="../Data/WC2.Data.csproj" />
   </ItemGroup>
 </Project>

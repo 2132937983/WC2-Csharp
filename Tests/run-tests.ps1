@@ -1,6 +1,6 @@
 # Runs the audio self-test, the data and asset checks and every scripted test, then compares the
 # rule-state dumps and the reference screenshots with the goldens.
-# Usage: cd WC2; dotnet build; .\tests\run-tests.ps1 [-Filter conquest] [-Record] [-RecordShots] [-RealTime]
+# Usage: dotnet build Hosts/Desktop; .\Tests\run-tests.ps1 [-Filter conquest] [-Record] [-RecordShots] [-RealTime]
 #   -Record       store the dumps of this run as the new goldens (tests\golden\<script>\<dump>.json)
 #   -RecordShots  store this run's screenshots as the new reference screenshots (320 px wide JPEG)
 #   -RealTime     run with the real clock instead of the deterministic mode (no golden comparison)
@@ -9,14 +9,25 @@
 # A script whose first line is "#! ARGS" gets ARGS on the command line (window size, layout).
 param([string]$Filter = "", [switch]$Record, [switch]$RecordShots, [switch]$RealTime, [int]$Seed = 20261106)
 $ErrorActionPreference = 'Continue'
-$root = Split-Path -Parent $PSScriptRoot
+$repo = Split-Path -Parent $PSScriptRoot
+$root = Join-Path $repo 'Hosts\Desktop'      # the desktop host project (dotnet run --project $root)
 $out = Join-Path $PSScriptRoot 'out'
 $golden = Join-Path $PSScriptRoot 'golden'
 $config = 'Debug'
-$tools = Join-Path $root "..\WC2.Tools\bin\$config\net9.0\WC2.Tools.dll"
+$tools = Join-Path $repo "Tools\bin\$config\net9.0\WC2.Tools.dll"
 $pack = Join-Path $root "bin\$config\net9.0\pack"
 New-Item -ItemType Directory -Force $out | Out-Null
 $failures = 0
+
+# unit tests (Tests/WC2.Tests.csproj, in-process: schemas, asset layer, hit testing, tools, AI, map pipeline)
+if (-not $Filter) {
+    Write-Host "== unit" -ForegroundColor Cyan
+    $unitLog = Join-Path $out 'unit.txt'
+    & dotnet test (Join-Path $PSScriptRoot 'WC2.Tests.csproj') -v q --nologo | Out-File -Encoding utf8 $unitLog
+    $summary = Select-String -Path $unitLog -Pattern '(Passed|Failed)!' | Select-Object -Last 1
+    if ($LASTEXITCODE -eq 0 -and $summary -and $summary.Line -match 'Passed!') { Write-Host "   ok ($($summary.Line.Trim() -replace '\s+', ' '))" -ForegroundColor Green }
+    else { $failures++; Write-Host "   problems:" -ForegroundColor Yellow; Get-Content $unitLog | Select-String -Pattern 'error|\[FAIL\]|Failed|Assert' | Select-Object -First 20 | ForEach-Object { Write-Host "   $($_.Line)" } }
+}
 
 # audio self test: decodes every music file and loads every sound effect, output kept in tests/out/audio.txt
 Write-Host "== audio" -ForegroundColor Cyan
@@ -40,7 +51,7 @@ else { $failures++; Write-Host "   problems:" -ForegroundColor Yellow; Select-St
 # every asset the data names present, the whole asset tree packaged)
 Write-Host "== assets" -ForegroundColor Cyan
 $assetLog = Join-Path $out 'assets.txt'
-& dotnet $tools validate --pack $pack --source (Join-Path $root '..\assets') | Out-File -Encoding utf8 $assetLog
+& dotnet $tools validate --pack $pack --source (Join-Path $repo 'assets') | Out-File -Encoding utf8 $assetLog
 if ($LASTEXITCODE -eq 0) { Write-Host "   ok ($((Get-Content $assetLog | Select-Object -Last 1)))" -ForegroundColor Green }
 else { $failures++; Write-Host "   problems:" -ForegroundColor Yellow; Get-Content $assetLog | Select-Object -First 20 | ForEach-Object { Write-Host "   $_" } }
 

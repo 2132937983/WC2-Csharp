@@ -81,6 +81,9 @@ public static class ecGame
                                   || File.Exists(Path.Combine(dir, AssetSystem.LegacyNamesFileName))
                                   || File.Exists(Path.Combine(dir, "carddef.xml")));
 
+    /// <summary>The repository root (the folder with WC2.slnx) above the program, or null outside a checkout.</summary>
+    public static string RepositoryRoot => FindRepository(AppContext.BaseDirectory);
+
     /// <summary>The repository root (the folder with WC2.slnx) above the program, when it runs from a build there.</summary>
     private static string FindRepository(string start)
     {
