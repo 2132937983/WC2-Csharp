@@ -104,23 +104,26 @@ conquest, into a mod: `mods/map-natural-earth/` (3.2 MB, enabled; the build scri
 | `map2_<n>.png` | `CBackground` | 85 background tiles of 500 units: land, sea, coast, country and region lines |
 | `m2_zone<n>_1.png/.xml` | `InitAreaImage` | 7 atlas pages with the region masks (sprite `<id>.png`), tinted with the owner's colour |
 | `generated/texture_formats.json` | `ecGraphics` | tiles uploaded as RGB565, masks as Alpha8 (merged with the game's own list) |
-| `conquest_world.xml` | `LoadBattle` | the conquest: 31 countries (`players`: side, commander, colour), their regions, armies in capitals and cities; the rest of the land starts unowned |
+| `conquest_10.xml`, `conquest_10.bin` | `LoadBattle` | the conquest: 31 countries (`players`: side, commander, colour), their regions, armies in capitals and cities, every area enabled; the rest of the land starts unowned |
+| `data/json/conquests/conquests.json`, `data/json/text/<lang>/stringtable_<lang>[_iPad].json`, `button_conquest10@2x.png` | the conquest menu | the entry "conquest 10" (merged into the game's list), its title, the country names, intros and victory texts (English in every language), and its button |
 
-Start it on the desktop with `dotnet run --project Hosts/Desktop -- --scenario conquest_world.xml
---country fr` (any of the 31 countries), or from a script with `startconquest conquest_world.xml fr`.
-On Android, copy the mod folder to `Android/data/com.wc2remake.csharp/files/mods/` (there is no menu
-entry for it yet). The classic map and every campaign and conquest are untouched; removing or
+With the mod mounted, the conquest list has a tenth entry, **WORLD (NATURAL EARTH)** (second page),
+with a live preview of the map and the 31 countries to choose from. On the desktop it can also start
+right away: `dotnet run --project Hosts/Desktop -- --scenario conquest_10.xml --country fr` (any of
+the 31 countries), or from a script with `startconquest conquest_10.xml fr`. On Android, copy the mod
+folder to `Android/data/com.wc2remake.csharp/files/mods/`. The classic map and every campaign and conquest are untouched; removing or
 disabling the mod reverts everything. Texture memory at the start of the world conquest: 168 MB
 (desktop).
 
-`Tests/world_autoplay` starts the world conquest as France and lets the standard AI play four rounds
-on every side (golden dump, reference screenshots, hit test); the unit tests check the exported files
-of a synthetic world (record sizes, symmetric adjacency, area ids in the mask, scenario, formats).
+`Tests/world_menu` opens the world conquest through the menu (list, preview, game);
+`Tests/world_autoplay` starts it as France and lets the standard AI play four rounds on every side
+(golden dumps, reference screenshots, hit tests); the unit tests check the exported files of a
+synthetic world (record sizes, symmetric adjacency, area ids in the mask, scenario, formats).
 
 ### Still to do
 
-* A menu entry (the conquest list shows the nine original conquests and their preview on the classic
-  map) and a minimap for the generated map.
+* The menu texts of the world conquest are English in every language; the main-menu minimaps are the
+  classic map's.
 * Finer art: the region shapes come from the raster (one map unit = half a raster pixel), so coasts
   and borders show steps when zoomed in; drawing the province polygons directly into the tiles would
   smooth them.

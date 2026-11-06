@@ -35,7 +35,13 @@
   // --classic-out: the map in the scene's own formats as map 2, written as a mod with a conquest
   // (MAP_PIPELINE.md). players: the countries of the scenario (the rest of the land starts unowned).
   "classicExport": {
-    "mapId": 2, "scale": 2, "scenario": "conquest_world.xml",
+    "mapId": 2, "scale": 2, "scenario": "conquest_10.xml",
+    // the entry in the conquest list (conquest 10 follows the game's nine)
+    "conquest": {
+      "number": 10, "title": "WORLD (NATURAL EARTH)", "centerLon": 10, "centerLat": 48,
+      "intro": "The world in today's borders, drawn from Natural Earth. {country} starts with its capital and its great cities; the rest of the land is unclaimed.",
+      "victory": "Take the capitals of your enemies."
+    },
     "modId": "map-natural-earth", "modName": "World map (Natural Earth)",
     "players": {
       "de": { "alliance": "a", "commander": "Guderian", "color": [71, 87, 99] },

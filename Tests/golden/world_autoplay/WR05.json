@@ -1,6 +1,6 @@
 {
   "mode": "CONQUEST",
-  "battle": "conquest_world.xml",
+  "battle": "conquest_10.xml",
   "turn": 5,
   "currentCountryIndex": 0,
   "result": false,

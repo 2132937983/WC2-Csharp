@@ -1,0 +1,10 @@
+{
+  "about": "Adds the generated world conquest to the conquest list (merged into the game\u0027s conquests.json).",
+  "conquests": {
+    "conquest 10": {
+      "centerX": 882,
+      "centerY": 119,
+      "flags": []
+    }
+  }
+}

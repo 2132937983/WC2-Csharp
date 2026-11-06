@@ -12,7 +12,7 @@ using WC2;
 //   --all-mods    also load mods marked "enabled": false
 //   --ai NAME     AI profile (data/json/ai/profiles.json: classic, standard, hard)
 //   --scenario FILE [--country ID]  start a conquest with that scenario right after the menu appears
-//                 (e.g. conquest_world.xml from the map-natural-earth mod, MAP_PIPELINE.md)
+//                 (e.g. conquest_10.xml from the map-natural-earth mod, MAP_PIPELINE.md)
 int logicalW = 568, logicalH = 320;
 string startScenario = null, startCountry = "de";
 bool scriptGiven = false;

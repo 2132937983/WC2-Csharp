@@ -136,6 +136,19 @@ public sealed class ecTextureRes
         return attr;
     }
 
+    /// <summary>
+    /// A sprite that is an image file of its own (a mod's picture that no atlas lists): the whole
+    /// texture becomes the sprite. Null when there is no such file.
+    /// </summary>
+    public ecImageAttr ImageFromFile(string name)
+    {
+        if (GetImage(name) is ecImageAttr existing) return existing;
+        if (string.IsNullOrEmpty(name) || ecGraphics.ResolveTextureFile(name, out _) == null) return null;
+        var tex = GetTexture(name) ?? CreateTexture(name, false, false, false);
+        if (tex == null) return null;
+        return CreateImage(name, name, 0f, 0f, tex.w, tex.h, 0f, 0f);
+    }
+
     public void CreateImage(string name, ecTexture tex, float x, float y, float w, float h, float refx, float refy)
     {
         if (tex == null) return;

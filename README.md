@@ -41,7 +41,7 @@ the original: 480/534/568/640 x 320, 1024 x 768 below 4:3, `data/json/layout/pro
 a flat folder of the original files, or a `.zip`/`.apk`), `--mods DIR`, `--no-mods`, `--all-mods`,
 `--docs DIR` (saves and settings), `--log FILE`, `--texture-stats`, `--ai classic|standard|hard` (AI
 profile; new games use `standard`), `--scenario FILE --country ID` (start a conquest with that scenario
-right away, e.g. `--scenario conquest_world.xml --country fr` for the generated world map).
+right away, e.g. `--scenario conquest_10.xml --country fr` for the generated world map).
 Test options: `--seed N --fixed-step` (replayable run), `--exit-after SEC --screenshot FILE`,
 `--script FILE` (scripted input, see `Tests/README.md`).
 Tools: `--verify-data [--mods DIR]`, `--convert-data`, `--test-audio`, `--test-xml`, `--test-fonts`,
@@ -83,7 +83,7 @@ cards more readily, `hard` pushes harder against the player.
 
 Next to the classic map, `WC2.Tools build-map` generates maps from Natural Earth geography
 (`MAP_PIPELINE.md`): a data pack (`assets/data/maps/natural-earth`) and a playable world conquest as a
-mod (`mods/map-natural-earth`).
+mod (`mods/map-natural-earth`: conquest 10 "WORLD (NATURAL EARTH)" in the conquest list).
 
 ## Android
 

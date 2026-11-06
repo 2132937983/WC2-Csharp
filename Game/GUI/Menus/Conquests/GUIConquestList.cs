@@ -45,8 +45,9 @@ public sealed class GUIConquestList : GUIPagedList
         for (int index = 0; index < conquestCount; ++index)
         {
             string imageName = Sprintf("button_conquest%d.png", index + 1);
-            // new conquests without an own icon fall back to the first conquest icon
-            if (s_TextureRes.GetImage(imageName) == null)
+            // a new conquest's icon may be an image file of its own (a mod: button_conquest10.png);
+            // without one it falls back to the first conquest's icon
+            if (s_TextureRes.GetImage(imageName) == null && s_TextureRes.ImageFromFile(imageName) == null)
                 imageName = "button_conquest1.png";
 
             int column = index % 2;

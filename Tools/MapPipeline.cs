@@ -29,7 +29,7 @@ internal static partial class MapPipeline
     private sealed class Province
     {
         public int index;
-        public string name = "", iso = "", country = "", adm0 = "";
+        public string name = "", iso = "", country = "", adm0 = "", admin = "";
         public long pixels;
         public double areaKm2, sumX, sumY;
         public int region = -1;
@@ -118,6 +118,7 @@ internal static partial class MapPipeline
                     name = Str(p, "name"),
                     iso = Str(p, "iso_3166_2"),
                     adm0 = Str(p, "adm0_a3"),
+                    admin = Str(p, "admin"),
                 };
                 province.country = countryIds.TryGetValue(province.adm0, out var id) ? id : Str(p, "iso_a2").ToLowerInvariant();
                 if (province.country.Length == 0 || province.country == "-99") province.country = province.adm0.ToLowerInvariant();
@@ -415,7 +416,8 @@ internal static partial class MapPipeline
         WriteRaster(Path.Combine(outDir, "regions.raster"), regionRaster, width, height);
         WritePreview(Path.Combine(outDir, "preview.png"), regionRaster, width, height, regions, opts.GetValueOrDefault("preview-width", "2048"));
         if (opts.TryGetValue("classic-out", out var classicOut) && config["classicExport"] != null)
-            ExportClassic(classicOut, config, regions, regionRaster, width, height);
+            ExportClassic(classicOut, config, regions, regionRaster, width, height,
+                provinces.GroupBy(p => p.country).ToDictionary(g => g.Key, g => g.First().admin));
         Console.WriteLine($"build-map: {regions.Count(r => !r.sea)} land regions in {countries.Count} countries, {regions.Count(r => r.sea)} sea zones, " +
                           $"{regions.Count(r => r.type == "capital")} capitals, {regions.Count(r => r.port)} ports, {regions.Count(r => r.airfield)} airfields, " +
                           $"{sw.ElapsedMilliseconds} ms -> {outDir}");

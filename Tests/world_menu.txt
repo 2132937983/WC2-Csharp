@@ -1,0 +1,18 @@
+#! --mods $TESTS/../mods --ai standard
+# the generated world map through the menu: conquest list page 2, conquest 10 (added by mods/map-natural-earth),
+# its preview, then a game with the first country of the list (Germany)
+wait 4.5
+click 510 152
+wait 2.5
+click 520 147
+wait 1.5
+hittest conquest_page2
+shot WN1_list
+click 400 60
+wait 5
+shot WN2_preview
+click 552 302
+wait 8
+shot WN3_game
+dump WN3
+exit

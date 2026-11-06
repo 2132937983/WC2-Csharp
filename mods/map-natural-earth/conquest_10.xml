@@ -1,4 +1,4 @@
-<battle map="2">
+<battle map="2" areasenable="conquest_10.bin">
     <list name="country">
         <country id="de" name="de" commander="Guderian" ai="1" defeated="land" taxfactor="1.200000" money="250" industry="130" techlevel="3" alliance="a" r="71" g="87" b="99" a="90" />
         <country id="it" name="it" commander="Graziani" ai="1" defeated="land" taxfactor="1.200000" money="250" industry="130" techlevel="3" alliance="a" r="80" g="20" b="200" a="90" />

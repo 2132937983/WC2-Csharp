@@ -32,14 +32,14 @@ Everything is committed on `newEngine`, step by step; every step ran the whole s
 | 4. No purchases | the medal store, the buy button, purchase and price hooks and the purchase grant are gone | `NoPurchaseTests` (sources, manifest, assemblies) |
 | 5. Hit testing | touches outside the logical screen dropped at the input entry, hit tests clipped to the screen, drawing clipped by a scissor | `hit_test` (phone), `hit_test_wide` (1600x600 window), `ipad_hit_test` (1000x1000 window), probes in five more scripts, `HitTestTests` |
 | 6. AI | every number of the AI in `data/json/ai/profiles.json`: classic (the original, reproduces every golden), standard (default: defends threatened capitals, ports, airfields, cities and home areas, reinforces them, never strips a threatened capital, weighs whole enemy stacks, buys cards more readily), hard | `ai_defends_marseille_*` (standard holds Marseille after Italy's first assault, classic loses it), `ai_standard_autoplay`; 16 rounds of conquest 1: key areas lost 24/73 instead of 29/73, capitals held 8/8 instead of 7/8 |
-| 7. Map | `WC2.Tools build-map`: Natural Earth GeoJSON -> regions, adjacency, terrain types, ownership, capitals, cities, ports, airfields (`assets/data/maps/natural-earth`: 966 land regions in 167 countries, 380 sea zones), and a playable mod (`mods/map-natural-earth`: map 2 in the scene's formats with a 31-country world conquest); `MAP_PIPELINE.md` | `MapPackTests` (coverage southern Greenland to southern Madagascar and Darwin, capitals, Marseille, the pipeline on a synthetic world), `world_autoplay` (four rounds on the world map) |
+| 7. Map | `WC2.Tools build-map`: Natural Earth GeoJSON -> regions, adjacency, terrain types, ownership, capitals, cities, ports, airfields (`assets/data/maps/natural-earth`: 966 land regions in 167 countries, 380 sea zones), and a playable mod (`mods/map-natural-earth`: map 2 in the scene's formats with a 31-country world conquest, conquest 10 in the menu with its preview); `MAP_PIPELINE.md` | `MapPackTests` (coverage southern Greenland to southern Madagascar and Darwin, capitals, Marseille, the pipeline on a synthetic world), `world_menu` (menu, preview, game), `world_autoplay` (four rounds on the world map) |
 | 8. Verification | Windows and Android build with 0 warnings; `Tests/run-tests.ps1`: unit tests, audio, data, assets and 27 scripts all pass; the APK rebuilt (133.9 MB) and replayed against the goldens with `--assets <apk>` | see the commit log |
 
 ### Not done yet
 
 * A device test of the APK: the checklist in `DIFFERENCES_THREE_WAY.md` section 5, plus reading the
   APK in place, the extraction fallback, ETC upload, the Alpha8 probe on a phone GPU, the mod folder.
-* The generated map: a menu entry and minimap, smoother region shapes, fleets, balance by play.
+* The generated map: smoother region shapes, fleets, translated menu texts, balance by play.
 * An engine host and game session object owning the subsystems; typed events; nullable reference
   types; a versioned save format.
 * Layout: the facade replaced the checks; the layout numbers themselves (positions per profile) are

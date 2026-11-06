@@ -23,7 +23,43 @@ namespace WC2.Tools;
 /// </summary>
 internal static partial class MapPipeline
 {
-    private static void ExportClassic(string outDir, JsonObject config, List<Region> regions, int[] raster, int width, int height)
+    /// <summary>The conquest list button: 320 x 109 pixels like the original's, named @2x (the menu atlases
+    /// are high resolution: a sprite shows at half its pixel size); the map around the centre, a dark
+    /// band and the title.</summary>
+    private static void WriteConquestButton(string path, int[] raster, int width, int height, List<Region> regions, string title, int cx, int cy)
+    {
+        const int W = 320, H = 109;
+        using var bmp = new SKBitmap(W, H, SKColorType.Rgba8888, SKAlphaType.Premul);
+        // 1 button pixel = 3 raster pixels around the centre
+        for (int y = 0; y < H; y++)
+            for (int x = 0; x < W; x++)
+            {
+                int rx = Math.Clamp(cx + (x - W / 2) * 3, 0, width - 1), ry = Math.Clamp(cy + (y - H / 2) * 3, 0, height - 1);
+                int v = raster[ry * width + rx];
+                bool sea = v == 0 || regions[v - 1].sea;
+                int right = raster[ry * width + Math.Min(width - 1, rx + 3)];
+                bool edge = right != v;
+                var c = sea ? new SKColor(40, 70, 100) : new SKColor(170, 150, 110);
+                if (edge && !sea) c = new SKColor(90, 70, 50);
+                bmp.SetPixel(x, y, c);
+            }
+        using var canvas = new SKCanvas(bmp);
+        using var band = new SKPaint { Color = new SKColor(0, 0, 0, 150) };
+        canvas.DrawRect(0, 18, W, 66, band);
+        using var frame = new SKPaint { Color = new SKColor(60, 45, 30), Style = SKPaintStyle.Stroke, StrokeWidth = 4 };
+        canvas.DrawRoundRect(new SKRoundRect(new SKRect(2, 2, W - 2, H - 2), 8), frame);
+        using var bold = new SKFont(SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold), 22);
+        using var regular = new SKFont(SKTypeface.FromFamilyName("Arial"), 18);
+        using var white = new SKPaint { Color = SKColors.White, IsAntialias = true };
+        canvas.DrawText("CONQUER", 12, 44, SKTextAlign.Left, bold, white);
+        canvas.DrawText(title, 12, 72, SKTextAlign.Left, regular, white);
+        using var data = bmp.Encode(SKEncodedImageFormat.Png, 100);
+        using var file = File.Create(path);
+        data.SaveTo(file);
+    }
+
+    private static void ExportClassic(string outDir, JsonObject config, List<Region> regions, int[] raster, int width, int height,
+                                      Dictionary<string, string> countryNames)
     {
         var cfg = config["classicExport"]!.AsObject();
         int mapId = cfg["mapId"]!.GetValue<int>();
@@ -230,7 +266,15 @@ internal static partial class MapPipeline
         var players = cfg["players"]!.AsObject();
         string scenario = cfg["scenario"]!.GetValue<string>();
         var xml = new System.Text.StringBuilder();
-        xml.Append($"<battle map=\"{mapId}\">\n    <list name=\"country\">\n");
+        // the areas-enable file (count, then one byte per area): every area takes part; the conquest
+        // preview of the menu needs it
+        string enableFile = Path.ChangeExtension(scenario, ".bin");
+        using (var enable = new BinaryWriter(File.Create(Path.Combine(outDir, enableFile))))
+        {
+            enable.Write(n);
+            for (int r = 0; r < n; r++) enable.Write((byte)1);
+        }
+        xml.Append($"<battle map=\"{mapId}\" areasenable=\"{enableFile}\">\n    <list name=\"country\">\n");
         var present = new HashSet<string>(regions.Where(r => !r.sea).Select(r => r.country));
         var active = players.Where(kv => present.Contains(kv.Key)).ToList();
         foreach (var (id, node) in active)
@@ -260,6 +304,52 @@ internal static partial class MapPipeline
         }
         xml.Append("    </list>\n    <list name=\"dialogue\">\n    </list>\n</battle>\n");
         File.WriteAllText(Path.Combine(outDir, scenario), xml.ToString());
+
+        // ---- the conquest menu entry: conquests.json (merged into the game's) and the menu texts
+        if (cfg["conquest"] is JsonObject menu)
+        {
+            int number = menu["number"]!.GetValue<int>();
+            var (lon, lat) = (menu["centerLon"]!.GetValue<double>(), menu["centerLat"]!.GetValue<double>());
+            double cxUnits = (lon - config["bounds"]!["west"]!.GetValue<double>()) * (width / (config["bounds"]!["east"]!.GetValue<double>() - config["bounds"]!["west"]!.GetValue<double>())) * S;
+            double cyUnits = (config["bounds"]!["north"]!.GetValue<double>() - lat) * (width / (config["bounds"]!["east"]!.GetValue<double>() - config["bounds"]!["west"]!.GetValue<double>())) * S;
+            string conquestsDir = Path.Combine(outDir, "data", "json", "conquests");
+            Directory.CreateDirectory(conquestsDir);
+            // the preview scales centerX by map width / 1715 and centerY by map height / 750
+            File.WriteAllText(Path.Combine(conquestsDir, "conquests.json"), new JsonObject
+            {
+                ["about"] = "Adds the generated world conquest to the conquest list (merged into the game's conquests.json).",
+                ["conquests"] = new JsonObject
+                {
+                    [$"conquest {number}"] = new JsonObject
+                    {
+                        ["centerX"] = (int)Math.Round(cxUnits / mapW * 1715),
+                        ["centerY"] = (int)Math.Round(cyUnits / mapH * 750),
+                        ["flags"] = new JsonArray(),
+                    },
+                },
+            }.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
+            WriteConquestButton(Path.Combine(outDir, $"button_conquest{number}@2x.png"), raster, width, height, regions,
+                                menu["title"]!.GetValue<string>(), (int)(cxUnits / S), (int)(cyUnits / S));
+            var strings = new JsonObject { [$"conquest name {number}"] = menu["title"]!.GetValue<string>() };
+            foreach (var (id, _) in active)
+            {
+                string name = (countryNames.GetValueOrDefault(id) ?? id).ToUpperInvariant();
+                strings[$"conquest country name {number} {id}"] = name;
+                strings[$"conquest country intro {number} {id}"] = menu["intro"]!.GetValue<string>().Replace("{country}", countryNames.GetValueOrDefault(id) ?? id);
+                strings[$"conquest country victory {number} {id}"] = menu["victory"]!.GetValue<string>();
+            }
+            foreach (var lang in new[] { "cn", "en", "ja", "kr", "ru", "tw" })
+                foreach (var table in new[] { $"stringtable_{lang}", $"stringtable_{lang}_iPad" })
+                {
+                    string dir = Path.Combine(outDir, "data", "json", "text", lang);
+                    Directory.CreateDirectory(dir);
+                    File.WriteAllText(Path.Combine(dir, table + ".json"), new JsonObject
+                    {
+                        ["about"] = "Menu texts of the generated world conquest (English for every language; merged into the game's table).",
+                        ["strings"] = strings.DeepClone(),
+                    }.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }) + "\n");
+                }
+        }
 
         File.WriteAllText(Path.Combine(outDir, "mod.json"), new JsonObject
         {

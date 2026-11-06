@@ -48,7 +48,7 @@ Coordinates are logical screen units (568 x 320 phone layout; scripts named `ipa
 | `dump NAME` | write the rule state as `NAME.json` next to the screenshots |
 | `hittest LABEL` | every button off the screen is touched there (at a window pixel in the letterbox bars when the window has them, and at a synthetic point) through the input entry and straight through the GUI tree; every hidden button must refuse input. Buttons do not fire while probing; each one that would have fires a `hittest failed` log line |
 | `dumpafter COUNTRY NAME` | write the rule state as `NAME.json` the moment COUNTRY's turn ends (its own decisions, before the next country acts; AI tests) |
-| `startconquest FILE COUNTRY` | start a conquest with any scenario file as COUNTRY (the generated world map: `conquest_world.xml`) |
+| `startconquest FILE COUNTRY` | start a conquest with any scenario file as COUNTRY (the generated world map: `conquest_10.xml`) |
 | `texstats LABEL` | log the live texture memory and the last frame's draw calls; lines whose labels differ only by a trailing number must report the same memory (resources are released when screens close) |
 | `shot NAME` | screenshot |
 | `log TEXT` | write to the log |
@@ -75,7 +75,7 @@ against the dumps (the AI tests).
 | `resource_cycle` | menu -> conquest -> menu twice: the same texture memory on every visit |
 | `ai_defends_marseille_classic`, `ai_defends_marseille_standard` | the test mod `mods/ai-marseille` (an Italian stack next to a weakly held Marseille): the standard AI reinforces and holds Marseille (`.expect`), the classic AI loses it |
 | `ai_standard_autoplay` | conquest 1 played by the standard AI for 16 rounds |
-| `world_autoplay` | the generated world map (`mods/map-natural-earth`, MAP_PIPELINE.md) played by the standard AI for four rounds |
+| `world_menu`, `world_autoplay` | the generated world map (`mods/map-natural-earth`, MAP_PIPELINE.md): through the conquest menu (list, preview, game), and played by the standard AI for four rounds |
 
 ## Unit tests (`Unit/`, `dotnet test Tests`)
 
