@@ -184,7 +184,10 @@
         948,
         949,
         950,
-        951
+        951,
+        1034,
+        1033,
+        1067
       ],
       "capitals": [
         707
@@ -319,7 +322,10 @@
         667,
         672,
         740,
-        828
+        828,
+        1075,
+        1073,
+        1043
       ],
       "capitals": [
         665
@@ -956,7 +962,9 @@
         690,
         691,
         692,
-        736
+        736,
+        984,
+        983
       ],
       "capitals": [
         689
@@ -1098,7 +1106,10 @@
         959,
         960,
         961,
-        962
+        962,
+        1032,
+        1010,
+        1206
       ],
       "capitals": [
         958
@@ -1251,7 +1262,10 @@
         786,
         945,
         946,
-        947
+        947,
+        1090,
+        1023,
+        1055
       ],
       "capitals": [
         644
@@ -1387,7 +1401,10 @@
         670,
         671,
         693,
-        764
+        764,
+        973,
+        1002,
+        1000
       ],
       "capitals": [
         353
@@ -1513,7 +1530,10 @@
       "areas": [
         564,
         565,
-        573
+        573,
+        1301,
+        1302,
+        1303
       ],
       "capitals": [],
       "cardRound": [
@@ -2275,7 +2295,10 @@
         705,
         728,
         729,
-        730
+        730,
+        1037,
+        1035,
+        1069
       ],
       "capitals": [
         704
@@ -2546,7 +2569,9 @@
         776,
         937,
         938,
-        939
+        939,
+        1140,
+        1139
       ],
       "capitals": [
         938
@@ -2689,7 +2714,10 @@
         922,
         923,
         924,
-        925
+        925,
+        1121,
+        1088,
+        1120
       ],
       "capitals": [
         922
@@ -2813,7 +2841,8 @@
       "commanderAlive": false,
       "borrowedLoan": false,
       "areas": [
-        642
+        642,
+        1105
       ],
       "capitals": [
         642
@@ -3106,7 +3135,9 @@
         909,
         910,
         911,
-        912
+        912,
+        987,
+        1042
       ],
       "capitals": [
         70
@@ -3257,7 +3288,10 @@
         852,
         853,
         854,
-        855
+        855,
+        1041,
+        1072,
+        1104
       ],
       "capitals": [
         678
@@ -3522,7 +3556,10 @@
         805,
         806,
         963,
-        964
+        964,
+        1031,
+        1065,
+        1099
       ],
       "capitals": [
         806
@@ -3646,7 +3683,8 @@
       "commanderAlive": false,
       "borrowedLoan": false,
       "areas": [
-        210
+        210,
+        1030
       ],
       "capitals": [
         210
@@ -3773,7 +3811,9 @@
         71,
         72,
         695,
-        737
+        737,
+        986,
+        985
       ],
       "capitals": [
         695
@@ -4040,7 +4080,8 @@
         883,
         884,
         885,
-        889
+        889,
+        1036
       ],
       "capitals": [
         774
@@ -7923,7 +7964,7 @@
           "movement": 0,
           "level": 1,
           "exp": 0,
-          "morale": 0,
+          "morale": 1,
           "cards": 0,
           "active": false
         }
@@ -7952,7 +7993,7 @@
           "movement": 0,
           "level": 1,
           "exp": 0,
-          "morale": 0,
+          "morale": 1,
           "cards": 0,
           "active": false
         }
@@ -9720,6 +9761,867 @@
       "level": 0,
       "installation": "NO_INSTALLATION",
       "units": []
+    },
+    {
+      "id": 973,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "ca",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 983,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "gb",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 984,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "gb",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 985,
+      "owner": "se",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "se",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 986,
+      "owner": "se",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "se",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 987,
+      "owner": "ru",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "ru",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1000,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "ca",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1002,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "ca",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1010,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "fr",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1023,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "am",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1030,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "pt",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1031,
+      "owner": "es",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "es",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1032,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "fr",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1033,
+      "owner": "it",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "it",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1034,
+      "owner": "it",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "it",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1035,
+      "owner": "gr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "gr",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1036,
+      "owner": "tr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "tr",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1037,
+      "owner": "gr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "gr",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1041,
+      "owner": "cn",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "cn",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1042,
+      "owner": "ru",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "ru",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1043,
+      "owner": "ja",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "ja",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1055,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "am",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1065,
+      "owner": "es",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "es",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1067,
+      "owner": "it",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "it",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1069,
+      "owner": "gr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "gr",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1072,
+      "owner": "cn",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "cn",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1073,
+      "owner": "ja",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "ja",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1075,
+      "owner": "ja",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "ja",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1088,
+      "owner": "mx",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "mx",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1090,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "am",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1099,
+      "owner": "es",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "es",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1104,
+      "owner": "cn",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "cn",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1105,
+      "owner": "tw",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "tw",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1120,
+      "owner": "mx",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "mx",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1121,
+      "owner": "mx",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "mx",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1139,
+      "owner": "in",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "in",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1140,
+      "owner": "in",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "in",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1206,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "fr",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1301,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "au",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1302,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "au",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1303,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "au",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
     }
   ]
 }

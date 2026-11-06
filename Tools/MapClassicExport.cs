@@ -302,6 +302,25 @@ internal static partial class MapPipeline
             foreach (var u in units) xml.Append($"            <army type=\"{u}\" level=\"1\" cards=\"0\" />\n");
             xml.Append("        </area>\n");
         }
+        // fleets: a destroyer in the sea zone along each port (the longest shared border), at most
+        // three per country; a sea area lists the fleet's country like the classic scenarios do
+        var usedSeas = new HashSet<int>();
+        foreach (var g in regions.Where(r => !r.sea && r.port && activeIds.Contains(r.country)).GroupBy(r => r.country))
+        {
+            int fleets = 0;
+            foreach (var r in g.OrderByDescending(r => r.type == "capital").ThenByDescending(r => r.cityPopulation).ThenBy(r => r.id))
+            {
+                if (fleets >= 3) break;
+                int sea = r.border.Where(kv => regions[kv.Key].sea && !usedSeas.Contains(kv.Key))
+                                  .OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).Select(kv => kv.Key).DefaultIfEmpty(-1).First();
+                if (sea < 0) continue;
+                usedSeas.Add(sea);
+                fleets++;
+                xml.Append($"        <area id=\"{sea}\" construction=\"none\" level=\"0\" installation=\"none\" country=\"{r.country}\">\n");
+                xml.Append("            <army type=\"destroyer\" level=\"1\" cards=\"0\" />\n");
+                xml.Append("        </area>\n");
+            }
+        }
         xml.Append("    </list>\n    <list name=\"dialogue\">\n    </list>\n</battle>\n");
         File.WriteAllText(Path.Combine(outDir, scenario), xml.ToString());
 
