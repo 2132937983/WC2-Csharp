@@ -21,8 +21,9 @@ The port itself is done; these rules apply to changes made on top of it (see `NE
 4. **No terrain constants in rules**: ask `Terrain.Area(type)`, `Terrain.Construction(type)`,
    `Terrain.Installation(type)`, `Terrain.Rules` (`WC2.Game/Data/TerrainDefs.cs`) instead of testing for
    `CAPITAL`, `PORT`, `FORT` or hard-coding healing, levels and AI area values.
-5. **Original files are never edited.** `WC2/assets` stays as shipped; authored data goes to
-   `WC2/content`, package layout and generated formats to `WC2/assets-layout.json`.
+5. **Original files are never edited.** The originals in `assets/` keep their bytes (they were only
+   moved and renamed, `assets/legacy-names.json`); authored data goes to `assets/data/json/`, generated
+   formats are listed in `assets/build.json` (ASSET_LAYOUT.md).
 6. **Layering**: `WC2.Engine` must not use game types (it does not reference `WC2.Game`, so this is a
    compile error). Engine code lives in `WC2.Engine/`, game code in `WC2.Game/`.
 7. **Keep the goldens green.** `tests

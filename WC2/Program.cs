@@ -34,6 +34,7 @@ for (int i = 0; i < args.Length; i++)
         case "--docs" when i + 1 < args.Length: ecGame.DocumentsOverride = Path.GetFullPath(args[++i]); break;
         case "--mods" when i + 1 < args.Length: ecGame.ModsFolderOverride = Path.GetFullPath(args[++i]); break;
         case "--no-mods": ecGame.ModsDisabled = true; break;
+        case "--all-mods": ModManager.IncludeDisabled = true; break;
         case "--texture-stats": ecGraphics.TextureStatsEvery = 120; break;
     }
 }

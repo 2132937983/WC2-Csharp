@@ -1,18 +1,18 @@
 using System.IO.Compression;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using SkiaSharp;
 
 namespace WC2.Tools;
 
 /// <summary>
-/// Runtime formats generated from the packaged sources. Each generator writes an extra file next to
-/// its source in the package; the source is always kept as well. The game prefers a generated file
-/// that sits in the same layer as its source, so a mod that replaces the source image still wins.
+/// Runtime formats generated from the packaged sources. A generated file goes to
+/// <c>generated/&lt;source path without extension&gt;.wctex</c>; the source is always kept as well. The
+/// game prefers a generated file that sits in the same layer as its source, so a mod that replaces the
+/// source image still wins.
 ///
-/// The layout file lists what to generate:
+/// <c>assets/build.json</c> lists what to generate:
 /// <code>
-/// "runtimeFormats": [ { "match": "^lang/cn/font(ht|kt)_cn_hd\\.png$", "format": "rgba4444" } ]
+/// "runtimeFormats": [ { "match": "^image/fonts/hd/cn/font(ht|kt)\\.png$", "format": "rgba4444" } ]
 /// </code>
 /// <c>rgba4444</c>: 16 bit RGBA4444 pixels, deflate compressed, in a <c>.wctex</c> file (magic "WCTX",
 /// version 1, format 1, width, height). Half the GPU memory of RGBA8 and no PNG decode at load time;
@@ -20,28 +20,22 @@ namespace WC2.Tools;
 /// </summary>
 internal static class RuntimeFormats
 {
-    private sealed class Rule
-    {
-        public Regex match;
-        public string format;
-    }
-
     public const string Extension = ".wctex";
 
+    /// <summary>Package path of the generated twin of a source path.</summary>
+    public static string GeneratedPath(string source) => "generated/" + Path.ChangeExtension(source, Extension).Replace('\\', '/');
+
     /// <summary>Returns the number of generated files (written or already up to date).</summary>
-    public static int Generate(string outDir, string layoutFile, IReadOnlyDictionary<string, string> plan,
-                               SortedDictionary<string, long> sizes, SortedDictionary<string, string> aliases, bool force)
+    public static int Generate(string outDir, IReadOnlyList<(Regex match, string format)> rules, IReadOnlyDictionary<string, string> plan,
+                               SortedDictionary<string, long> sizes, SortedDictionary<string, string> generatedFrom, bool force)
     {
-        var rules = ReadRules(layoutFile);
         if (rules.Count == 0) return 0;
-        var legacyByTarget = aliases.GroupBy(kv => kv.Value, StringComparer.OrdinalIgnoreCase)
-                                    .ToDictionary(g => g.Key, g => g.First().Key, StringComparer.OrdinalIgnoreCase);
         int count = 0;
         foreach (var (target, source) in plan.ToList())
         {
             var rule = rules.FirstOrDefault(r => r.match.IsMatch(target));
-            if (rule == null) continue;
-            string generated = Path.ChangeExtension(target, Extension).Replace('\\', '/');
+            if (rule.match == null) continue;
+            string generated = GeneratedPath(target);
             string dest = Path.Combine(outDir, generated);
             if (force || !File.Exists(dest) || File.GetLastWriteTimeUtc(dest) < File.GetLastWriteTimeUtc(source))
             {
@@ -54,25 +48,10 @@ internal static class RuntimeFormats
                 Console.WriteLine($"  generated {generated} ({rule.format})");
             }
             sizes[generated] = new FileInfo(dest).Length;
-            if (legacyByTarget.TryGetValue(target, out var legacy))
-                aliases[Path.ChangeExtension(legacy, Extension).Replace('\\', '/')] = generated;
+            generatedFrom[generated] = target;
             count++;
         }
         return count;
-    }
-
-    private static List<Rule> ReadRules(string layoutFile)
-    {
-        using var doc = JsonDocument.Parse(File.ReadAllText(layoutFile), new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
-        var rules = new List<Rule>();
-        if (!doc.RootElement.TryGetProperty("runtimeFormats", out var list)) return rules;
-        foreach (var r in list.EnumerateArray())
-            rules.Add(new Rule
-            {
-                match = new Regex(r.GetProperty("match").GetString()!, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant),
-                format = r.GetProperty("format").GetString()!,
-            });
-        return rules;
     }
 
     private static void WriteRgba4444(string source, string dest)

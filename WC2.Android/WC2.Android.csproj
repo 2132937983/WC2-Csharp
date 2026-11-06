@@ -42,12 +42,12 @@
   <PropertyGroup>
     <AssetPackTool>$(MSBuildThisFileDirectory)../WC2.Tools/bin/$(Configuration)/net9.0/WC2.Tools.dll</AssetPackTool>
     <AssetPackDir>$(MSBuildThisFileDirectory)obj/pack/</AssetPackDir>
-    <AssetPackSource>$(MSBuildThisFileDirectory)../WC2/</AssetPackSource>
+    <AssetPackSource>$(MSBuildThisFileDirectory)../assets</AssetPackSource>
   </PropertyGroup>
-  <!-- The original assets plus the authored content become the runtime package (WC2.Tools build-pack),
-       which ships as assets/pack/... in the APK and is read in place at run time. -->
+  <!-- The asset tree (originals plus authored data, ASSET_LAYOUT.md) becomes the runtime package
+       (WC2.Tools build-pack), which ships as assets/pack/... in the APK and is read in place at run time. -->
   <Target Name="BuildAssetPack" AfterTargets="ResolveProjectReferences">
-    <Exec Command="dotnet &quot;$(AssetPackTool)&quot; build-pack --assets &quot;$(AssetPackSource)assets&quot; --content &quot;$(AssetPackSource)content&quot; --layout &quot;$(AssetPackSource)assets-layout.json&quot; --out &quot;$(AssetPackDir)&quot;" />
+    <Exec Command="dotnet &quot;$(AssetPackTool)&quot; build-pack --assets &quot;$(AssetPackSource)&quot; --out &quot;$(AssetPackDir)&quot;" />
     <ItemGroup>
       <_AssetPackFile Include="$(AssetPackDir)**/*" />
       <AndroidAsset Include="@(_AssetPackFile)" Link="Assets\pack\%(_AssetPackFile.RecursiveDir)%(_AssetPackFile.Filename)%(_AssetPackFile.Extension)" />

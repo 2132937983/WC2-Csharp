@@ -35,6 +35,9 @@ public static class ModManager
     private static readonly List<ModInfo> s_loaded = new();
     public static IReadOnlyList<ModInfo> Loaded => s_loaded;
 
+    /// <summary>Also mount mods whose mod.json says "enabled": false (<c>--all-mods</c>, for checking mods).</summary>
+    public static bool IncludeDisabled;
+
     /// <summary>Mounts every enabled mod found under the given folders.</summary>
     public static void MountMods(params string[] folders)
     {
@@ -47,7 +50,7 @@ public static class ModManager
             {
                 var info = ReadManifest(dir);
                 if (info == null) continue;
-                if (!info.enabled) { Log($"Mods: {info.id} is disabled"); continue; }
+                if (!info.enabled && !IncludeDisabled) { Log($"Mods: {info.id} is disabled"); continue; }
                 if (found.Any(m => string.Equals(m.id, info.id, StringComparison.OrdinalIgnoreCase)))
                 {
                     Log($"Mods: duplicate id {info.id} in {dir} ignored");

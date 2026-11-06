@@ -1,9 +1,0 @@
-{
-  "id": "example-balance",
-  "name": "Example: balance tweaks",
-  "version": "1.0",
-  "author": "WC2 C# port",
-  "description": "Changes single entries of the JSON data: a stronger tank, a cheaper tank card, faster healing in capitals and a renamed unit.",
-  "priority": 0,
-  "enabled": true
-}

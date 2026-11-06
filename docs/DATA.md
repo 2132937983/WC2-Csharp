@@ -1,9 +1,8 @@
 # Game data reference (JSON)
 
-All game data is JSON. The files live in `WC2/content/` (the authored source, in git) and end up in
-the runtime package at the same relative path (`content/data/units.json` → `data/units.json`). The
-original XML files stay untouched in `WC2/assets/` and are still packaged under `data/original/`,
-`scenarios/`, `lang/...`, but the game reads the JSON.
+All game data is JSON. The files live in `assets/data/json/` (the authored source, in git) and end up
+in the runtime package at the same path. The original XML files stay untouched in `assets/data/xml/`
+and are still packaged, but the game reads the JSON.
 
 The JSON files were converted from the original XML with `dotnet run -- --convert-data`.
 `dotnet run -- --verify-data` (part of `tests\run-tests.ps1`) loads every type twice, from the
@@ -23,21 +22,21 @@ change to the JSON therefore shows up there; with `--mods <folder>` it lists exa
 
 | File | Replaces | Content |
 |---|---|---|
-| `data/units.json` | `armydef.xml` | unit types, stats per country, combat rules, unit levels |
-| `data/cards.json` | `carddef.xml` | cards per country |
-| `data/commanders.json` | `commanderdef.xml` | commanders, commander levels |
-| `data/portraits.json` | `generalphotos.xml` | general portraits |
-| `data/campaigns.json` | `battlelist.xml` | campaign battles on the selection map |
-| `data/conquests.json` | `conquestlist.xml` | conquests on the selection map |
-| `data/terrain.json` | constants in the code | area types, buildings, installations |
-| `data/medals.json` | constants in the code | war medal effects |
-| `data/rules.json` | constants in the code | global numbers: combat dice, economy caps |
-| `data/ui/options.json` | `guioptions.xml` | options page layout |
-| `maps/<id>/areas.json` | `areatax<id>.xml` | area type and base tax of every area |
-| `scenarios/<name>.json` | `battle_*.xml`, `conquest_*.xml`, `tutorails.xml` | scenarios |
-| `scenarios/tutorial/<name>.json` | `tutorails_script*.xml` | tutorial scripts |
-| `lang/<code>/stringtable_<code>[_iPad].json` | `stringtable_*.xml` | texts |
-| `lang/<code>/Localizable.json` | `<lang>.lproj/Localizable.strings` | language settings |
+| `data/json/units/units.json` | `armydef.xml` | unit types, stats per country, combat rules, unit levels |
+| `data/json/cards/cards.json` | `carddef.xml` | cards per country |
+| `data/json/commanders/commanders.json` | `commanderdef.xml` | commanders, commander levels |
+| `data/json/commanders/portraits.json` | `generalphotos.xml` | general portraits |
+| `data/json/campaigns/campaigns.json` | `battlelist.xml` | campaign battles on the selection map |
+| `data/json/conquests/conquests.json` | `conquestlist.xml` | conquests on the selection map |
+| `data/json/terrain/terrain.json` | constants in the code | area types, buildings, installations |
+| `data/json/rules/medals.json` | constants in the code | war medal effects |
+| `data/json/rules/rules.json` | constants in the code | global numbers: combat dice, economy caps |
+| `data/json/layout/options.json` | `guioptions.xml` | options page layout |
+| `data/json/maps/<id>/areas.json` | `areatax<id>.xml` | area type and base tax of every area |
+| `data/json/scenarios/<name>.json` | `battle_*.xml`, `conquest_*.xml`, `tutorails.xml` | scenarios |
+| `data/json/scenarios/tutorial/<name>.json` | `tutorails_script*.xml` | tutorial scripts |
+| `data/json/text/<code>/stringtable_<code>[_iPad].json` | `stringtable_*.xml` | texts |
+| `data/json/text/<code>/Localizable.json` | `<lang>.lproj/Localizable.strings` | language settings |
 
 Not converted, because they are asset formats rather than game data: texture atlases (`*.xml` next to
 their images), bitmap fonts (`.fnt`), particle effects (`effect_*.xml`), map geometry (`area<id>.bin`,
@@ -48,7 +47,7 @@ their images), bitmap fonts (`.fnt`), particle effects (`effect_*.xml`), map geo
 
 ## units
 
-`data/units.json`
+`data/json/units/units.json`
 
 ```json
 {
@@ -110,7 +109,7 @@ max strength bonus in %, and the experience needed for the next level (scaled by
 
 ## cards
 
-`data/cards.json`: `{"countries": {"<country>": {"<card name>": {...}}}}`, `others` for everyone else.
+`data/json/cards/cards.json`: `{"countries": {"<country>": {"<card name>": {...}}}}`, `others` for everyone else.
 
 | Field | Meaning |
 |---|---|
@@ -127,7 +126,7 @@ The draft order of the AI follows the price, then industry, then tech, per count
 
 ## commanders
 
-`data/commanders.json`: `{"commanders": {"<name>": {"country": "de", "rank": 9, "infantry": 2, "airforce": 1, "artillery": 1, "armour": 3, "navy": 0, "honour": 2}}, "levels": [...]}`
+`data/json/commanders/commanders.json`: `{"commanders": {"<name>": {"country": "de", "rank": 9, "infantry": 2, "airforce": 1, "artillery": 1, "armour": 3, "navy": 0, "honour": 2}}, "levels": [...]}`
 
 The six medal fields are the commander's war medal levels. `levels` lists the 15 player commander
 levels: attack, defence, healing, max strength bonus (as for units), `coolDown` turns and
@@ -135,22 +134,22 @@ levels: attack, defence, healing, max strength bonus (as for units), `coolDown` 
 
 ## portraits
 
-`data/portraits.json`: `{"portraits": {"<general name>": {"file": "general_rommel.webp", "w": 113, "h": 137, "refx": 20}}}`
+`data/json/commanders/portraits.json`: `{"portraits": {"<general name>": {"file": "general_rommel.webp", "w": 113, "h": 137, "refx": 20}}}`
 
 ## campaigns and conquests
 
-`data/campaigns.json`: `{"battles": {"<key>": {...}}}` with `age` (label text), `centerX`, `centerY`,
+`data/json/campaigns/campaigns.json`: `{"battles": {"<key>": {...}}}` with `age` (label text), `centerX`, `centerY`,
 `ageX`, `ageY`, `victory` and `greatVictory` (turn limits, default 15 and 10), `flags` and `arrows`
 (lists of `{name, x, y, rot, scale}`, `rot` in degrees).
 
-`data/conquests.json`: `{"conquests": {"<key>": {"centerX", "centerY", "flags": [...]}}}`.
+`data/json/conquests/conquests.json`: `{"conquests": {"<key>": {"centerX", "centerY", "flags": [...]}}}`.
 
 ## terrain
 
-`data/terrain.json`. The rules of the game ask these definitions instead of testing for "capital" or
+`data/json/terrain/terrain.json`. The rules of the game ask these definitions instead of testing for "capital" or
 "fort" in code; the shipped values reproduce the original game exactly.
 
-`areaTypes` (keys are the names used in `maps/<id>/areas.json`; a new name with a new `id` adds a type):
+`areaTypes` (keys are the names used in `data/json/maps/<id>/areas.json`; a new name with a new `id` adds a type):
 
 | Field | Meaning |
 |---|---|
@@ -177,7 +176,7 @@ airborne targets.
 
 ## medals
 
-`data/medals.json`: what the six war medals (`infantry`, `airforce`, `artillery`, `armour`, `navy`,
+`data/json/rules/medals.json`: what the six war medals (`infantry`, `airforce`, `artillery`, `armour`, `navy`,
 `commerce`) do. The kinds of effect are code, their numbers are data; the shipped values reproduce the
 original.
 
@@ -192,19 +191,19 @@ original.
 
 ## rules
 
-`data/rules.json`: global numbers that were constants. `combat.diceThresholds`: strength percentages;
+`data/json/rules/rules.json`: global numbers that were constants. `combat.diceThresholds`: strength percentages;
 a unit rolls one die plus one per threshold its strength is above (`[50, 25, 15, 5]`: above 50 % five
 dice ... at most 5 % one). `economy.moneyCap`, `economy.industryCap`: 99999.
 
 ## map area table
 
-`maps/<id>/areas.json`: `{"areas": {"<area id>": {"type": "capital", "tax": 30}}}`. Areas missing here
+`data/json/maps/<id>/areas.json`: `{"areas": {"<area id>": {"type": "capital", "tax": 30}}}`. Areas missing here
 are plain areas with tax 100. The geometry (`area<id>.bin`, `adjion<id>.bin`, `areamark<id>.raw`) stays
 binary.
 
 ## scenarios
 
-`scenarios/<name>.json`, where `<name>` is the original file name without `.xml` (`battle_axis1`,
+`data/json/scenarios/<name>.json`, where `<name>` is the original file name without `.xml` (`battle_axis1`,
 `conquest_3`, `tutorails`). A mod adds a scenario by adding a file and the matching campaign or
 conquest entry.
 
@@ -232,7 +231,7 @@ folder.
 
 ## tutorial scripts
 
-`scenarios/tutorial/<name>.json`: `{"commands": [{"cmd": "show text", "id": 1}, ...]}`. Commands:
+`data/json/scenarios/tutorial/<name>.json`: `{"commands": [{"cmd": "show text", "id": 1}, ...]}`. Commands:
 `sel area`, `unsel area`, `moveto area` (`id` = area), `finger at`, `finger to` (`x`, `y`),
 `hide finger`, `show text` (`id` → text `tutorails <id>`), `draw rect`, `clear rect` (`x`, `y`, `w`,
 `h`), `wait` (for a tap), `show image`, `hide image`, `exit`. The game picks the script by screen width
@@ -240,13 +239,13 @@ folder.
 
 ## texts and language settings
 
-`lang/<code>/stringtable_<code>.json` (phone) and `stringtable_<code>_iPad.json` (tablet):
+`data/json/text/<code>/stringtable_<code>.json` (phone) and `stringtable_<code>_iPad.json` (tablet):
 `{"strings": {"<key>": "<text>"}}`. Line breaks are real newlines (`\n`). `Localizable.json` holds the
 language settings: `language` (the code used in file names) and the string table names.
 
 ## options page layout
 
-`data/ui/options.json`: `{"phone": [...], "tablet": [...]}`, one entry per control in order, with
+`data/json/layout/options.json`: `{"phone": [...], "tablet": [...]}`, one entry per control in order, with
 `element` (`image`, `text`, `button`, `slider`, `checkbox`, `level`) and that control's attributes
 (`item`, `id`, `x`, `y`, `w`, `h`, images, `font`, `content`, `align`, `color`, ...). Phone coordinates
 are relative to a 480 x 320 area centred at run time; tablet coordinates are absolute 1024 x 768.

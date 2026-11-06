@@ -32,11 +32,7 @@ public static class Globals
     {
         LangDir = langDir ?? "";
         AssetSystem.LanguageFolder = LangDir;
-        // the package folder holding this language ("lang/cn"; "zh_CN.lproj" in a flat legacy folder)
-        AssetSystem.LanguagePath = "";
-        string settings = LangDir.Length > 0 ? AssetSystem.Resolve(LangDir + "/Localizable.strings") : null;
-        int slash = settings?.LastIndexOf('/') ?? -1;
-        AssetSystem.LanguagePath = slash > 0 ? settings.Substring(0, slash) : "";
+        AssetSystem.LanguageCode = AssetSystem.LanguageCodeOf(LangDir);
     }
     public static void SetDocumentPath(string documentFilePath)
     {

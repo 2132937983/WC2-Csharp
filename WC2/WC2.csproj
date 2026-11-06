@@ -55,7 +55,8 @@
   </ItemGroup>
   <PropertyGroup>
     <AssetPackTool>$(MSBuildThisFileDirectory)../WC2.Tools/bin/$(Configuration)/net9.0/WC2.Tools.dll</AssetPackTool>
-    <AssetPackArgs>--assets "$(MSBuildThisFileDirectory)assets" --content "$(MSBuildThisFileDirectory)content" --layout "$(MSBuildThisFileDirectory)assets-layout.json"</AssetPackArgs>
+    <!-- the asset tree of the repository (ASSET_LAYOUT.md); the build keeps generated/asset_index.json current for review -->
+    <AssetPackArgs>--assets "$(MSBuildThisFileDirectory)../assets" --index-copy "$(MSBuildThisFileDirectory)../generated/asset_index.json"</AssetPackArgs>
   </PropertyGroup>
   <Target Name="BuildAssetPack" AfterTargets="Build">
     <Exec Command="dotnet &quot;$(AssetPackTool)&quot; build-pack $(AssetPackArgs) --out &quot;$(OutDir)pack&quot;" />

@@ -5,68 +5,59 @@ using System.Text.RegularExpressions;
 namespace WC2.Tools;
 
 /// <summary>
-/// Builds the runtime asset package.
+/// Builds the runtime asset package from the asset tree (<c>assets/</c>, see ASSET_LAYOUT.md).
 /// <list type="number">
-/// <item>Every file of the original asset folder is placed by the first matching rule of the layout
-/// file (regex on the original relative path, target template with <c>{name}</c> and <c>{1}</c>..),
-/// keeping its file name. The original file name stays reachable as a legacy alias.</item>
-/// <item>Files of the content folder (authored data such as the JSON definitions) are added at their
-/// own relative paths; they win over an original file placed at the same path.</item>
-/// <item>Generated runtime formats are written next to their sources (see <see cref="RuntimeFormats"/>).</item>
-/// <item><c>index.json</c> lists every file with its size and maps every legacy name to its path.</item>
+/// <item>Every file of the tree is copied to the same path in the package, except the build files
+/// (<c>build.json</c>, <c>legacy-names.json</c>, documentation). The originals are never modified.</item>
+/// <item>Runtime formats are generated under <c>generated/</c> (see <see cref="RuntimeFormats"/>).</item>
+/// <item><c>generated/asset_index.json</c> lists every file (size, variant, language) and maps every
+/// original asset name to its path (from <c>legacy-names.json</c>). With <c>--index-copy</c> the
+/// index is also written to that file (the repository keeps a copy for review).</item>
 /// </list>
-/// The build is incremental: unchanged files are not copied again, and files the previous build
-/// produced but this one does not are removed. The original asset folder is only read.
+/// The build is incremental: unchanged files are not copied again, and files an earlier build produced
+/// but this one does not are removed (also everything an older package layout left behind).
 /// </summary>
 internal static class PackBuilder
 {
-    private sealed class Rule
-    {
-        public Regex match;
-        public string to;
-    }
+    public const string IndexPath = "generated/asset_index.json";
+    public const string LegacyNamesFile = "legacy-names.json";
+    public const string BuildFile = "build.json";
 
-    public static int Build(string assetsDir, string contentDir, string layoutFile, string outDir, bool force)
+    /// <summary>Variant folders (see ASSET_LAYOUT.md); a path segment with one of these names is the variant.</summary>
+    public static readonly HashSet<string> Variants = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "common", "hd", "tablet", "tablet-hd", "phone-568", "phone-568-hd", "phone-640", "phone-640-hd",
+    };
+    public static readonly HashSet<string> Languages = new(StringComparer.OrdinalIgnoreCase) { "cn", "en", "ja", "kr", "ru", "tw" };
+
+    public static int Build(string assetsDir, string outDir, string indexCopy, bool force)
     {
         var sw = System.Diagnostics.Stopwatch.StartNew();
         assetsDir = Path.GetFullPath(assetsDir);
-        contentDir = Path.GetFullPath(contentDir);
         outDir = Path.GetFullPath(outDir);
         if (!Directory.Exists(assetsDir)) throw new ToolException("asset folder not found: " + assetsDir);
-        var rules = ReadRules(layoutFile);
+        var settings = BuildSettings.Read(assetsDir);
+        var legacy = ReadLegacyNames(assetsDir);
 
-        // plan: target path -> source file
-        var plan = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        var aliases = new SortedDictionary<string, string>(StringComparer.Ordinal);
-        var ruleHits = new Dictionary<string, int>();
+        // plan: package path -> source file (the same relative path)
+        var plan = new SortedDictionary<string, string>(StringComparer.Ordinal);
         foreach (var file in Directory.EnumerateFiles(assetsDir, "*", SearchOption.AllDirectories))
         {
-            string legacy = Path.GetRelativePath(assetsDir, file).Replace('\\', '/');
-            string target = Place(rules, legacy, ruleHits);
-            if (plan.TryGetValue(target, out var other))
-                throw new ToolException($"layout puts two files at {target}: {other} and {file}");
-            plan[target] = file;
-            aliases[legacy] = target;
+            string rel = Path.GetRelativePath(assetsDir, file).Replace('\\', '/');
+            if (settings.IsExcluded(rel)) continue;
+            if (rel.StartsWith("generated/", StringComparison.OrdinalIgnoreCase))
+                throw new ToolException("generated/ is written by the build; remove " + rel + " from the asset tree");
+            plan[rel] = file;
         }
-        int originalCount = aliases.Count;
-        int contentCount = 0;
-        if (Directory.Exists(contentDir))
-        {
-            foreach (var file in Directory.EnumerateFiles(contentDir, "*", SearchOption.AllDirectories))
-            {
-                string rel = Path.GetRelativePath(contentDir, file).Replace('\\', '/');
-                if (rel.EndsWith(".md", StringComparison.OrdinalIgnoreCase)) continue;   // documentation stays out of the package
-                if (plan.ContainsKey(rel)) Console.WriteLine($"content replaces original at {rel}");
-                plan[rel] = file;
-                contentCount++;
-            }
-        }
+        var planKeys = new HashSet<string>(plan.Keys, StringComparer.OrdinalIgnoreCase);
+        var missing = legacy.Where(kv => !planKeys.Contains(kv.Value)).Select(kv => $"{kv.Key} -> {kv.Value}").ToList();
+        if (missing.Count > 0)
+            throw new ToolException($"{missing.Count} legacy name(s) point to missing files, e.g. {string.Join(", ", missing.Take(5))}");
 
         Directory.CreateDirectory(outDir);
-        string indexPath = Path.Combine(outDir, "index.json");
-        var previous = ReadPreviousFiles(indexPath);
+        string indexFile = Path.Combine(outDir, IndexPath);
+        var previous = ReadPreviousFiles(outDir);
 
-        // copy (incremental)
         int copied = 0;
         var sizes = new SortedDictionary<string, long>(StringComparer.Ordinal);
         foreach (var (target, source) in plan)
@@ -82,68 +73,82 @@ internal static class PackBuilder
             sizes[target] = new FileInfo(dest).Length;
         }
 
-        // generated runtime formats
-        int generated = RuntimeFormats.Generate(outDir, layoutFile, plan, sizes, aliases, force);
+        var generatedFrom = new SortedDictionary<string, string>(StringComparer.Ordinal);
+        int generated = RuntimeFormats.Generate(outDir, settings.RuntimeFormats, plan, sizes, generatedFrom, force);
 
-        // remove what an earlier build produced and this one does not
+        // remove what an earlier build (or an older package layout) produced and this one does not
         int removed = 0;
         foreach (var old in previous)
         {
-            if (sizes.ContainsKey(old)) continue;
+            if (sizes.ContainsKey(old) || old.Equals(IndexPath, StringComparison.OrdinalIgnoreCase)) continue;
             string stale = Path.Combine(outDir, old);
             if (File.Exists(stale)) { File.Delete(stale); removed++; }
         }
         RemoveEmptyDirectories(outDir);
 
-        // index
+        var legacyByPath = legacy.GroupBy(kv => kv.Value, StringComparer.OrdinalIgnoreCase)
+                                 .ToDictionary(g => g.Key, g => g.Select(kv => kv.Key).OrderBy(k => k, StringComparer.Ordinal).ToList(), StringComparer.OrdinalIgnoreCase);
+        var files = new JsonObject();
+        foreach (var (path, size) in sizes)
+        {
+            var entry = new JsonObject { ["size"] = size };
+            var (variant, lang) = Describe(path);
+            if (variant != null) entry["variant"] = variant;
+            if (lang != null) entry["lang"] = lang;
+            if (legacyByPath.TryGetValue(path, out var names))
+                entry["legacy"] = names.Count == 1 ? JsonValue.Create(names[0]) : new JsonArray(names.Select(n => (JsonNode)n).ToArray());
+            if (generatedFrom.TryGetValue(path, out var source)) entry["from"] = source;
+            files[path] = entry;
+        }
         var index = new JsonObject
         {
-            ["format"] = 1,
-            ["comment"] = "Generated by WC2.Tools build-pack. files: path -> size; aliases: original asset name -> path.",
-            ["files"] = new JsonObject(sizes.Select(kv => KeyValuePair.Create(kv.Key, (JsonNode)JsonValue.Create(kv.Value)))),
-            ["aliases"] = new JsonObject(aliases.Select(kv => KeyValuePair.Create(kv.Key, (JsonNode)JsonValue.Create(kv.Value)))),
+            ["format"] = 2,
+            ["about"] = "Generated by WC2.Tools build-pack from assets/ (do not edit; see ASSET_LAYOUT.md). " +
+                        "files: every package path with its size, variant folder, language and original name(s); " +
+                        "legacy: every original asset name -> package path.",
+            ["files"] = files,
+            ["legacy"] = new JsonObject(legacy.OrderBy(kv => kv.Key, StringComparer.Ordinal)
+                                              .Select(kv => KeyValuePair.Create(kv.Key, (JsonNode)JsonValue.Create(kv.Value)))),
         };
-        string json = index.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
-        if (!File.Exists(indexPath) || File.ReadAllText(indexPath) != json) File.WriteAllText(indexPath, json);
+        string json = index.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping })
+                           .Replace("\r\n", "\n") + "\n";
+        WriteIfChanged(indexFile, json);
+        if (!string.IsNullOrEmpty(indexCopy)) WriteIfChanged(Path.GetFullPath(indexCopy), json);
 
-        Console.WriteLine($"build-pack: {plan.Count} files ({originalCount} original, {contentCount} content), {generated} generated, " +
+        Console.WriteLine($"build-pack: {plan.Count} files ({legacy.Count} with an original name), {generated} generated, " +
                           $"{copied} copied, {removed} removed, {sw.ElapsedMilliseconds} ms -> {outDir}");
-        foreach (var kv in ruleHits.Where(kv => kv.Key.StartsWith("misc/")))
-            Console.WriteLine($"  note: {kv.Value} file(s) matched no specific rule ({kv.Key})");
         return 0;
     }
 
-    private static List<Rule> ReadRules(string layoutFile)
+    /// <summary>Variant folder and language of a package path (null when the path has none).</summary>
+    public static (string variant, string lang) Describe(string path)
     {
-        if (!File.Exists(layoutFile)) throw new ToolException("layout file not found: " + layoutFile);
-        using var doc = JsonDocument.Parse(File.ReadAllText(layoutFile), new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
-        var rules = new List<Rule>();
-        foreach (var r in doc.RootElement.GetProperty("rules").EnumerateArray())
+        var parts = path.Split('/');
+        string variant = null, lang = null;
+        for (int i = 0; i < parts.Length - 1; i++)
         {
-            rules.Add(new Rule
-            {
-                match = new Regex(r.GetProperty("match").GetString()!, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant),
-                to = r.GetProperty("to").GetString()!,
-            });
+            if (variant == null && parts[0] == "image" && Variants.Contains(parts[i])) variant = parts[i];
+            else if (lang == null && Languages.Contains(parts[i]) && i > 0) lang = parts[i];
         }
-        if (rules.Count == 0) throw new ToolException("layout file has no rules");
-        return rules;
+        return (variant, lang);
     }
 
-    private static string Place(List<Rule> rules, string legacy, Dictionary<string, int> hits)
+    public static SortedDictionary<string, string> ReadLegacyNames(string assetsDir)
     {
-        foreach (var rule in rules)
-        {
-            var m = rule.match.Match(legacy);
-            if (!m.Success) continue;
-            string target = rule.to.Replace("{name}", Path.GetFileName(legacy)).Replace("{0}", m.Value);
-            for (int g = 1; g < m.Groups.Count && g <= 9; g++) target = target.Replace("{" + g + "}", m.Groups[g].Value);
-            target = target.Replace('\\', '/').TrimStart('/');
-            string key = rule.to.Contains("misc/") ? "misc/" : rule.to;
-            hits[key] = hits.GetValueOrDefault(key) + 1;
-            return target;
-        }
-        throw new ToolException("no layout rule matches " + legacy + " (add a catch-all rule)");
+        var map = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        string file = Path.Combine(assetsDir, LegacyNamesFile);
+        if (!File.Exists(file)) return map;
+        using var doc = JsonDocument.Parse(File.ReadAllText(file), new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
+        foreach (var p in doc.RootElement.GetProperty("names").EnumerateObject())
+            map[p.Name] = p.Value.GetString()!;
+        return map;
+    }
+
+    private static void WriteIfChanged(string path, string text)
+    {
+        if (File.Exists(path) && File.ReadAllText(path) == text) return;
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, text);
     }
 
     private static bool NeedsCopy(string source, string dest)
@@ -154,25 +159,63 @@ internal static class PackBuilder
         return s.Length != d.Length || s.LastWriteTimeUtc != d.LastWriteTimeUtc;
     }
 
-    private static HashSet<string> ReadPreviousFiles(string indexPath)
+    /// <summary>Files listed by the previous index (this layout or the older index.json one).</summary>
+    private static HashSet<string> ReadPreviousFiles(string outDir)
     {
         var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        if (!File.Exists(indexPath)) return set;
-        try
+        foreach (var name in new[] { IndexPath, "index.json" })
         {
-            using var doc = JsonDocument.Parse(File.ReadAllText(indexPath));
-            if (doc.RootElement.TryGetProperty("files", out var files))
-                foreach (var p in files.EnumerateObject()) set.Add(p.Name);
+            string indexPath = Path.Combine(outDir, name);
+            if (!File.Exists(indexPath)) continue;
+            try
+            {
+                using var doc = JsonDocument.Parse(File.ReadAllText(indexPath));
+                if (doc.RootElement.TryGetProperty("files", out var files))
+                    foreach (var p in files.EnumerateObject()) set.Add(p.Name);
+            }
+            catch (JsonException) { }
+            if (name == "index.json") set.Add("index.json");
         }
-        catch { }
         return set;
     }
 
-    private static void RemoveEmptyDirectories(string root)
+    private static void RemoveEmptyDirectories(string dir)
     {
-        foreach (var dir in Directory.GetDirectories(root, "*", SearchOption.AllDirectories).OrderByDescending(d => d.Length))
+        foreach (var sub in Directory.EnumerateDirectories(dir))
         {
-            if (!Directory.EnumerateFileSystemEntries(dir).Any()) Directory.Delete(dir);
+            RemoveEmptyDirectories(sub);
+            if (!Directory.EnumerateFileSystemEntries(sub).Any()) Directory.Delete(sub);
         }
+    }
+}
+
+/// <summary><c>assets/build.json</c>: files kept out of the package, runtime formats, known gaps.</summary>
+internal sealed class BuildSettings
+{
+    public readonly List<Regex> Exclude = new();
+    public readonly List<(Regex match, string format)> RuntimeFormats = new();
+    public readonly HashSet<string> KnownMissingReferences = new(StringComparer.OrdinalIgnoreCase);
+
+    public bool IsExcluded(string rel) => Exclude.Any(r => r.IsMatch(rel));
+
+    public static BuildSettings Read(string assetsDir)
+    {
+        var s = new BuildSettings();
+        string file = Path.Combine(assetsDir, PackBuilder.BuildFile);
+        if (!File.Exists(file))
+        {
+            s.Exclude.Add(new Regex("^(build|legacy-names)\\.json$|\\.md$", RegexOptions.IgnoreCase));
+            return s;
+        }
+        using var doc = JsonDocument.Parse(File.ReadAllText(file), new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
+        var root = doc.RootElement;
+        if (root.TryGetProperty("exclude", out var ex))
+            foreach (var e in ex.EnumerateArray()) s.Exclude.Add(new Regex(e.GetString()!, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant));
+        if (root.TryGetProperty("runtimeFormats", out var rf))
+            foreach (var r in rf.EnumerateArray())
+                s.RuntimeFormats.Add((new Regex(r.GetProperty("match").GetString()!, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), r.GetProperty("format").GetString()!));
+        if (root.TryGetProperty("knownMissingReferences", out var km))
+            foreach (var k in km.EnumerateArray()) s.KnownMissingReferences.Add(k.GetString()!);
+        return s;
     }
 }

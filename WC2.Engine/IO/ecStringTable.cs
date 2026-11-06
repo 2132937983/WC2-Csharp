@@ -40,7 +40,13 @@ public sealed class ecStringTable
     }
 
     /// <summary>"stringtable_cn.xml" -> "stringtable_cn.json".</summary>
-    public static string JsonTwin(string fileName) => Path.ChangeExtension(fileName, ".json");
+    public static string JsonTwin(string fileName) => JsonTwinResolver(fileName);
+
+    /// <summary>
+    /// Where the JSON version of an original string table lives. The game sets it to its data
+    /// layout (data/json/text/&lt;language&gt;/); by default the twin sits next to the original.
+    /// </summary>
+    public static Func<string, string> JsonTwinResolver = fileName => Path.ChangeExtension(fileName, ".json");
 
     /// <summary>JSON string table: {"strings": {"key": "text"}}. Returns false when the file is missing or broken.</summary>
     public bool LoadJson(string name)

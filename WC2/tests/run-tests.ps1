@@ -30,17 +30,17 @@ else { Write-Host "   ok ($((Select-String -Path $audioLog -Pattern '\.mp3 ').Co
 # converted from (an intentional data change shows up here; re-convert or accept it knowingly)
 Write-Host "== data" -ForegroundColor Cyan
 $dataLog = Join-Path $out 'verify-data.txt'
-& dotnet run --project $root --no-build -- --verify-data | Out-File -Encoding utf8 $dataLog
+& dotnet run --project $root --no-build -- --verify-data --no-mods | Out-File -Encoding utf8 $dataLog
 if (Select-String -Path $dataLog -Pattern 'verify-data: all identical' -Quiet) {
     Write-Host "   ok ($((Select-String -Path $dataLog -Pattern ': identical').Count) data types identical to the original)" -ForegroundColor Green
 }
 else { $failures++; Write-Host "   problems:" -ForegroundColor Yellow; Select-String -Path $dataLog -Pattern 'differ|missing|exception|invalid|^   ' | ForEach-Object { Write-Host "   $($_.Line)" } }
 
 # asset check: the built package (every original reachable by its old name, every index entry present,
-# every file referenced by the data present)
+# every asset the data names present, the whole asset tree packaged)
 Write-Host "== assets" -ForegroundColor Cyan
 $assetLog = Join-Path $out 'assets.txt'
-& dotnet $tools validate --pack $pack --source (Join-Path $root 'assets') | Out-File -Encoding utf8 $assetLog
+& dotnet $tools validate --pack $pack --source (Join-Path $root '..\assets') | Out-File -Encoding utf8 $assetLog
 if ($LASTEXITCODE -eq 0) { Write-Host "   ok ($((Get-Content $assetLog | Select-Object -Last 1)))" -ForegroundColor Green }
 else { $failures++; Write-Host "   problems:" -ForegroundColor Yellow; Get-Content $assetLog | Select-Object -First 20 | ForEach-Object { Write-Host "   $_" } }
 
@@ -56,6 +56,7 @@ Get-ChildItem (Join-Path $PSScriptRoot '*.txt') | Where-Object { $_.BaseName -li
     $firstLine = Get-Content $_.FullName -TotalCount 1
     if ($firstLine -like '#!*') { $extra += @($firstLine.Substring(2).Trim() -split '\s+' | Where-Object { $_ }) }
     if (-not $RealTime) { $extra += @('--seed', "$Seed", '--fixed-step', '--docs', (Join-Path $runDir 'docs')) }
+    $extra += '--no-mods'   # local mods (repository mods/ folder) must not change the results
     & dotnet run --project $root --no-build -- @extra --exit-after 1500 --screenshot (Join-Path $runDir "$name.png") --script $_.FullName --log $log | Out-Null
     $problems = @(Select-String -Path $log -Pattern 'failed|xception' | Where-Object { $_.Line -notmatch 'Sound missing' } | ForEach-Object { $_.Line })
     if (-not (Select-String -Path $log -Pattern 'Music playing' -Quiet)) { $problems += 'no "Music playing" line in the log' }

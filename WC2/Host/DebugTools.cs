@@ -22,9 +22,9 @@ public static class DebugTools
                 TestAudio(args.Length > 1 ? args[1] : null);
                 return true;
             case "--convert-data":
-                // writes the JSON game data converted from the original XML (default: the project's content folder)
+                // writes the JSON game data converted from the original XML (default: the repository's asset tree)
                 ecGame.ConfigurePaths(null, null);
-                DataMigration.Convert(args.Length > 1 && !args[1].StartsWith("--") ? args[1] : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "content")));
+                DataMigration.Convert(args.Length > 1 && !args[1].StartsWith("--") ? args[1] : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "assets")));
                 return true;
             case "--verify-data":
                 ecGame.ConfigurePaths(null, args.Length > 1 && !args[1].StartsWith("--") ? args[1] : null);

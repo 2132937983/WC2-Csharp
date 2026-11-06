@@ -48,17 +48,20 @@ public sealed class AssetLayer
 }
 
 /// <summary>
-/// The single entry point for reading game assets. Layers are mounted in order (base package first,
-/// then mods by priority); a file in a later layer replaces the file with the same path below it.
-/// Names are resolved in this order:
+/// The single entry point for reading game assets (the asset layer). Layers are mounted in order
+/// (base package first, then mods by priority); a file in a later layer replaces the file with the
+/// same path below it. Names are resolved in this order:
 /// <list type="number">
-/// <item>the language folder variant (<c>zh_CN.lproj/Localizable.strings</c>) when a language is set,</item>
-/// <item>the path itself (<c>gfx/ui/ui1_hd.xml</c>),</item>
-/// <item>the legacy flat name used by the ported code (<c>ui1_hd.xml</c>), through the package index
-/// and the file names of mod files.</item>
+/// <item>the path itself (<c>image/ui/hd/ui1.xml</c>): mods first, then the base package;</item>
+/// <item>an original asset name used by the ported code (<c>ui1_hd.xml</c>), through the generated
+/// index (<c>generated/asset_index.json</c>): for a bare name the current language folder variant
+/// first (<c>zh_CN.lproj/Localizable.strings</c>), then the name. The index gives a package path,
+/// which again comes from the top-most layer that has it, so a mod replacing that path wins.
+/// A mod may also replace a file by its original name (a file at the mod's root, or in an
+/// <c>X.lproj</c> folder).</item>
 /// </list>
 /// Paths are case-insensitive. Saves and settings do not go through here; they are plain files in
-/// the documents folder.
+/// the documents folder. See ASSET_LAYOUT.md.
 /// </summary>
 public static class AssetSystem
 {
@@ -73,13 +76,17 @@ public static class AssetSystem
     private static readonly Dictionary<string, Entry> s_files = new(StringComparer.OrdinalIgnoreCase);
     private static readonly Dictionary<string, string> s_aliases = new(StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>Language folder of the legacy layout (e.g. "zh_CN.lproj"); tried first by <see cref="Resolve"/>.</summary>
+    /// <summary>Language folder of the original layout (e.g. "zh_CN.lproj"); its original names are tried first for bare names.</summary>
     public static string LanguageFolder = "";
-    /// <summary>
-    /// Package folder of the current language (e.g. "lang/cn"), where its files and the authored
-    /// JSON twins live; tried right after <see cref="LanguageFolder"/>.
-    /// </summary>
-    public static string LanguagePath = "";
+    /// <summary>Language code of the asset tree (cn, en, ja, kr, ru, tw), the folder name of language variants.</summary>
+    public static string LanguageCode = "";
+
+    /// <summary>Language code (asset tree folder name) of an original language folder ("zh_CN.lproj" -> "cn").</summary>
+    public static string LanguageCodeOf(string languageFolder)
+    {
+        string f = (languageFolder ?? "").Replace(".lproj", "", StringComparison.OrdinalIgnoreCase).ToLowerInvariant();
+        return f switch { "english" or "en" => "en", "zh_cn" or "cn" => "cn", "zh_tw" or "tw" => "tw", "ja" => "ja", "kr" or "ko" => "kr", "ru" => "ru", _ => f };
+    }
 
     public static IReadOnlyList<AssetLayer> Layers => s_layers;
     public static int FileCount => s_files.Count;
@@ -112,18 +119,16 @@ public static class AssetSystem
             {
                 s_files[path] = new Entry { path = path, layer = layer };
             }
-            // every file is also reachable by its plain file name and, inside a language folder,
-            // by "<folder>/<name>"; mod files registered later win over base files with the same name
-            if (layer.IsMod || layer.Aliases == null)
+            // original names without an index: a flat folder of original assets (every file by its
+            // name, "<X.lproj>/<name>" inside a language folder), and the files of a mod that replace
+            // an original by its name (at the mod's root or in an X.lproj folder); later layers win
+            if (layer.Aliases == null || layer.IsMod)
             {
-                s_aliases[Path.GetFileName(path)] = path;
                 int slash = path.LastIndexOf('/');
-                if (slash > 0)
-                {
-                    int prev = path.LastIndexOf('/', slash - 1);
-                    string tail = path.Substring(prev + 1);
-                    if (tail.Contains(".lproj/", StringComparison.OrdinalIgnoreCase)) s_aliases[tail] = path;
-                }
+                int prev = slash > 0 ? path.LastIndexOf('/', slash - 1) : -1;
+                bool inLanguageFolder = slash > 0 && path.Substring(prev + 1, slash - prev - 1).EndsWith(".lproj", StringComparison.OrdinalIgnoreCase);
+                if (!layer.IsMod || slash < 0 || inLanguageFolder) s_aliases[Path.GetFileName(path)] = path;
+                if (inLanguageFolder) s_aliases[path.Substring(prev + 1)] = path;
             }
         }
         if (layer.Aliases != null)
@@ -138,15 +143,15 @@ public static class AssetSystem
     {
         if (string.IsNullOrEmpty(name)) return null;
         string key = Normalize(name);
+        // 1. a path of the tree (the top-most layer that has it: mods before the base package)
+        if (s_files.TryGetValue(key, out var entry)) return entry.path;
+        // 2. an original name: the current language folder first for a bare name, then the name
         if (!string.IsNullOrEmpty(LanguageFolder) && !key.Contains('/'))
         {
             string langKey = LanguageFolder + "/" + key;
-            if (s_aliases.TryGetValue(langKey, out var langPath) && s_files.ContainsKey(langPath)) return s_files[langPath].path;
-            if (s_files.TryGetValue(langKey, out var langEntry)) return langEntry.path;
+            if (s_aliases.TryGetValue(langKey, out var langPath) && s_files.TryGetValue(langPath, out var langEntry)) return langEntry.path;
+            if (s_files.TryGetValue(langKey, out var flatLangEntry)) return flatLangEntry.path;
         }
-        if (!string.IsNullOrEmpty(LanguagePath) && !key.Contains('/') && s_files.TryGetValue(LanguagePath + "/" + key, out var langPathEntry))
-            return langPathEntry.path;
-        if (s_files.TryGetValue(key, out var entry)) return entry.path;
         if (s_aliases.TryGetValue(key, out var aliased) && s_files.TryGetValue(aliased, out var aliasedEntry)) return aliasedEntry.path;
         return null;
     }
@@ -228,20 +233,41 @@ public static class AssetSystem
     // Package index
     // ------------------------------------------------------------------------------------
 
-    public const string IndexFileName = "index.json";
+    /// <summary>The index the package build generates (every file; every original name -> path).</summary>
+    public const string IndexFileName = "generated/asset_index.json";
+    /// <summary>The original names of the source asset tree (used when it runs without a build).</summary>
+    public const string LegacyNamesFileName = "legacy-names.json";
 
     /// <summary>
-    /// Reads the aliases of a generated package index ({"aliases": {"legacy name": "path"}}).
-    /// Returns null when there is no index (a flat legacy asset folder).
+    /// Reads the original-name map of a generated index (<c>{"legacy": {...}}</c>), of the asset tree's
+    /// <c>legacy-names.json</c> (<c>{"names": {...}}</c>) or of the older package index
+    /// (<c>{"aliases": {...}}</c>). Returns null when there is no such file (a flat folder of originals).
     /// </summary>
     public static Dictionary<string, string> ReadIndexAliases(Stream indexStream)
     {
         if (indexStream == null) return null;
-        using var doc = JsonDocument.Parse(indexStream);
+        using var doc = JsonDocument.Parse(indexStream, new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
         var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        if (doc.RootElement.TryGetProperty("aliases", out var aliases))
-            foreach (var p in aliases.EnumerateObject()) map[p.Name] = p.Value.GetString();
+        foreach (var property in new[] { "legacy", "names", "aliases" })
+            if (doc.RootElement.TryGetProperty(property, out var aliases))
+                foreach (var p in aliases.EnumerateObject()) map[p.Name] = p.Value.GetString();
         return map;
+    }
+
+    /// <summary>
+    /// Reads the original-name map of an asset source: the generated index, else the tree's
+    /// legacy-names.json; null when the source has neither (a flat folder of originals).
+    /// </summary>
+    public static Dictionary<string, string> ReadAliases(Func<string, Stream> open)
+    {
+        foreach (var name in new[] { IndexFileName, LegacyNamesFileName })
+        {
+            Stream s = null;
+            try { s = open(name); } catch (IOException) { } catch (UnauthorizedAccessException) { }
+            if (s == null) continue;
+            using (s) return ReadIndexAliases(s);
+        }
+        return null;
     }
 }
 

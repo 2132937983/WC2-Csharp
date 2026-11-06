@@ -10,17 +10,18 @@ mods, a generated asset package, deterministic tests).
 
 ```
 WC2.slnx              solution with all projects
+assets/               everything the game reads, by purpose: audio/, image/, data/ (json/ authored,
+                      xml/ original), scripts/; the original files unchanged (ASSET_LAYOUT.md)
+mods/                 mods mounted by development builds (MODDING.md); example-balance (disabled)
+generated/            asset_index.json, kept current by every build (original name -> path)
 WC2/                  Desktop program (MonoGame DesktopGL, net9.0)  →  dotnet run
-  assets/             the original game files, never modified
-  content/            authored game data (JSON), laid over the originals in the package
-  assets-layout.json  package layout and generated runtime formats
   tests/              deterministic regression suite and goldens
 WC2.Engine/           engine library (no reference to the game)
 WC2.Game/             game library (rules, AI, scene, screens, data layer, shared host)
 WC2.Android/          Android package (MonoGame Android)         →  dotnet build -c Release
-WC2.Tools/            build-pack: original files + content → runtime package (runs with every build)
-docs/                 DATA.md (JSON data reference), MODDING.md, ASSETS.md (package and asset system)
-samples/mods/         an example mod
+WC2.Tools/            build-pack (asset tree → runtime package, runs with every build), validate,
+                      compare-image
+docs/                 DATA.md (JSON data reference)
 Reference/WC2-C/      Original C++ remake (read only, not in git)
 Reference/decompiled/ Hex-Rays pseudo-C of the original libeasytech.so (not in git)
 ```
@@ -34,8 +35,9 @@ dotnet run
 
 Options: `--width 1280 --height 720` (window size; the logical layout follows the aspect ratio like
 the original: 480/534/568/640 x 320, 1024 x 768 below 4:3), `--ipad` (a 4:3 window),
-`--lang zh_CN|English|ja|kr|ru|zh_TW`, `--assets PATH` (a package, a flat folder of the original
-files, or a `.zip`/`.apk`), `--mods DIR`, `--no-mods`, `--docs DIR` (saves and settings),
+`--lang zh_CN|English|ja|kr|ru|zh_TW`, `--assets PATH` (a package, the `assets/` tree, a flat folder
+of the original files, or a `.zip`/`.apk`), `--mods DIR`, `--no-mods`, `--all-mods`, `--docs DIR`
+(saves and settings),
 `--log FILE`, `--texture-stats`.
 Test options: `--seed N --fixed-step` (replayable run), `--exit-after SEC --screenshot FILE`,
 `--script FILE` (scripted input, see `WC2/tests/README.md`).
@@ -68,7 +70,7 @@ All game data is JSON (`docs/DATA.md`): units, cards, commanders, terrain, campa
 scenarios, tutorial scripts, texts, the options layout and the per-area map table. Terrain rules that
 were constants in the code (area types, buildings, installations, AI area values) and the unit and
 commander level tables are data now. Mods are folders that add files or merge single entries into the
-data (`docs/MODDING.md`, example in `samples/mods/example-balance`).
+data (`MODDING.md`, example in `mods/example-balance`).
 
 ## Android
 

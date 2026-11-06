@@ -1,15 +1,15 @@
 using WC2.Tools;
 
 // WC2.Tools <command> [options]
-//   build-pack --assets DIR --content DIR --layout FILE --out DIR
-//       Builds the runtime asset package: the original assets (never modified) are copied into the
-//       folder-by-purpose tree described by the layout file, the authored content is laid on top,
-//       runtime formats are generated, and index.json lists every file and its legacy name.
+//   build-pack --assets DIR --out DIR [--index-copy FILE] [--force]
+//       Builds the runtime asset package from the asset tree (assets/): copies it (the originals are
+//       never modified), generates runtime formats under generated/, and writes
+//       generated/asset_index.json (every file, every original name -> path). See ASSET_LAYOUT.md.
 //   compare-image --golden REF.png --actual SHOT.png [--max-percent P] [--diff OUT.png] [--record]
 //       Screenshot regression: compares a screenshot with its reference (see ImageCompare).
 //   validate --pack DIR [--source DIR]
-//       Checks a built package: every index entry exists, every legacy name resolves, and (with
-//       --source) every original asset is reachable through its legacy name.
+//       Asset checker: index and files agree, every original name resolves, every asset the data
+//       names exists, and (with --source, the asset tree) everything is packaged.
 return Cli.Run(args);
 
 namespace WC2.Tools
@@ -25,7 +25,7 @@ namespace WC2.Tools
                 switch (args[0])
                 {
                     case "build-pack":
-                        return PackBuilder.Build(Require(opts, "assets"), Require(opts, "content"), Require(opts, "layout"), Require(opts, "out"),
+                        return PackBuilder.Build(Require(opts, "assets"), Require(opts, "out"), opts.GetValueOrDefault("index-copy"),
                             opts.ContainsKey("force"));
                     case "validate":
                         return PackValidator.Validate(Require(opts, "pack"), opts.GetValueOrDefault("source"));
@@ -62,7 +62,7 @@ namespace WC2.Tools
 
         private static void Usage()
         {
-            Console.WriteLine("usage: WC2.Tools build-pack --assets DIR --content DIR --layout FILE --out DIR [--force]");
+            Console.WriteLine("usage: WC2.Tools build-pack --assets DIR --out DIR [--index-copy FILE] [--force]");
             Console.WriteLine("       WC2.Tools validate --pack DIR [--source DIR]");
             Console.WriteLine("       WC2.Tools compare-image --golden REF.png --actual SHOT.png [--max-percent 1.0] [--pixel-tolerance 40] [--diff OUT.png] [--record [--width 320]]");
         }

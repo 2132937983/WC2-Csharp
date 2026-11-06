@@ -1,0 +1,21 @@
+{
+  // Build settings for WC2.Tools build-pack and validate (see ASSET_LAYOUT.md).
+
+  // Files of the asset tree that stay out of the package (regex on the path inside assets/).
+  "exclude": [ "^build\\.json$", "^legacy-names\\.json$", "\\.md$" ],
+
+  // Runtime formats generated under generated/ ("match" is a regex on the package path).
+  // rgba4444: the 4096 px Kai/Hei glyph pages (white glyphs, shape in alpha) as 16 bit pixels:
+  // 32 MB instead of 64 MB each on the GPU and no PNG decode when the game starts.
+  "runtimeFormats": [
+    { "match": "^image/fonts/hd/cn/font(ht|kt)\\.png$", "format": "rgba4444" }
+  ],
+
+  // Asset names the original data mentions although the original game never shipped them
+  // (validate reports them but does not fail).
+  "knownMissingReferences": [
+    "image.png",    // only in a comment of data/xml/armydef.xml
+    "center.png",   // the sprite "intense center.png" of eff.xml (the scan stops at the space)
+    "editres.png"   // data/xml/legacy/editres.xml: the original editor's resource list
+  ]
+}

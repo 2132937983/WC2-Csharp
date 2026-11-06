@@ -30,25 +30,30 @@ public static class ecGame
         SetDocumentPath(docs);
 
         string root = assetsOverride;
+        string repository = FindRepository(AppContext.BaseDirectory);
         if (string.IsNullOrEmpty(root))
         {
-            // the generated package next to the program first, then a flat folder of original assets
+            // the generated package next to the program first, then the asset tree of the repository
+            // (runs without a package build: no generated formats), then a flat folder of originals
             string baseDir = AppContext.BaseDirectory;
-            string[] candidates =
+            var candidates = new List<string>
             {
                 Path.Combine(baseDir, "pack"),
-                Path.Combine(baseDir, "assets"),
                 Path.Combine(Directory.GetCurrentDirectory(), "pack"),
+                Path.Combine(baseDir, "assets"),
                 Path.Combine(Directory.GetCurrentDirectory(), "assets"),
-                Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "assets")),
             };
+            if (repository != null) candidates.Add(Path.Combine(repository, "assets"));
             root = candidates.FirstOrDefault(IsAssetFolder) ?? candidates[0];
         }
         root = Path.GetFullPath(root);
 
+        // mod folders, lowest priority first in the list order does not matter (mod.json priority decides)
         var mods = new List<string>();
         if (!string.IsNullOrEmpty(ModsFolderOverride)) mods.Add(ModsFolderOverride);
         mods.Add(Path.Combine(DocumentFilePath, "mods"));
+        mods.Add(Path.Combine(AppContext.BaseDirectory, "mods"));
+        if (repository != null && string.IsNullOrEmpty(ModsFolderOverride)) mods.Add(Path.Combine(repository, "mods"));
 
         // a zip archive: a packed package, or an APK whose package sits under assets/pack
         if (File.Exists(root) && (root.EndsWith(".apk", StringComparison.OrdinalIgnoreCase) || root.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)))
@@ -57,25 +62,32 @@ public static class ecGame
             bool apk = probe.ListFiles().Any(f => f.Equals("assets/pack/" + AssetSystem.IndexFileName, StringComparison.OrdinalIgnoreCase));
             probe.Dispose();
             var zip = new ZipAssetSource(root, apk ? "assets/pack" : "");
-            Dictionary<string, string> zipAliases = null;
-            using (var index = zip.TryOpen(AssetSystem.IndexFileName))
-                if (index != null) zipAliases = AssetSystem.ReadIndexAliases(index);
+            var zipAliases = AssetSystem.ReadAliases(zip.TryOpen);
             ConfigureAssets(zip, zipAliases, zip.Name, mods.ToArray(), langOverride);
             return;
         }
 
-        Dictionary<string, string> aliases = null;
-        string indexPath = Path.Combine(root, AssetSystem.IndexFileName);
-        if (File.Exists(indexPath))
+        var aliases = AssetSystem.ReadAliases(name =>
         {
-            using var index = File.OpenRead(indexPath);
-            aliases = AssetSystem.ReadIndexAliases(index);
-        }
+            string file = Path.Combine(root, name);
+            return File.Exists(file) ? File.OpenRead(file) : null;
+        });
         ConfigureAssets(new DirectoryAssetSource(root), aliases, root, mods.ToArray(), langOverride);
     }
 
+    /// <summary>A package (generated index), an asset tree (legacy-names.json) or a flat folder of originals.</summary>
     private static bool IsAssetFolder(string dir) =>
-        Directory.Exists(dir) && (File.Exists(Path.Combine(dir, AssetSystem.IndexFileName)) || File.Exists(Path.Combine(dir, "carddef.xml")));
+        Directory.Exists(dir) && (File.Exists(Path.Combine(dir, AssetSystem.IndexFileName))
+                                  || File.Exists(Path.Combine(dir, AssetSystem.LegacyNamesFileName))
+                                  || File.Exists(Path.Combine(dir, "carddef.xml")));
+
+    /// <summary>The repository root (the folder with WC2.slnx) above the program, when it runs from a build there.</summary>
+    private static string FindRepository(string start)
+    {
+        for (var dir = new DirectoryInfo(start); dir != null; dir = dir.Parent)
+            if (File.Exists(Path.Combine(dir.FullName, "WC2.slnx"))) return dir.FullName;
+        return null;
+    }
 
     /// <summary>
     /// Mounts the base asset source (a generated package with an index, or a flat legacy folder when
@@ -85,6 +97,7 @@ public static class ecGame
     public static void ConfigureAssets(IAssetSource baseSource, Dictionary<string, string> aliases, string description, string[] modFolders, string langOverride)
     {
         AssetsRoot = description ?? "";
+        ecStringTable.JsonTwinResolver = DataPaths.TextJson;
         AssetSystem.Reset();
         AssetSystem.Mount(new AssetLayer { Id = "base", Name = "Base game", Source = baseSource, Aliases = aliases });
         if (!ModsDisabled) ModManager.MountMods(modFolders ?? Array.Empty<string>());
@@ -101,7 +114,7 @@ public static class ecGame
                  : culture.StartsWith("ru") ? "ru"
                  : "English";
         }
-        // language folders are "<lang>.lproj" in the original layout (lang/<code>/ in the package)
+        // language folders are "<lang>.lproj" in the original layout (a language folder <code>/ in the tree)
         string lproj = lang.EndsWith(".lproj") ? lang : lang + ".lproj";
         if (!AssetSystem.Exists(lproj + "/Localizable.strings")) lproj = "English.lproj";
         SetLangDir(lproj);
