@@ -182,10 +182,10 @@ public class MainActivity : AndroidGameActivity
         {
             var decor = Window?.DecorView;
             if (decor == null) return;
-#pragma warning disable CA1422 // SystemUiVisibility is deprecated but still honoured on every supported API level
-            decor.SystemUiVisibility = (StatusBarVisibility)(
+#pragma warning disable CA1422 // the system UI flags are deprecated (API 30) but still honoured on every supported API level
+            decor.SystemUiFlags =
                 SystemUiFlags.ImmersiveSticky | SystemUiFlags.LayoutStable | SystemUiFlags.LayoutHideNavigation |
-                SystemUiFlags.LayoutFullscreen | SystemUiFlags.HideNavigation | SystemUiFlags.Fullscreen);
+                SystemUiFlags.LayoutFullscreen | SystemUiFlags.HideNavigation | SystemUiFlags.Fullscreen;
 #pragma warning restore CA1422
         }
         catch (Exception ex) { Globals.Log("Immersive mode failed: " + ex.Message); }

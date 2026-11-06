@@ -13,7 +13,8 @@ are the platforms.
 WC2.slnx                 solution with all projects
 assets/                  everything the game reads, by purpose: audio/, image/, data/ (json/ authored
                          data and schemas, xml/ original data), scripts/; originals unchanged (ASSET_LAYOUT.md)
-mods/                    mods mounted by development builds (MODDING.md); example-balance (disabled)
+mods/                    mods mounted by development builds (MODDING.md): example-balance (disabled),
+                         map-natural-earth (the generated world map with a conquest, MAP_PIPELINE.md)
 generated/               asset_index.json, kept current by every build (original name -> path)
 Engine/                  WC2.Engine: the engine library (no reference to data, game or hosts)
 Data/                    WC2.Data: data definitions (paths, schemas mapping, terrain, rules, layouts, audio, countries)
@@ -21,7 +22,8 @@ Game/                    WC2.Game: rules, AI, scene, screens, data readers, the 
 Hosts/Desktop/           WC2.Desktop: the Windows program (options, window, debug tools)   →  dotnet run
 Hosts/Android/           WC2.Android: the APK (activity, life cycle, APK asset access)     →  dotnet build -c Release
 Tools/                   WC2.Tools: build-pack (asset tree → runtime package, runs with every build),
-                         validate (asset checker), compare-image (screenshot references)
+                         validate (asset checker), compare-image (screenshot references), build-map
+                         (Natural Earth → map pack and playable map mod)
 Tests/                   WC2.Tests (unit tests) and the scripted regression suite (run-tests.ps1, goldens)
 Reference/WC2-C/         original C++ remake (read only, not in git)
 Reference/decompiled/    Hex-Rays pseudo-C of the original libeasytech.so (not in git)
@@ -37,7 +39,9 @@ Options: `--width 1280 --height 720` (window size; the logical layout follows th
 the original: 480/534/568/640 x 320, 1024 x 768 below 4:3, `data/json/layout/profiles.json`), `--ipad`
 (a 4:3 window), `--lang zh_CN|English|ja|kr|ru|zh_TW`, `--assets PATH` (a package, the `assets/` tree,
 a flat folder of the original files, or a `.zip`/`.apk`), `--mods DIR`, `--no-mods`, `--all-mods`,
-`--docs DIR` (saves and settings), `--log FILE`, `--texture-stats`.
+`--docs DIR` (saves and settings), `--log FILE`, `--texture-stats`, `--ai classic|standard|hard` (AI
+profile; new games use `standard`), `--scenario FILE --country ID` (start a conquest with that scenario
+right away, e.g. `--scenario conquest_world.xml --country fr` for the generated world map).
 Test options: `--seed N --fixed-step` (replayable run), `--exit-after SEC --screenshot FILE`,
 `--script FILE` (scripted input, see `Tests/README.md`).
 Tools: `--verify-data [--mods DIR]`, `--convert-data`, `--test-audio`, `--test-xml`, `--test-fonts`,
@@ -68,9 +72,18 @@ Saves, settings and mods live in `%LOCALAPPDATA%\WC2CSharp` (`mods\` for mods).
 
 The game's definitions are JSON with a schema each (`DATA_SCHEMA.md`): units, cards, commanders,
 terrain, war medals, rules, campaigns, conquests, countries, audio, layout profiles, texts, the options
-layout and the per-area map table. Scenarios and tutorial scripts stay the original XML, listed by a
-generated index. Every file is checked against its schema when it loads. Mods are folders that add
-files or merge single entries into the data (`MODDING.md`, example in `mods/example-balance`).
+layout, the per-area map table and the AI profiles. Scenarios and tutorial scripts stay the original
+XML, listed by a generated index. Every file is checked against its schema when it loads. Mods are
+folders that add files or merge single entries into the data (`MODDING.md`, example in
+`mods/example-balance`).
+
+The AI's numbers are data (`data/json/ai/profiles.json`): `classic` is the original AI exactly,
+`standard` (the default) defends threatened capitals, ports, airfields, cities and home areas and buys
+cards more readily, `hard` pushes harder against the player.
+
+Next to the classic map, `WC2.Tools build-map` generates maps from Natural Earth geography
+(`MAP_PIPELINE.md`): a data pack (`assets/data/maps/natural-earth`) and a playable world conquest as a
+mod (`mods/map-natural-earth`).
 
 ## Android
 
@@ -105,7 +118,8 @@ and every JSON file against the original XML or built-in tables), the asset chec
 in deterministic mode (fixed seed, fixed time step, fresh documents folder): game-state dumps are
 compared byte for byte with `Tests/golden`, screenshots with reference images, and the hit-test
 scripts check that hidden and off-screen controls refuse touches on phone, tablet and letterboxed
-windows. Two scripts let the AI play whole games (`autoplay`). Details in `Tests/README.md`.
+windows. Several scripts let the AI play whole games (`autoplay`), on the classic and the generated
+map; the AI tests check what the improved AI defends. About four minutes. Details in `Tests/README.md`.
 
 ## Status / known gaps
 

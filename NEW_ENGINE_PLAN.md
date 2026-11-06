@@ -5,59 +5,60 @@ behavioural reference. Branch `newEngine` carries the work below. This document 
 
 0. Progress on `newEngine` (what was done, how it was checked, what is next).
 1. How the engine worked at the start (written before the work; paths then were `WC2/Engine`,
-   `WC2/Game`).
+   `WC2/Game`, `WC2/assets`).
 2. How the assets were organised, and what a running game actually loads.
 3. The proposal and the decisions.
 
 ---
 
-## Part 0. Progress on `newEngine` (night of 2026-11-06)
+## Part 0. Progress on `newEngine` (status 2026-11-06)
 
-Decisions taken: visuals may change; the rules code keeps its original names; the original files stay
-untouched and runtime formats are generated in a build step; unreachable and dormant files stay in the
-APK; mods are a goal; Android and Windows only; game data moves to JSON; and more definitions become
-data (units, terrain, and so on).
-
-Nothing is committed yet: every change is in the working tree of `newEngine`. Moved files were moved
-with `git mv`, so their history follows.
+Decisions: visuals may change; the rules code keeps its original names; the original files stay
+untouched (they were moved and renamed, never re-encoded) and runtime formats are generated in a build
+step; unreachable and dormant files stay in the APK; mods are a goal; Android and Windows only; game
+data is JSON; definitions are data, special behaviour stays in code selected by type, trait or id.
+Everything is committed on `newEngine`, step by step; every step ran the whole suite before its commit.
 
 ### Done
 
 | Step | What | How it was checked |
 |---|---|---|
-| A. Safety net | `--seed`, `--fixed-step`, `--docs`; script commands `dump`, `autoplay` (the AI plays whole games), `settle`; 17 golden state dumps over 7 scripts; `--verify-data`; the suite runs in about 2.5 minutes | goldens replay byte for byte, run after run |
-| B. Asset access | `AssetSystem`: layered sources (folder, zip, APK), original names through the package index, language folders; every asset read goes through it. Android reads the APK in place, nothing is extracted any more | goldens from the package folder, from a flat folder of originals, and from the APK file itself |
-| C. Package build | `WC2.Tools build-pack` after every build, layout rules in `WC2/assets-layout.json`, `index.json`, `validate`. All 1 111 originals are packaged, unchanged | `validate`: 0 problems |
-| D. Texture memory | PKM uploaded as ETC2/ETC1 where the GPU supports it (Android), CPU decode otherwise; the two 4096 px Kai/Hei font pages generated as RGBA4444 at build time; battle backgrounds loaded only when used; `--texture-stats` | conquest start 389 → 288 MB on the desktop (no ETC there); text screenshots unchanged |
-| JSON game data | 15 data types in `WC2/content` (units, cards, commanders, portraits, campaigns, conquests, string tables, unit and commander levels, scenarios, options layout, war medals, global rules, terrain, map area table, tutorial scripts); `--convert-data`; `docs/DATA.md` | `--verify-data`: every type loads into the same definitions as its original XML or built-in table; goldens |
-| More data-driven | unit levels, commander levels, **terrain** (area types, buildings, installations, AI area values; the constants were replaced in 14 rule files), **war medals** (draft bonuses, commerce, air force), **global rules** (combat dice, economy caps) | goldens with the built-in tables first, then with the JSON |
-| Mods | `ModManager`, `mod.json`, merge rules (objects merge, `null` removes, `$replace`), file replacement by package path or original name, `--mods`, Android mod folder, `samples/mods/example-balance`, `docs/MODDING.md` | the sample mod changes exactly its 5 values (`--verify-data --mods`); a texture override screenshot; an exported battle loaded back through a mod |
-| E. Code structure (part) | `WC2.Engine` and `WC2.Game` libraries, `WC2.slnx`; the engine has no reference to the game (one violation fixed: `CTouchInertia` moved to the engine); the APK compiles the same sources | build, suite |
-| Other | the pause box Save button exports the running battle as a scenario JSON (`game.json`); the conquest country list uses the original alliance rule; README, porting guide, `docs/` | export → mod → load: all 406 owned areas identical |
+| 0. Safety net | `--seed`, `--fixed-step`, `--docs`; script commands `dump`, `autoplay`, `settle`, `dumpafter`, `hittest`, `texstats`, `startconquest`; golden rule-state dumps; reference screenshots (`WC2.Tools compare-image`, 63 small JPEGs); the asset checker (`validate`); unit tests (`Tests/WC2.Tests`, 35); the hidden-control hit test | goldens replay byte for byte; the hit test found 14 reachable hidden buttons before the fix, 0 after |
+| 1. Asset tree | `assets/` by purpose (`audio/music\|sfx\|ui`, `image/ui\|army/<kind>\|map/tiles\|regions\|flags\|markers\|effects\|fonts\|battlebg`, `data/json`, `data/xml`, `data/binary`, `scripts`), variants as folders (`common`, `hd`, `tablet`, `phone-568-hd`, ..., `<lang>`); `legacy-names.json` -> `generated/asset_index.json`; one asset layer (mods -> assets -> original names); Android reads the APK in place, extraction only as a fallback; `ASSET_LAYOUT.md`, `MODDING.md` | goldens from the package, the tree itself and the APK; `validate`: every original reachable, every name the data mentions present |
+| 2. Data | JSON for units, cards, commanders, portraits, campaigns, conquests, terrain, war medals, rules, countries, audio, layout profiles, the options layout, the map area table, texts, AI profiles; scenarios and tutorial scripts stay the original XML with a generated index; a JSON Schema per file kind, checked whenever a file loads (an invalid mod's changes are dropped); `DATA_SCHEMA.md` | `--verify-data`: 19 data types identical to the original XML or built-in tables, every file valid |
+| 3. Structure | projects `Engine`, `Data`, `Game`, `Hosts/Desktop`, `Hosts/Android`, `Tools`, `Tests` (the engine references nothing of the game, data only the engine, the game no host); one `Layout` facade fed by the layout profile (135 scattered checks); resources released when screens close (regression `resource_cycle`) | builds (0 warnings), suite |
+| 3. Turn processing | hop distances cached per area, an allocation-free BFS, pooled particle systems, the AI's search buffers reused; `PerfStats` | 16 AI rounds: allocation per round 10-29 MB -> 3-6 MB, update time per round 80 -> 51 ms (round 1) and 36 -> 21 ms (round 8), AI decisions 44 -> 27 ms (round 1); goldens identical |
+| 3. Rendering | ETC1 tiles as RGB565 where the GPU lacks ETC (Android uploads them natively); area overlays as RGBA5551 (converted when loading, the package does not grow); the Kai/Hei glyph pages as Alpha8 (16 MB each instead of 64), tinted by the batcher after a one-time probe of how the GPU samples Alpha8; battle backgrounds loaded only when used; frame statistics | texture memory: menu 97 -> 63 MB, conquest start 288 -> 179 MB (desktop; 389 MB before any of this); Android about 142 MB expected; menu 16 and conquest 71 draw calls per frame; reference screenshots unchanged |
+| 4. No purchases | the medal store, the buy button, purchase and price hooks and the purchase grant are gone | `NoPurchaseTests` (sources, manifest, assemblies) |
+| 5. Hit testing | touches outside the logical screen dropped at the input entry, hit tests clipped to the screen, drawing clipped by a scissor | `hit_test` (phone), `hit_test_wide` (1600x600 window), `ipad_hit_test` (1000x1000 window), probes in five more scripts, `HitTestTests` |
+| 6. AI | every number of the AI in `data/json/ai/profiles.json`: classic (the original, reproduces every golden), standard (default: defends threatened capitals, ports, airfields, cities and home areas, reinforces them, never strips a threatened capital, weighs whole enemy stacks, buys cards more readily), hard | `ai_defends_marseille_*` (standard holds Marseille after Italy's first assault, classic loses it), `ai_standard_autoplay`; 16 rounds of conquest 1: key areas lost 24/73 instead of 29/73, capitals held 8/8 instead of 7/8 |
+| 7. Map | `WC2.Tools build-map`: Natural Earth GeoJSON -> regions, adjacency, terrain types, ownership, capitals, cities, ports, airfields (`assets/data/maps/natural-earth`: 966 land regions in 167 countries, 380 sea zones), and a playable mod (`mods/map-natural-earth`: map 2 in the scene's formats with a 31-country world conquest); `MAP_PIPELINE.md` | `MapPackTests` (coverage southern Greenland to southern Madagascar and Darwin, capitals, Marseille, the pipeline on a synthetic world), `world_autoplay` (four rounds on the world map) |
+| 8. Verification | Windows and Android build with 0 warnings; `Tests/run-tests.ps1`: unit tests, audio, data, assets and 27 scripts all pass; the APK rebuilt (133.9 MB) and replayed against the goldens with `--assets <apk>` | see the commit log |
 
-### Not done yet, in the plan's order
+### Not done yet
 
-* E, rest: one owner for the engine subsystems and one for the game state (`EngineHost`,
-  `GameSession`), resource scopes per screen, typed events, nullable reference types.
-* F: the layout profile replacing the 276 scattered layout checks.
-* G: a versioned save format.
-* H: TrueType text (Japanese, Traditional Chinese and Korean texts miss glyphs in every bundled
-  font), the battle animation, higher resolution art.
-* Asynchronous texture decoding on the loading screen.
-* A device test of the APK: the checklist in `DIFFERENCES_THREE_WAY.md` section 5, plus the new
-  paths (reading the APK in place, ETC upload, the mod folder).
+* A device test of the APK: the checklist in `DIFFERENCES_THREE_WAY.md` section 5, plus reading the
+  APK in place, the extraction fallback, ETC upload, the Alpha8 probe on a phone GPU, the mod folder.
+* The generated map: a menu entry and minimap, smoother region shapes, fleets, balance by play.
+* An engine host and game session object owning the subsystems; typed events; nullable reference
+  types; a versioned save format.
+* Layout: the facade replaced the checks; the layout numbers themselves (positions per profile) are
+  still in the code.
+* Rendering: no reordering by atlas (71 draw calls on the conquest map, all texture changes in
+  drawing order); asynchronous texture decoding on the loading screen.
+* TrueType text (Japanese, Traditional Chinese and Korean texts miss glyphs in every bundled font),
+  the battle animation, higher resolution art.
 
 ### Where to look
 
-* Engine: `WC2.Engine/IO/AssetSystem.cs`, `ModManager.cs`, `JsonData.cs`; texture changes in
-  `WC2.Engine/Graphics/ecGraphics.cs`.
-* Data: `WC2/content/`, readers next to the old ones (`UnitsJson.cs`, `DefinitionsJson.cs`,
-  `LoadBattleFromXml.cs`, ...), `WC2.Game/Data/` (`TerrainDefs.cs`, `MedalDefs.cs`, `GameRules.cs`,
-  `DataMigration.cs`, `DataCompare.cs`, `DataPaths.cs`).
-* Build: `WC2.Tools/`, `WC2/assets-layout.json`.
-* Tests: `WC2/tests/` (`README.md`, `golden/`), `WC2.Game/Supports/GameTestDriver.cs`,
-  `GameStateDigest.cs`.
-* Docs: `docs/DATA.md`, `docs/MODDING.md`, `docs/ASSETS.md`.
+* Engine: `Engine/IO/AssetSystem.cs`, `ModManager.cs`, `JsonData.cs`, `JsonSchema.cs`;
+  `Engine/Graphics/ecGraphics.cs` (formats, Alpha8, clipping), `Layout.cs`; `Engine/Core/PerfStats.cs`.
+* Data: `assets/data/json/` and its `schemas/`; `Data/` (paths, terrain, rules, layout profiles,
+  audio, countries, AI profiles, map packs); readers that need game types in `Game/Data/`.
+* Build and tools: `Tools/` (`PackBuilder`, `PackValidator`, `RuntimeFormats`, `ImageCompare`,
+  `MapPipeline`, `MapClassicExport`), `assets/build.json`, `Tools/map/`.
+* Tests: `Tests/` (`README.md`, `run-tests.ps1`, scripts, `golden/`, `Unit/`, `mods/`).
+* Docs: `ASSET_LAYOUT.md`, `DATA_SCHEMA.md`, `MODDING.md`, `MAP_PIPELINE.md`, `PORTING_GUIDE.md`.
 
 ---
 

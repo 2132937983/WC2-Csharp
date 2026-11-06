@@ -47,11 +47,19 @@ Coordinates are logical screen units (568 x 320 phone layout; scripts named `ipa
 | `settle` | close boxes and finish AI moves until the human side can act (ends no turn) |
 | `dump NAME` | write the rule state as `NAME.json` next to the screenshots |
 | `hittest LABEL` | every button off the screen is touched there (at a window pixel in the letterbox bars when the window has them, and at a synthetic point) through the input entry and straight through the GUI tree; every hidden button must refuse input. Buttons do not fire while probing; each one that would have fires a `hittest failed` log line |
+| `dumpafter COUNTRY NAME` | write the rule state as `NAME.json` the moment COUNTRY's turn ends (its own decisions, before the next country acts; AI tests) |
+| `startconquest FILE COUNTRY` | start a conquest with any scenario file as COUNTRY (the generated world map: `conquest_world.xml`) |
+| `texstats LABEL` | log the live texture memory and the last frame's draw calls; lines whose labels differ only by a trailing number must report the same memory (resources are released when screens close) |
 | `shot NAME` | screenshot |
 | `log TEXT` | write to the log |
 | `exit` | quit |
 
-Lines starting with `#` are comments.
+Lines starting with `#` are comments. A first line `#! ARGS` adds command line options (`$TESTS` is this
+folder). Scripts run with `--no-mods --ai classic` unless their `#!` line says otherwise (the goldens
+were recorded with the original AI).
+
+A script `X.txt` may have `X.expect`: lines `DUMP AREA owner COUNTRY` or `DUMP AREA units>=N` checked
+against the dumps (the AI tests).
 
 ## What the scripts cover
 
@@ -63,4 +71,18 @@ Lines starting with `#` are comments.
 | `attack_box`, `card_shop`, `commander_and_options`, `pause_options_save`, `save_and_load` | screens and flows |
 | `tutorial`, `ipad_tutorial` | the tutorial on the phone and tablet layouts |
 | `campaign_start`, `conquest_start` | starting both modes |
-| `hit_test`, `hit_test_wide`, `ipad_hit_test` | hidden and off-screen controls refuse touches: phone layout, a 1600x600 window (640x320 layout, bars left and right), a 1000x1000 window (tablet layout, bars above and below) |
+| `hit_test`, `hit_test_wide`, `ipad_hit_test` | hidden and off-screen controls refuse touches: phone layout, a 1600x600 window (640x320 layout, bars left and right), a 1000x1000 window (tablet layout, bars above and below); `card_shop`, `commander_and_options`, `conquest_start`, `pause_options_save`, `tutorial` probe their screens too |
+| `resource_cycle` | menu -> conquest -> menu twice: the same texture memory on every visit |
+| `ai_defends_marseille_classic`, `ai_defends_marseille_standard` | the test mod `mods/ai-marseille` (an Italian stack next to a weakly held Marseille): the standard AI reinforces and holds Marseille (`.expect`), the classic AI loses it |
+| `ai_standard_autoplay` | conquest 1 played by the standard AI for 16 rounds |
+| `world_autoplay` | the generated world map (`mods/map-natural-earth`, MAP_PIPELINE.md) played by the standard AI for four rounds |
+
+## Unit tests (`Unit/`, `dotnet test Tests`)
+
+| File | Covers |
+|---|---|
+| `SchemaAndDataTests.cs` | the schema validator; every data file against its schema; invalid mod data falls back to the game's data; the asset layer's resolution order; original names; variant folders; layout buckets |
+| `HitTestTests.cs` | points off the screen never hit; only the visible part of an edge control hits; hidden and disabled controls refuse input |
+| `NoPurchaseTests.cs` | no purchase code, billing permission, purchase types or buy button |
+| `AiProfileTests.cs` | classic equals the original numbers; inheritance; the command line override |
+| `MapPackTests.cs` | the Natural Earth pack (consistency, coverage, capitals, Marseille); the pipeline and the classic export on a synthetic world |
