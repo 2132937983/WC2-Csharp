@@ -649,21 +649,22 @@ public sealed partial class CActionAssist
         // not enough money: no
         if (g_NationInfo.money <= price || g_NationInfo.industry <= industry)
             return false;
-        // plenty of money: yes
-        if (g_NationInfo.money > 4 * price && g_NationInfo.industry > 4 * industry)
+        // plenty of money: yes (classic: more than 4x the price; data/json/ai/profiles.json)
+        var P = AiProfiles.Current;
+        if (g_NationInfo.money > P.cardAlwaysBuyMultiple * price && g_NationInfo.industry > P.cardAlwaysBuyMultiple * industry)
             return true;
         int standard;
         if (g_NationInfo.money <= 2 * price || g_NationInfo.industry <= 2 * industry)
         {
-            standard = 70;
+            standard = P.CardRefuse(0);   // classic 70
         }
         else if (g_NationInfo.money <= 3 * price || g_NationInfo.industry <= 3 * industry)
         {
-            standard = 45;
+            standard = P.CardRefuse(1);   // classic 45
         }
         else
         {
-            standard = 20;
+            standard = P.CardRefuse(2);   // classic 20
         }
         return choice > standard;
     }

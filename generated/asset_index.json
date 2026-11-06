@@ -318,6 +318,9 @@
       "size": 1951,
       "legacy": "tutorails.bin"
     },
+    "data/json/ai/profiles.json": {
+      "size": 2812
+    },
     "data/json/audio/audio.json": {
       "size": 1250
     },
@@ -356,6 +359,9 @@
     },
     "data/json/scenarios/index.json": {
       "size": 26716
+    },
+    "data/json/schemas/ai.schema.json": {
+      "size": 5244
     },
     "data/json/schemas/audio.schema.json": {
       "size": 1166

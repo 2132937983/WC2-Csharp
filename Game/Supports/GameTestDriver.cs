@@ -45,9 +45,33 @@ public static class GameTestDriver
         PerfStats.Reset();
     }
 
+    // dump when a country's turn ends (script command dumpafter): its own decisions, before the next
+    // country acts (the next country's first action still waits for the camera in that frame)
+    private static string s_watchCountry, s_watchFile;
+    private static bool s_watchSeen;
+
+    public static void DumpAfterTurn(string countryId, string file)
+    {
+        s_watchCountry = countryId;
+        s_watchFile = file;
+        s_watchSeen = false;
+    }
+
+    private static void CheckTurnWatch()
+    {
+        if (s_watchCountry == null || CStateManager.Instance().currentState is not CGameState) return;
+        string current = g_GameManager.GetCurCountry()?.id;
+        if (current == s_watchCountry) { s_watchSeen = true; return; }
+        if (!s_watchSeen) return;
+        GameStateDigest.Write(s_watchFile);
+        Log($"Autoplay: dumped {Path.GetFileName(s_watchFile)} after the turn of {s_watchCountry}");
+        s_watchCountry = null;
+    }
+
     /// <summary>Called every frame by the script driver while autoplay runs.</summary>
     public static void Step(float dt)
     {
+        CheckTurnWatch();
         if (!s_active) return;
         if (CStateManager.Instance().currentState is not CGameState gs)
         {

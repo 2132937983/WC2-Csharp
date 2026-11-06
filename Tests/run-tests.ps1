@@ -65,9 +65,12 @@ Get-ChildItem (Join-Path $PSScriptRoot '*.txt') | Where-Object { $_.BaseName -li
     if (Test-Path $log) { Remove-Item $log }
     $extra = @(); if ($name -like 'ipad*') { $extra += '--ipad' }   # ipad_*.txt scripts run in the 1024x768 tablet layout
     $firstLine = Get-Content $_.FullName -TotalCount 1
-    if ($firstLine -like '#!*') { $extra += @($firstLine.Substring(2).Trim() -split '\s+' | Where-Object { $_ }) }
+    # "#! ARGS": extra options; $TESTS stands for this folder (test mods live in Tests/mods)
+    if ($firstLine -like '#!*') { $extra += @($firstLine.Substring(2).Trim().Replace('$TESTS', $PSScriptRoot) -split '\s+' | Where-Object { $_ }) }
     if (-not $RealTime) { $extra += @('--seed', "$Seed", '--fixed-step', '--docs', (Join-Path $runDir 'docs')) }
-    $extra += '--no-mods'   # local mods (repository mods/ folder) must not change the results
+    if (-not ($extra -contains '--mods')) { $extra += '--no-mods' }   # local mods (repository mods/ folder) must not change the results
+    # the goldens were recorded with the original AI; scripts that test another profile say so with "#! --ai NAME"
+    if (-not ($extra -contains '--ai')) { $extra += @('--ai', 'classic') }
     & dotnet run --project $root --no-build -- @extra --exit-after 1500 --screenshot (Join-Path $runDir "$name.png") --script $_.FullName --log $log | Out-Null
     $problems = @(Select-String -Path $log -Pattern 'failed|xception' | Where-Object { $_.Line -notmatch 'Sound missing' } | ForEach-Object { $_.Line })
     if (-not (Select-String -Path $log -Pattern 'Music playing' -Quiet)) { $problems += 'no "Music playing" line in the log' }
@@ -109,6 +112,22 @@ Get-ChildItem (Join-Path $PSScriptRoot '*.txt') | Where-Object { $_.BaseName -li
                         $problems += "dump $($_.Name) differs from the golden: $first"
                     }
                 }
+            }
+        }
+
+        # expectations: <script>.expect lines "DUMP AREA owner COUNTRY" or "DUMP AREA units>=N" (AI tests)
+        $expectFile = [System.IO.Path]::ChangeExtension($_.FullName, '.expect')
+        if (Test-Path $expectFile) {
+            foreach ($line in Get-Content $expectFile) {
+                if ($line -match '^\s*(#|$)') { continue }
+                $f = $line.Trim() -split '\s+'
+                $dumpFile = Join-Path $runDir ($f[0] + '.json')
+                if (-not (Test-Path $dumpFile)) { $problems += "expect: dump $($f[0]) missing"; continue }
+                $state = Get-Content $dumpFile -Raw | ConvertFrom-Json
+                $area = $state.areas | Where-Object { $_.id -eq [int]$f[1] } | Select-Object -First 1
+                if (-not $area) { $problems += "expect: area $($f[1]) not in $($f[0])"; continue }
+                if ($f[2] -eq 'owner' -and $area.owner -ne $f[3]) { $problems += "expect: $($f[0]) area $($f[1]) owner is $($area.owner), expected $($f[3])" }
+                elseif ($f[2] -match '^units>=(\d+)$' -and @($area.units).Count -lt [int]$Matches[1]) { $problems += "expect: $($f[0]) area $($f[1]) has $(@($area.units).Count) unit(s), expected at least $($Matches[1])" }
             }
         }
 

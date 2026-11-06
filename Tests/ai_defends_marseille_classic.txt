@@ -1,0 +1,18 @@
+#! --mods $TESTS/mods --ai classic
+# AI (classic profile): France must hold Marseille (area 1159) against the Italian stack in Provence (1158),
+# test mod Tests/mods/ai-marseille. The dump is written when France's first turn ends, before Italy acts.
+wait 4.5
+click 510 152
+wait 2.5
+click 170 65
+wait 5
+click 552 302
+wait 6
+click 337 272
+wait 1
+dumpafter fr FR1
+autoplay 1
+dumpafter fr FR2
+autoplay 1
+dump R03
+exit

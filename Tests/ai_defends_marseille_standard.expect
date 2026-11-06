@@ -1,0 +1,5 @@
+# standard AI: France reinforces Marseille (area 1159) and still holds it after Italy's first assault
+FR1 1159 owner fr
+FR1 1159 units>=3
+FR2 1159 owner fr
+FR2 1159 units>=2

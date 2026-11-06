@@ -1,0 +1,7 @@
+{
+  "id": "ai-marseille",
+  "name": "AI test: Marseille under threat",
+  "description": "Conquest 1 with an Italian stack (2 heavy tanks, 1 tank) in Provence (area 1158), next to Marseille (area 1159, one French panzer); French infantry stand in 1155, 1156 and 1160. Used by Tests/ai_defends_marseille*.txt.",
+  "priority": 0,
+  "enabled": true
+}

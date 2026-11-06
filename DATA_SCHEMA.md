@@ -26,6 +26,7 @@ Every data file has a JSON Schema (draft 2020-12) in `assets/data/json/schemas/`
 | `map-areas.schema.json` | `maps/<id>/areas.json` |
 | `scenario-index.schema.json` | `scenarios/index.json` |
 | `text.schema.json` | `text/<code>/*.json` |
+| `ai.schema.json` | `ai/profiles.json` |
 
 * **At load time** (`JsonData.LoadMerged`, `Engine/IO/JsonSchema.cs`) the merged file (game plus
   mods) is checked against its schema. Problems are logged with their JSON path
@@ -68,6 +69,7 @@ registries (objects keyed by a name) accept any key.
 | `data/json/layout/profiles.json` | constants in the code | screen layouts (aspect ratio buckets) |
 | `data/json/audio/audio.json` | file names in the code | which sound plays for what |
 | `data/json/countries/countries.json` | lists in the code | countries with their own unit art, flag, badge |
+| `data/json/ai/profiles.json` | constants in the AI code | AI profiles: classic (the original), standard, hard |
 | `data/json/maps/<id>/areas.json` | `areatax<id>.xml` | area type and base tax of every area |
 | `data/json/scenarios/index.json` | (new) | index of the scenario XML files and tutorial scripts |
 | `data/json/text/<code>/stringtable_<code>[_iPad].json` | `stringtable_*.xml` | texts |
@@ -335,3 +337,40 @@ File names are original names or package paths; a mod can point a role at its ow
 the unit atlas) and flag (`flag_<id>.png`) the game looks up; `others` is the fallback art.
 `commanderMedal` countries have an AI commander badge (`medal_<id>.png`), the others use the common
 badges. Scenarios refer to these ids, with a digit for several countries of one nation (`de1`, `de2`).
+
+## ai
+
+`data/json/ai/profiles.json`: `{"default": "standard", "profiles": {"classic": {...}, "standard": {"base": "classic", ...}, "hard": {"base": "standard", ...}}}`.
+The AI code (`Game/AI`, original names) decides with these numbers; `classic` holds the original
+game's numbers and reproduces its decisions exactly (the regression goldens run with `--ai classic`).
+A profile names a `base` and lists only what it changes. `default` is the profile new games use;
+`--ai NAME` on the desktop overrides it.
+
+Every unit's choice is the highest scored action (stay, move to a neighbour, attack, march towards a
+target); the fields are the numbers of those scores:
+
+* area value: `taxWeight`, `industryWeight`, `areaTypeValue` (by area type id: normal, capital, port,
+  large city, normal city), `installationValue` (none, fort, entrenchment, anti-aircraft, radar);
+* staying: `stayNoEnemyDivisorPerUnit`, `stayThreatenedMultiplier`;
+* moving: `moveEnemyBonus`, `moveNeutralBonus`, `landingBonus`, `movePlayerBonus`, `moveEmptyOwnAreaPercent`;
+* attacking: `attackEnemyExtra`, `attackNeutralExtra`, `navyFortPenalty`, `navyShoreBonus`,
+  `assaultBonus`, `targetDefencePenalty`, `commanderBonus`, `carrierTargetBonus`, `attackPlayerBonus`,
+  `attackStackHpPercent` (percent of the hp behind the defender's front unit that counts against the
+  attack; classic 0: only the front unit counts);
+* marching: `pathStayIfAreaValueAbove`, `pathTechFactor`, `pathBase`, `pathStrongHp`, `pathStrongBonus`,
+  `pathFullHealthBonus`, `pathNavyBonus`, `pathAssaultBonus`, `pathCommanderBonus`, `pathLevelBonus`;
+* defending (all 0 in classic): an own area's defence weight is the sum of `defendCapital`,
+  `defendPort`, `defendAirfield`, `defendCity` and `defendHome` (an area the country owned when the
+  battle started) for what it is; its threat is the hp of the enemy units around it divided by the
+  hp of its own units, capped at `threatCapPercent`. Staying in it gains weight × threat ×
+  `defendStayPercent` / 100, moving into it gains weight × threat × `defendReinforcePercent` / 100,
+  and taking the last unit out of a threatened own capital costs `capitalLastUnitPenalty`;
+* cards: `cardBands` (the random card category bands, percent), `cardReservePercent` (no card once
+  money or industry fell below this percent of the turn's start), `cardAlwaysBuyMultiple`,
+  `cardRefusePercent` (refusal chance with money up to 2x, up to 3x, above 3x the price).
+
+`standard` holds and reinforces threatened capitals, ports, airfields, cities and home areas, never
+strips a threatened capital, weighs whole enemy stacks and buys cards more readily. `hard` adds a
+stronger push against the player. Tests: `Tests/ai_defends_marseille_standard` (France reinforces
+Marseille and still holds it after Italy's first assault; the classic AI loses it there),
+`ai_standard_autoplay`, and the unit tests in `Tests/Unit/AiProfileTests.cs`.

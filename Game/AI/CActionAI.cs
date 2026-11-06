@@ -25,8 +25,17 @@ public sealed partial class CActionAI
         currentCountryIndex = -1;
     }
 
+    /// <summary>Owner of every area when the battle started (or was loaded): the countries' home areas.</summary>
+    private CCountry[] homeOwner = Array.Empty<CCountry>();
+
+    /// <summary>Whether the area belongs to the country that owned it at the start (its home territory).</summary>
+    public bool IsHomeArea(CArea area) => area != null && area.id >= 0 && area.id < homeOwner.Length && homeOwner[area.id] == area.country;
+
     public void InitAI()
     {
+        AiProfiles.Select();
+        homeOwner = new CCountry[g_Scene.areaList.Count];
+        for (int a = 0; a < homeOwner.Length; a++) homeOwner[a] = g_Scene.GetArea(a)?.country;
         totalAiArmyAreaCount = 0;
         turnBeginActiveAreaCount = 0;
         CActionAssist.Instance().totalSeaAreaCount = 0;
@@ -144,8 +153,9 @@ public sealed partial class CActionAI
             if (currentCountryIndex != countryIndex)
             {
                 currentCountryIndex = countryIndex;
-                turnBeginMoneyQuarter = currentCountry.money / 4;
-                turnBeginIndustryQuarter = currentCountry.industry / 4;
+                // (classic: a quarter, data/json/ai/profiles.json cardReservePercent)
+                turnBeginMoneyQuarter = currentCountry.money * AiProfiles.Current.cardReservePercent / 100;
+                turnBeginIndustryQuarter = currentCountry.industry * AiProfiles.Current.cardReservePercent / 100;
             }
 
             // basic situation of the country, including usable cards
@@ -154,25 +164,26 @@ public sealed partial class CActionAI
             // pick a card category at random; the lowest card id of the category stands for it
             int choice = GetAIRand() % 100;
             CARD_ID cardId;
-            if (choice > 92)
+            var P = AiProfiles.Current;   // random bands, classic 92 / 79 / 72 / 59 / 49
+            if (choice > P.CardBand(0))
             {
                 // installation cards
                 cardId = LAND_FORT_CARD;
             }
-            else if (choice > 79)
+            else if (choice > P.CardBand(1))
             {
                 cardId = AIR_STRIKE_CARD;
             }
-            else if (choice > 72)
+            else if (choice > P.CardBand(2))
             {
                 // construction cards
                 cardId = CITY_CARD;
             }
-            else if (choice > 59)
+            else if (choice > P.CardBand(3))
             {
                 cardId = ASSAULT_ART_CARD;
             }
-            else if (choice > 49)
+            else if (choice > P.CardBand(4))
             {
                 cardId = DESTROYER_CARD;
             }

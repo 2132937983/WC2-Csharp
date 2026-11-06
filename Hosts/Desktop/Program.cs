@@ -1,4 +1,4 @@
-﻿using WC2;
+using WC2;
 
 // Command line: WC2 [--ipad] [--width N] [--height N] [--assets PATH] [--lang xx]
 //               [--exit-after SEC] [--screenshot PATH] [--screenshot-every SEC] [--script FILE] [--log FILE]
@@ -35,6 +35,7 @@ for (int i = 0; i < args.Length; i++)
         case "--mods" when i + 1 < args.Length: ecGame.ModsFolderOverride = Path.GetFullPath(args[++i]); break;
         case "--no-mods": ecGame.ModsDisabled = true; break;
         case "--all-mods": ModManager.IncludeDisabled = true; break;
+        case "--ai" when i + 1 < args.Length: AiProfiles.Override = args[++i]; break;
         case "--texture-stats": ecGraphics.TextureStatsEvery = 120; break;
     }
 }

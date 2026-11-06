@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ai.schema.json",
+  "title": "AI profiles",
+  "description": "Field reference: DATA_SCHEMA.md#ai. Checked whenever the game loads the file (mods included).",
+  "type": "object",
+  "required": [
+    "profiles"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "format": {
+      "type": "integer",
+      "const": 1
+    },
+    "about": {
+      "type": "string"
+    },
+    "default": {
+      "type": "string"
+    },
+    "profiles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "base": {
+            "type": "string",
+            "description": "Profile this one starts from (default classic)."
+          },
+          "description": {
+            "type": "string"
+          },
+          "areaTypeValueByName": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Area type values by terrain area type name."
+          },
+          "taxWeight": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "industryWeight": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "stayNoEnemyDivisorPerUnit": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "stayThreatenedMultiplier": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "moveEnemyBonus": {
+            "type": "integer"
+          },
+          "moveNeutralBonus": {
+            "type": "integer"
+          },
+          "landingBonus": {
+            "type": "integer"
+          },
+          "movePlayerBonus": {
+            "type": "integer"
+          },
+          "moveEmptyOwnAreaPercent": {
+            "type": "integer"
+          },
+          "attackEnemyExtra": {
+            "type": "integer"
+          },
+          "attackNeutralExtra": {
+            "type": "integer"
+          },
+          "navyFortPenalty": {
+            "type": "integer"
+          },
+          "navyShoreBonus": {
+            "type": "integer"
+          },
+          "assaultBonus": {
+            "type": "integer"
+          },
+          "targetDefencePenalty": {
+            "type": "integer"
+          },
+          "commanderBonus": {
+            "type": "integer"
+          },
+          "carrierTargetBonus": {
+            "type": "integer"
+          },
+          "attackPlayerBonus": {
+            "type": "integer"
+          },
+          "attackStackHpPercent": {
+            "type": "integer"
+          },
+          "pathStayIfAreaValueAbove": {
+            "type": "integer"
+          },
+          "pathTechFactor": {
+            "type": "integer"
+          },
+          "pathBase": {
+            "type": "integer"
+          },
+          "pathStrongHp": {
+            "type": "integer"
+          },
+          "pathStrongBonus": {
+            "type": "integer"
+          },
+          "pathFullHealthBonus": {
+            "type": "integer"
+          },
+          "pathNavyBonus": {
+            "type": "integer"
+          },
+          "pathAssaultBonus": {
+            "type": "integer"
+          },
+          "pathCommanderBonus": {
+            "type": "integer"
+          },
+          "pathLevelBonus": {
+            "type": "integer"
+          },
+          "defendCapital": {
+            "type": "integer"
+          },
+          "defendPort": {
+            "type": "integer"
+          },
+          "defendAirfield": {
+            "type": "integer"
+          },
+          "defendCity": {
+            "type": "integer"
+          },
+          "defendHome": {
+            "type": "integer"
+          },
+          "threatCapPercent": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "defendStayPercent": {
+            "type": "integer"
+          },
+          "defendReinforcePercent": {
+            "type": "integer"
+          },
+          "capitalLastUnitPenalty": {
+            "type": "integer"
+          },
+          "cardReservePercent": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "cardAlwaysBuyMultiple": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "AreaTypeValue(int typeId)": {
+            "type": "integer"
+          },
+          "InstallationValue(int id)": {
+            "type": "integer"
+          },
+          "CardBand(int i)": {
+            "type": "integer"
+          },
+          "CardRefuse(int i)": {
+            "type": "integer"
+          },
+          "areaTypeValue": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "installationValue": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "cardBands": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "cardRefusePercent": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -97,12 +97,53 @@ public sealed partial class CActionAssist
     {
         if (area == null)
             return -1;
-        // original: plain (NORMAL) areas count 1, capital 250, large city 80, city 150, port 80
-        int[] TypeAdd = { 1, 250, 80, 150, 80 };
-        int[] InstalltionAdd = { 0, 20, 15, 10 };
-        return (area.GetRealTax() * 2 + area.GetIndustry() * 3 +
-                (((int)area.info.areaType < 5) ? TypeAdd[(int)area.info.areaType] : 0) +
-                (((int)area.installationType < 4) ? InstalltionAdd[(int)area.installationType] : 0));
+        // original: tax * 2 + industry * 3 + area type (normal 1, capital 250, port 80, large city 150,
+        // normal city 80) + installation (fort 20, entrenchment 15, anti-aircraft 10); data/json/ai/profiles.json
+        var P = AiProfiles.Current;
+        return area.GetRealTax() * P.taxWeight + area.GetIndustry() * P.industryWeight +
+               P.AreaTypeValue((int)area.info.areaType) + P.InstallationValue((int)area.installationType);
+    }
+
+    /// <summary>
+    /// Improved profiles: how much an own area is worth defending (capital, port, airfield, city,
+    /// home area weights of the profile) times the threat (enemy hp around / own hp, capped), times
+    /// <paramref name="percent"/> / 100. 0 for areas of other countries and when no enemy is around.
+    /// </summary>
+    private int DefenceBonus(CArea area, int enemyHp, int ownHp, int percent)
+    {
+        if (area == null || enemyHp <= 0 || percent == 0) return 0;
+        var P = AiProfiles.Current;
+        var type = Terrain.Area(area.info.areaType);
+        int weight = 0;
+        if (type.capital) weight += P.defendCapital;
+        if (type.port) weight += P.defendPort;
+        if (area.info.constructionType == AIRPORT && area.info.constructionLevel > 0) weight += P.defendAirfield;
+        if (type.cityLevel > 0 || (area.info.constructionType == CITY && area.info.constructionLevel > 0)) weight += P.defendCity;
+        if (area.country != null && CActionAI.Instance().IsHomeArea(area)) weight += P.defendHome;
+        if (weight == 0) return 0;
+        int threatPercent = Math.Min(P.threatCapPercent, enemyHp * 100 / Math.Max(1, ownHp));
+        return weight * threatPercent / 100 * percent / 100;
+    }
+
+    /// <summary>The unit is the last one in its own capital and enemies are around.</summary>
+    private static bool LeavesCapitalOpen(CArea area, int armyCountHere, int enemyHpAround) =>
+        armyCountHere <= 1 && enemyHpAround > 0 && Terrain.Area(area.info.areaType).capital;
+
+    /// <summary>
+    /// Hp of the enemy units next to an area (mode 2010 of getNeighbor, without touching the shared
+    /// neighbour array the move evaluation iterates).
+    /// </summary>
+    private int EnemyHpAround(int areaId)
+    {
+        int value = 0;
+        int count = g_Scene.GetNumAdjacentAreas(areaId);
+        for (int i = 0; i < count; i++)
+        {
+            CArea area = g_Scene.GetAdjacentArea(areaId, i);
+            if (area == null || area.armyCount <= 0) continue;
+            if (getAlliance(areaId, area.id, (int)ENEMY)) value += calcAreaArmyHp(area, false);
+        }
+        return value;
     }
 
     /// <summary>sub_61504: forwards to CArea.calcAreaArmyHp.</summary>
@@ -184,7 +225,8 @@ public sealed partial class CActionAssist
     /// <param name="unused">unknown fourth parameter</param>
     public void actionToNextArea(int mode, int areaId, int armyIndex, int unused)
     {
-        // shared values
+        // shared values (every number below comes from the AI profile, data/json/ai/profiles.json)
+        var P = AiProfiles.Current;
         CArea areaIn = g_Scene.GetArea(areaId);
         CArmy armyIn = areaIn.army[armyIndex];
         int armyCountHere = areaIn.armyCount;
@@ -218,13 +260,16 @@ public sealed partial class CActionAssist
                 if (neighboursEnemyHealthSum == 0)
                 {
                     // no enemies around: staying is much less likely
-                    targetNode.targetValue /= (2 * armyCountHere + 1);
+                    targetNode.targetValue /= (P.stayNoEnemyDivisorPerUnit * armyCountHere + 1);
                 }
                 else if (neighboursEnemyHealthSum > areaInArmyHp)
                 {
                     // enemies around are stronger than this area's units
-                    targetNode.targetValue *= 2;
+                    targetNode.targetValue *= P.stayThreatenedMultiplier;
                 }
+                // improved profiles: hold threatened capitals, ports, airfields, cities and home areas
+                if (P.defendStayPercent != 0)
+                    targetNode.targetValue += DefenceBonus(areaIn, neighboursEnemyHealthSum, areaInArmyHp, P.defendStayPercent);
                 bool ifPlayerPlaying = false;
                 if (countryIn != null)
                 {
@@ -257,8 +302,12 @@ public sealed partial class CActionAssist
                         if (targetArea.armyCount == 0 && areaIn.armyCount > 1)
                         {
                             // empty target and more than one unit here (defenders remain after the move)
-                            targetNode.targetValue += targetAreaValue / 2;
+                            targetNode.targetValue += targetAreaValue * P.moveEmptyOwnAreaPercent / 100;
                         }
+                        // improved profiles: reinforce a threatened capital, port, airfield, city or home area
+                        if (P.defendReinforcePercent != 0)
+                            targetNode.targetValue += DefenceBonus(targetArea, EnemyHpAround(targetArea.id),
+                                calcAreaArmyHp(targetArea, false), P.defendReinforcePercent);
                     }
                     else if (getAlliance(areaId, targetArea.id, (int)ENEMY))
                     {
@@ -268,19 +317,19 @@ public sealed partial class CActionAssist
                             // other enemies around: hp difference plus army count times target value
                             targetNode.targetValue += (areaInArmyHp +
                                                        armyCountHere * targetAreaValue
-                                                       - neighboursEnemyHealthSum + 80);
+                                                       - neighboursEnemyHealthSum + P.moveEnemyBonus);
                         }
                         else
                         {
                             // otherwise only army count and target value
                             targetNode.targetValue += (targetAreaValue +
                                                        armyCountHere * targetAreaValue
-                                                       + 80);
+                                                       + P.moveEnemyBonus);
                         }
                         if ((!targetArea.info.sea) && ifAreaInSea)
                         {
                             // landing is favoured
-                            targetNode.targetValue += 80;
+                            targetNode.targetValue += P.landingBonus;
                         }
                     }
                     else if (getAlliance(areaId, targetArea.id, (int)NOT_ALLY))
@@ -291,16 +340,16 @@ public sealed partial class CActionAssist
                             targetNode.targetValue += (areaInArmyHp +
                                                        armyCountHere * targetAreaValue
                                                        - neighboursEnemyHealthSum +
-                                                       60);
+                                                       P.moveNeutralBonus);
                         }
                         else
                         {
                             targetNode.targetValue += (targetAreaValue +
-                                                       armyCountHere * targetAreaValue + 60);
+                                                       armyCountHere * targetAreaValue + P.moveNeutralBonus);
                         }
                         if ((!targetArea.info.sea) && ifAreaInSea)
                         {
-                            targetNode.targetValue += 80;
+                            targetNode.targetValue += P.landingBonus;
                         }
                     }
 
@@ -315,8 +364,11 @@ public sealed partial class CActionAssist
                     // the AI prefers player areas (the decompiled code is odd, this follows the semantics)
                     if (targetNode.targetIsPlayer)
                     {
-                        targetNode.targetValue += 40;
+                        targetNode.targetValue += P.movePlayerBonus;
                     }
+                    // improved profiles: do not take the last unit out of a threatened capital
+                    if (P.capitalLastUnitPenalty != 0 && LeavesCapitalOpen(areaIn, armyCountHere, neighboursEnemyHealthSum))
+                        targetNode.targetValue -= P.capitalLastUnitPenalty;
                     // original: (int)(rate * value); units below half strength are scaled, not zeroed
                     targetNode.targetValue = (int)(coefficient * targetNode.targetValue);
                     actionToNextAreaTargetIdList.Add(targetNode);
@@ -351,12 +403,12 @@ public sealed partial class CActionAssist
                             if (neighboursEnemyHealthSum > areaInArmyHp)
                             {
                                 armyCountCoe = armyCountHere - 1;
-                                extraBenefit = 120;
+                                extraBenefit = P.attackEnemyExtra;
                             }
                             else if (neighboursEnemyHealthSum < areaInArmyHp)
                             {
                                 armyCountCoe = armyCountHere;
-                                extraBenefit = 120;
+                                extraBenefit = P.attackEnemyExtra;
                             }
                         }
                         else
@@ -366,12 +418,12 @@ public sealed partial class CActionAssist
                                 if (neighboursEnemyHealthSum > areaInArmyHp)
                                 {
                                     armyCountCoe = armyCountHere - 1;
-                                    extraBenefit = 40;
+                                    extraBenefit = P.attackNeutralExtra;
                                 }
                                 else if (neighboursEnemyHealthSum < areaInArmyHp)
                                 {
                                     armyCountCoe = armyCountHere;
-                                    extraBenefit = 40;
+                                    extraBenefit = P.attackNeutralExtra;
                                 }
                             }
                         }
@@ -380,6 +432,9 @@ public sealed partial class CActionAssist
                         // the surrounding strengths are equal (coe and extra stay 0)
                         targetNode.targetValue += armyCountCoe * (armyIn.hp + calcAreaValue(targetArea) - targetArmy.hp)
                                                   + extraBenefit;
+                        // improved profiles: the units behind the front defender count too
+                        if (P.attackStackHpPercent != 0)
+                            targetNode.targetValue -= P.attackStackHpPercent * (calcAreaArmyHp(targetArea, false) - targetArmy.hp) / 100;
 
                         // Unit type and weapon/armor relations; composite weapon types already take
                         // the highest rate inside GetWeaponArmorDamageRate(). Only a tendency is added,
@@ -399,29 +454,29 @@ public sealed partial class CActionAssist
                             // navy gets the fort second counter
                             if (targetArea.installationType == FORT)
                             {
-                                targetNode.targetValue -= 90;
+                                targetNode.targetValue -= P.navyFortPenalty;
                             }
                             else
                             {
-                                targetNode.targetValue += 50;
+                                targetNode.targetValue += P.navyShoreBonus;
                             }
                         }
                         // tactics influence; cards is a bit set (1 << ARMY_CARD), the original masks 1/2/8/4
                         if ((armyIn.cards & (1 << (int)ASSAULT)) != 0)
-                            targetNode.targetValue += 20;
+                            targetNode.targetValue += P.assaultBonus;
                         if ((targetArmy.cards & (1 << (int)DEFENCE)) != 0)
-                            targetNode.targetValue -= 20;
+                            targetNode.targetValue -= P.targetDefencePenalty;
                         if ((armyIn.cards & (1 << (int)COMMANDER)) != 0)
-                            targetNode.targetValue += 30;
+                            targetNode.targetValue += P.commanderBonus;
                         // carriers are money too
                         if ((targetArmy.cards & (1 << (int)CARRIER)) != 0)
-                            targetNode.targetValue += 5;
+                            targetNode.targetValue += P.carrierTargetBonus;
 
                         targetNode.targetIsPlayer = targetArea.country != null && !targetArea.country.ai;
                         if (targetNode.targetIsPlayer)
                         {
                             // the AI prefers hitting the player
-                            targetNode.targetValue += 40;
+                            targetNode.targetValue += P.attackPlayerBonus;
                         }
                         targetNode.targetValue = (int)(targetNode.targetValue * armyIn.CalcHpRate());
                         actionToNextAreaTargetIdList.Add(targetNode);
@@ -433,29 +488,32 @@ public sealed partial class CActionAssist
             case 0x4000:
             {
                 // path finding, then move towards the first reachable step
-                if (areaInValue > 300 && armyCountHere == 1) break;
+                if (areaInValue > P.pathStayIfAreaValueAbove && armyCountHere == 1) break;
                 // the country is never null here; higher tech countries are more willing to path find
-                targetNode.targetValue = (5 * countryIn.tech + 30) * armyCountHere;
+                targetNode.targetValue = (P.pathTechFactor * countryIn.tech + P.pathBase) * armyCountHere;
                 // hp tank
-                if (armyIn.hp > 119) targetNode.targetValue += 40;
+                if (armyIn.hp > P.pathStrongHp) targetNode.targetValue += P.pathStrongBonus;
 
                 // full health raises the tendency
                 if (armyIn.IsFullHealth())
                 {
-                    targetNode.targetValue += 20;
+                    targetNode.targetValue += P.pathFullHealthBonus;
                 }
                 // navy moves rather than stays
                 if (armyIn.IsNavy() || (armyIn.cards & (1 << (int)CARRIER)) != 0)
                 {
-                    targetNode.targetValue += 40;
+                    targetNode.targetValue += P.pathNavyBonus;
                 }
 
                 // individual unit strength (bit masks, see 0x3000)
                 if ((armyIn.cards & (1 << (int)ASSAULT)) != 0)
-                    targetNode.targetValue += 20;
+                    targetNode.targetValue += P.pathAssaultBonus;
                 if ((armyIn.cards & (1 << (int)COMMANDER)) != 0)
-                    targetNode.targetValue += 40;
-                targetNode.targetValue += 20 * armyIn.level;
+                    targetNode.targetValue += P.pathCommanderBonus;
+                targetNode.targetValue += P.pathLevelBonus * armyIn.level;
+                // improved profiles: do not take the last unit out of a threatened capital
+                if (P.capitalLastUnitPenalty != 0 && LeavesCapitalOpen(areaIn, armyCountHere, neighboursEnemyHealthSum))
+                    targetNode.targetValue -= P.capitalLastUnitPenalty;
                 // surrounding enemies
                 if (neighboursEnemyHealthSum != 0)
                 {

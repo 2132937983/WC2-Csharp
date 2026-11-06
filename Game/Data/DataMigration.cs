@@ -140,6 +140,13 @@ public static class DataMigration
         },
         new Converter
         {
+            // the improved profiles are authored data: convert only creates the file (classic) when it is missing
+            name = "AI profiles (classic = the original's numbers)",
+            convert = () => AssetSystem.Exists(DataPaths.AiProfiles) ? Enumerable.Empty<(string, JsonNode)>() : One(DataPaths.AiProfiles, AiProfiles.BuiltInJson()),
+            verify = () => BuiltInVsJson(DataPaths.AiProfiles, "ai.classic", AiProfiles.LoadBuiltIn, AiProfiles.LoadJson, AiProfiles.Snapshot),
+        },
+        new Converter
+        {
             name = "global rules (built-in rules)",
             convert = () => One(DataPaths.Rules, GameRules.BuiltInJson()),
             verify = () =>

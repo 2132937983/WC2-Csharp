@@ -50,6 +50,9 @@ with the game's file:
 
 The field reference of every data file is in `DATA_SCHEMA.md`.
 
+**AI behaviour** (`data/json/ai/profiles.json`): a mod can change single numbers of a profile, add a
+profile (`"base": "standard"` plus what differs) or change the `default` profile.
+
 **Scenarios and tutorial scripts** are the original XML files (`data/xml/scenarios/`,
 `scripts/tutorial/`); a mod's file replaces the game's file by path or original name. To add a
 scenario, add its XML, an entry in `data/json/scenarios/index.json` (`"file"` says where the XML is) and

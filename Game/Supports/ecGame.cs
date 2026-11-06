@@ -111,6 +111,8 @@ public static class ecGame
         LayoutProfiles.LoadJson();
         AudioDefs.LoadJson();
         CountryDefs.LoadJson();
+        AiProfiles.LoadJson();
+        Log("AI profile: " + AiProfiles.Current + (AiProfiles.Override != null ? " (--ai)" : " (default)"));
 
         string lang = langOverride;
         if (string.IsNullOrEmpty(lang))

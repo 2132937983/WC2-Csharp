@@ -16,6 +16,7 @@ public static class DataPaths
     public const string LayoutProfiles = "data/json/layout/profiles.json";
     public const string Audio = "data/json/audio/audio.json";
     public const string Countries = "data/json/countries/countries.json";
+    public const string AiProfiles = "data/json/ai/profiles.json";
 
     /// <summary>Language settings of the current language folder (was Localizable.strings).</summary>
     public const string Language = "language.json";
@@ -42,7 +43,7 @@ public static class DataPaths
         (Units, null, "units"), (Cards, null, "cards"), (Commanders, null, "commanders"), (Portraits, null, "portraits"),
         (Campaigns, null, "campaigns"), (Conquests, null, "conquests"), (Terrain, null, "terrain"), (Medals, null, "medals"),
         (Rules, null, "rules"), (OptionsLayout, null, "options-layout"), (LayoutProfiles, null, "layout-profiles"),
-        (Audio, null, "audio"), (Countries, null, "countries"), (ScenarioIndex, null, "scenario-index"),
+        (Audio, null, "audio"), (Countries, null, "countries"), (ScenarioIndex, null, "scenario-index"), (AiProfiles, null, "ai"),
         ("data/json/maps/", "/areas.json", "map-areas"), ("data/json/text/", ".json", "text"),
     };
 

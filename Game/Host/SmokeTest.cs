@@ -18,6 +18,7 @@ namespace WC2;
 ///   dump NAME               - write the rule state as JSON (golden tests)
 ///   hittest LABEL           - off-screen and hidden buttons must not react to touches (logs failures)
 ///   texstats LABEL          - log the live texture memory
+///   dumpafter COUNTRY NAME  - write the rule state when COUNTRY's turn ends (before the next acts)
 ///   log TEXT                - write to the log
 ///   exit                    - quit
 /// Lines starting with # are comments.
@@ -155,6 +156,14 @@ public static class SmokeTest
                 string name = c.args.Length > 0 ? c.args[0] : "state";
                 if (!name.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) name += ".json";
                 GameStateDigest.Write(Path.Combine(OutputDirectory ?? ".", name));
+                break;
+            }
+            case "dumpafter":
+            {
+                // dumpafter COUNTRY NAME: write the rule state when that country's turn ends (AI tests)
+                string name = c.args.Length > 1 ? c.args[1] : "after_" + c.args[0];
+                if (!name.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) name += ".json";
+                GameTestDriver.DumpAfterTurn(c.args[0], Path.Combine(OutputDirectory ?? ".", name));
                 break;
             }
             case "hittest":
