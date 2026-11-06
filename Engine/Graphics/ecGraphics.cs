@@ -552,7 +552,13 @@ public sealed class ecGraphics
             }
             if (rgba == null) { Log("Texture decode failed: " + path); return null; }
             Texture2D tex2d;
-            if (opaque && DecodeEtcTo565)
+            if (LoadFormat(path) == "rgba5551")
+            {
+                // load-time runtime format (assets/build.json, generated/texture_formats.json)
+                tex2d = new Texture2D(device, w, h, false, SurfaceFormat.Bgra5551);
+                tex2d.SetData(PackRgba5551(rgba, w * h));
+            }
+            else if (opaque && DecodeEtcTo565)
             {
                 // a GPU without ETC: 16 bit RGB565 instead of RGBA8 halves the map tiles (ETC1 carries
                 // about 5 bits per channel itself)
@@ -588,6 +594,36 @@ public sealed class ecGraphics
 
     /// <summary>CPU-decoded ETC1 textures (no ETC support on the GPU) are uploaded as RGB565.</summary>
     public static bool DecodeEtcTo565 = true;
+
+    private static Dictionary<string, string> s_loadFormats;
+
+    /// <summary>Forgets the load-time format list (after the asset layers change).</summary>
+    public static void ResetLoadFormats() => s_loadFormats = null;
+
+    /// <summary>The load-time format of a package path (generated/texture_formats.json), or null.</summary>
+    private static string LoadFormat(string path)
+    {
+        if (s_loadFormats == null)
+        {
+            s_loadFormats = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            string text = AssetSystem.ReadAllText("generated/texture_formats.json");
+            if (text != null && JsonData.Parse(text) is System.Text.Json.Nodes.JsonObject o && o.Obj("textures") is System.Text.Json.Nodes.JsonObject list)
+                foreach (var (key, value) in list) s_loadFormats[key] = value?.Text();
+        }
+        return s_loadFormats.TryGetValue(path, out var f) ? f : null;
+    }
+
+    /// <summary>RGBA8 to GL_UNSIGNED_SHORT_5_5_5_1 (R in the high bits, alpha in bit 0; MonoGame's Bgra5551 on OpenGL).</summary>
+    private static ushort[] PackRgba5551(byte[] rgba, int pixels)
+    {
+        var packed = new ushort[pixels];
+        for (int i = 0, j = 0; i < pixels; i++, j += 4)
+        {
+            int r = (rgba[j] * 31 + 127) / 255, g = (rgba[j + 1] * 31 + 127) / 255, b = (rgba[j + 2] * 31 + 127) / 255;
+            packed[i] = (ushort)((r << 11) | (g << 6) | (b << 1) | (rgba[j + 3] >= 128 ? 1 : 0));
+        }
+        return packed;
+    }
 
     /// <summary>RGBA8 to GL_UNSIGNED_SHORT_5_6_5 (R in the high bits; MonoGame's Bgr565 on OpenGL).</summary>
     private static ushort[] PackRgb565(byte[] rgba, int pixels)

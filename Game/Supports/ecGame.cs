@@ -103,6 +103,7 @@ public static class ecGame
         ecStringTable.JsonTwinResolver = DataPaths.TextJson;
         JsonData.SchemaResolver = DataPaths.SchemaFor;   // every data file is checked against its schema when it loads
         JsonData.ResetSchemas();
+        ecGraphics.ResetLoadFormats();
         AssetSystem.Reset();
         AssetSystem.Mount(new AssetLayer { Id = "base", Name = "Base game", Source = baseSource, Aliases = aliases });
         if (!ModsDisabled) ModManager.MountMods(modFolders ?? Array.Empty<string>());
