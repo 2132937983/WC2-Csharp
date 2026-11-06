@@ -27,7 +27,7 @@ public sealed class GUIAIProgress : GUIElement
 
         imageAiProgress = new ecImage(s_TextureRes.GetImage("aiprogress.png"));
 
-        string progressImageName = ecGraphics.Instance().widthMode == 3 ? "progressbar.png" : "block.png";
+        string progressImageName = Layout.Tablet ? "progressbar.png" : "block.png";
         imageProgressbar = new ecImage(s_TextureRes.GetImage(progressImageName));
         progressCount = 0;
 

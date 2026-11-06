@@ -135,7 +135,7 @@ public static class ecGame
         g_Font1.Init("font1.fnt", false);
 
         ecGraphics graphics = ecGraphics.Instance();
-        bool tablet = graphics.widthMode == 3;
+        bool tablet = Layout.Tablet;
         bool hd = g_contenscalefactor == 2.0f;
         string language = g_LocalizableStrings.GetString("language");
 
@@ -230,6 +230,9 @@ public static class ecGame
 
         ecGraphics graphics = ecGraphics.Instance();
         graphics.Init(layoutWidth, layoutHeight, orientation, screenWidth, screenHeight);
+        // the layout profile decides the width mode (the built-in profiles give the original's values)
+        if (LayoutProfiles.Current.width == layoutWidth && LayoutProfiles.Current.height == layoutHeight)
+            graphics.widthMode = LayoutProfiles.Current.widthMode;
 
         GUIManager guiManager = GUIManager.Instance();
         var screenRect = new GUIRect(0f, 0f, graphics.screenW, graphics.screenH);
@@ -247,7 +250,7 @@ public static class ecGame
         stateManager.SetCurState(EState.LOGO);
 
         g_LocalizableStrings.Load("Localizable.strings");
-        string stringTableName = graphics.widthMode == 3 ? "stringtable iPad" : "stringtable";
+        string stringTableName = Layout.Tablet ? "stringtable iPad" : "stringtable";
         string stringTable = g_LocalizableStrings.GetString(stringTableName);
         g_StringTable.Load(stringTable);
         LoadGlobalGuiAtlases(graphics, guiManager);
@@ -274,7 +277,7 @@ public static class ecGame
     {
         string language = g_LocalizableStrings.GetString("language");
         bool hd = g_contenscalefactor == 2.0f;
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             // original CLogoState::OnEnter, tablet branch (atlas name, hd flag)
             guiManager.LoadTextureRes("ui_iPad.xml", false);

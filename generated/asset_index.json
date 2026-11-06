@@ -875,6 +875,242 @@
       "lang": "cn",
       "from": "image/fonts/hd/cn/fontkt.png"
     },
+    "generated/image/map/regions/common/m1_conquest1.wctex": {
+      "size": 38979,
+      "from": "image/map/regions/common/m1_conquest1.webp"
+    },
+    "generated/image/map/regions/common/m1_conquest2.wctex": {
+      "size": 26793,
+      "from": "image/map/regions/common/m1_conquest2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone10_1.wctex": {
+      "size": 341683,
+      "from": "image/map/regions/common/m1_zone10_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone10_2.wctex": {
+      "size": 225638,
+      "from": "image/map/regions/common/m1_zone10_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone11_1.wctex": {
+      "size": 167406,
+      "from": "image/map/regions/common/m1_zone11_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone11_2.wctex": {
+      "size": 86906,
+      "from": "image/map/regions/common/m1_zone11_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone12_1.wctex": {
+      "size": 342051,
+      "from": "image/map/regions/common/m1_zone12_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone12_2.wctex": {
+      "size": 200074,
+      "from": "image/map/regions/common/m1_zone12_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone13_1.wctex": {
+      "size": 346723,
+      "from": "image/map/regions/common/m1_zone13_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone13_2.wctex": {
+      "size": 269593,
+      "from": "image/map/regions/common/m1_zone13_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone14_1.wctex": {
+      "size": 347847,
+      "from": "image/map/regions/common/m1_zone14_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone14_2.wctex": {
+      "size": 250719,
+      "from": "image/map/regions/common/m1_zone14_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone15_1.wctex": {
+      "size": 344862,
+      "from": "image/map/regions/common/m1_zone15_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone15_2.wctex": {
+      "size": 263522,
+      "from": "image/map/regions/common/m1_zone15_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone16_1.wctex": {
+      "size": 325477,
+      "from": "image/map/regions/common/m1_zone16_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone16_2.wctex": {
+      "size": 207234,
+      "from": "image/map/regions/common/m1_zone16_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone17_1.wctex": {
+      "size": 245891,
+      "from": "image/map/regions/common/m1_zone17_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone17_2.wctex": {
+      "size": 235130,
+      "from": "image/map/regions/common/m1_zone17_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone18_1.wctex": {
+      "size": 330336,
+      "from": "image/map/regions/common/m1_zone18_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone18_2.wctex": {
+      "size": 221320,
+      "from": "image/map/regions/common/m1_zone18_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone19_1.wctex": {
+      "size": 292650,
+      "from": "image/map/regions/common/m1_zone19_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone19_2.wctex": {
+      "size": 226718,
+      "from": "image/map/regions/common/m1_zone19_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone1_1.wctex": {
+      "size": 242938,
+      "from": "image/map/regions/common/m1_zone1_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone1_2.wctex": {
+      "size": 231807,
+      "from": "image/map/regions/common/m1_zone1_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone20_1.wctex": {
+      "size": 311293,
+      "from": "image/map/regions/common/m1_zone20_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone20_2.wctex": {
+      "size": 199767,
+      "from": "image/map/regions/common/m1_zone20_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone21_1.wctex": {
+      "size": 202925,
+      "from": "image/map/regions/common/m1_zone21_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone21_2.wctex": {
+      "size": 135226,
+      "from": "image/map/regions/common/m1_zone21_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone22_1.wctex": {
+      "size": 125420,
+      "from": "image/map/regions/common/m1_zone22_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone22_2.wctex": {
+      "size": 78202,
+      "from": "image/map/regions/common/m1_zone22_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone23_1.wctex": {
+      "size": 229985,
+      "from": "image/map/regions/common/m1_zone23_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone23_2.wctex": {
+      "size": 122821,
+      "from": "image/map/regions/common/m1_zone23_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone24_1.wctex": {
+      "size": 273037,
+      "from": "image/map/regions/common/m1_zone24_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone24_2.wctex": {
+      "size": 176799,
+      "from": "image/map/regions/common/m1_zone24_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone25_1.wctex": {
+      "size": 261390,
+      "from": "image/map/regions/common/m1_zone25_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone26_1.wctex": {
+      "size": 118656,
+      "from": "image/map/regions/common/m1_zone26_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone27_1.wctex": {
+      "size": 97034,
+      "from": "image/map/regions/common/m1_zone27_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone28_1.wctex": {
+      "size": 241184,
+      "from": "image/map/regions/common/m1_zone28_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone29_1.wctex": {
+      "size": 138128,
+      "from": "image/map/regions/common/m1_zone29_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone29_2.wctex": {
+      "size": 5733,
+      "from": "image/map/regions/common/m1_zone29_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone2_1.wctex": {
+      "size": 377841,
+      "from": "image/map/regions/common/m1_zone2_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone2_2.wctex": {
+      "size": 260435,
+      "from": "image/map/regions/common/m1_zone2_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone30_1.wctex": {
+      "size": 152165,
+      "from": "image/map/regions/common/m1_zone30_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone31_1.wctex": {
+      "size": 289182,
+      "from": "image/map/regions/common/m1_zone31_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone32_1.wctex": {
+      "size": 131348,
+      "from": "image/map/regions/common/m1_zone32_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone3_1.wctex": {
+      "size": 352764,
+      "from": "image/map/regions/common/m1_zone3_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone3_2.wctex": {
+      "size": 265154,
+      "from": "image/map/regions/common/m1_zone3_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone4_1.wctex": {
+      "size": 352367,
+      "from": "image/map/regions/common/m1_zone4_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone4_2.wctex": {
+      "size": 256729,
+      "from": "image/map/regions/common/m1_zone4_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone5_1.wctex": {
+      "size": 336422,
+      "from": "image/map/regions/common/m1_zone5_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone5_2.wctex": {
+      "size": 238132,
+      "from": "image/map/regions/common/m1_zone5_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone6_1.wctex": {
+      "size": 314052,
+      "from": "image/map/regions/common/m1_zone6_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone6_2.wctex": {
+      "size": 211444,
+      "from": "image/map/regions/common/m1_zone6_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone7_1.wctex": {
+      "size": 349994,
+      "from": "image/map/regions/common/m1_zone7_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone7_2.wctex": {
+      "size": 197716,
+      "from": "image/map/regions/common/m1_zone7_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone8_1.wctex": {
+      "size": 282837,
+      "from": "image/map/regions/common/m1_zone8_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone8_2.wctex": {
+      "size": 172732,
+      "from": "image/map/regions/common/m1_zone8_2.webp"
+    },
+    "generated/image/map/regions/common/m1_zone9_1.wctex": {
+      "size": 257356,
+      "from": "image/map/regions/common/m1_zone9_1.webp"
+    },
+    "generated/image/map/regions/common/m1_zone9_2.wctex": {
+      "size": 156141,
+      "from": "image/map/regions/common/m1_zone9_2.webp"
+    },
     "image/army/armour/hd/heavytank_am.bin": {
       "size": 2773,
       "variant": "hd",

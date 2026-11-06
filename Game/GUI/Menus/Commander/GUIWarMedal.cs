@@ -51,7 +51,7 @@ public sealed class GUIWarMedal : GUIButton
         greyEnable = false;
         selected = false;
 
-        arrowSpeed = ecGraphics.Instance().widthMode == 3 ? -50f : -25f;
+        arrowSpeed = Layout.Tablet ? -50f : -25f;
     }
 
     /// <summary>Sets the medal level and recreates the picture of the type/level.</summary>
@@ -99,7 +99,7 @@ public sealed class GUIWarMedal : GUIButton
     /// <summary>Bounces the selection arrow and reverses its speed at the limits.</summary>
     public override void OnUpdate(float deltaTimeS)
     {
-        float minimumOffset = ecGraphics.Instance().widthMode == 3 ? -10f : -5f;
+        float minimumOffset = Layout.Tablet ? -10f : -5f;
         float previousSpeed = arrowSpeed;
         float nextOffset = arrowOffset + previousSpeed * deltaTimeS;
 

@@ -7,8 +7,11 @@
   // Runtime formats generated under generated/ ("match" is a regex on the package path).
   // rgba4444: the 4096 px Kai/Hei glyph pages (white glyphs, shape in alpha) as 16 bit pixels:
   // 32 MB instead of 64 MB each on the GPU and no PNG decode when the game starts.
+  // rgba5551: the area overlays of the map (greyscale, hard edges): 32 grey levels and a 1 bit alpha,
+  // half the memory of RGBA8 (about 25 MB less on a conquest).
   "runtimeFormats": [
-    { "match": "^image/fonts/hd/cn/font(ht|kt)\\.png$", "format": "rgba4444" }
+    { "match": "^image/fonts/hd/cn/font(ht|kt)\\.png$", "format": "rgba4444" },
+    { "match": "^image/map/regions/.*\\.webp$", "format": "rgba5551" }
   ],
 
   // Asset names the original data mentions although the original game never shipped them

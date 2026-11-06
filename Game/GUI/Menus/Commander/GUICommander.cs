@@ -84,7 +84,7 @@ public sealed class GUICommander : GUIElement
     {
         imageCommonBg.Render(0f, 0f);
 
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             imageWoodenBox.Render(396f, 390f);
             imageBoardCommanderIntro.Render(304f, 0f);
@@ -241,7 +241,7 @@ public sealed class GUICommander : GUIElement
 
                         effectUpgrade = null;
 
-                        bool wideLayout = ecGraphics.Instance().widthMode == 3;
+                        bool wideLayout = Layout.Tablet;
                         string effectName = wideLayout
                                             ? "effect_upgrade_iPad.xml"
                                             : "effect_upgrade.xml";
@@ -274,7 +274,7 @@ public sealed class GUICommander : GUIElement
 
                         effectUpgrade = null;
 
-                        string effectName = ecGraphics.Instance().widthMode == 3
+                        string effectName = Layout.Tablet
                                             ? "effect_upgrade_iPad.xml"
                                             : "effect_upgrade.xml";
                         effectUpgrade = ecEffectManager.Instance().CreateEffect(effectName);
@@ -326,7 +326,7 @@ public sealed class GUICommander : GUIElement
         LoadEffectTextureRes("eff.xml");
 
         ecGraphics graphics = ecGraphics.Instance();
-        bool wideLayout = graphics.widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         LoadEffectRes(wideLayout ? "effect_upgrade_iPad.xml" : "effect_upgrade.xml");
 
         xBase = 0f;
@@ -389,11 +389,11 @@ public sealed class GUICommander : GUIElement
             xBase0_625 = xBase * 0.625f;
 
             string backgroundName;
-            if (graphics.screenW <= 480)
+            if (Layout.Width480)
             {
                 backgroundName = "commonbg.png";
             }
-            else if (graphics.screenW <= 568)
+            else if (Layout.WidthUpTo568)
             {
                 backgroundName = "commonbg-568h.png";
             }

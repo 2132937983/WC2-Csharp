@@ -453,7 +453,7 @@ public sealed class CGameRes
         battleBackgroundsLoaded = false;
         ecGraphics graphics = ecGraphics.Instance();
 
-        if (graphics.widthMode == 3 || g_contenscalefactor != 2.0f)
+        if (Layout.Tablet || g_contenscalefactor != 2.0f)
         {
             // Wide and non-hd modes share the standard flag table; only hd non-wide uses flag_hd.
             textureResFlag.LoadRes("flag.xml", false);
@@ -877,7 +877,7 @@ public sealed class CGameRes
     {
         battleBackgroundsLoaded = true;
         ecGraphics graphics = ecGraphics.Instance();
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             textureResBattlebg.LoadRes("battlebg1_iPad.xml", false);
             textureResBattlebg.LoadRes("battlebg2_iPad.xml", false);
@@ -889,12 +889,12 @@ public sealed class CGameRes
             {
                 // original: the HD phone layouts load the "_hd" / "_568hd" atlases as hd tables
                 // (the remake named the 568 pair "_568h", which does not exist in the shipped assets)
-                if (graphics.screenW <= 480.0)
+                if (Layout.Width480)
                 {
                     textureResBattlebg.LoadRes("battlebg1_hd.xml", true);
                     textureResBattlebg.LoadRes("battlebg2_hd.xml", true);
                 }
-                else if (graphics.screenW <= 568.0)
+                else if (Layout.WidthUpTo568)
                 {
                     textureResBattlebg.LoadRes("battlebg1_568hd.xml", true);
                     textureResBattlebg.LoadRes("battlebg2_568hd.xml", true);
@@ -907,7 +907,7 @@ public sealed class CGameRes
             }
             else
             {
-                if (graphics.screenW <= 480.0)
+                if (Layout.Width480)
                 {
                     textureResBattlebg.LoadRes("battlebg1.xml", false);
                     textureResBattlebg.LoadRes("battlebg2.xml", false);

@@ -54,7 +54,7 @@ public sealed class GUIAdornMedal : GUIElement
     {
         int commanderLevelIndex = level / 3;
         int commanderStarIndex = level % 3;
-        bool isTabletLayout = ecGraphics.Instance().widthMode == 3;
+        bool isTabletLayout = Layout.Tablet;
 
         for (int medalIndex = 5; medalIndex >= 0; --medalIndex)
         {

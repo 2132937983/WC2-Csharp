@@ -78,7 +78,7 @@ public sealed class GUIBuyCard : GUIElement
         float tmp_float_y = 0.0f, tmp_float_w = 0.0f;
         var graphics = ecGraphics.Instance();
 
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             // iPad / wide: the panel sits at the bottom with a dedicated WEBP background and 40x38 buttons
             tmp_rect_texture.w = 1024.0f;
@@ -111,9 +111,9 @@ public sealed class GUIBuyCard : GUIElement
         else
         {
             // normal screens: background by screen width, the overlay covers the visible area
-            if (graphics.screenW <= 568.0f)
+            if (Layout.WidthUpTo568)
             {
-                if (graphics.screenW <= 480.0f)
+                if (Layout.Width480)
                     buyCardBgTexture = graphics.LoadWEBPTexture("buycardbg.webp");
                 else
                     buyCardBgTexture = graphics.LoadWEBPTexture("buycardbg-568h.webp");
@@ -173,7 +173,7 @@ public sealed class GUIBuyCard : GUIElement
         tmp_rect.y = 0.0f;
         tmp_rect.w = 1.0f;
         tmp_rect.h = 1.0f;
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             // the wide layout puts the tech info in the top leather strip; the normal one also shows gold and medals
             tmp_rect_texture.w = 1024.0f;
@@ -186,9 +186,9 @@ public sealed class GUIBuyCard : GUIElement
         }
         else
         {
-            if (graphics.screenW <= 568.0f)
+            if (Layout.WidthUpTo568)
             {
-                if (graphics.screenW <= 480.0f)
+                if (Layout.Width480)
                 {
                     tmp_rect_texture.x = 0.0f;
                     tmp_rect_texture.w = 479.0f;
@@ -220,7 +220,7 @@ public sealed class GUIBuyCard : GUIElement
                 MoveToFront(GUIManager.Instance().AddImage("board_leather_up-640h.png", tmp_rect_texture, tmp_rect, this, false));
             }
         }
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             techGui = new GUITech();
             tmp_rect.y = 1.0f;
@@ -384,14 +384,14 @@ public sealed class GUIBuyCard : GUIElement
         if (broadImage != null)
             broadImage.Render(absoluteRect.x, absoluteRect.y);
 
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             ecTextDrawScaled(nameText, absoluteRect.x + 552.0f, absoluteRect.y + 222.0f, 2, kBuyCardNameTextScale);
             ecTextDrawScaled(introText, absoluteRect.x + 428.0f, absoluteRect.y + 238.0f, 0, kBuyCardIntroTextScale);
             return;
         }
 
-        float wideScreenOffset = ecGraphics.Instance().screenW <= 480 ? 0.0f : 5.0f;
+        float wideScreenOffset = Layout.Width480 ? 0.0f : 5.0f;
         ecTextDrawScaled(nameText, absoluteRect.x + 286.0f + wideScreenOffset, absoluteRect.y + 240.0f, 2, kBuyCardNameTextScale);
         ecTextDrawScaled(introText, absoluteRect.x + 152.0f + wideScreenOffset, absoluteRect.y + 258.0f, 0, kBuyCardIntroTextScale);
     }

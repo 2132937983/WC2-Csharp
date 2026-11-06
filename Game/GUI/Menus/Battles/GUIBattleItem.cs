@@ -146,7 +146,7 @@ public sealed class GUIBattleItem : GUIElement
 
         float x = absRect.x;
         float y = absRect.y;
-        if (ecGraphics.Instance().widthMode != 3)
+        if (!Layout.Tablet)
         {
             if (locked)
             {

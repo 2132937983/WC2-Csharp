@@ -65,8 +65,8 @@ public sealed class GUITutorails : GUIElement
         ReleaseScript();
         var graphics = ecGraphics.Instance();
         string file;
-        if (graphics.widthMode == 3) file = "tutorails_script_iPad.xml";
-        else if (graphics.screenW <= 568)
+        if (Layout.Tablet) file = "tutorails_script_iPad.xml";
+        else if (Layout.WidthUpTo568)
         {
             if (graphics.screenW > 534) file = "tutorails_script-568h.xml";
             else if (graphics.screenW == 534) file = "tutorails_script-534h.xml";
@@ -213,7 +213,7 @@ public sealed class GUITutorails : GUIElement
                 executingCmd = false;
                 return;
             case MOVE_TO_AREA:
-                if (ecGraphics.Instance().widthMode == 3) g_Scene.MoveCameraToArea(c.id);
+                if (Layout.Tablet) g_Scene.MoveCameraToArea(c.id);
                 else g_Scene.MoveCameraCenterToArea(c.id);
                 executingCmd = true;
                 return;
@@ -313,7 +313,7 @@ public sealed class GUITutorails : GUIElement
             graphics.RenderRect(0f, xRect, yRect, wRect, 0x80000000u);
             graphics.RenderRect(yRect + hRect, xRect, screenW - yRect - hRect, wRect, 0x80000000u);
         }
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             imageGuider?.Render(abs.x + 542f, abs.y + 522f);
             imageDlgBoard?.Render(abs.x + 311f, abs.y + 682f);

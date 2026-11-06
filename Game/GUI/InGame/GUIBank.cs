@@ -48,7 +48,7 @@ public sealed class GUIBank : GUIElement
         else
             imageBankBg.Render(0.0f, 0.0f);
 
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
             ecTextDrawScaled(textBankTip, 512.0f, 430.0f, 2, kBankTipTextScale);
         else
             ecTextDrawScaled(textBankTip, xBase + 240.0f, 215.0f, 2, kBankTipTextScale);
@@ -125,15 +125,15 @@ public sealed class GUIBank : GUIElement
         ecGraphics graphics = ecGraphics.Instance();
         float backgroundWidth = rect.w;
         string backgroundName;
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             backgroundName = "bankbg_iPad.webp";
         }
-        else if (graphics.screenW <= 480)
+        else if (Layout.Width480)
         {
             backgroundName = "bankbg.webp";
         }
-        else if (graphics.screenW <= 568)
+        else if (Layout.WidthUpTo568)
         {
             backgroundName = "bankbg-568h.webp";
             backgroundWidth = 568.0f;
@@ -149,7 +149,7 @@ public sealed class GUIBank : GUIElement
 
         xBase = 0.0f;
         GUIRect childRect;
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             buttonBack = new GUIButton();
             childRect = new GUIRect(0.0f, 730.0f, 40.0f, 38.0f);

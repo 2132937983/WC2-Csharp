@@ -75,7 +75,7 @@ public sealed class GUICardTab : GUIElement
             "label_strategy.png",
         };
 
-        bool wideLayout = ecGraphics.Instance().widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         float firstLabelX = wideLayout ? 75.0f : 27.0f;
         float labelY = wideLayout ? 32.0f : -8.0f;
 
@@ -98,14 +98,14 @@ public sealed class GUICardTab : GUIElement
             boardRect.x = 5.0f;
             boardRect.y = 17.0f;
         }
-        else if (ecGraphics.Instance().screenW <= 480)
+        else if (Layout.Width480)
         {
             boardImageName = "board_paper.webp";
             boardTextureRect = new ecTextureRect(0.0f, 0.0f, 461.0f, 191.0f, 0.0f, 0.0f);
             boardRect.x = 12.0f;
             boardRect.y = 0.0f;
         }
-        else if (ecGraphics.Instance().screenW <= 568)
+        else if (Layout.WidthUpTo568)
         {
             boardImageName = "board_paper-568h.webp";
             boardTextureRect = new ecTextureRect(0.0f, 0.0f, 568.0f, 201.0f, 0.0f, 0.0f);

@@ -95,7 +95,7 @@ public sealed class GUIMainMenu : GUIElement
 
         xC0 = null;
 
-        bool useHdResources = ecGraphics.Instance().widthMode == 3 || g_contenscalefactor == 2.0f;
+        bool useHdResources = Layout.Tablet || g_contenscalefactor == 2.0f;
         GUIManager guiManager = GUIManager.Instance();
         guiManager.UnloadTextureRes(useHdResources ? "mui_hd.xml" : "mui.xml");
         guiManager.UnloadTextureRes(useHdResources ? "mui2_hd.xml" : "mui2.xml");
@@ -112,7 +112,7 @@ public sealed class GUIMainMenu : GUIElement
     {
         imageMainBg.Render(0f, 0f);
 
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             imageTitle.Render(512f, 324f);
         }
@@ -160,7 +160,7 @@ public sealed class GUIMainMenu : GUIElement
 
         ecGraphics graphics = ecGraphics.Instance();
         GUIManager guiManager = GUIManager.Instance();
-        bool wideLayout = graphics.widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         bool useHdResources = wideLayout || g_contenscalefactor == 2.0f;
         string language = g_LocalizableStrings.GetString("language");
         string localizedMenuResource;
@@ -188,11 +188,11 @@ public sealed class GUIMainMenu : GUIElement
         {
             backgroundName = "mainbg_iPad.webp";
         }
-        else if (graphics.screenW <= 480f)
+        else if (Layout.Width480)
         {
             backgroundName = "mainbg.webp";
         }
-        else if (graphics.screenW <= 568f)
+        else if (Layout.WidthUpTo568)
         {
             backgroundName = "mainbg-568h.webp";
         }
@@ -443,7 +443,7 @@ public sealed class GUIMainMenu : GUIElement
 
     public override void OnUpdate(float dt)
     {
-        float speed = ecGraphics.Instance().widthMode == 3 ? 800f : 400f;
+        float speed = Layout.Tablet ? 800f : 400f;
         float slideSpeed = dt * speed;
         float itemSlideSpeed = slideSpeed * 2f;
 

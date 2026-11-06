@@ -32,7 +32,7 @@ public sealed class GUISmallCard : GUIElement
 
         if (cardImage == null) return;
 
-        bool wideLayout = ecGraphics.Instance().widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         float centerOffsetX = wideLayout ? 70.0f : 50.0f;
         float bottomOffset = wideLayout ? 110.0f : 70.0f;
         float scale = wideLayout ? 0.7f : 0.42f;

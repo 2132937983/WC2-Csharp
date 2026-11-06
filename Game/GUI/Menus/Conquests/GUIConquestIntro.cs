@@ -47,7 +47,7 @@ public sealed class GUIConquestIntro : GUIElement
     public void Init(in GUIRect rectIn, int id)
     {
         rect = rectIn;
-        bool wide = ecGraphics.Instance().widthMode == 3;
+        bool wide = Layout.Tablet;
         textureBoard = ecGraphics.Instance().LoadWEBPTexture(wide ? "board_intro@2x.webp" : "board_intro.webp");
         imageBoard = new ecImage(textureBoard, 0f, 0f, wide ? 960f : 480f, wide ? 640f : 320f);
         buttonOk = new GUIButtonEx();
@@ -82,7 +82,7 @@ public sealed class GUIConquestIntro : GUIElement
     public override void OnRender()
     {
         GetAbsRect(out GUIRect absoluteRect);
-        bool wide = ecGraphics.Instance().widthMode == 3;
+        bool wide = Layout.Tablet;
         ecGraphics.Instance().Fade(0.5f);
         imageBoard.Render(absoluteRect.x, absoluteRect.y);
         float scale = g_introTextScale;

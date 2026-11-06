@@ -42,6 +42,7 @@ internal static class RuntimeFormats
                 switch (rule.format)
                 {
                     case "rgba4444": WriteRgba4444(source, dest); break;
+                    case "rgba5551": WriteRgba5551(source, dest); break;
                     default: throw new ToolException("unknown runtime format " + rule.format);
                 }
                 File.SetLastWriteTimeUtc(dest, File.GetLastWriteTimeUtc(source));
@@ -87,4 +88,46 @@ internal static class RuntimeFormats
     }
 
     private static int To4(byte v) => (v * 15 + 127) / 255;
+    private static int To5(byte v) => (v * 31 + 127) / 255;
+
+    /// <summary>
+    /// RGBA5551 (format 2): 32 levels per colour channel and a 1 bit alpha; for art with hard edges
+    /// such as the greyscale area overlays of the map (half the memory of RGBA8).
+    /// </summary>
+    private static void WriteRgba5551(string source, string dest)
+    {
+        using var codec = SKCodec.Create(source) ?? throw new ToolException("cannot decode " + source);
+        var info = new SKImageInfo(codec.Info.Width, codec.Info.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+        using var bitmap = new SKBitmap(info);
+        var result = codec.GetPixels(info, bitmap.GetPixels());
+        if (result != SKCodecResult.Success && result != SKCodecResult.IncompleteInput) throw new ToolException("cannot decode " + source + ": " + result);
+        byte[] rgba = bitmap.Bytes;
+        int pixels = info.Width * info.Height;
+        var packed = new byte[pixels * 2];
+        for (int i = 0; i < pixels; i++)
+        {
+            int r = To5(rgba[i * 4]), g = To5(rgba[i * 4 + 1]), b = To5(rgba[i * 4 + 2]), a = rgba[i * 4 + 3] >= 128 ? 1 : 0;
+            // GL_UNSIGNED_SHORT_5_5_5_1: R in the high bits, alpha in bit 0; little endian ushort
+            ushort v = (ushort)((r << 11) | (g << 6) | (b << 1) | a);
+            packed[i * 2] = (byte)(v & 0xFF);
+            packed[i * 2 + 1] = (byte)(v >> 8);
+        }
+        WriteWctex(dest, 2, info.Width, info.Height, packed);
+    }
+
+    private static void WriteWctex(string dest, ushort format, int width, int height, byte[] packed)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+        using var fs = File.Create(dest);
+        using (var w = new BinaryWriter(fs, System.Text.Encoding.ASCII, leaveOpen: true))
+        {
+            w.Write("WCTX".ToCharArray());
+            w.Write((ushort)1);   // version
+            w.Write(format);
+            w.Write(width);
+            w.Write(height);
+        }
+        using var deflate = new DeflateStream(fs, CompressionLevel.SmallestSize);
+        deflate.Write(packed, 0, packed.Length);
+    }
 }

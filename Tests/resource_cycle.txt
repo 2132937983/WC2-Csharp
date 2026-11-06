@@ -1,0 +1,40 @@
+# Textures are released when a screen closes: menu -> conquest -> menu twice; every "menu" texstats line must
+# report the same memory, every "game" line too (the runner compares lines with the same label).
+wait 4.5
+texstats menu1
+click 510 152
+wait 2.5
+click 170 65
+wait 5
+click 552 302
+wait 6
+click 337 272
+wait 2
+texstats game1
+click 552 15
+wait 1
+click 284 250
+wait 1
+shot X1
+click 230 200
+wait 6
+texstats menu2
+shot X2
+click 510 152
+wait 2.5
+click 170 65
+wait 5
+click 552 302
+wait 6
+click 337 272
+wait 2
+texstats game2
+click 552 15
+wait 1
+click 284 250
+wait 1
+click 230 200
+wait 6
+texstats menu3
+shot X3
+exit

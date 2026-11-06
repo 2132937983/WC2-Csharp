@@ -25,7 +25,7 @@ public sealed class CLogoState : CBaseState
         GUIMotionManager.Instance().currentState = this;
         var graphics = ecGraphics.Instance();
         GUIImage logo;
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
             logo = guiManager.AddImage("logo_iPad.webp", new ecTextureRect(1f, 1f, 510f, 510f, 0f, 0f), new GUIRect(0f, 0f, 510f, 510f), guiManager, false);
         else
             logo = guiManager.AddImage("logo.webp", new ecTextureRect(1f, 1f, 254f, 254f, 0f, 0f), new GUIRect(0f, 0f, 254f, 254f), guiManager, false);

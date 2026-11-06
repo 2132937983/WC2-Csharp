@@ -48,7 +48,7 @@ public sealed class GUIBattleIntro : GUIElement
     {
         rect = rectIn;
 
-        bool wideLayout = ecGraphics.Instance().widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         if (wideLayout)
         {
             textureBoard = ecGraphics.Instance().LoadWEBPTexture("board_intro@2x.webp");
@@ -129,7 +129,7 @@ public sealed class GUIBattleIntro : GUIElement
         ecGraphics.Instance().Fade(0.5f);
         imageBoard.Render(absRect.x, absRect.y);
 
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             textBattleName.DrawText(absRect.x + 480.0f, absRect.y + 76.0f, 2);
             ecTextDrawScaled(textBattleIntro, absRect.x + 120.0f, absRect.y + 176.0f, 0, g_introTextScale);

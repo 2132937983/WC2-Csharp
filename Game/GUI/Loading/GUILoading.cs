@@ -27,7 +27,7 @@ public sealed class GUILoading : GUIElement
         rect = rectIn;
 
         ecGraphics graphics = ecGraphics.Instance();
-        bool wideLayout = graphics.widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         string language = g_LocalizableStrings.GetString("language");
         bool chinese = language != null && language == "cn";
 
@@ -62,7 +62,7 @@ public sealed class GUILoading : GUIElement
         imageLoading.SetColor(color, -1);
 
         ecGraphics graphics = ecGraphics.Instance();
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
             imageLoading.Render(850.0f, 730.0f);
         else
             imageLoading.Render(graphics.screenW - 86.0f, 300.0f);

@@ -40,7 +40,7 @@ public sealed class GUIUpgradeButton : GUIButton
             buttonImage.Render(absoluteRect.x, absoluteRect.y);
         }
 
-        bool isTabletLayout = ecGraphics.Instance().widthMode == 3;
+        bool isTabletLayout = Layout.Tablet;
         float textWidth = textNeedMedal.GetStringWidth(0, true);
         float contentWidth = textWidth + (isTabletLayout ? 34f : 17f);
         float medalX = MathF.Floor(absoluteRect.x + (absoluteRect.w - contentWidth) * 0.5f);

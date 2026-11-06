@@ -78,6 +78,7 @@ public static class LayoutProfiles
     {
         float aspect = (float)screenW / Math.Max(1, screenH);
         Current = profiles.FirstOrDefault(p => p.Matches(aspect)) ?? profiles[^1];
+        Layout.ProfileId = Current.id;
         return Current;
     }
 

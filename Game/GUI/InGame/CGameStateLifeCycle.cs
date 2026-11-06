@@ -17,7 +17,7 @@ public sealed partial class CGameState
         var tmp_rect = new GUIRect();
         tmp_rect.w = 32.0f;
         tmp_rect.h = 30.0f;
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             tmp_rect.w = 40.0f;
             tmp_rect.h = 38.0f;
@@ -88,7 +88,7 @@ public sealed partial class CGameState
 
         // On the wide layout the buy card panel docks at the bottom; otherwise it uses the full screen.
         guiBuyCard = new GUIBuyCard();
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             tmp_rect.w = graphics.screenW;
             tmp_rect.h = graphics.screenH - 468.0f;
@@ -107,7 +107,7 @@ public sealed partial class CGameState
         GUIManager.Instance().AddChild(guiBuyCard, true);
         // The AI progress bar is only shown while a non player country acts; multiplayer has no local AI progress.
         guiaiProgress = new GUIAIProgress();
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             tmp_rect.x = 272.0f;
             tmp_rect.y = 433.0f;
@@ -160,7 +160,7 @@ public sealed partial class CGameState
         if (g_GameManager.gameMode == CGameManager.MULTIPLAYER)
         {
             guiActionInfo = new GUIActionInfo();
-            if (graphics.widthMode == 3)
+            if (Layout.Tablet)
             {
                 tmp_rect.y = 0.0f;
                 tmp_rect.x = 232.0f;
@@ -196,7 +196,7 @@ public sealed partial class CGameState
         guiBattle = new GUIBattle();
         tmp_rect.x = 0.0f;
         tmp_rect.h = 320.0f;
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             tmp_rect.y = 224.0f;
             tmp_rect.w = 1024.0f;
@@ -236,7 +236,7 @@ public sealed partial class CGameState
         }
 
         float tmp_w = 32.0f, tmp_h = 30.0f;
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             tmp_w = 40.0f;
             tmp_h = 38.0f;
@@ -579,7 +579,7 @@ public sealed partial class CGameState
     /// </summary>
     public override void Render()
     {
-        if (ecGraphics.Instance().widthMode == 3 || (guiBuyCard.flags & SHOWN) == 0)
+        if (Layout.Tablet || (guiBuyCard.flags & SHOWN) == 0)
             g_Scene.Render();
 
         ecEffectManager.Instance().Render();

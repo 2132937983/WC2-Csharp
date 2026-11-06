@@ -286,7 +286,7 @@ public sealed class CCamera
         }
 
         float scaleValue = scale;
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             return y >= centerPos[1] - 346.0f / scaleValue &&
                    y + h <= centerPos[1] + 320.0f / scaleValue;

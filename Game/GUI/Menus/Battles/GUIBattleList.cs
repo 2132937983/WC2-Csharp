@@ -306,7 +306,7 @@ public sealed class GUIBattleList : GUIElement
         touchMoved = false;
 
         // item height, vertical spacing and selection offset depend on the wide layout
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             hBattleItem = 80f;
             dyBattleItem = 90f;

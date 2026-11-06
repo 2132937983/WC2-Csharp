@@ -233,7 +233,7 @@ public sealed class GUICountryList : GUIElement
         xTouchBegin = 0f;
         yTouchBegin = 0f;
 
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             hCountryItem = 80f;
             dyCountryItem = 90f;

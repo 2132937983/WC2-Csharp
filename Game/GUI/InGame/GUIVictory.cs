@@ -49,7 +49,7 @@ public sealed class GUIVictory : GUIElement
         yScale = 1.0f;
 
         ecTextureRect textureRect;
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             textureRect = new ecTextureRect(2.0f, 0.0f, 1.0f, 182.0f, 0.0f, 0.0f);
             textureBoardEnd = ecGraphics.Instance().LoadTexture("board_end@2x.png");

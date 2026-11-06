@@ -49,7 +49,7 @@ public sealed class CLoadState : CBaseState
         GUIMotionManager.Instance().currentState = receiver;
 
         ecGraphics graphics = ecGraphics.Instance();
-        bool wideLayout = graphics.widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         string language = g_LocalizableStrings.GetString("language");
         bool chinese = language != null && language == "cn";
 
@@ -86,7 +86,7 @@ public sealed class CLoadState : CBaseState
         ecGraphics graphics = ecGraphics.Instance();
         graphics.SetViewPoint(0.0f, 0.0f, 1.0f);
 
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             imageLoading?.Render(850.0f, 730.0f);
             imageLoadingTitle?.Render(0.0f, 0.0f);

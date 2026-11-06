@@ -46,7 +46,7 @@ public sealed class GUILockedWarning : GUIElement
         rect = rectIn;
 
         ecGraphics graphics = ecGraphics.Instance();
-        bool wideLayout = graphics.widthMode == 3;
+        bool wideLayout = Layout.Tablet;
 
         ecTextureRect textureRect;
         if (wideLayout)
@@ -106,7 +106,7 @@ public sealed class GUILockedWarning : GUIElement
         ecGraphics.Instance().Fade(0.5f);
         imageBoardLocked.Render(absRect.x, absRect.y);
 
-        bool wideLayout = ecGraphics.Instance().widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         float textOffsetX = wideLayout ? 32f : 16f;
         float textOffsetY = wideLayout ? 120f : 60f;
         textLockedWarning.DrawText(

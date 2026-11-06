@@ -399,7 +399,7 @@ public sealed partial class CGameState
             GUIRect rect_this;
             if (g_GameManager.gameMode == CGameManager.CAMPAIGN)
             {
-                if (ecGraphics.Instance().widthMode == 3)
+                if (Layout.Tablet)
                     rect_this = new GUIRect(32.0f, 32.0f, 960.0f, 640.0f);
                 else
                     rect_this = new GUIRect((ecGraphics.Instance().screenW - 480.0f) * 0.5f, 0.0f, 480.0f, 320.0f);

@@ -66,7 +66,7 @@ public sealed class GUICountryItem : GUIElement
 
         float x = absRect.x;
         float y = absRect.y;
-        if (ecGraphics.Instance().widthMode != 3)
+        if (!Layout.Tablet)
         {
             switch (rankStar)
             {

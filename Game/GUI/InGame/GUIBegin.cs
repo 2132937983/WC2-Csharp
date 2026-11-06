@@ -82,7 +82,7 @@ public sealed class GUIBegin : GUIElement
         tmp_rect.h = 32.0f;
         buttonOk.Init("green_normal.png", "green_normal.png", tmp_rect, null);
         buttonOk.SetImageText("buttontext_ok.png", "buttontext_ok_press.png");
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             buttonOk.imagePos[0] = 11.0f;
             buttonOk.imagePos[1] = -5.0f;
@@ -122,7 +122,7 @@ public sealed class GUIBegin : GUIElement
                 int j = cur_country.GetWarMedalLevel((WARMEDAL_ID)i);
                 if (j > 0 && j <= 3 && imageMedal[i][j - 1] != null)
                 {
-                    if (ecGraphics.Instance().widthMode == 3)
+                    if (Layout.Tablet)
                         imageMedal[i][j - 1].RenderEx(x_tmp, y_tmp, 0.0f, 0.5f, 0.0f);
                     else
                         imageMedal[i][j - 1].Render(x_tmp, y_tmp);

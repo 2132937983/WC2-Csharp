@@ -283,7 +283,7 @@ public class GUILevelSel : GUIElement
         if (imageBlock == null) return;
         GetAbsRect(out var abs);
         float x = abs.x;
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             for (int i = 0; i <= currentLevel; i++) { imageBlock.Render(x, abs.y); x += 40f; }
         }

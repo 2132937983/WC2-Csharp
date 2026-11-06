@@ -38,7 +38,7 @@ public sealed class GUIExitWarning : GUIElement
         rect = rectIn;
 
         ecGraphics graphics = ecGraphics.Instance();
-        bool wideLayout = graphics.widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         string language = g_LocalizableStrings.GetString("language");
         bool chinese = language == "cn";
 

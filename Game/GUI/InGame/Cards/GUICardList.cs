@@ -34,7 +34,7 @@ public sealed class GUICardList : GUIElement
         tab = Tab;
         x40 = 100.0f;
         // wide and normal screens use slightly different card steps so the last card stays in the scroll range
-        if (ecGraphics.Instance().widthMode != 3)
+        if (!Layout.Tablet)
             cardWidth = 113.0f;
         else
             cardWidth = 110.0f;
@@ -168,7 +168,7 @@ public sealed class GUICardList : GUIElement
         }
 
         // the wide layout keeps the fixed card slots of Init; the original only scrolls on normal screens
-        if (ecGraphics.Instance().widthMode != 3)
+        if (!Layout.Tablet)
         {
             float cardX = x;
             foreach (GUICard card in guiCard)

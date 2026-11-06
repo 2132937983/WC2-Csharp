@@ -323,7 +323,7 @@ public sealed class GUISelCountry : GUIElement
                     var imageInfo = new GUISelBattle.ImageInfo();
                     string imageName = "sflag_" + countryComponents.owner.id + ".png";
                     imageInfo.image = new ecImage(GUIElement.s_TextureRes.GetImage(imageName));
-                    imageInfo.scale = ecGraphics.Instance().widthMode == 3 ? 2f : 4f;
+                    imageInfo.scale = Layout.Tablet ? 2f : 4f;
                     flags.Add(imageInfo);
                     flagIds.Add(countryComponents.owner.id);
                     ++flagCount;
@@ -469,7 +469,7 @@ public sealed class GUISelCountry : GUIElement
 
         imageFlagShadow = null;
 
-        bool useHdResources = ecGraphics.Instance().widthMode == 3 || g_contenscalefactor == 2.0f;
+        bool useHdResources = Layout.Tablet || g_contenscalefactor == 2.0f;
         s_TextureRes.UnloadRes(useHdResources ? "selcountry_hd.xml" : "selcountry.xml");
         // ui2_hd.xml is a shared atlas (slider.png, buttons, check marks): it must stay loaded,
         // otherwise GUIOptions opened afterwards gets empty widget pictures
@@ -545,7 +545,7 @@ public sealed class GUISelCountry : GUIElement
         else
         {
             ecGraphics.Instance().SetViewPoint(xMinimap, yMinimap, 1f);
-            bool wideLayout = ecGraphics.Instance().widthMode == 3;
+            bool wideLayout = Layout.Tablet;
             float minimapSize = wideLayout ? 1000f : 500f;
             float mapWidth = wideLayout ? 3430f : 1715f;
             float imageX = 0f;
@@ -597,7 +597,7 @@ public sealed class GUISelCountry : GUIElement
         xMinimap = centerX;
         yMinimap = centerY;
 
-        bool wideLayout = ecGraphics.Instance().widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         h = wideLayout ? 1500f : 750f;
         w = wideLayout ? 3430f : 1715f;
 
@@ -797,7 +797,7 @@ public sealed class GUISelCountry : GUIElement
                 string imageName = "sflag_" + countryItem.id + ".png";
                 var imageInfo = new GUISelBattle.ImageInfo();
                 imageInfo.image = new ecImage(s_TextureRes.GetImage(imageName));
-                imageInfo.scale = ecGraphics.Instance().widthMode == 3 ? 2f : 4f;
+                imageInfo.scale = Layout.Tablet ? 2f : 4f;
                 imageFlag.Add(imageInfo);
                 actualMap.flagIds.Add(countryItem.id);
             }
@@ -831,7 +831,7 @@ public sealed class GUISelCountry : GUIElement
                 imageInfo.scale = flagDef.scale;
 
                 // the HD minimap uses doubled logical coordinates; rotation and scale stay
-                if (ecGraphics.Instance().widthMode == 3)
+                if (Layout.Tablet)
                 {
                     imageInfo.x += imageInfo.x;
                     imageInfo.y += imageInfo.y;
@@ -840,7 +840,7 @@ public sealed class GUISelCountry : GUIElement
                 {
                     imageInfo.x *= actualMapInner.mapWidth / 1715f;
                     imageInfo.y *= actualMapInner.mapHeight / 750f;
-                    imageInfo.scale *= (ecGraphics.Instance().widthMode == 3 ? 2f : 4f);
+                    imageInfo.scale *= (Layout.Tablet ? 2f : 4f);
                 }
                 imageFlag.Add(imageInfo);
                 if (actualMapInner != null)
@@ -850,7 +850,7 @@ public sealed class GUISelCountry : GUIElement
             }
         }
 
-        bool wideLayout = ecGraphics.Instance().widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         bool actualMapEnabled = pActualConquestMap != null;
         float mapCenterX = actualMapEnabled
                          ? conquestDef.centerX * (pActualConquestMap.mapWidth / 1715f)
@@ -969,7 +969,7 @@ public sealed class GUISelCountry : GUIElement
                 else
                 {
                     float distance = MathF.Sqrt(distanceSquared);
-                    float moveSpeed = ecGraphics.Instance().widthMode == 3 ? 2000f : 1000f;
+                    float moveSpeed = Layout.Tablet ? 2000f : 1000f;
                     xSpeed = deltaX * moveSpeed / distance;
                     ySpeed = deltaY * moveSpeed / distance;
                 }
@@ -1057,7 +1057,7 @@ public sealed class GUISelCountry : GUIElement
                 int index = evt.info.touch.index & 1;
                 float x = evt.info.touch.pos[0];
                 float y = evt.info.touch.pos[1];
-                float listLeft = ecGraphics.Instance().widthMode == 3 ? 892f : xBase + 414f;
+                float listLeft = Layout.Tablet ? 892f : xBase + 414f;
                 // only accept touches inside the map area so they do not overlap the country list
                 if (x < listLeft)
                 {
@@ -1134,7 +1134,7 @@ public sealed class GUISelCountry : GUIElement
                 int index = evt.info.touch.index & 1;
                 actualMap.activeTouch[index] = false;
                 actualMap.pinchDistance = 0f;
-                float listLeft = ecGraphics.Instance().widthMode == 3 ? 892f : xBase + 414f;
+                float listLeft = Layout.Tablet ? 892f : xBase + 414f;
                 // the end of a drag or zoom gesture never selects a country
                 if (!actualMap.moved && evt.info.touch.pos[0] < listLeft)
                 {
@@ -1184,7 +1184,7 @@ public sealed class GUISelCountry : GUIElement
                  evt.info.gui.type == Event.Info.GUIInfo.BUTTON &&
                  evt.info.gui.ptr == buttonConquestIntro)
         {
-            bool wideLayout = ecGraphics.Instance().widthMode == 3;
+            bool wideLayout = Layout.Tablet;
             GUIRect introRect = wideLayout
                     ? new GUIRect(32f, 32f, 960f, 640f)
                     : new GUIRect((ecGraphics.Instance().screenW - 480f) * 0.5f, 0f, 480f, 320f);
@@ -1205,7 +1205,7 @@ public sealed class GUISelCountry : GUIElement
                  evt.info.gui.type == Event.Info.GUIInfo.BUTTON &&
                  evt.info.gui.ptr == buttonCountryIntro)
         {
-            bool wideLayout = ecGraphics.Instance().widthMode == 3;
+            bool wideLayout = Layout.Tablet;
             GUIRect introRect = wideLayout
                     ? new GUIRect(32f, 32f, 960f, 640f)
                     : new GUIRect((ecGraphics.Instance().screenW - 480f) * 0.5f, 0f, 480f, 320f);

@@ -26,7 +26,7 @@ public sealed class GUISave : GUIElement
             textureCommonBg = null;
         }
 
-        bool useHdFlags = ecGraphics.Instance().widthMode == 3 || g_contenscalefactor == 2.0f;
+        bool useHdFlags = Layout.Tablet || g_contenscalefactor == 2.0f;
         s_TextureRes.UnloadRes(useHdFlags ? "flag_hd.xml" : "flag.xml");
         base.Dispose();
     }
@@ -35,7 +35,7 @@ public sealed class GUISave : GUIElement
     public void Init(in GUIRect rectIn, int gameModeIn, bool isLoad)
     {
         ecGraphics graphics = ecGraphics.Instance();
-        bool wideLayout = graphics.widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         bool useHdFlags = wideLayout || g_contenscalefactor == 2.0f;
         s_TextureRes.LoadRes(useHdFlags ? "flag_hd.xml" : "flag.xml", !wideLayout && useHdFlags);
 
@@ -45,8 +45,8 @@ public sealed class GUISave : GUIElement
 
         string backgroundName;
         if (wideLayout) backgroundName = "commonbg_iPad.png";
-        else if (graphics.screenW <= 480) backgroundName = "commonbg.png";
-        else if (graphics.screenW <= 568) backgroundName = "commonbg-568h.png";
+        else if (Layout.Width480) backgroundName = "commonbg.png";
+        else if (Layout.WidthUpTo568) backgroundName = "commonbg-568h.png";
         else backgroundName = "commonbg-640h.png";
 
         textureCommonBg = graphics.LoadTexture(backgroundName);

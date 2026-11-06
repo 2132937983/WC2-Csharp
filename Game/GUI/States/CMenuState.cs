@@ -181,7 +181,7 @@ public sealed class CMenuState : CBaseState
 
         guiExitWarning = new GUIExitWarning();
         var warningRect = new GUIRect();
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             warningRect.w = 444f;
             warningRect.h = 252f;
@@ -283,7 +283,7 @@ public sealed class CMenuState : CBaseState
 
                     guiService = new GUIService();
                     var serviceRect = new GUIRect();
-                    if (ecGraphics.Instance().widthMode == 3)
+                    if (Layout.Tablet)
                     {
                         serviceRect.x = 278f;
                         serviceRect.y = 234f;
@@ -339,7 +339,7 @@ public sealed class CMenuState : CBaseState
 
                     guiNewGame = new GUINewGame();
                     var newGameRect = new GUIRect();
-                    if (ecGraphics.Instance().widthMode == 3)
+                    if (Layout.Tablet)
                     {
                         newGameRect.x = 114f;
                         newGameRect.y = 122f;
@@ -404,7 +404,7 @@ public sealed class CMenuState : CBaseState
                         var warningRect = new GUIRect();
                         warningRect.x = 0f;
                         warningRect.y = 0f;
-                        if (ecGraphics.Instance().widthMode == 3)
+                        if (Layout.Tablet)
                         {
                             warningRect.w = 444f;
                             warningRect.h = 252f;

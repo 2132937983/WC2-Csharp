@@ -37,7 +37,7 @@ public sealed class GUIAttackBox : GUIElement
         var buttonRect = new GUIRect(179.0f, 143.0f, 64.0f, 32.0f);
         okButton.Init("green_normal.png", "green_normal.png", buttonRect, null);
         okButton.SetImageText("buttontext_ok.png", "buttontext_ok_press.png");
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             okButton.imagePos[0] = 11.0f;
             okButton.imagePos[1] = -5.0f;

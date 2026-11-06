@@ -25,7 +25,7 @@ public sealed class GUIMedal : GUIElement
         rect = rectIn;
         imageMedal = new ecImage(s_TextureRes.GetImage("player_medal.png"));
 
-        GUIRect buttonRect = ecGraphics.Instance().widthMode == 3
+        GUIRect buttonRect = Layout.Tablet
             ? new GUIRect(142.0f, -4.0f, 64.0f, 54.0f)
             : new GUIRect(71.0f, -2.0f, 32.0f, 27.0f);
 
@@ -70,7 +70,7 @@ public sealed class GUIMedal : GUIElement
         GetAbsRect(out var absoluteRect);
 
         imageMedal.Render(absoluteRect.x, absoluteRect.y);
-        float numberOffsetX = ecGraphics.Instance().widthMode == 3 ? 40.0f : 23.0f;
+        float numberOffsetX = Layout.Tablet ? 40.0f : 23.0f;
         medalNum.DrawText(absoluteRect.x + numberOffsetX, absoluteRect.y + 1.0f, 0);
     }
 }

@@ -209,7 +209,7 @@ public sealed class GUIOptions : GUIElement
 
         if (optionsResLoaded)
         {
-            s_TextureRes.UnloadRes(ecGraphics.Instance().widthMode == 3 ? "options_ui_hd.xml" : "options_ui.xml");
+            s_TextureRes.UnloadRes(Layout.Tablet ? "options_ui_hd.xml" : "options_ui.xml");
             optionsResLoaded = false;
         }
 
@@ -238,7 +238,7 @@ public sealed class GUIOptions : GUIElement
 
         ecGraphics graphics = ecGraphics.Instance();
         GUIManager guiManager = GUIManager.Instance();
-        bool tablet = graphics.widthMode == 3;
+        bool tablet = Layout.Tablet;
         float originX = tablet ? 0.0f : (graphics.screenW - 480.0f) * 0.5f;
         width = originX;
 
@@ -254,8 +254,8 @@ public sealed class GUIOptions : GUIElement
 
         string commonBackground;
         if (tablet) commonBackground = "commonbg_iPad.png";
-        else if (graphics.screenW <= 480) commonBackground = "commonbg.png";
-        else if (graphics.screenW <= 568) commonBackground = "commonbg-568h.png";
+        else if (Layout.Width480) commonBackground = "commonbg.png";
+        else if (Layout.WidthUpTo568) commonBackground = "commonbg-568h.png";
         else commonBackground = "commonbg-640h.png";
 
         textureCommonbg = graphics.LoadTexture(commonBackground);
@@ -633,7 +633,7 @@ public sealed class GUIOptions : GUIElement
             imageCommonbg.Render(0.0f, 0.0f);
         if (imageBoardOptions != null)
         {
-            bool tablet = ecGraphics.Instance().widthMode == 3;
+            bool tablet = Layout.Tablet;
             float boardWidth = tablet ? 1024.0f : 480.0f;
             imageBoardOptions.Render(width, 0.0f, boardWidth, rect.h + (tablet ? 64.0f : 32.0f));
         }

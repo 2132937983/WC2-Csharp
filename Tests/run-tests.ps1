@@ -71,6 +71,18 @@ Get-ChildItem (Join-Path $PSScriptRoot '*.txt') | Where-Object { $_.BaseName -li
     & dotnet run --project $root --no-build -- @extra --exit-after 1500 --screenshot (Join-Path $runDir "$name.png") --script $_.FullName --log $log | Out-Null
     $problems = @(Select-String -Path $log -Pattern 'failed|xception' | Where-Object { $_.Line -notmatch 'Sound missing' } | ForEach-Object { $_.Line })
     if (-not (Select-String -Path $log -Pattern 'Music playing' -Quiet)) { $problems += 'no "Music playing" line in the log' }
+    # texstats LABEL: lines whose labels differ only by a trailing number (menu1, menu2) must report the
+    # same texture memory (resources are released when a screen closes, nothing accumulates)
+    $texGroups = @{}
+    Select-String -Path $log -Pattern 'texstats ([A-Za-z_]+)\d*: Textures: (\d+) live, (\d+) MB' | ForEach-Object {
+        $label = $_.Matches[0].Groups[1].Value; $value = "$($_.Matches[0].Groups[2].Value) textures, $($_.Matches[0].Groups[3].Value) MB"
+        if (-not $texGroups.ContainsKey($label)) { $texGroups[$label] = @() }
+        $texGroups[$label] += $value
+    }
+    foreach ($label in $texGroups.Keys) {
+        $distinct = @($texGroups[$label] | Select-Object -Unique)
+        if ($distinct.Count -gt 1) { $problems += "texture memory at '$label' changes between visits: $($texGroups[$label] -join ' / ')" }
+    }
     $hitTests = @(Select-String -Path $_.FullName -Pattern '^\s*hittest\b').Count
     if ($hitTests -gt 0) {
         $ran = @(Select-String -Path $log -Pattern 'hittest \[').Count

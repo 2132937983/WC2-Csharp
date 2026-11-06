@@ -35,7 +35,7 @@ public sealed class GUICommanderMedal : GUIButton
     /// <summary>Bounces the selection arrow and reverses its speed at the limits.</summary>
     public override void OnUpdate(float deltaTimeS)
     {
-        float minimumOffset = ecGraphics.Instance().widthMode == 3 ? -10f : -5f;
+        float minimumOffset = Layout.Tablet ? -10f : -5f;
         float previousSpeed = arrowSpeed;
         float nextOffset = arrowOffset + previousSpeed * deltaTimeS;
 
@@ -75,7 +75,7 @@ public sealed class GUICommanderMedal : GUIButton
         imageMedalArrow = new ecImage(arrowImageAttr);
         arrowOffset = 0f;
         selected = false;
-        arrowSpeed = ecGraphics.Instance().widthMode == 3 ? -50f : -25f;
+        arrowSpeed = Layout.Tablet ? -50f : -25f;
 
         base.Init(null, null, rectIn, null);
     }

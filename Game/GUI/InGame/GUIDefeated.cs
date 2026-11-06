@@ -39,7 +39,7 @@ public sealed class GUIDefeated : GUIElement
         var buttonRect = new GUIRect(61.0f, 140.0f, 64.0f, 32.0f);
         buttonOk.Init("green_normal.png", "green_normal.png", buttonRect, null);
         buttonOk.SetImageText("buttontext_ok.png", "buttontext_ok_press.png");
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             buttonOk.imagePos[0] = 11.0f;
             buttonOk.imagePos[1] = -5.0f;
@@ -65,7 +65,7 @@ public sealed class GUIDefeated : GUIElement
     {
         imageCountryDefeat = new ecImage(s_TextureRes.GetImage("country_defeat.png"));
         // same flag selection rule as CGameRes so the popup matches the map flags
-        if (ecGraphics.Instance().widthMode == 3 || g_contenscalefactor != 2.0f)
+        if (Layout.Tablet || g_contenscalefactor != 2.0f)
             textureResFlag.LoadRes("flag.xml", false);
         else
             textureResFlag.LoadRes("flag_hd.xml", true);

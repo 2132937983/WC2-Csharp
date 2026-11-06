@@ -78,7 +78,7 @@ public sealed class GUISelBattle : GUIElement
 
         fontNum6.Release();
 
-        bool useHdResources = ecGraphics.Instance().widthMode == 3 || g_contenscalefactor == 2.0f;
+        bool useHdResources = Layout.Tablet || g_contenscalefactor == 2.0f;
         s_TextureRes.UnloadRes(useHdResources ? "selbattle_hd.xml" : "selbattle.xml");
         s_TextureRes.UnloadRes(textureResNameBattleName);
 
@@ -91,7 +91,7 @@ public sealed class GUISelBattle : GUIElement
         ecGraphics.Instance().SetViewPoint(xMinimap, yMinimap, 1f);
 
         // the minimap on the left
-        bool wideLayout = ecGraphics.Instance().widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         float minimapSize = wideLayout ? 1000f : 500f;
         float mapWidth = wideLayout ? 3430f : 1715f;
 
@@ -180,7 +180,7 @@ public sealed class GUISelBattle : GUIElement
                 {
                     float distance = MathF.Sqrt(distanceSquared);
                     // HD map coordinates are doubled, so is the speed
-                    float moveSpeed = ecGraphics.Instance().widthMode == 3 ? 2000f : 1000f;
+                    float moveSpeed = Layout.Tablet ? 2000f : 1000f;
                     xSpeed = deltaX * moveSpeed / distance;
                     ySpeed = deltaY * moveSpeed / distance;
                 }
@@ -301,7 +301,7 @@ public sealed class GUISelBattle : GUIElement
                         guiBattleIntro = new GUIBattleIntro();
 
                         GUIRect introRect;
-                        if (ecGraphics.Instance().widthMode == 3)
+                        if (Layout.Tablet)
                         {
                             introRect = new GUIRect(32f, 32f, 960f, 640f);
                         }
@@ -372,7 +372,7 @@ public sealed class GUISelBattle : GUIElement
         xMinimap = centerX;
         yMinimap = centerY;
 
-        bool wideLayout = ecGraphics.Instance().widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         h = wideLayout ? 1500f : 750f;
         w = wideLayout ? 3430f : 1715f;
 
@@ -558,7 +558,7 @@ public sealed class GUISelBattle : GUIElement
             imageInfo.y = flagDef.y;
             imageInfo.rot = flagDef.rot;
             imageInfo.scale = flagDef.scale;
-            if (ecGraphics.Instance().widthMode == 3)
+            if (Layout.Tablet)
             {
                 imageInfo.x += imageInfo.x;
                 imageInfo.y += imageInfo.y;
@@ -576,7 +576,7 @@ public sealed class GUISelBattle : GUIElement
             imageInfo.y = arrowDef.y;
             imageInfo.rot = arrowDef.rot;
             imageInfo.scale = arrowDef.scale;
-            if (ecGraphics.Instance().widthMode == 3)
+            if (Layout.Tablet)
             {
                 imageInfo.x += imageInfo.x;
                 imageInfo.y += imageInfo.y;
@@ -587,7 +587,7 @@ public sealed class GUISelBattle : GUIElement
         textYear.SetText(battleDef.age);
 
         ecGraphics graphics = ecGraphics.Instance();
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             centerX = battleDef.centerX + battleDef.centerX - graphics.screenW * 0.5f;
             centerY = battleDef.centerY + battleDef.centerY - graphics.screenH * 0.5f;

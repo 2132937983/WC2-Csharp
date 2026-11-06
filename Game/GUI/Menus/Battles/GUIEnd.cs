@@ -53,15 +53,15 @@ public sealed class GUIEnd : GUIElement
 
         string backgroundName;
         float backgroundWidth = rect.w;
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             backgroundName = Sprintf("victorybg_%s_iPad.webp", seriesName);
         }
-        else if (graphics.screenW <= 480)
+        else if (Layout.Width480)
         {
             backgroundName = Sprintf("victorybg_%s.webp", seriesName);
         }
-        else if (graphics.screenW <= 568)
+        else if (Layout.WidthUpTo568)
         {
             backgroundName = Sprintf("victorybg_%s-568h.webp", seriesName);
             backgroundWidth = 568f;
@@ -76,7 +76,7 @@ public sealed class GUIEnd : GUIElement
         imageVictroyBg = new ecImage(textureVictoryBg, 0f, 0f, backgroundWidth, rect.h);
 
         ecTextureRect victoryRect;
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             victoryRect = new ecTextureRect(6f, 6f, 596f, 132f, 298f, 66f);
             textureVictory = graphics.LoadTexture("victory@2x.png");
@@ -90,7 +90,7 @@ public sealed class GUIEnd : GUIElement
 
         buttonBack = new GUIButton();
         GUIRect buttonRect;
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
             buttonRect = new GUIRect(0f, 730f, 40f, 38f);
         else
             buttonRect = new GUIRect(0f, 290f, 32f, 30f);
@@ -101,7 +101,7 @@ public sealed class GUIEnd : GUIElement
         string language = g_LocalizableStrings.GetString("language");
         bool highDefinitionFont = false;
         string fontName;
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             fontName = Sprintf("font4_%s_hd.fnt", language);
         }
@@ -140,7 +140,7 @@ public sealed class GUIEnd : GUIElement
         else
             imageVictroyBg.Render(0f, 0f);
 
-        if (graphics.widthMode == 3)
+        if (Layout.Tablet)
         {
             imageVictroy.Render(512f, 96f);
             ecTextDrawScaled(textVictory, 73f, 187f, 0, kBattleEndTextScale);

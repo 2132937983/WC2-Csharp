@@ -33,7 +33,7 @@ public sealed class GUISaveItem : GUIRadioButton
     {
         Init(saveBackImageName, saveBackImageName, rectIn, null);
 
-        textTime.Init(ecGraphics.Instance().widthMode == 3 ? g_Num4b : g_Num4);
+        textTime.Init(Layout.Tablet ? g_Num4b : g_Num4);
         textTime.SetColor(0xFF354A3Bu);
 
         textName.Init(g_FontHt);
@@ -48,7 +48,7 @@ public sealed class GUISaveItem : GUIRadioButton
 
         string language = g_LocalizableStrings.GetString("language");
         if (language != "en")
-            yTextName = ecGraphics.Instance().widthMode == 3 ? -4.0f : -2.0f;
+            yTextName = Layout.Tablet ? -4.0f : -2.0f;
     }
 
     /// <summary>Sets the flag, the time, the battle name and the auto save mark of the slot.</summary>
@@ -126,7 +126,7 @@ public sealed class GUISaveItem : GUIRadioButton
             buttonImage.Render(absoluteRect.x, absoluteRect.y);
         }
 
-        bool wideLayout = ecGraphics.Instance().widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         if (wideLayout)
         {
             if (isAutoSave)

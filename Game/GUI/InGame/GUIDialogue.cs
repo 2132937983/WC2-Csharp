@@ -67,7 +67,7 @@ public sealed class GUIDialogue : GUIElement
     {
         GetAbsRect(out var absRect);
 
-        if (ecGraphics.Instance().widthMode == 3)
+        if (Layout.Tablet)
         {
             // wide layout: photo near the bottom right, board and text on its left
             if (imageGeneral != null)

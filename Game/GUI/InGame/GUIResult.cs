@@ -74,7 +74,7 @@ public sealed class GUIResult : GUIElement
         showRestart = showRestartIn;
 
         ecGraphics graphics = ecGraphics.Instance();
-        bool wideLayout = graphics.widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         if (wideLayout)
         {
             textureCommonBg = graphics.LoadTexture("commonbg_iPad.png");
@@ -91,8 +91,8 @@ public sealed class GUIResult : GUIElement
             xBase = graphics.screenW - 480.0f;
 
             string commonBackgroundName;
-            if (graphics.screenW <= 480) commonBackgroundName = "commonbg.png";
-            else if (graphics.screenW <= 568) commonBackgroundName = "commonbg-568h.png";
+            if (Layout.Width480) commonBackgroundName = "commonbg.png";
+            else if (Layout.WidthUpTo568) commonBackgroundName = "commonbg-568h.png";
             else commonBackgroundName = "commonbg-640h.png";
             textureCommonBg = graphics.LoadTexture(commonBackgroundName);
             imageCommonBg = new ecImage(textureCommonBg, 0.0f, 0.0f, rect.w, rect.h);
@@ -218,7 +218,7 @@ public sealed class GUIResult : GUIElement
     {
         imageCommonBg.Render(0.0f, 0.0f);
 
-        bool wideLayout = ecGraphics.Instance().widthMode == 3;
+        bool wideLayout = Layout.Tablet;
         if (wideLayout)
         {
             imageBoardResult.Render(304.0f, 0.0f);
