@@ -8,6 +8,7 @@ public static class ecGame
 {
     private static bool s_initialized;
     private static bool s_waiting;
+    private static bool s_paused;
 
     /// <summary>Chooses the assets folder and the language before the game starts.</summary>
     public static void ConfigurePaths(string assetsOverride, string langOverride)
@@ -195,11 +196,15 @@ public static class ecGame
         bool hd = g_contenscalefactor == 2.0f;
         if (graphics.widthMode == 3)
         {
+            // original CLogoState::OnEnter, tablet branch (atlas name, hd flag)
             guiManager.LoadTextureRes("ui_iPad.xml", false);
+            guiManager.LoadTextureRes(hd ? "ui1_hd.xml" : "ui1.xml", hd);
+            guiManager.LoadTextureRes("ui2_hd.xml", false);
+            if (hd && !guiManager.LoadTextureResChecked(Sprintf("text_%s_iPad_hd.xml", language), true))
+                guiManager.LoadTextureRes("text_en_iPad_hd.xml", true);
             if (!guiManager.LoadTextureResChecked(Sprintf("text_%s_iPad.xml", language), false))
                 guiManager.LoadTextureRes("text_en_iPad.xml", false);
-            guiManager.LoadTextureRes("ui1_hd.xml", true);
-            guiManager.LoadTextureRes("ui2_hd.xml", true);
+            guiManager.LoadTextureRes("image_newgame_hd.xml", false);
         }
         else
         {
@@ -207,8 +212,8 @@ public static class ecGame
             guiManager.LoadTextureRes(hd ? "ui2_hd.xml" : "ui2.xml", hd);
             if (!guiManager.LoadTextureResChecked(Sprintf(hd ? "text_%s_hd.xml" : "text_%s.xml", language), hd))
                 guiManager.LoadTextureRes(hd ? "text_en_hd.xml" : "text_en.xml", hd);
+            guiManager.LoadTextureRes(hd ? "image_newgame_hd.xml" : "image_newgame.xml", hd);
         }
-        guiManager.LoadTextureRes("image_newgame_hd.xml", true);
     }
 
     /// <summary>Runs a start-up step and logs instead of crashing when a data file is broken.</summary>
@@ -218,10 +223,24 @@ public static class ecGame
         catch (Exception ex) { LogError(what + " failed: " + ex.Message); }
     }
 
+    /// <summary>
+    /// Java_com_easytech_wc2_ecRenderer_nativeInit: the logical layout follows the screen aspect
+    /// ratio in four phone buckets (640/568/534/480 x 320) and the 1024x768 tablet layout below 1.40625.
+    /// </summary>
+    public static void SelectLayout(int screenW, int screenH, out int logicalW, out int logicalH)
+    {
+        float aspect = (float)screenW / Math.Max(1, screenH);
+        if (aspect > 1.8875f) { logicalW = 640; logicalH = 320; }
+        else if (aspect > 1.721875f) { logicalW = 568; logicalH = 320; }
+        else if (aspect > 1.584375f) { logicalW = 534; logicalH = 320; }
+        else if (aspect < 1.40625f) { logicalW = 1024; logicalH = 768; }
+        else { logicalW = 480; logicalH = 320; }
+    }
+
     /// <summary>Per frame update (port of the library's ecGameUpdate plus the commander auto save hook).</summary>
     public static void ecGameUpdate(float deltaTimeS)
     {
-        if (!s_initialized || s_waiting) return;
+        if (!s_initialized || s_waiting || s_paused) return;
         CommanderAutoSave();
         CStateManager.Instance().Update(deltaTimeS);
         GUIManager.Instance().Update(deltaTimeS);
@@ -251,6 +270,7 @@ public static class ecGame
         CStateManager.Instance().Render();
         graphics.SetViewPoint(0f, 0f, 1f);
         GUIManager.Instance().Render();
+        if (s_waiting || s_paused) graphics.Fade(0.5f); // original: darkened while paused or waiting
         graphics.RenderEnd();
     }
 
@@ -281,19 +301,23 @@ public static class ecGame
         ecMultipleTouch.Instance().TouchEnded(index, x, y);
     }
 
-    /// <summary>Returns true when the back key was handled by the game.</summary>
+    /// <summary>Returns true when the back key was handled by the game (original ecBackPressed).</summary>
     public static bool ecBackPressed()
     {
         if (!s_initialized) return false;
         if (GUIManager.Instance().PostEvent(Event.Back())) return true;
-        if (CStateManager.Instance().BackPressed()) return true;
-        // on the main menu the back key asks before quitting (the Android behaviour)
-        if (CStateManager.Instance().currentState is CMenuState menu)
-        {
-            menu.ShowExit();
-            return true;
-        }
-        return false;
+        return CStateManager.Instance().BackPressed();
+    }
+
+    /// <summary>
+    /// Java_com_easytech_wc2_Wc2Activity_CallNativeExit: the Android back key; when nothing handled
+    /// it, the menu state's exit box is shown whatever the current state is.
+    /// </summary>
+    public static void CallNativeExit()
+    {
+        if (!s_initialized) return;
+        if (ecBackPressed()) return;
+        if (CStateManager.Instance().GetStatePtr(EState.MENU) is CMenuState menu) menu.ShowExit();
     }
 
     public static void ecKeyDown(int key)
@@ -308,22 +332,55 @@ public static class ecGame
         CStateManager.Instance().ScrollWheel(x, delta, y);
     }
 
-    public static void ecGamePause() { s_waiting = true; CCSoundBox.GetInstance().PauseMusic(); }
-    public static void ecGameResume() { s_waiting = false; CCSoundBox.GetInstance().ResumeMusic(); }
+    // original: two flags, both stop ecGameUpdate and darken the frame (byte_21EB1A pause, byte_21EB19 waiting)
+    public static void ecGamePause() { s_paused = true; CCSoundBox.GetInstance().PauseMusic(); }
+    public static void ecGameResume() { s_paused = false; CCSoundBox.GetInstance().ResumeMusic(); }
     public static void ecGameWaiting(bool setWaiting) => s_waiting = setWaiting;
 
+    /// <summary>original ecGameDidEnterBackground: commander save, then every state's EnterBackground.</summary>
     public static void ecGameDidEnterBackground()
     {
         if (!s_initialized) return;
+        try { g_Commander.Save(); } catch (Exception ex) { Log("Commander save failed: " + ex.Message); }
         CStateManager.Instance().EnterBackground();
-        CCSoundBox.GetInstance().PauseMusic();
     }
 
+    /// <summary>original ecGameWillEnterForeground: re-apply the saved volumes, resume music, EnterForeground.</summary>
     public static void ecGameWillEnterForeground()
     {
         if (!s_initialized) return;
+        var soundBox = CCSoundBox.GetInstance();
+        soundBox.SetMusicVolume(g_GameSettings.musicVolume);
+        soundBox.SetSEVolume(g_GameSettings.seVolume);
+        soundBox.ResumeMusic();
         CStateManager.Instance().EnterForeground();
-        CCSoundBox.GetInstance().ResumeMusic();
+    }
+
+    private static bool s_inBackground;
+
+    /// <summary>
+    /// Set by the Android activity: it drives nativePause/nativeResume from the life cycle, so the
+    /// host's window-focus polling must stay out of the way (a desktop window may start unfocused
+    /// and must not freeze the game).
+    /// </summary>
+    public static bool HostHandlesLifecycle;
+
+    /// <summary>Java_com_easytech_wc2_Wc2Activity_nativePause (idempotent: focus loss and onPause may both report it).</summary>
+    public static void nativePause()
+    {
+        if (!s_initialized || s_inBackground) return;
+        s_inBackground = true;
+        ecGameDidEnterBackground();
+        ecGamePause();
+    }
+
+    /// <summary>Java_com_easytech_wc2_Wc2Activity_nativeResume.</summary>
+    public static void nativeResume()
+    {
+        if (!s_initialized || !s_inBackground) return;
+        s_inBackground = false;
+        ecGameWillEnterForeground();
+        ecGameResume();
     }
 
     public static void ecLoadSettings() => g_GameSettings.LoadSettings();

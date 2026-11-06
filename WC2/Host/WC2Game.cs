@@ -112,12 +112,18 @@ public sealed class WC2Game : Game
     protected override void Update(GameTime gameTime)
     {
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        if (dt > 0.1f) dt = 0.1f;
+        if (dt > 0.05f) dt = 0.05f; // original nativeRender: a frame never advances the game by more than 50 ms
 
-        if (IsActive != wasActive)
+        // desktop: window focus drives the background/foreground hooks (state save, music) but never
+        // the pause flag, so an unfocused window keeps running; Android handles the life cycle itself
+        if (!ecGame.HostHandlesLifecycle && IsActive != wasActive)
         {
             wasActive = IsActive;
-            try { if (IsActive) ecGame.ecGameWillEnterForeground(); else ecGame.ecGameDidEnterBackground(); }
+            try
+            {
+                if (IsActive) ecGame.ecGameWillEnterForeground();
+                else { ecGame.ecGameDidEnterBackground(); CCSoundBox.GetInstance().PauseMusic(); }
+            }
             catch (Exception ex) { Log("background/foreground hook failed: " + ex.Message); }
         }
 
@@ -229,12 +235,11 @@ public sealed class WC2Game : Game
         }
 
         // keys
+        // Esc and Backspace behave like the Android back key (CallNativeExit: unhandled -> exit box)
         if (keyboard.IsKeyDown(Keys.Escape) && !previousKeyboard.IsKeyDown(Keys.Escape))
-        {
-            if (!ecGame.ecBackPressed()) Exit();
-        }
+            ecGame.CallNativeExit();
         if (keyboard.IsKeyDown(Keys.Back) && !previousKeyboard.IsKeyDown(Keys.Back))
-            ecGame.ecBackPressed();
+            ecGame.CallNativeExit();
         if (keyboard.IsKeyDown(Keys.F11) && !previousKeyboard.IsKeyDown(Keys.F11))
             ecSetFullScreen(!graphics.IsFullScreen);
         foreach (var key in keyboard.GetPressedKeys())

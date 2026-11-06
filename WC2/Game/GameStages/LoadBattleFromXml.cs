@@ -21,13 +21,17 @@ public static partial class BattleScenario
     /// <returns>alliance value</returns>
     internal static int ParseAlliance(string value)
     {
-        if (value != null && value.Length > 0 && value[0] == 'd')
+        // original: a/b/c are the three alliances, anything else (the shipped files use "n" and
+        // "d") is neutral. The remake mapped every letter to its index, which turned the "n"
+        // countries of 15 scenarios into a belligerent alliance 14.
+        if (value != null && value.Length > 0)
         {
-            return (int)NEUTRAL;
-        }
-        if (value != null && value.Length > 0 && value[0] >= 'a' && value[0] <= 'z')
-        {
-            return value[0] - 'a' + 1;
+            switch (value[0])
+            {
+                case 'a': return 1;
+                case 'b': return 2;
+                case 'c': return 3;
+            }
         }
         return (int)NEUTRAL;
     }

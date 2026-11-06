@@ -465,15 +465,17 @@ public sealed class CGameRes
         {
             if (g_contenscalefactor == 2.0f)
             {
+                // original: the HD phone layouts load the "_hd" / "_568hd" atlases as hd tables
+                // (the remake named the 568 pair "_568h", which does not exist in the shipped assets)
                 if (graphics.screenW <= 480.0)
                 {
-                    textureResBattlebg.LoadRes("battlebg1_hd.xml", false);
-                    textureResBattlebg.LoadRes("battlebg2_hd.xml", false);
+                    textureResBattlebg.LoadRes("battlebg1_hd.xml", true);
+                    textureResBattlebg.LoadRes("battlebg2_hd.xml", true);
                 }
                 else if (graphics.screenW <= 568.0)
                 {
-                    textureResBattlebg.LoadRes("battlebg1_568h.xml", false);
-                    textureResBattlebg.LoadRes("battlebg2_568h.xml", false);
+                    textureResBattlebg.LoadRes("battlebg1_568hd.xml", true);
+                    textureResBattlebg.LoadRes("battlebg2_568hd.xml", true);
                 }
                 else
                 {

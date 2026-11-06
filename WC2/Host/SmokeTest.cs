@@ -120,7 +120,7 @@ public static class SmokeTest
                 break;
             case "back":
                 Log("Smoke: back");
-                ecGame.ecBackPressed();
+                ecGame.CallNativeExit();
                 break;
             case "wheel":
                 ecGame.ecScrollWheel(0f, F(c.args[0]), 0f);

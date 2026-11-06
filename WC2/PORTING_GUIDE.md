@@ -130,7 +130,9 @@ Vertex colors are `0xAABBGGRR` (R in the lowest byte) — exactly the literals u
 ## Out of scope (keep the surrounding flow, make the body a no-op)
 
 JNI/Java calls, in-app purchases, advertising, Game Center / multiplayer sessions, battle animation
-(`GUIBattle`), tutorial (`GUITutorails.cpp` is empty).
+(`GUIBattle`; the remake never starts it either). The tutorial is *not* out of scope any more:
+`GUITutorails.cpp` is empty in the remake because the original binary code ran there, and
+`Game/GUI/InGame/GUITutorails.cs` is a port of that binary code (`Reference/decompiled/x86_64/GUITutorails.c`).
 
 ## Engine semantics confirmed from the binary
 
@@ -183,10 +185,30 @@ reasonable guess would be, so do not "fix" them:
   (its PCM layout follows `Format`, mono streams arrive as duplicated stereo), not NLayer, which
   mis-frames MPEG 2.5. `--test-audio` compares every track and effect against the file headers.
 
+## Platform entry points confirmed from the binary (`jni.c`, `global.c`)
+
+* Layout: `ecGame.SelectLayout` = `nativeInit` buckets (aspect > 1.8875 → 640x320, > 1.721875 → 568,
+  > 1.584375 → 534, < 1.40625 → 1024x768 tablet, else 480x320); `g_contenscalefactor` is 2 on every
+  device, including the tablet layout (`--ipad` on the desktop only picks a 4:3 window).
+* Frame step capped at 0.05 s (`nativeRender`).
+* `ecGamePause`/`ecGameWaiting` set two flags; while either is set `ecGameUpdate` does nothing and
+  `ecGameRender` draws `Fade(0.5)` over the frame. On the desktop, losing window focus calls the
+  background hooks (state save, music pause) but never the pause flag, so smoke runs keep going.
+* `nativePause` = `ecGameDidEnterBackground` (commander save + states) + `ecGamePause`; `nativeResume` =
+  `ecGameWillEnterForeground` (volumes from settings, `ResumeMusic`, states) + `ecGameResume`. The Android
+  activity drives them from `OnPause/OnResume` and sets `ecGame.HostHandlesLifecycle`.
+* Back key: `ecBackPressed` = GUI BACK event, then `CStateManager.BackPressed`; `CallNativeExit` shows the
+  MENU state's exit box when that returned false, whatever the current state. Desktop Esc/Backspace and the
+  `back` script command go through `CallNativeExit`.
+* `CLogoState`: white screen, centred logo, volumes applied, 2.1 s, `FadeOut(-1)`, 1 s, menu. The UI
+  atlases and `settings.cfg` that the original loaded there are loaded in `ecGameInit`
+  (`LoadGlobalGuiAtlases`, same names and hd flags as `CLogoState::OnEnter`).
+
 ## Game-side audit
 
 `Reference/decompiled/audit/README.md` summarises the comparison of the game classes (combat, areas,
 armies, scene, AI, countries, turn flow) with the original binary. No porting bugs were found; the
 reverse-engineering mistakes of the remake that changed gameplay were corrected in the C# (listed
 there), the remake's deliberate redesigns were kept. When touching those functions, keep the "original:"
-comments that mark the corrected spots.
+comments that mark the corrected spots. `Reference/decompiled/DIFFERENCES_THREE_WAY.md` is the complete
+original vs remake vs C# matrix (classes, data, platform, build, tests) with the remaining action list.

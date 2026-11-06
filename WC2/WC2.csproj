@@ -39,7 +39,7 @@
     <None Remove="Content\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.*" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.6.1" />
     <PackageReference Include="SkiaSharp" Version="3.119.2" />
     <PackageReference Include="NLayer" Version="1.16.0" />
     <PackageReference Include="MP3Sharp" Version="1.0.5" />

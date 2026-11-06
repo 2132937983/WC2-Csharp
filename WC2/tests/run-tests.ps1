@@ -18,7 +18,8 @@ Get-ChildItem (Join-Path $PSScriptRoot '*.txt') | Where-Object { $_.BaseName -li
     Write-Host "== $name" -ForegroundColor Cyan
     $log = Join-Path $out "$name.log"
     if (Test-Path $log) { Remove-Item $log }
-    & dotnet run --project $root --no-build -- --exit-after 460 --screenshot (Join-Path $out "$name.png") --script $_.FullName --log $log | Out-Null
+    $extra = @(); if ($name -like 'ipad*') { $extra += '--ipad' }   # ipad_*.txt scripts run in the 1024x768 tablet layout
+    & dotnet run --project $root --no-build -- @extra --exit-after 460 --screenshot (Join-Path $out "$name.png") --script $_.FullName --log $log | Out-Null
     $problems = Select-String -Path $log -Pattern 'failed|xception' | Where-Object { $_.Line -notmatch 'Sound missing' }
     if (-not (Select-String -Path $log -Pattern 'Music playing' -Quiet)) { $problems = @($problems) + 'no "Music playing" line in the log' }
     if ($problems) { Write-Host "   problems:" -ForegroundColor Yellow; $problems | ForEach-Object { Write-Host "   $($_.Line)" } }

@@ -1,17 +1,16 @@
 namespace WC2;
 
-/// <summary>Start-up logo: shows the logo, waits, then fades to the main menu.</summary>
+/// <summary>
+/// Start-up logo, ported from the original binary (CLogoState in Reference/decompiled): a
+/// centered logo picture on a white screen, applies the saved volumes, holds 2.1 s, fades out,
+/// waits one more second and switches to the main menu.
+/// </summary>
 public sealed class CLogoState : CBaseState
 {
     public float fadeInTime;
     public bool fadingIn;
     public bool fadingOut;
     public float fadeOutTime;
-
-    private ecTexture textureLogo;
-    private ecImage imageLogo;
-    private float shownTime;
-    private const float LogoDuration = 2.0f;
 
     public CLogoState()
     {
@@ -21,74 +20,67 @@ public sealed class CLogoState : CBaseState
 
     public override void OnEnter()
     {
-        GUIManager.Instance().currentState = this;
+        var guiManager = GUIManager.Instance();
+        guiManager.currentState = this;
         GUIMotionManager.Instance().currentState = this;
         var graphics = ecGraphics.Instance();
-        string name = graphics.widthMode == 3 ? "logo_iPad.webp" : "logo.webp";
-        textureLogo = graphics.LoadTexture(name);
-        if (textureLogo != null)
-            imageLogo = new ecImage(textureLogo, 0f, 0f, textureLogo.w, textureLogo.h);
+        GUIImage logo;
+        if (graphics.widthMode == 3)
+            logo = guiManager.AddImage("logo_iPad.webp", new ecTextureRect(1f, 1f, 510f, 510f, 0f, 0f), new GUIRect(0f, 0f, 510f, 510f), guiManager, false);
+        else
+            logo = guiManager.AddImage("logo.webp", new ecTextureRect(1f, 1f, 254f, 254f, 0f, 0f), new GUIRect(0f, 0f, 254f, 254f), guiManager, false);
+        logo?.Center();
+        // the original (re)applies the saved volumes here
+        CCSoundBox.GetInstance().SetMusicVolume(g_GameSettings.musicVolume);
+        CCSoundBox.GetInstance().SetSEVolume(g_GameSettings.seVolume);
         fadeInTime = 0f;
-        fadeOutTime = 0f;
-        shownTime = 0f;
         fadingIn = true;
         fadingOut = false;
-        GUIManager.Instance().FadeIn(0);
+        fadeOutTime = 0f;
     }
 
     public override void OnExit()
     {
-        imageLogo = null;
-        if (textureLogo != null)
-        {
-            ecGraphics.Instance().FreeTexture(textureLogo);
-            textureLogo = null;
-        }
+        GUIManager.Instance().FreeAllChild();
     }
 
     public override void Update(float deltaTimeS)
     {
-        if (fadingIn || fadingOut) return;
-        shownTime += deltaTimeS;
-        if (shownTime >= LogoDuration) StartFadeOut();
-    }
-
-    private void StartFadeOut()
-    {
-        if (fadingOut) return;
-        fadingOut = true;
-        GUIManager.Instance().FadeOut(0, null);
+        if (fadeInTime >= 0f) fadeInTime += deltaTimeS;
+        if (fadeInTime > 2.1f && fadingIn)
+        {
+            GUIManager.Instance().FadeOut(-1, null);
+            fadeInTime = -1f;
+        }
+        if (fadingOut)
+        {
+            fadeOutTime += deltaTimeS;
+            if (fadeOutTime > 1f)
+            {
+                g_PlayerManager.Init();
+                CStateManager.Instance().SetCurState(EState.MENU);
+                fadingOut = false;
+            }
+        }
     }
 
     public override void Render()
     {
         var graphics = ecGraphics.Instance();
         graphics.SetViewPoint(0f, 0f, 1f);
-        if (imageLogo == null) return;
-        float x = (graphics.screenW - imageLogo.width) * 0.5f;
-        float y = (graphics.screenH - imageLogo.height) * 0.5f;
-        imageLogo.Render(x, y);
+        graphics.RenderRect(0f, 0f, graphics.screenW, graphics.screenH, 0xFFFFFFFFu);
     }
 
     public override bool OnEvent(Event evt)
     {
         if (evt.type != Event.GUI) return false;
-        if (evt.info.gui.type == Event.Info.GUIInfo.FADE_IN)
-        {
-            fadingIn = false;
-            return true;
-        }
         if (evt.info.gui.type == Event.Info.GUIInfo.FADE_OUT)
         {
-            CStateManager.Instance().SetCurState(EState.MENU);
+            fadingOut = true;
             return true;
         }
-        return false;
-    }
-
-    public override void TouchEnd(float x, float y, int index)
-    {
-        if (!fadingIn) StartFadeOut();
+        if (evt.info.gui.type == Event.Info.GUIInfo.FADE_IN) fadingIn = true;
+        return true;
     }
 
     public override bool BackPressed() => true;

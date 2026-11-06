@@ -1,0 +1,10 @@
+# tablet layout (1024x768 logical, HD content): main menu, then the tutorial battle
+wait 4.5
+shot P0_ipad_menu
+click 910 465
+wait 8
+shot P1_ipad_tutorial
+click 512 384
+wait 2
+shot P2_ipad_tutorial2
+exit

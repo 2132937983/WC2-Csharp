@@ -38,13 +38,14 @@ public static class Globals
 
     /// <summary>
     /// Returns the full path of a read-only game asset. Mirrors GetPath(fileName, unused).
-    /// A document (user data) file with the same name takes precedence so that exported
-    /// files such as game.xml can be edited by hand.
+    /// The scenario export "game.xml" is redirected to the user data folder (the remake writes
+    /// it to the Download folder) so it can be edited by hand without touching the assets.
     /// </summary>
     public static string GetPath(string fileName, string unused = null)
     {
         if (string.IsNullOrEmpty(fileName)) return fileName;
         if (Path.IsPathRooted(fileName)) return fileName;
+        if (fileName == "game.xml") return GetDocumentPath(fileName);
         string lang = Path.Combine(AssetsRoot, LangDir, fileName);
         if (LangDir.Length > 0 && File.Exists(lang)) return lang;
         return Path.Combine(AssetsRoot, fileName);

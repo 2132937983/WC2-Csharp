@@ -1,0 +1,19 @@
+wait 4.5
+shot T0_menu
+click 510 188
+wait 7
+shot T1_tutorial
+click 284 160
+wait 2
+shot T2_tutorial
+click 284 160
+wait 2
+click 284 160
+wait 2.5
+shot T3_tutorial
+click 284 160
+wait 2
+click 284 160
+wait 2
+shot T4_tutorial
+exit

@@ -52,18 +52,31 @@ Android workload, an Android SDK (platform 34+), JDK 17. The project points at `
 cd WC2.Android
 dotnet build -c Release
 # APK: bin\Release\net9.0-android\*-Signed.apk
+# or: .\WC2.Android\build-apk.ps1   (checks the workload, builds Release, copies WC2-android-arm64.apk to the repo root)
 ```
+
+The activity mirrors the original `Wc2Activity`: layout buckets from the screen aspect (640/568/534/480
+x 320, 1024x768 on 4:3 tablets), `nativePause`/`nativeResume` on the life cycle (background save, music,
+darkened frame), the back key through `CallNativeExit` (exit box when nothing handled it), immersive
+full-screen window, the original launcher icons and localised app name. Package id `com.wc2remake.csharp`,
+arm64-v8a only, debug-signed. None of this has been run on a real device yet; the device checklist is in
+`Reference/decompiled/DIFFERENCES_THREE_WAY.md` section 5.
 
 ## Smoke tests
 
-`WC2/tests/*.txt` are scripts for the built-in input driver; `WC2/tests/run-tests.ps1` runs them all
-after `dotnet build` and writes screenshots and logs to `WC2/tests/out`.
+`WC2/tests/*.txt` are scripts for the built-in input driver; `WC2/tests/run-tests.ps1` runs the audio
+self-test and then every script (scripts named `ipad_*` run in the 1024x768 tablet layout) after
+`dotnet build`, and writes screenshots and logs to `WC2/tests/out`.
 
 ## Status / known gaps
 
-* Not ported (same as the C++ remake): battle animations, tutorial, multiplayer, in-app purchases.
+* Not ported (same as the C++ remake): battle animation (the remake never starts it either),
+  multiplayer, in-app purchases, service/promotion panels, map editor. The tutorial *is* ported (from the
+  binary; the remake ran the original code for it).
 * The game logic was audited against the decompiled original (`Reference/decompiled/audit`); the
   remake's accidental deviations were corrected, its deliberate redesigns kept.
+* `Reference/decompiled/DIFFERENCES_THREE_WAY.md` is the full original vs C++ remake vs C# matrix with
+  the prioritised action list; `Reference/decompiled/DIFFERENCES.md` is the shorter original vs C# list.
 * Music is decoded from the original MP3 files with MP3Sharp. The tracks are MPEG 2.5 Layer III at
   8 kHz; NLayer (kept only as a fallback) mis-frames that format and produced garbled, clipped audio
   at twice the speed. `dotnet run -- --test-audio [outDir]` decodes every track, loads every effect

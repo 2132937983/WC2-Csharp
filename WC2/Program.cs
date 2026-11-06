@@ -27,19 +27,11 @@ for (int i = 0; i < args.Length; i++)
     }
 }
 
-if (ipad)
-{
-    logicalW = 1024; logicalH = 768;
-    if (windowW == 1136 && windowH == 640) { windowW = 1024; windowH = 768; }
-    g_contenscalefactor = 1.0f;
-}
-else
-{
-    // phone HD layout: logical height is always 320, width follows the window aspect (480..640)
-    g_contenscalefactor = 2.0f;
-    logicalH = 320;
-    logicalW = Math.Clamp((int)MathF.Round(320f * windowW / Math.Max(1, windowH)), 480, 640);
-}
+// --ipad only picks a 4:3 window; the layout itself follows the original nativeInit buckets
+// (640/568/534/480 x 320 by aspect ratio, 1024x768 below 1.40625) with HD content, as on Android.
+if (ipad && windowW == 1136 && windowH == 640) { windowW = 1024; windowH = 768; }
+g_contenscalefactor = 2.0f;
+ecGame.SelectLayout(windowW, windowH, out logicalW, out logicalH);
 
 ecGame.ConfigurePaths(assets, lang);
 
