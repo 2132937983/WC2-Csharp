@@ -1,0 +1,35 @@
+wait 4.5
+click 510 152
+wait 2.5
+click 170 65
+wait 5
+click 552 302
+wait 6
+click 337 272
+wait 1
+click 552 15
+wait 1
+click 284 136
+wait 1.5
+click 282 150
+wait 1
+shot G1_save_slot
+click 552 302
+wait 1.5
+shot G2_after_save
+click 552 15
+wait 1
+click 282 249
+wait 4
+shot G3_menu
+click 510 152
+wait 2.5
+click 282 295
+wait 2.5
+shot G4_loadlist
+click 282 150
+wait 1
+click 552 302
+wait 7
+shot G5_loaded
+exit

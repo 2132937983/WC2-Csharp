@@ -1,0 +1,23 @@
+<Texture name="m1_zone23_2.webp" />
+<Images>
+    <Image name="1636.png" x="1" y="1" w="199" h="119" refx="0" refy="0" />
+    <Image name="1639.png" x="1" y="121" w="199" h="111" refx="0" refy="0" />
+    <Image name="1604.png" x="201" y="1" w="202" h="135" refx="0" refy="0" />
+    <Image name="1600.png" x="1" y="233" w="204" h="149" refx="0" refy="0" />
+    <Image name="1634.png" x="206" y="137" w="204" h="134" refx="0" refy="0" />
+    <Image name="1623.png" x="206" y="272" w="210" h="136" refx="0" refy="0" />
+    <Image name="1597.png" x="404" y="1" w="212" h="125" refx="0" refy="0" />
+    <Image name="1610.png" x="411" y="127" w="212" h="110" refx="0" refy="0" />
+    <Image name="1608.png" x="417" y="238" w="213" h="114" refx="0" refy="0" />
+    <Image name="1631.png" x="417" y="353" w="215" h="150" refx="0" refy="0" />
+    <Image name="1599.png" x="633" y="1" w="216" h="147" refx="0" refy="0" />
+    <Image name="1601.png" x="631" y="149" w="221" h="110" refx="0" refy="0" />
+    <Image name="1630.png" x="1" y="504" w="239" h="162" refx="0" refy="0" />
+    <Image name="1619.png" x="241" y="504" w="244" h="134" refx="0" refy="0" />
+    <Image name="1598.png" x="1" y="667" w="249" h="130" refx="0" refy="0" />
+    <Image name="1609.png" x="1" y="798" w="257" h="122" refx="0" refy="0" />
+    <Image name="1614.png" x="486" y="504" w="269" h="138" refx="0" refy="0" />
+    <Image name="1589.png" x="1" y="383" w="136" h="93" refx="0" refy="0" />
+    <Image name="1624.png" x="850" y="1" w="140" h="106" refx="0" refy="0" />
+    <Image name="1588.png" x="853" y="108" w="154" h="133" refx="0" refy="0" />
+</Images>

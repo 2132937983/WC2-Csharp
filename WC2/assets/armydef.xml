@@ -1,0 +1,221 @@
+﻿
+<armies legacy-combat-defaults="false">
+	<!-- unit-type 的数字范围为0-255，推荐0保留为不可选中类 -->
+	<!-- 兵种名称、稳定 ID 与兵模图片基础名称的映射。 -->
+	<!-- image 只写基础名称；实际图片和图集坐标由 army.xml/army_hd.xml 提供。 -->
+	<!-- country-independent="true" 表示直接加载 image.png，不拼接国家后缀。 -->
+	<!-- 未登记的自定义 type 仍会自动分配本次加载有效的动态 ID。 -->
+	<army-types>
+		<!-- 陆军：对应 soldier_*.png、panzer_*.png 等图集条目。 -->
+		<type name="infantry" id="0" image="soldier"/>
+		<type name="panzer" id="1" image="panzer"/>
+		<type name="artillery" id="2" image="cannon"/>
+		<type name="rocket" id="3" image="rocketlauncher"/>
+		<type name="tank" id="4" image="tank"/>
+		<type name="heavytank" id="5" image="heavytank"/>
+		<!-- 海军：对应 destroyer_others.png 等图集条目。 -->
+		<type name="destroyer" id="6" image="destroyer"/>
+		<type name="cruiser" id="7" image="cruiser"/>
+		<type name="battleship" id="8" image="battleship"/>
+		<type name="aircraftcarrier" id="9" image="aircraftcarrier"/>
+		<!-- 特殊单位的图片名称沿用原版 CBomber/CGameRes 资源。 -->
+		<type name="carrier" id="10" image="transportship" country-independent="true"/>
+		<type name="airstrike" id="11" image="fighter" country-independent="true"/>
+		<type name="bomber" id="12" image="bomber" country-independent="true"/>
+		<type name="airborne" id="13" image="bomber" country-independent="true"/>
+		<type name="nuclearbomb" id="14" image="bomber" country-independent="true"/>
+		<type name="eliteinfantry" id="15" image="eliteinfantry"/>
+		<type name="realbomber" id="16" image="realbomber"/>
+	</army-types>
+	<!-- 自定义示例：<type name="super_tank" id="1000" image="super_tank"/> -->
+	<!-- 单个国家的 army 也可以写 image="special_soldier" 强制覆盖全局 type image；
+	     未填写 image 时继续使用 army-types 中对应 type 的 image。 -->
+	<!-- 单个 army 也可以用 country-independent="false" 覆盖全局设置。 -->
+	<!-- unit-type: 0=不可选中类，1=步兵类, 2=装甲类, 3=炮兵类, 4=海军类 -->
+	<!-- navy=true/false 只控制海上兵模和运输船显示，不参与 unit-type 战斗分类；未填写时沿用旧 ID fallback。 -->
+	<!-- engagement: 0=抵近交战，1=投射火力 -->
+	<!-- can-occupy=false 会转换为 traits 中的 cannot-occupy 标记；未配置时默认可占领。 -->
+	<!-- attack mode为2时，为空袭类型，此时可以进一步指定payload，不指定默认空袭-->
+	<!-- payload：1=空袭类型，2=轰炸，3=蘑菇-->
+	<weapon-armor-rules>
+	<!-- 推荐按 weapon 分组；weapon/armor 的 type 分别为 1..32 和 1..255。 -->
+		<!-- 示例：武器 1 对护甲 2 造成 150% 伤害，对护甲 3 造成 80% 伤害。 -->
+		<!--
+		<weapon type="1">
+			<armor type="2" rate="150%"/>
+			<armor type="3" rate="0.8"/>
+		</weapon>
+		-->
+		<!-- PS：可以写注释记录武器和护甲类型的数字对应的含义是什么，但是我们代码只解析数字 -->
+		<!-- 在兵种属性中添加weapon-type和armor-type 即可指定护甲和武器类型-->
+	</weapon-armor-rules>
+	<!-- weapon-type 填武器类型编号列表，解析器会自动转换为 32 位掩码；例如 "1,3" 表示类型 1 和 3。 -->
+	<!-- 类型列表也支持空格或 | 分隔，例如 "1 3"、"1|3"。 -->
+	<!-- armor-type 仍是 8 位类型，最多支持 255 种护甲。 -->
+	<!-- combat attack 的 mode：0=近战，1=投射火力/袭扰，2=空袭。counter 只读取范围。 -->
+	<!-- attack 的 payload：airstrike=普通空袭，bomber=轰炸，nuclear=核弹；attack-cost=inf 表示清空行动力。 -->
+	<!-- combat 的 ai-no-counter-bonus 用于 AI 目标评分；未配置默认 300，炮兵示例为 200。 -->
+	<!-- traits 可加入 recv_fort_second_counter 或 cannot-occupy。 -->
+	<!-- range 的 graph 单位为 1000=1 格，circle 单位为 1000=地图距离 100。 -->
+	<country name="others">
+		<army type="infantry" unit-type="1" strength="70" movement="2" minatk="1" maxatk="6">
+			<combat>
+                  		<attack mode="0" engagement="0">
+                      			<range shape="graph"
+                            			min="0"
+                             		max="100"/>
+                  		</attack>
+  			</combat>
+		</army>
+
+		<army type="panzer" unit-type="2" strength="90" movement="3" minatk="1" maxatk="7">
+  			<combat>
+                  		<attack mode="0" engagement="0">
+                      			<range shape="graph"
+                            			min="0"
+                             			max="100"/>
+					<damage target="1" phase="attack" rate="130%"/>
+                  		</attack>
+  			</combat>
+		</army>
+
+		<army type="artillery" unit-type="3" strength="50" movement="2" minatk="1" maxatk="9" weapon-type="1">
+		<combat traits="cannot-occupy" ai-no-counter-bonus="200">
+                  		<attack mode="0" engagement="1">
+                      			<range shape="graph"
+                            			min="0"
+                             			max="1000"/>
+                  		</attack>
+			</combat>
+		</army>
+
+		<army type="rocket" unit-type="3" strength="35" movement="2" minatk="2" maxatk="10">
+			<combat traits="cannot-occupy">
+                  		<attack mode="1" engagement="1">
+                      			<range shape="graph"
+                            			min="1500"
+                             			max="2000"/>
+                  		</attack>
+			</combat>
+		</army>
+
+		<army type="tank" unit-type="2" strength="110" movement="2" minatk="2" maxatk="9"  armor-type="2">
+			<combat traits="cross-entrenchment" >
+				<result movement-restore-on-kill="1"/>
+                  		<attack mode="0" engagement="0">
+                      			<range shape="graph"
+                            			min="0"
+                             			max="100"/>
+                  		</attack>
+			</combat>
+		</army>
+
+		<army type="heavytank" unit-type="2" strength="130" movement="2" minatk="3" maxatk="9">
+			<combat traits="cross-entrenchment" >
+				<result movement-restore-on-kill="1"/>
+                  		<attack mode="0" engagement="0">
+                      			<range shape="graph"
+                            			min="0"
+                             			max="1000"/>
+                  		</attack>
+			</combat>
+		</army>
+
+		<army type="eliteinfantry" unit-type="1" strength="80" movement="2" minatk="3" maxatk="6">
+			<combat traits="cross-entrenchment">
+                  		<attack mode="0" engagement="0">
+                      			<range shape="graph"
+                            			min="0"
+                             		max="1000"/>
+                  		</attack>
+			</combat>
+		</army>
+		<army type="destroyer" unit-type="4" navy="true" strength="180" movement="2" minatk="3" maxatk="10">
+			<combat traits="recv_fort_second_counter">
+                  		<attack mode="0" engagement="0">
+                      			<range shape="graph"
+                            			min="0"
+                             			max="1000"/>
+                  		</attack>
+			</combat>
+		</army>
+		<army type="cruiser" unit-type="4" navy="true" strength="290" movement="2" minatk="4" maxatk="12">
+			<combat traits="recv_fort_second_counter">
+                  		<attack mode="0" engagement="0">
+                      			<range shape="graph"
+                            			min="0"
+                             			max="1000"/>
+                  		</attack>
+			</combat>
+		</army>
+		<army type="battleship"
+				unit-type="4"
+				navy="true"
+				strength="440"
+				movement="1"
+				minatk="6"
+				maxatk="14">
+			<combat  traits="recv_fort_second_counter">
+				<result construction-level-degrade="1" construction-level-chance="30"/>
+                  		<attack mode="0" engagement="0">
+                      			<range shape="graph"
+                            			min="0"
+                             			max="1000"/>
+                  		</attack>
+			</combat>
+		</army>
+
+		<army type="aircraftcarrier" unit-type="4" navy="true" strength="280" movement="1" minatk="3" maxatk="8">
+			<combat  traits="recv_fort_second_counter">
+					<attack mode="2" payload="1" attack-cost="1">
+              				<range shape="circle"
+                     				min="0"
+                     				radius-source="country"
+                    				max-inclusive="false"/>
+                  		</attack>
+      				<counter>
+          			<range shape="graph"
+                 			min="0"
+                 			max="1000"
+                 			max-inclusive="true"/>
+      				</counter>
+			</combat>
+		</army>
+		<army type="carrier" unit-type="0" strength="0" movement="1" minatk="0" maxatk="0"/>
+		<army type="airstrike" unit-type="0" strength="0" movement="1" minatk="4" maxatk="10"/>
+		<army type="bomber" unit-type="0" strength="0" movement="1" minatk="2" maxatk="10"/>
+		<army type="airborne" unit-type="0" strength="0" movement="1" minatk="1" maxatk="7"/>
+		<army type="nuclearbomb" unit-type="0" strength="0" movement="1" minatk="2" maxatk="8"/>
+		<army type="realbomber" unit-type="5" strength="100" movement="2" minatk="5" maxatk="8">
+			<combat traits="cross-entrenchment cannot-occupy">
+                  		<attack mode="1" engagement="0">
+                      			<range shape="circle"
+                            			min="500"
+                             		max="3000"/>
+                  		</attack>
+			</combat>
+		</army>
+	</country>
+	<country name="cn">
+		<army type="infantry" unit-type="1" strength="80" movement="2" minatk="2" maxatk="7">
+			<combat traits="cross-entrenchment">
+                  		<attack mode="0" engagement="0">
+                      			<range shape="graph"
+                            			min="0"
+                             			max="150"/>
+                  		</attack>
+  			</combat>
+		</army>
+	</country>
+
+	<country name="gb">
+
+
+	</country>
+	<country name="am">
+	</country>
+
+	<country name="te">
+
+	</country>
+</armies>

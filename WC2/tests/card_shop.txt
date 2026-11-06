@@ -1,0 +1,16 @@
+wait 4.5
+click 510 152
+wait 2.5
+click 170 65
+wait 5
+click 552 302
+wait 6
+click 337 272
+wait 2
+click 15 300
+wait 1.5
+shot B1_cards
+click 120 300
+wait 1
+shot B2_cards_tab
+exit

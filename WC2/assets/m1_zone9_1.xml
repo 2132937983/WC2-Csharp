@@ -1,0 +1,46 @@
+<Texture name="m1_zone9_1.webp" />
+<Images>
+    <Image name="0566.png" x="1" y="1" w="161" h="172" refx="0" refy="0" />
+    <Image name="0567.png" x="1" y="174" w="162" h="169" refx="0" refy="0" />
+    <Image name="0621.png" x="1" y="344" w="177" h="155" refx="0" refy="0" />
+    <Image name="0598.png" x="163" y="1" w="183" h="167" refx="0" refy="0" />
+    <Image name="0622.png" x="347" y="1" w="195" h="174" refx="0" refy="0" />
+    <Image name="0618.png" x="164" y="169" w="160" h="167" refx="0" refy="0" />
+    <Image name="0623.png" x="179" y="337" w="158" h="157" refx="0" refy="0" />
+    <Image name="0629.png" x="325" y="176" w="219" h="158" refx="0" refy="0" />
+    <Image name="0558.png" x="543" y="1" w="136" h="153" refx="0" refy="0" />
+    <Image name="0556.png" x="338" y="335" w="135" h="146" refx="0" refy="0" />
+    <Image name="0620.png" x="545" y="155" w="138" h="131" refx="0" refy="0" />
+    <Image name="0559.png" x="680" y="1" w="139" h="113" refx="0" refy="0" />
+    <Image name="0615.png" x="474" y="335" w="139" h="133" refx="0" refy="0" />
+    <Image name="0599.png" x="820" y="1" w="152" h="128" refx="0" refy="0" />
+    <Image name="0602.png" x="684" y="130" w="162" h="150" refx="0" refy="0" />
+    <Image name="0564.png" x="614" y="287" w="166" h="110" refx="0" refy="0" />
+    <Image name="0568.png" x="847" y="130" w="173" h="151" refx="0" refy="0" />
+    <Image name="0601.png" x="781" y="282" w="177" h="135" refx="0" refy="0" />
+    <Image name="0562.png" x="1" y="500" w="178" h="112" refx="0" refy="0" />
+    <Image name="0563.png" x="1" y="613" w="179" h="136" refx="0" refy="0" />
+    <Image name="0560.png" x="338" y="482" w="184" h="134" refx="0" refy="0" />
+    <Image name="0604.png" x="1" y="750" w="188" h="128" refx="0" refy="0" />
+    <Image name="0557.png" x="190" y="617" w="192" h="132" refx="0" refy="0" />
+    <Image name="0573.png" x="190" y="750" w="102" h="137" refx="0" refy="0" />
+    <Image name="0576.png" x="1" y="879" w="181" h="137" refx="0" refy="0" />
+    <Image name="0577.png" x="614" y="398" w="121" h="157" refx="0" refy="0" />
+    <Image name="0600.png" x="383" y="617" w="196" h="124" refx="0" refy="0" />
+    <Image name="0587.png" x="383" y="742" w="199" h="126" refx="0" refy="0" />
+    <Image name="0605.png" x="183" y="888" w="199" h="129" refx="0" refy="0" />
+    <Image name="0591.png" x="736" y="418" w="201" h="120" refx="0" refy="0" />
+    <Image name="0561.png" x="580" y="556" w="203" h="99" refx="0" refy="0" />
+    <Image name="0603.png" x="383" y="869" w="215" h="125" refx="0" refy="0" />
+    <Image name="0589.png" x="784" y="539" w="219" h="156" refx="0" refy="0" />
+    <Image name="0586.png" x="599" y="696" w="222" h="145" refx="0" refy="0" />
+    <Image name="0590.png" x="599" y="842" w="227" h="161" refx="0" refy="0" />
+    <Image name="0595.png" x="827" y="696" w="98" h="166" refx="0" refy="0" />
+    <Image name="0592.png" x="827" y="863" w="97" h="154" refx="0" refy="0" />
+    <Image name="0628.png" x="926" y="696" w="97" h="114" refx="0" refy="0" />
+    <Image name="0575.png" x="293" y="750" w="86" h="113" refx="0" refy="0" />
+    <Image name="0571.png" x="180" y="495" w="131" h="82" refx="0" refy="0" />
+    <Image name="0582.png" x="938" y="418" w="75" h="112" refx="0" refy="0" />
+    <Image name="0578.png" x="926" y="811" w="97" h="110" refx="0" refy="0" />
+    <Image name="0580.png" x="925" y="922" w="82" h="100" refx="0" refy="0" />
+</Images>

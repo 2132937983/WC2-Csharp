@@ -1,0 +1,30 @@
+<Texture name="m1_zone21_2.webp" />
+<Images>
+    <Image name="1483.png" x="1" y="1" w="190" h="166" refx="0" refy="0" />
+    <Image name="1500.png" x="192" y="1" w="190" h="133" refx="0" refy="0" />
+    <Image name="1471.png" x="1" y="168" w="194" h="137" refx="0" refy="0" />
+    <Image name="1491.png" x="1" y="306" w="199" h="148" refx="0" refy="0" />
+    <Image name="1517.png" x="201" y="135" w="203" h="161" refx="0" refy="0" />
+    <Image name="1518.png" x="201" y="297" w="203" h="131" refx="0" refy="0" />
+    <Image name="1470.png" x="405" y="1" w="210" h="158" refx="0" refy="0" />
+    <Image name="1480.png" x="616" y="1" w="210" h="134" refx="0" refy="0" />
+    <Image name="1496.png" x="405" y="160" w="217" h="147" refx="0" refy="0" />
+    <Image name="1498.png" x="405" y="308" w="223" h="149" refx="0" refy="0" />
+    <Image name="1497.png" x="629" y="136" w="228" h="188" refx="0" refy="0" />
+    <Image name="1503.png" x="629" y="325" w="211" h="101" refx="0" refy="0" />
+    <Image name="1486.png" x="1" y="455" w="212" h="131" refx="0" refy="0" />
+    <Image name="1505.png" x="1" y="587" w="213" h="114" refx="0" refy="0" />
+    <Image name="1489.png" x="1" y="702" w="215" h="149" refx="0" refy="0" />
+    <Image name="1501.png" x="215" y="458" w="104" h="135" refx="0" refy="0" />
+    <Image name="1510.png" x="320" y="458" w="220" h="108" refx="0" refy="0" />
+    <Image name="1513.png" x="1" y="852" w="222" h="166" refx="0" refy="0" />
+    <Image name="1506.png" x="215" y="594" w="223" h="104" refx="0" refy="0" />
+    <Image name="1504.png" x="217" y="699" w="225" h="103" refx="0" refy="0" />
+    <Image name="1509.png" x="629" y="427" w="253" h="148" refx="0" refy="0" />
+    <Image name="1525.png" x="827" y="1" w="112" h="68" refx="0" refy="0" />
+    <Image name="1523.png" x="858" y="70" w="115" h="110" refx="0" refy="0" />
+    <Image name="1508.png" x="439" y="567" w="132" h="84" refx="0" refy="0" />
+    <Image name="1522.png" x="841" y="325" w="137" h="100" refx="0" refy="0" />
+    <Image name="1520.png" x="858" y="181" w="160" h="110" refx="0" refy="0" />
+    <Image name="1533.png" x="443" y="652" w="222" h="84" refx="0" refy="0" />
+</Images>

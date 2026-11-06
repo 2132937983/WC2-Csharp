@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GUIOptions 的控件描述。
+  phone 坐标以 480x320 内容区为基准，运行时自动增加横向居中偏移。
+  tablet 使用 1024x768 的绝对坐标。
+  id 同时是 C++ 设置绑定名；复杂按钮行为仍在 GUIOptions::OnEvent 中实现。
+-->
+<guiOptions>
+    <phone>
+        <image item="musicVolume" src="options_volume_mute.png" x="255" y="16" w="14" h="22"/>
+        <image item="musicVolume" src="options_volume_loud.png" x="390" y="16" w="24" h="23"/>
+        <image item="musicVolume" src="options_slider_track.png" x="280" y="17" w="106" h="21"/>
+        <image item="soundVolume" src="options_volume_mute.png" x="255" y="16" w="14" h="22"/>
+        <image item="soundVolume" src="options_volume_loud.png" x="390" y="16" w="24" h="23"/>
+        <image item="soundVolume" src="options_slider_track.png" x="280" y="17" w="106" h="21"/>
+        <image item="musicVolume" src="options_divider.png" x="80" y="50" w="320" h="4"/>
+        <image item="soundVolume" src="options_divider.png" x="80" y="50" w="320" h="4"/>
+        <image item="battleAnimation" src="options_divider.png" x="80" y="50" w="320" h="4"/>
+        <image item="gameSpeed" src="options_divider.png" x="80" y="50" w="320" h="4"/>
+        <image item="newConquestLoading" src="options_divider.png" x="80" y="50" w="320" h="4"/>
+        <image item="aiHosting" src="options_divider.png" x="80" y="50" w="320" h="4"/>
+        <image item="battleAnimation" src="options_checkbox_empty.png" x="332" y="12" w="23" h="23"/>
+        <image item="newConquestLoading" src="options_checkbox_empty.png" x="332" y="12" w="23" h="23"/>
+        <image item="aiHosting" src="options_checkbox_empty.png" x="332" y="12" w="23" h="23"/>
+        <image item="gameSpeed" src="options_level_track.png" x="296" y="16" w="106" h="21"/>
+        <image item="gameSpeed" src="options_minus.png" x="283" y="16" w="14" h="16"/>
+        <image item="gameSpeed" src="options_plus.png" x="410" y="16" w="15" h="16"/>
+
+        <button id="back" x="0" y="290" w="32" h="30"
+                normalImage="buttontext_back.png" pressedImage="buttontext_back_press.png"
+                backgroundImage="buttonboard_gray.png"/>
+        <button id="ok" x="488" y="290" w="32" h="30"
+                normalImage="buttontext_ok.png" pressedImage="buttontext_ok_press.png"
+                backgroundImage="buttonboard_green.png"/>
+
+        <text id="musicVolumeText" item="musicVolume" x="70" y="12" w="170" h="31"
+              font="fontht" content="音乐音量" align="left" color="#FF33313E"/>
+        <slider id="musicVolume" item="musicVolume" x="280" y="12" w="106" h="31"
+                normalImage="slider.png" pressedImage="slider.png"
+                knobX="13" knobY="21" initial="0" multiplier="100" horizontal="1"/>
+
+        <text id="soundVolumeText" item="soundVolume" x="70" y="12" w="170" h="31"
+              font="fontht" content="音乐音效" align="left" color="#FF33313E"/>
+        <slider id="soundVolume" item="soundVolume" x="280" y="12" w="106" h="31"
+                normalImage="slider.png" pressedImage="slider.png"
+                knobX="13" knobY="21" initial="0" multiplier="100" horizontal="1"/>
+
+        <text id="battleAnimationText" item="battleAnimation" x="70" y="12" w="220" h="31"
+              font="fontht" content="战斗动画开启（暂无效）" align="left" color="#FF33313E"/>
+        <checkbox id="battleAnimation" item="battleAnimation" x="332" y="12" w="23" h="23"
+                  checkedImage="buttontext_ok.png" checkedPressedImage="buttontext_ok.png"
+                  imageX="-6" imageY="-5"/>
+
+        <text id="gameSpeedText" item="gameSpeed" x="70" y="12" w="170" h="31"
+              font="fontht" content="游戏速度" align="left" color="#FF33313E"/>
+        <level id="gameSpeed" item="gameSpeed" x="295" y="14" w="101" h="21" levels="5"/>
+
+        <text id="newConquestLoadingText" item="newConquestLoading" x="70" y="12" w="230" h="31"
+              font="fontht" content="征服选国预览" align="left" color="#FF33313E"/>
+        <checkbox id="newConquestLoading" item="newConquestLoading" x="332" y="12" w="23" h="23"
+                  checkedImage="buttontext_ok.png" checkedPressedImage="buttontext_ok.png"
+                  imageX="-6" imageY="-5"/>
+        <text id="aiHostingText" item="aiHosting" x="70" y="12" w="230" h="31"
+              font="fontht" content="AI托管开启" align="left" color="#FF33313E"/>
+        <checkbox id="aiHosting" item="aiHosting" x="332" y="12" w="23" h="23"
+                  checkedImage="buttontext_ok.png" checkedPressedImage="buttontext_ok.png"
+                  imageX="-6" imageY="-5"/>
+    </phone>
+
+    <tablet>
+        <image item="musicVolume" src="options_volume_mute@2x.png" x="560" y="32" w="28" h="44"/>
+        <image item="musicVolume" src="options_volume_loud@2x.png" x="850" y="32" w="48" h="46"/>
+        <image item="musicVolume" src="options_slider_track@2x.png" x="620" y="34" w="214" h="42"/>
+        <image item="soundVolume" src="options_volume_mute@2x.png" x="560" y="32" w="28" h="44"/>
+        <image item="soundVolume" src="options_volume_loud@2x.png" x="850" y="32" w="48" h="46"/>
+        <image item="soundVolume" src="options_slider_track@2x.png" x="620" y="34" w="214" h="42"/>
+        <image item="musicVolume" src="options_divider@2x.png" x="160" y="104" w="704" h="8"/>
+        <image item="soundVolume" src="options_divider@2x.png" x="160" y="104" w="704" h="8"/>
+        <image item="battleAnimation" src="options_divider@2x.png" x="160" y="104" w="704" h="8"/>
+        <image item="gameSpeed" src="options_divider@2x.png" x="160" y="104" w="704" h="8"/>
+        <image item="newConquestLoading" src="options_divider@2x.png" x="160" y="104" w="704" h="8"/>
+        <image item="aiHosting" src="options_divider@2x.png" x="160" y="104" w="704" h="8"/>
+        <image item="battleAnimation" src="options_checkbox_empty@2x.png" x="692" y="24" w="56" h="57"/>
+        <image item="newConquestLoading" src="options_checkbox_empty@2x.png" x="692" y="24" w="56" h="57"/>
+        <image item="aiHosting" src="options_checkbox_empty@2x.png" x="692" y="24" w="56" h="57"/>
+        <image item="gameSpeed" src="options_level_track@2x.png" x="620" y="32" w="214" h="42"/>
+        <image item="gameSpeed" src="options_minus@2x.png" x="566" y="32" w="28" h="32"/>
+        <image item="gameSpeed" src="options_plus@2x.png" x="820" y="32" w="30" h="32"/>
+
+        <button id="back" x="0" y="730" w="40" h="38"
+                normalImage="buttontext_back.png" pressedImage="buttontext_back_press.png"
+                backgroundImage="buttonboard_gray.png"/>
+        <button id="ok" x="984" y="730" w="40" h="38"
+                normalImage="buttontext_ok.png" pressedImage="buttontext_ok_press.png"
+                backgroundImage="buttonboard_green.png"/>
+
+        <text id="musicVolumeText" item="musicVolume" x="220" y="24" w="360" h="42"
+              font="fontht" content="音乐音量" align="left" color="#FF33313E"/>
+        <slider id="musicVolume" item="musicVolume" x="620" y="24" w="212" h="42"
+                normalImage="slider.png" pressedImage="slider.png"
+                knobX="26" knobY="42" initial="0" multiplier="100" horizontal="1"/>
+
+        <text id="soundVolumeText" item="soundVolume" x="220" y="24" w="360" h="42"
+              font="fontht" content="音乐音效" align="left" color="#FF33313E"/>
+        <slider id="soundVolume" item="soundVolume" x="620" y="24" w="212" h="42"
+                normalImage="slider.png" pressedImage="slider.png"
+                knobX="26" knobY="42" initial="0" multiplier="100" horizontal="1"/>
+
+        <text id="battleAnimationText" item="battleAnimation" x="220" y="24" w="400" h="42"
+              font="fontht" content="战斗动画开启（暂无效）" align="left" color="#FF33313E"/>
+        <checkbox id="battleAnimation" item="battleAnimation" x="692" y="24" w="46" h="46"
+                  checkedImage="check_ok.png" checkedPressedImage="check_ok.png"
+                  imageX="-6" imageY="-5"/>
+
+        <text id="gameSpeedText" item="gameSpeed" x="220" y="24" w="360" h="42"
+              font="fontht" content="游戏速度" align="left" color="#FF33313E"/>
+        <level id="gameSpeed" item="gameSpeed" x="620" y="24" w="202" h="22" levels="5"/>
+
+        <text id="newConquestLoadingText" item="newConquestLoading" x="220" y="24" w="440" h="42"
+              font="fontht" content="征服选国预览" align="left" color="#FF33313E"/>
+        <checkbox id="newConquestLoading" item="newConquestLoading" x="692" y="24" w="46" h="46"
+                  checkedImage="check_ok.png" checkedPressedImage="check_ok.png"
+                  imageX="-6" imageY="-5"/>
+        <text id="aiHostingText" item="aiHosting" x="220" y="24" w="440" h="42"
+              font="fontht" content="AI托管开启" align="left" color="#FF33313E"/>
+        <checkbox id="aiHosting" item="aiHosting" x="692" y="24" w="46" h="46"
+                  checkedImage="check_ok.png" checkedPressedImage="check_ok.png"
+                  imageX="-6" imageY="-5"/>
+    </tablet>
+</guiOptions>

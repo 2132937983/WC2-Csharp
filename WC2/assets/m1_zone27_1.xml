@@ -1,0 +1,24 @@
+<Texture name="m1_zone27_1.webp" />
+<Images>
+    <Image name="1783.png" x="1" y="1" w="149" h="244" refx="0" refy="0" />
+    <Image name="1778.png" x="151" y="1" w="231" h="185" refx="0" refy="0" />
+    <Image name="1792.png" x="1" y="246" w="166" h="206" refx="0" refy="0" />
+    <Image name="1782.png" x="168" y="187" w="174" h="201" refx="0" refy="0" />
+    <Image name="1788.png" x="1" y="453" w="178" h="197" refx="0" refy="0" />
+    <Image name="1777.png" x="1" y="651" w="184" h="181" refx="0" refy="0" />
+    <Image name="1779.png" x="180" y="389" w="169" h="175" refx="0" refy="0" />
+    <Image name="1776.png" x="1" y="833" w="180" h="150" refx="0" refy="0" />
+    <Image name="1789.png" x="186" y="565" w="186" h="120" refx="0" refy="0" />
+    <Image name="1791.png" x="186" y="686" w="192" h="169" refx="0" refy="0" />
+    <Image name="1790.png" x="182" y="856" w="195" h="151" refx="0" refy="0" />
+    <Image name="1793.png" x="383" y="1" w="197" h="177" refx="0" refy="0" />
+    <Image name="1775.png" x="343" y="187" w="202" h="165" refx="0" refy="0" />
+    <Image name="1787.png" x="350" y="353" w="202" h="170" refx="0" refy="0" />
+    <Image name="1786.png" x="546" y="179" w="211" h="128" refx="0" refy="0" />
+    <Image name="1785.png" x="581" y="1" w="212" h="117" refx="0" refy="0" />
+    <Image name="1781.png" x="794" y="1" w="216" h="173" refx="0" refy="0" />
+    <Image name="1784.png" x="758" y="175" w="251" h="126" refx="0" refy="0" />
+    <Image name="1794.png" x="553" y="308" w="255" h="157" refx="0" refy="0" />
+    <Image name="1780.png" x="379" y="524" w="266" h="154" refx="0" refy="0" />
+    <Image name="1795.png" x="379" y="679" w="137" h="99" refx="0" refy="0" />
+</Images>

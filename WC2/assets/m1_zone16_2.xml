@@ -1,0 +1,35 @@
+<Texture name="m1_zone16_2.webp" />
+<Images>
+    <Image name="1124.png" x="1" y="1" w="144" h="97" refx="0" refy="0" />
+    <Image name="1153.png" x="1" y="99" w="149" h="119" refx="0" refy="0" />
+    <Image name="1151.png" x="151" y="1" w="152" h="105" refx="0" refy="0" />
+    <Image name="1157.png" x="151" y="107" w="154" h="116" refx="0" refy="0" />
+    <Image name="1163.png" x="306" y="1" w="155" h="115" refx="0" refy="0" />
+    <Image name="1125.png" x="306" y="117" w="162" h="85" refx="0" refy="0" />
+    <Image name="1126.png" x="1" y="224" w="162" h="84" refx="0" refy="0" />
+    <Image name="1180.png" x="164" y="224" w="164" h="107" refx="0" refy="0" />
+    <Image name="1149.png" x="1" y="332" w="166" h="110" refx="0" refy="0" />
+    <Image name="1187.png" x="168" y="332" w="170" h="103" refx="0" refy="0" />
+    <Image name="1152.png" x="339" y="203" w="171" h="124" refx="0" refy="0" />
+    <Image name="1189.png" x="339" y="328" w="172" h="121" refx="0" refy="0" />
+    <Image name="1193.png" x="462" y="1" w="207" h="107" refx="0" refy="0" />
+    <Image name="1194.png" x="511" y="109" w="209" h="104" refx="0" refy="0" />
+    <Image name="1128.png" x="512" y="214" w="219" h="117" refx="0" refy="0" />
+    <Image name="1192.png" x="512" y="332" w="229" h="126" refx="0" refy="0" />
+    <Image name="1156.png" x="670" y="1" w="108" h="99" refx="0" refy="0" />
+    <Image name="1164.png" x="779" y="1" w="180" h="94" refx="0" refy="0" />
+    <Image name="1116.png" x="721" y="101" w="221" h="94" refx="0" refy="0" />
+    <Image name="1129.png" x="742" y="196" w="249" h="164" refx="0" refy="0" />
+    <Image name="1130.png" x="742" y="361" w="250" h="115" refx="0" refy="0" />
+    <Image name="1137.png" x="1" y="443" w="113" h="117" refx="0" refy="0" />
+    <Image name="1143.png" x="115" y="443" w="111" h="117" refx="0" refy="0" />
+    <Image name="1136.png" x="1" y="561" w="107" h="107" refx="0" refy="0" />
+    <Image name="1132.png" x="227" y="450" w="109" h="104" refx="0" refy="0" />
+    <Image name="1134.png" x="109" y="561" w="118" h="97" refx="0" refy="0" />
+    <Image name="1142.png" x="1" y="669" w="130" h="103" refx="0" refy="0" />
+    <Image name="1135.png" x="132" y="659" w="133" h="86" refx="0" refy="0" />
+    <Image name="1133.png" x="266" y="555" w="144" h="107" refx="0" refy="0" />
+    <Image name="1141.png" x="266" y="663" w="144" h="103" refx="0" refy="0" />
+    <Image name="1138.png" x="1" y="773" w="166" h="106" refx="0" refy="0" />
+    <Image name="1144.png" x="168" y="767" w="263" h="96" refx="0" refy="0" />
+</Images>

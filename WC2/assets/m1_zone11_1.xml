@@ -1,0 +1,41 @@
+<Texture name="m1_zone11_1.webp" />
+<Images>
+    <Image name="0757.png" x="1" y="1" w="155" h="192" refx="0" refy="0" />
+    <Image name="0716.png" x="1" y="194" w="158" h="180" refx="0" refy="0" />
+    <Image name="0771.png" x="157" y="1" w="208" h="179" refx="0" refy="0" />
+    <Image name="0759.png" x="160" y="181" w="216" h="182" refx="0" refy="0" />
+    <Image name="0756.png" x="1" y="375" w="176" h="179" refx="0" refy="0" />
+    <Image name="0753.png" x="366" y="1" w="131" h="169" refx="0" refy="0" />
+    <Image name="0718.png" x="178" y="364" w="158" h="136" refx="0" refy="0" />
+    <Image name="0740.png" x="1" y="555" w="165" h="134" refx="0" refy="0" />
+    <Image name="0742.png" x="178" y="501" w="165" h="137" refx="0" refy="0" />
+    <Image name="0732.png" x="337" y="364" w="168" h="123" refx="0" refy="0" />
+    <Image name="0727.png" x="1" y="690" w="169" h="133" refx="0" refy="0" />
+    <Image name="0739.png" x="171" y="639" w="169" h="150" refx="0" refy="0" />
+    <Image name="0755.png" x="1" y="824" w="171" h="148" refx="0" refy="0" />
+    <Image name="0721.png" x="173" y="790" w="174" h="147" refx="0" refy="0" />
+    <Image name="0767.png" x="344" y="488" w="145" h="107" refx="0" refy="0" />
+    <Image name="0768.png" x="344" y="596" w="145" h="75" refx="0" refy="0" />
+    <Image name="0747.png" x="348" y="672" w="147" h="142" refx="0" refy="0" />
+    <Image name="0745.png" x="348" y="815" w="136" h="117" refx="0" refy="0" />
+    <Image name="0746.png" x="498" y="1" w="136" h="126" refx="0" refy="0" />
+    <Image name="0765.png" x="377" y="171" w="160" h="126" refx="0" refy="0" />
+    <Image name="0749.png" x="538" y="128" w="165" h="105" refx="0" refy="0" />
+    <Image name="0752.png" x="635" y="1" w="172" h="125" refx="0" refy="0" />
+    <Image name="0717.png" x="808" y="1" w="175" h="128" refx="0" refy="0" />
+    <Image name="0731.png" x="538" y="234" w="176" h="124" refx="0" refy="0" />
+    <Image name="0724.png" x="506" y="359" w="177" h="150" refx="0" refy="0" />
+    <Image name="0754.png" x="715" y="130" w="180" h="112" refx="0" refy="0" />
+    <Image name="0737.png" x="715" y="243" w="181" h="152" refx="0" refy="0" />
+    <Image name="0766.png" x="490" y="510" w="187" h="119" refx="0" refy="0" />
+    <Image name="0748.png" x="496" y="630" w="190" h="128" refx="0" refy="0" />
+    <Image name="0762.png" x="684" y="396" w="190" h="139" refx="0" refy="0" />
+    <Image name="0761.png" x="496" y="759" w="192" h="172" refx="0" refy="0" />
+    <Image name="0726.png" x="689" y="536" w="198" h="145" refx="0" refy="0" />
+    <Image name="0733.png" x="689" y="682" w="198" h="154" refx="0" refy="0" />
+    <Image name="0719.png" x="689" y="837" w="199" h="141" refx="0" refy="0" />
+    <Image name="0712.png" x="897" y="130" w="84" h="113" refx="0" refy="0" />
+    <Image name="0725.png" x="348" y="933" w="124" h="89" refx="0" refy="0" />
+    <Image name="0722.png" x="173" y="938" w="125" h="72" refx="0" refy="0" />
+    <Image name="0714.png" x="875" y="396" w="129" h="103" refx="0" refy="0" />
+</Images>

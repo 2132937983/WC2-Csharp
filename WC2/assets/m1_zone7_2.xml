@@ -1,0 +1,21 @@
+<Texture name="m1_zone7_2.webp" />
+<Images>
+    <Image name="0478.png" x="1" y="1" w="186" h="131" refx="0" refy="0" />
+    <Image name="0473.png" x="188" y="1" w="187" h="145" refx="0" refy="0" />
+    <Image name="0466.png" x="1" y="147" w="192" h="143" refx="0" refy="0" />
+    <Image name="0449.png" x="194" y="147" w="193" h="129" refx="0" refy="0" />
+    <Image name="0454.png" x="1" y="291" w="193" h="139" refx="0" refy="0" />
+    <Image name="0464.png" x="195" y="277" w="194" h="151" refx="0" refy="0" />
+    <Image name="0452.png" x="390" y="1" w="195" h="166" refx="0" refy="0" />
+    <Image name="0458.png" x="586" y="1" w="196" h="144" refx="0" refy="0" />
+    <Image name="0469.png" x="390" y="168" w="200" h="126" refx="0" refy="0" />
+    <Image name="0461.png" x="390" y="295" w="205" h="120" refx="0" refy="0" />
+    <Image name="0447.png" x="783" y="1" w="215" h="128" refx="0" refy="0" />
+    <Image name="0443.png" x="596" y="146" w="216" h="132" refx="0" refy="0" />
+    <Image name="0448.png" x="596" y="279" w="218" h="136" refx="0" refy="0" />
+    <Image name="0455.png" x="1" y="431" w="219" h="179" refx="0" refy="0" />
+    <Image name="0460.png" x="1" y="611" w="220" h="163" refx="0" refy="0" />
+    <Image name="0457.png" x="221" y="429" w="229" h="128" refx="0" refy="0" />
+    <Image name="0491.png" x="1" y="775" w="175" h="114" refx="0" refy="0" />
+    <Image name="0486.png" x="1" y="890" w="194" h="108" refx="0" refy="0" />
+</Images>

@@ -1,0 +1,46 @@
+<Texture name="m1_zone28_1.webp" />
+<Images>
+    <Image name="1822.png" x="1" y="1" w="107" h="199" refx="0" refy="0" />
+    <Image name="1803.png" x="109" y="1" w="146" h="183" refx="0" refy="0" />
+    <Image name="1806.png" x="1" y="201" w="154" h="177" refx="0" refy="0" />
+    <Image name="1804.png" x="256" y="1" w="158" h="163" refx="0" refy="0" />
+    <Image name="1820.png" x="1" y="379" w="169" h="131" refx="0" refy="0" />
+    <Image name="1800.png" x="156" y="185" w="179" h="136" refx="0" refy="0" />
+    <Image name="1802.png" x="415" y="1" w="180" h="137" refx="0" refy="0" />
+    <Image name="1807.png" x="336" y="165" w="180" h="152" refx="0" refy="0" />
+    <Image name="1816.png" x="596" y="1" w="196" h="139" refx="0" refy="0" />
+    <Image name="1805.png" x="171" y="322" w="203" h="132" refx="0" refy="0" />
+    <Image name="1826.png" x="517" y="141" w="122" h="163" refx="0" refy="0" />
+    <Image name="1825.png" x="375" y="318" w="144" h="156" refx="0" refy="0" />
+    <Image name="1821.png" x="793" y="1" w="127" h="131" refx="0" refy="0" />
+    <Image name="1837.png" x="640" y="141" w="122" h="99" refx="0" refy="0" />
+    <Image name="1838.png" x="520" y="305" w="127" h="109" refx="0" refy="0" />
+    <Image name="1829.png" x="793" y="133" w="128" h="121" refx="0" refy="0" />
+    <Image name="1831.png" x="648" y="241" w="134" h="124" refx="0" refy="0" />
+    <Image name="1814.png" x="783" y="255" w="210" h="117" refx="0" refy="0" />
+    <Image name="1817.png" x="1" y="511" w="230" h="141" refx="0" refy="0" />
+    <Image name="1813.png" x="1" y="653" w="243" h="131" refx="0" refy="0" />
+    <Image name="1815.png" x="1" y="785" w="258" h="155" refx="0" refy="0" />
+    <Image name="1834.png" x="232" y="455" w="98" h="119" refx="0" refy="0" />
+    <Image name="1835.png" x="331" y="475" w="116" h="103" refx="0" refy="0" />
+    <Image name="1823.png" x="245" y="575" w="81" h="96" refx="0" refy="0" />
+    <Image name="1828.png" x="245" y="672" w="120" h="96" refx="0" refy="0" />
+    <Image name="1833.png" x="520" y="415" w="132" h="95" refx="0" refy="0" />
+    <Image name="1832.png" x="448" y="511" w="149" h="124" refx="0" refy="0" />
+    <Image name="1830.png" x="366" y="636" w="178" h="93" refx="0" refy="0" />
+    <Image name="1811.png" x="921" y="1" w="89" h="57" refx="0" refy="0" />
+    <Image name="1812.png" x="327" y="579" w="99" h="55" refx="0" refy="0" />
+    <Image name="1808.png" x="260" y="769" w="103" h="88" refx="0" refy="0" />
+    <Image name="1809.png" x="922" y="59" w="86" h="98" refx="0" refy="0" />
+    <Image name="1797.png" x="1" y="941" w="105" h="72" refx="0" refy="0" />
+    <Image name="1810.png" x="653" y="373" w="123" h="62" refx="0" refy="0" />
+    <Image name="1819.png" x="364" y="769" w="125" h="95" refx="0" refy="0" />
+    <Image name="1799.png" x="653" y="436" w="126" h="84" refx="0" refy="0" />
+    <Image name="1796.png" x="107" y="941" w="133" h="64" refx="0" refy="0" />
+    <Image name="1818.png" x="780" y="373" w="138" h="122" refx="0" refy="0" />
+    <Image name="1824.png" x="598" y="521" w="141" h="84" refx="0" refy="0" />
+    <Image name="1836.png" x="598" y="606" w="185" h="77" refx="0" refy="0" />
+    <Image name="1798.png" x="260" y="865" w="193" h="103" refx="0" refy="0" />
+    <Image name="1827.png" x="490" y="730" w="198" h="98" refx="0" refy="0" />
+    <Image name="1801.png" x="780" y="496" w="230" h="103" refx="0" refy="0" />
+</Images>

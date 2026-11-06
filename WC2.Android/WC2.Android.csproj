@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>23</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <ApplicationId>com.wc2remake.csharp</ApplicationId>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <RootNamespace>WC2</RootNamespace>
+    <AssemblyName>WC2.Android</AssemblyName>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <RunAOTCompilation>false</RunAOTCompilation>
+    <PublishTrimmed>false</PublishTrimmed>
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <AndroidUseInterpreter>false</AndroidUseInterpreter>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <AndroidKeyStore>false</AndroidKeyStore>
+    <NoWarn>$(NoWarn);CS0108;CS0114;CS0169;CS0168;CS0219;CS0414;CS0649;CS0659;CS0661;CS8981;CS1717;CS0162;CS0067;CA1416;XA4211</NoWarn>
+    <!-- Local tool chain; override on the command line with -p:AndroidSdkDirectory=... if needed. -->
+    <AndroidSdkDirectory Condition="'$(AndroidSdkDirectory)' == '' And Exists('C:\Android')">C:\Android</AndroidSdkDirectory>
+    <JavaSdkDirectory Condition="'$(JavaSdkDirectory)' == '' And Exists('C:\Program Files\Java\jdk-17.0.2')">C:\Program Files\Java\jdk-17.0.2</JavaSdkDirectory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\WC2\GlobalUsings.cs" Link="GlobalUsings.cs" />
+    <Compile Include="..\WC2\Engine\**\*.cs" Link="Engine\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\WC2\Game\**\*.cs" Link="Game\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\WC2\Host\WC2Game.cs" Link="Host\WC2Game.cs" />
+    <Compile Include="..\WC2\Host\SmokeTest.cs" Link="Host\SmokeTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Raw game data shipped inside the APK; extracted to the app files folder on first start. -->
+    <AndroidAsset Include="..\WC2\assets\**" Link="Assets\game\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.Android" Version="3.8.*" />
+    <PackageReference Include="SkiaSharp" Version="3.119.2" />
+    <PackageReference Include="NLayer" Version="1.16.0" />
+    <PackageReference Include="MP3Sharp" Version="1.0.5" />
+  </ItemGroup>
+</Project>

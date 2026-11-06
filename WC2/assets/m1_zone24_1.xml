@@ -1,0 +1,46 @@
+<Texture name="m1_zone24_1.webp" />
+<Images>
+    <Image name="1665.png" x="1" y="1" w="135" h="235" refx="0" refy="0" />
+    <Image name="1677.png" x="1" y="237" w="153" h="208" refx="0" refy="0" />
+    <Image name="1666.png" x="137" y="1" w="141" h="184" refx="0" refy="0" />
+    <Image name="1682.png" x="279" y="1" w="161" h="183" refx="0" refy="0" />
+    <Image name="1687.png" x="155" y="186" w="114" h="179" refx="0" refy="0" />
+    <Image name="1706.png" x="279" y="185" w="143" h="179" refx="0" refy="0" />
+    <Image name="1657.png" x="1" y="446" w="160" h="171" refx="0" refy="0" />
+    <Image name="1688.png" x="270" y="365" w="133" h="170" refx="0" refy="0" />
+    <Image name="1697.png" x="1" y="618" w="153" h="159" refx="0" refy="0" />
+    <Image name="1704.png" x="162" y="536" w="151" h="155" refx="0" refy="0" />
+    <Image name="1700.png" x="1" y="778" w="153" h="150" refx="0" refy="0" />
+    <Image name="1683.png" x="155" y="692" w="143" h="110" refx="0" refy="0" />
+    <Image name="1689.png" x="314" y="536" w="155" h="139" refx="0" refy="0" />
+    <Image name="1690.png" x="155" y="803" w="156" h="122" refx="0" refy="0" />
+    <Image name="1707.png" x="314" y="676" w="157" h="121" refx="0" refy="0" />
+    <Image name="1692.png" x="312" y="798" w="159" h="119" refx="0" refy="0" />
+    <Image name="1648.png" x="441" y="1" w="160" h="137" refx="0" refy="0" />
+    <Image name="1659.png" x="602" y="1" w="162" h="154" refx="0" refy="0" />
+    <Image name="1643.png" x="423" y="185" w="164" h="158" refx="0" refy="0" />
+    <Image name="1702.png" x="423" y="344" w="168" h="138" refx="0" refy="0" />
+    <Image name="1645.png" x="765" y="1" w="170" h="159" refx="0" refy="0" />
+    <Image name="1649.png" x="588" y="156" w="133" h="159" refx="0" refy="0" />
+    <Image name="1669.png" x="722" y="161" w="152" h="142" refx="0" refy="0" />
+    <Image name="1668.png" x="592" y="316" w="154" h="129" refx="0" refy="0" />
+    <Image name="1664.png" x="470" y="483" w="160" h="119" refx="0" refy="0" />
+    <Image name="1655.png" x="747" y="304" w="167" h="113" refx="0" refy="0" />
+    <Image name="1663.png" x="472" y="603" w="168" h="144" refx="0" refy="0" />
+    <Image name="1694.png" x="472" y="748" w="173" h="129" refx="0" refy="0" />
+    <Image name="1705.png" x="747" y="418" w="173" h="140" refx="0" refy="0" />
+    <Image name="1675.png" x="641" y="559" w="177" h="138" refx="0" refy="0" />
+    <Image name="1708.png" x="472" y="878" w="177" h="115" refx="0" refy="0" />
+    <Image name="1662.png" x="819" y="559" w="180" h="132" refx="0" refy="0" />
+    <Image name="1703.png" x="819" y="692" w="180" h="151" refx="0" refy="0" />
+    <Image name="1701.png" x="650" y="844" w="181" h="137" refx="0" refy="0" />
+    <Image name="1709.png" x="832" y="844" w="115" h="157" refx="0" refy="0" />
+    <Image name="1672.png" x="875" y="161" w="115" h="131" refx="0" refy="0" />
+    <Image name="1647.png" x="155" y="926" w="205" h="96" refx="0" refy="0" />
+    <Image name="1684.png" x="921" y="293" w="89" h="114" refx="0" refy="0" />
+    <Image name="1654.png" x="921" y="408" w="91" h="105" refx="0" refy="0" />
+    <Image name="1653.png" x="155" y="366" w="97" h="77" refx="0" refy="0" />
+    <Image name="1660.png" x="162" y="444" w="101" h="67" refx="0" refy="0" />
+    <Image name="1658.png" x="1" y="929" w="103" h="72" refx="0" refy="0" />
+    <Image name="1661.png" x="646" y="698" w="123" h="75" refx="0" refy="0" />
+</Images>

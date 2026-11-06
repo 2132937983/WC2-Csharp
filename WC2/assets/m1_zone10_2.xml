@@ -1,0 +1,35 @@
+<Texture name="m1_zone10_2.webp" />
+<Images>
+    <Image name="0685.png" x="1" y="1" w="115" h="125" refx="0" refy="0" />
+    <Image name="0701.png" x="1" y="127" w="103" h="110" refx="0" refy="0" />
+    <Image name="0639.png" x="117" y="1" w="113" h="95" refx="0" refy="0" />
+    <Image name="0638.png" x="117" y="97" w="118" h="109" refx="0" refy="0" />
+    <Image name="0651.png" x="236" y="1" w="122" h="107" refx="0" refy="0" />
+    <Image name="0643.png" x="236" y="109" w="130" h="106" refx="0" refy="0" />
+    <Image name="0655.png" x="359" y="1" w="104" h="106" refx="0" refy="0" />
+    <Image name="0654.png" x="367" y="108" w="128" h="89" refx="0" refy="0" />
+    <Image name="0699.png" x="1" y="238" w="133" h="86" refx="0" refy="0" />
+    <Image name="0694.png" x="135" y="216" w="136" h="79" refx="0" refy="0" />
+    <Image name="0696.png" x="1" y="325" w="138" h="118" refx="0" refy="0" />
+    <Image name="0644.png" x="140" y="296" w="146" h="83" refx="0" refy="0" />
+    <Image name="0697.png" x="287" y="216" w="150" h="137" refx="0" refy="0" />
+    <Image name="0641.png" x="140" y="380" w="154" h="94" refx="0" refy="0" />
+    <Image name="0691.png" x="295" y="354" w="155" h="102" refx="0" refy="0" />
+    <Image name="0670.png" x="464" y="1" w="158" h="106" refx="0" refy="0" />
+    <Image name="0692.png" x="496" y="108" w="162" h="99" refx="0" refy="0" />
+    <Image name="0689.png" x="623" y="1" w="168" h="106" refx="0" refy="0" />
+    <Image name="0634.png" x="438" y="208" w="171" h="105" refx="0" refy="0" />
+    <Image name="0693.png" x="451" y="314" w="173" h="133" refx="0" refy="0" />
+    <Image name="0631.png" x="792" y="1" w="174" h="148" refx="0" refy="0" />
+    <Image name="0650.png" x="610" y="208" w="177" h="92" refx="0" refy="0" />
+    <Image name="0698.png" x="625" y="301" w="177" h="118" refx="0" refy="0" />
+    <Image name="0662.png" x="788" y="150" w="178" h="117" refx="0" refy="0" />
+    <Image name="0660.png" x="803" y="268" w="179" h="93" refx="0" refy="0" />
+    <Image name="0672.png" x="803" y="362" w="181" h="115" refx="0" refy="0" />
+    <Image name="0695.png" x="1" y="475" w="190" h="125" refx="0" refy="0" />
+    <Image name="0677.png" x="1" y="601" w="99" h="101" refx="0" refy="0" />
+    <Image name="0633.png" x="295" y="457" w="182" h="88" refx="0" refy="0" />
+    <Image name="0632.png" x="101" y="601" w="187" h="123" refx="0" refy="0" />
+    <Image name="0636.png" x="289" y="546" w="192" h="151" refx="0" refy="0" />
+    <Image name="0637.png" x="1" y="725" w="150" h="106" refx="0" refy="0" />
+</Images>

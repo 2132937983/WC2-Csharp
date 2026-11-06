@@ -1,0 +1,28 @@
+<Texture name="m1_zone26_1.webp" />
+<Images>
+    <Image name="1758.png" x="1" y="1" w="171" h="213" refx="0" refy="0" />
+    <Image name="1750.png" x="173" y="1" w="205" h="195" refx="0" refy="0" />
+    <Image name="1767.png" x="1" y="215" w="214" h="202" refx="0" refy="0" />
+    <Image name="1759.png" x="216" y="197" w="187" h="186" refx="0" refy="0" />
+    <Image name="1769.png" x="1" y="418" w="181" h="182" refx="0" refy="0" />
+    <Image name="1763.png" x="216" y="384" w="190" h="179" refx="0" refy="0" />
+    <Image name="1766.png" x="1" y="601" w="172" h="172" refx="0" refy="0" />
+    <Image name="1774.png" x="183" y="564" w="145" h="88" refx="0" refy="0" />
+    <Image name="1760.png" x="1" y="774" w="192" h="141" refx="0" refy="0" />
+    <Image name="1764.png" x="194" y="653" w="192" h="187" refx="0" refy="0" />
+    <Image name="1751.png" x="194" y="841" w="195" h="172" refx="0" refy="0" />
+    <Image name="1753.png" x="379" y="1" w="195" h="169" refx="0" refy="0" />
+    <Image name="1772.png" x="404" y="171" w="197" h="128" refx="0" refy="0" />
+    <Image name="1754.png" x="575" y="1" w="207" h="159" refx="0" refy="0" />
+    <Image name="1761.png" x="602" y="161" w="216" h="188" refx="0" refy="0" />
+    <Image name="1770.png" x="407" y="350" w="219" h="175" refx="0" refy="0" />
+    <Image name="1755.png" x="387" y="564" w="150" h="171" refx="0" refy="0" />
+    <Image name="1765.png" x="783" y="1" w="169" h="151" refx="0" refy="0" />
+    <Image name="1752.png" x="627" y="350" w="215" h="147" refx="0" refy="0" />
+    <Image name="1756.png" x="819" y="153" w="138" h="167" refx="0" refy="0" />
+    <Image name="1757.png" x="843" y="321" w="176" h="150" refx="0" refy="0" />
+    <Image name="1762.png" x="627" y="498" w="256" h="140" refx="0" refy="0" />
+    <Image name="1773.png" x="1" y="916" w="116" h="59" refx="0" refy="0" />
+    <Image name="1771.png" x="387" y="736" w="271" h="100" refx="0" refy="0" />
+    <Image name="1768.png" x="390" y="837" w="302" h="113" refx="0" refy="0" />
+</Images>

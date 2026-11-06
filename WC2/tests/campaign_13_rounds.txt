@@ -1,0 +1,97 @@
+wait 4.5
+click 510 116
+wait 2.5
+click 170 150
+wait 5
+click 552 302
+wait 7
+shot I1_intro
+click 284 290
+wait 2
+click 337 272
+wait 1
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+shot I_round4
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+shot I_round8
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+shot I_round12
+click 552 302
+wait 22
+click 337 272
+wait 1
+click 337 272
+wait 1
+shot I_end
+wait 3
+shot I_end2
+exit

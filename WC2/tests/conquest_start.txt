@@ -1,0 +1,11 @@
+wait 4.5
+click 510 152
+wait 2.5
+click 170 65
+wait 5
+click 552 302
+wait 6
+shot s4_game
+wait 3
+shot s5_game
+exit

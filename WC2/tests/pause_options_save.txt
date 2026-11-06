@@ -1,0 +1,26 @@
+wait 4.5
+click 510 152
+wait 2.5
+click 170 65
+wait 5
+click 552 302
+wait 6
+click 337 272
+wait 2
+click 552 15
+wait 1
+shot C1_pause
+click 284 190
+wait 1.5
+shot C2_options
+back
+wait 1
+click 552 15
+wait 1
+click 284 228
+wait 1.5
+shot C3_save
+back
+wait 1
+shot C4_after
+exit

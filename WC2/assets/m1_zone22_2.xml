@@ -1,0 +1,19 @@
+<Texture name="m1_zone22_2.webp" />
+<Images>
+    <Image name="1568.png" x="1" y="1" w="227" h="129" refx="0" refy="0" />
+    <Image name="1537.png" x="229" y="1" w="233" h="148" refx="0" refy="0" />
+    <Image name="1580.png" x="1" y="150" w="233" h="140" refx="0" refy="0" />
+    <Image name="1552.png" x="235" y="150" w="235" h="135" refx="0" refy="0" />
+    <Image name="1581.png" x="1" y="291" w="238" h="194" refx="0" refy="0" />
+    <Image name="1571.png" x="240" y="286" w="239" h="155" refx="0" refy="0" />
+    <Image name="1538.png" x="463" y="1" w="245" h="117" refx="0" refy="0" />
+    <Image name="1578.png" x="480" y="119" w="248" h="147" refx="0" refy="0" />
+    <Image name="1544.png" x="480" y="267" w="252" h="162" refx="0" refy="0" />
+    <Image name="1556.png" x="733" y="1" w="255" h="180" refx="0" refy="0" />
+    <Image name="1553.png" x="733" y="182" w="256" h="140" refx="0" refy="0" />
+    <Image name="1557.png" x="733" y="323" w="258" h="167" refx="0" refy="0" />
+    <Image name="1564.png" x="1" y="486" w="268" h="150" refx="0" refy="0" />
+    <Image name="1543.png" x="1" y="637" w="270" h="141" refx="0" refy="0" />
+    <Image name="1576.png" x="1" y="779" w="270" h="147" refx="0" refy="0" />
+    <Image name="1548.png" x="272" y="442" w="272" h="166" refx="0" refy="0" />
+</Images>

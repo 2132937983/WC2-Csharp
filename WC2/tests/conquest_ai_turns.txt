@@ -1,0 +1,18 @@
+wait 4.5
+click 510 152
+wait 2.5
+click 170 65
+wait 5
+click 552 302
+wait 6
+click 337 272
+wait 1.5
+shot s6_map
+click 552 302
+wait 6
+shot s7_ai
+wait 10
+shot s8_ai2
+wait 10
+shot s9_ai3
+exit

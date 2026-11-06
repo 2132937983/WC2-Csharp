@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <RollForward>Major</RollForward>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <TieredCompilation>false</TieredCompilation>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>WC2</RootNamespace>
+    <AssemblyName>WC2</AssemblyName>
+    <!-- The port keeps the original C++ field names and some unused members on purpose. -->
+    <NoWarn>$(NoWarn);CS0108;CS0114;CS0169;CS0168;CS0219;CS0414;CS0649;CS0659;CS0661;CS8981;CS1717;CS0162;CS0067</NoWarn>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Icon.ico" />
+    <None Remove="Icon.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icon.ico">
+      <LogicalName>Icon.ico</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icon.bmp">
+      <LogicalName>Icon.bmp</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Raw game assets (textures, fonts, XML, binary maps) are loaded at runtime from the "assets" folder. -->
+    <None Include="assets\**" LinkBase="assets" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Remove="assets\**" />
+    <Compile Remove="Content\**" />
+    <None Remove="Content\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.*" />
+    <PackageReference Include="SkiaSharp" Version="3.119.2" />
+    <PackageReference Include="NLayer" Version="1.16.0" />
+    <PackageReference Include="MP3Sharp" Version="1.0.5" />
+  </ItemGroup>
+</Project>

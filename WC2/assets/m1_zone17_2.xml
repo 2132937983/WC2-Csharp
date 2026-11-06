@@ -1,0 +1,29 @@
+<Texture name="m1_zone17_2.webp" />
+<Images>
+    <Image name="1245.png" x="1" y="1" w="172" h="150" refx="0" refy="0" />
+    <Image name="1210.png" x="174" y="1" w="152" h="142" refx="0" refy="0" />
+    <Image name="1213.png" x="327" y="1" w="136" h="134" refx="0" refy="0" />
+    <Image name="1197.png" x="1" y="152" w="139" h="133" refx="0" refy="0" />
+    <Image name="1215.png" x="174" y="144" w="147" h="112" refx="0" refy="0" />
+    <Image name="1220.png" x="1" y="286" w="157" h="123" refx="0" refy="0" />
+    <Image name="1211.png" x="327" y="136" w="165" h="121" refx="0" refy="0" />
+    <Image name="1196.png" x="159" y="257" w="166" h="119" refx="0" refy="0" />
+    <Image name="1219.png" x="326" y="258" w="167" h="114" refx="0" refy="0" />
+    <Image name="1241.png" x="159" y="377" w="173" h="106" refx="0" refy="0" />
+    <Image name="1209.png" x="333" y="373" w="174" h="116" refx="0" refy="0" />
+    <Image name="1238.png" x="464" y="1" w="174" h="130" refx="0" refy="0" />
+    <Image name="1235.png" x="639" y="1" w="175" h="161" refx="0" refy="0" />
+    <Image name="1236.png" x="815" y="1" w="178" h="155" refx="0" refy="0" />
+    <Image name="1239.png" x="494" y="163" w="184" h="151" refx="0" refy="0" />
+    <Image name="1247.png" x="679" y="163" w="187" h="159" refx="0" refy="0" />
+    <Image name="1212.png" x="508" y="323" w="193" h="146" refx="0" refy="0" />
+    <Image name="1234.png" x="702" y="323" w="193" h="118" refx="0" refy="0" />
+    <Image name="1248.png" x="1" y="490" w="195" h="166" refx="0" refy="0" />
+    <Image name="1249.png" x="197" y="490" w="140" h="183" refx="0" refy="0" />
+    <Image name="1250.png" x="1" y="657" w="142" h="148" refx="0" refy="0" />
+    <Image name="1231.png" x="1" y="806" w="198" h="128" refx="0" refy="0" />
+    <Image name="1233.png" x="338" y="490" w="210" h="165" refx="0" refy="0" />
+    <Image name="1244.png" x="144" y="674" w="221" h="127" refx="0" refy="0" />
+    <Image name="1240.png" x="200" y="802" w="225" h="138" refx="0" refy="0" />
+    <Image name="1246.png" x="702" y="442" w="273" h="161" refx="0" refy="0" />
+</Images>

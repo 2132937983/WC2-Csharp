@@ -1,0 +1,87 @@
+# ==================== .NET / Visual Studio 构建产物 ====================
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+[Dd]ebug/
+[Rr]elease/
+[Oo]ut/
+[Pp]ublish/
+[Bb]ld/
+build/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+*.dll
+*.exe
+*.pdb
+*.mdb
+*.cache
+*.tlog
+*.obj
+*.ilk
+*.exp
+*.lib
+*.lastbuildstate
+*.log
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# 显式覆盖：保证两个项目的构建目录被忽略
+/WC2/bin/
+/WC2/obj/
+/WC2.Android/bin/
+/WC2.Android/obj/
+
+# ==================== .NET / VS 用户与缓存文件 ====================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.csproj.user
+*.cache/
+.vscode/
+*.sw?
+
+# ==================== NuGet ====================
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.assets.json
+*.nuget.props
+*.nuget.targets
+
+# ==================== Android / Gradle 产物 ====================
+.gradle/
+build/
+.gradle-cache/
+local.properties
+.externalNativeBuild/
+.cxx/
+captures/
+*.keystore
+!debug.keystore
+*.jks
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# ==================== Reference 参考构建（仅作参考，不纳入版本控制） ====================
+/Reference/
+
+# ==================== 临时 / 系统文件 ====================
+*.tmp
+*.bak
+*.orig
+*.rej
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,34 @@
+<Texture name="m1_zone6_2.webp" />
+<Images>
+    <Image name="0381.png" x="1" y="1" w="145" h="158" refx="0" refy="0" />
+    <Image name="0386.png" x="147" y="1" w="162" h="156" refx="0" refy="0" />
+    <Image name="0427.png" x="310" y="1" w="144" h="135" refx="0" refy="0" />
+    <Image name="0384.png" x="1" y="160" w="145" h="92" refx="0" refy="0" />
+    <Image name="0413.png" x="147" y="158" w="145" h="133" refx="0" refy="0" />
+    <Image name="0376.png" x="310" y="137" w="151" h="121" refx="0" refy="0" />
+    <Image name="0390.png" x="1" y="292" w="154" h="98" refx="0" refy="0" />
+    <Image name="0403.png" x="156" y="292" w="154" h="136" refx="0" refy="0" />
+    <Image name="0409.png" x="311" y="259" w="155" h="109" refx="0" refy="0" />
+    <Image name="0375.png" x="311" y="369" w="156" h="97" refx="0" refy="0" />
+    <Image name="0404.png" x="455" y="1" w="157" h="109" refx="0" refy="0" />
+    <Image name="0408.png" x="462" y="111" w="160" h="114" refx="0" refy="0" />
+    <Image name="0407.png" x="623" y="1" w="162" h="112" refx="0" refy="0" />
+    <Image name="0377.png" x="467" y="226" w="164" h="95" refx="0" refy="0" />
+    <Image name="0423.png" x="468" y="322" w="167" h="141" refx="0" refy="0" />
+    <Image name="0388.png" x="786" y="1" w="169" h="137" refx="0" refy="0" />
+    <Image name="0399.png" x="632" y="139" w="173" h="121" refx="0" refy="0" />
+    <Image name="0428.png" x="636" y="261" w="173" h="107" refx="0" refy="0" />
+    <Image name="0385.png" x="806" y="139" w="175" h="88" refx="0" refy="0" />
+    <Image name="0401.png" x="810" y="228" w="175" h="147" refx="0" refy="0" />
+    <Image name="0429.png" x="636" y="376" w="180" h="108" refx="0" refy="0" />
+    <Image name="0378.png" x="817" y="376" w="181" h="111" refx="0" refy="0" />
+    <Image name="0435.png" x="1" y="467" w="187" h="153" refx="0" refy="0" />
+    <Image name="0372.png" x="189" y="467" w="188" h="117" refx="0" refy="0" />
+    <Image name="0402.png" x="1" y="621" w="191" h="149" refx="0" refy="0" />
+    <Image name="0410.png" x="1" y="771" w="202" h="87" refx="0" refy="0" />
+    <Image name="0430.png" x="193" y="585" w="204" h="123" refx="0" refy="0" />
+    <Image name="0422.png" x="1" y="859" w="213" h="126" refx="0" refy="0" />
+    <Image name="0431.png" x="398" y="485" w="245" h="135" refx="0" refy="0" />
+    <Image name="0412.png" x="398" y="621" w="254" h="135" refx="0" refy="0" />
+    <Image name="0424.png" x="215" y="757" w="259" h="116" refx="0" refy="0" />
+</Images>
