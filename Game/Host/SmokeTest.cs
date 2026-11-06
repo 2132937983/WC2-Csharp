@@ -173,6 +173,7 @@ public static class SmokeTest
             case "texstats":
                 // live texture memory now (resource release checks)
                 Log($"Smoke: texstats {(c.args.Length > 0 ? c.args[0] : "")}: {ecGraphics.Instance().TextureStats()}");
+                Log($"Smoke: frame {(c.args.Length > 0 ? c.args[0] : "")}: {ecGraphics.Instance().lastFrameDrawCalls} draw calls, {ecGraphics.Instance().lastFrameTextureSwitches} texture switches");
                 break;
             case "log":
                 Log("Smoke: " + string.Join(' ', c.args));

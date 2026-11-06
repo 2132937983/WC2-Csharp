@@ -149,9 +149,16 @@ public sealed class ecGraphics
         boundTexture = null;
     }
 
+    /// <summary>Draw calls and texture switches of the last finished frame.</summary>
+    public int lastFrameDrawCalls, lastFrameTextureSwitches;
+    private int textureSwitches;
+
     public void RenderEnd()
     {
         Flush();
+        lastFrameDrawCalls = drawCalls;
+        lastFrameTextureSwitches = textureSwitches;
+        textureSwitches = 0;
         if (TextureStatsEvery > 0 && ++statsFrames >= TextureStatsEvery)
         {
             statsFrames = 0;
@@ -225,6 +232,7 @@ public sealed class ecGraphics
         {
             Flush();
             currentTexture = tex;
+            textureSwitches++;
         }
         boundTexture = texture;
     }
