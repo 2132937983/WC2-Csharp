@@ -28,17 +28,31 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\WC2\GlobalUsings.cs" Link="GlobalUsings.cs" />
-    <Compile Include="..\WC2\Engine\**\*.cs" Link="Engine\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Compile Include="..\WC2\Game\**\*.cs" Link="Game\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Compile Include="..\WC2\Host\WC2Game.cs" Link="Host\WC2Game.cs" />
-    <Compile Include="..\WC2\Host\SmokeTest.cs" Link="Host\SmokeTest.cs" />
+    <!-- The engine and game libraries target desktop MonoGame, so the APK compiles their sources
+         directly against MonoGame.Framework.Android (one assembly, the game's global usings). -->
+    <Compile Include="..\WC2.Game\GlobalUsings.cs" Link="GlobalUsings.cs" />
+    <Compile Include="..\WC2.Engine\**\*.cs" Exclude="..\WC2.Engine\obj\**;..\WC2.Engine\bin\**;..\WC2.Engine\GlobalUsings.cs" Link="Engine\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\WC2.Game\**\*.cs" Exclude="..\WC2.Game\obj\**;..\WC2.Game\bin\**;..\WC2.Game\GlobalUsings.cs" Link="Game\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Raw game data shipped inside the APK; extracted to the app files folder on first start. -->
-    <AndroidAsset Include="..\WC2\assets\**" Link="Assets\game\%(RecursiveDir)%(Filename)%(Extension)" />
+    <!-- Build order only: the package tool must exist before BuildAssetPack runs. -->
+    <ProjectReference Include="../WC2.Tools/WC2.Tools.csproj" ReferenceOutputAssembly="false" Private="false" SkipGetTargetFrameworkProperties="true" SetTargetFramework="TargetFramework=net9.0" GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained" />
   </ItemGroup>
+  <PropertyGroup>
+    <AssetPackTool>$(MSBuildThisFileDirectory)../WC2.Tools/bin/$(Configuration)/net9.0/WC2.Tools.dll</AssetPackTool>
+    <AssetPackDir>$(MSBuildThisFileDirectory)obj/pack/</AssetPackDir>
+    <AssetPackSource>$(MSBuildThisFileDirectory)../WC2/</AssetPackSource>
+  </PropertyGroup>
+  <!-- The original assets plus the authored content become the runtime package (WC2.Tools build-pack),
+       which ships as assets/pack/... in the APK and is read in place at run time. -->
+  <Target Name="BuildAssetPack" AfterTargets="ResolveProjectReferences">
+    <Exec Command="dotnet &quot;$(AssetPackTool)&quot; build-pack --assets &quot;$(AssetPackSource)assets&quot; --content &quot;$(AssetPackSource)content&quot; --layout &quot;$(AssetPackSource)assets-layout.json&quot; --out &quot;$(AssetPackDir)&quot;" />
+    <ItemGroup>
+      <_AssetPackFile Include="$(AssetPackDir)**/*" />
+      <AndroidAsset Include="@(_AssetPackFile)" Link="Assets\pack\%(_AssetPackFile.RecursiveDir)%(_AssetPackFile.Filename)%(_AssetPackFile.Extension)" />
+    </ItemGroup>
+  </Target>
 
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.Android" Version="3.8.6.1" />

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
@@ -32,9 +32,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <!-- Raw game assets (textures, fonts, XML, binary maps) are loaded at runtime from the "assets" folder. -->
-    <None Include="assets\**" LinkBase="assets" CopyToOutputDirectory="PreserveNewest" />
+    <!-- The original assets are never copied as they are: after every build WC2.Tools turns them
+         (plus the authored files in "content") into the runtime package "pack" next to the program. -->
     <Compile Remove="assets\**" />
+    <None Remove="assets\**" />
+    <Compile Remove="content\**" />
     <Compile Remove="Content\**" />
     <None Remove="Content\**" />
   </ItemGroup>
@@ -44,4 +46,18 @@
     <PackageReference Include="NLayer" Version="1.16.0" />
     <PackageReference Include="MP3Sharp" Version="1.0.5" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- The desktop program: Program.cs and the debug tools. Engine and game are libraries. -->
+    <ProjectReference Include="..\WC2.Engine\WC2.Engine.csproj" />
+    <ProjectReference Include="..\WC2.Game\WC2.Game.csproj" />
+    <!-- Build order only: the package tool must exist before the BuildAssetPack target runs. -->
+    <ProjectReference Include="..\WC2.Tools\WC2.Tools.csproj" ReferenceOutputAssembly="false" Private="false" />
+  </ItemGroup>
+  <PropertyGroup>
+    <AssetPackTool>$(MSBuildThisFileDirectory)../WC2.Tools/bin/$(Configuration)/net9.0/WC2.Tools.dll</AssetPackTool>
+    <AssetPackArgs>--assets "$(MSBuildThisFileDirectory)assets" --content "$(MSBuildThisFileDirectory)content" --layout "$(MSBuildThisFileDirectory)assets-layout.json"</AssetPackArgs>
+  </PropertyGroup>
+  <Target Name="BuildAssetPack" AfterTargets="Build">
+    <Exec Command="dotnet &quot;$(AssetPackTool)&quot; build-pack $(AssetPackArgs) --out &quot;$(OutDir)pack&quot;" />
+  </Target>
 </Project>

@@ -1,0 +1,125 @@
+{
+  "format": 1,
+  "about": "War medal rules (the values reproduce the original game). draftBonuses: a unit drafted with a card gets 'upgrades' level-ups and 'addTactics' when the owner's medal is at 'level' or above; 'cards' are card ids (data/cards.json), 'cardType' a card type. Field reference: docs/DATA.md#medals.",
+  "upgradeCost": {
+    "base": 2,
+    "perLevel": 1
+  },
+  "commerce": {
+    "incomePercentPerLevel": 10
+  },
+  "airforce": {
+    "attackBonus": 1,
+    "attackBonusFromLevel": 1,
+    "radius": 300,
+    "radiusUpgraded": 400,
+    "radiusUpgradedFromLevel": 2,
+    "noCooldownFromLevel": 3
+  },
+  "draftBonuses": [
+    {
+      "medal": "navy",
+      "level": 1,
+      "cardType": "army",
+      "addTactics": [
+        "carrier"
+      ]
+    },
+    {
+      "medal": "navy",
+      "level": 2,
+      "cards": [
+        6,
+        7
+      ],
+      "upgrades": 1
+    },
+    {
+      "medal": "navy",
+      "level": 3,
+      "cards": [
+        8,
+        9
+      ],
+      "upgrades": 1
+    },
+    {
+      "medal": "infantry",
+      "level": 1,
+      "cards": [
+        0
+      ],
+      "upgrades": 1
+    },
+    {
+      "medal": "infantry",
+      "level": 2,
+      "cards": [
+        0
+      ],
+      "upgrades": 1
+    },
+    {
+      "medal": "infantry",
+      "level": 3,
+      "cards": [
+        0
+      ],
+      "addTactics": [
+        "assault",
+        "defence"
+      ]
+    },
+    {
+      "medal": "artillery",
+      "level": 1,
+      "cards": [
+        2
+      ],
+      "upgrades": 1
+    },
+    {
+      "medal": "artillery",
+      "level": 2,
+      "cards": [
+        3
+      ],
+      "upgrades": 1
+    },
+    {
+      "medal": "artillery",
+      "level": 3,
+      "cards": [
+        2,
+        3
+      ],
+      "addTactics": [
+        "defence"
+      ]
+    },
+    {
+      "medal": "armour",
+      "level": 1,
+      "cards": [
+        1
+      ],
+      "upgrades": 1
+    },
+    {
+      "medal": "armour",
+      "level": 2,
+      "cards": [
+        4
+      ],
+      "upgrades": 1
+    },
+    {
+      "medal": "armour",
+      "level": 3,
+      "cards": [
+        5
+      ],
+      "upgrades": 1
+    }
+  ]
+}

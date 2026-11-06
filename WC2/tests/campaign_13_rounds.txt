@@ -35,6 +35,7 @@ wait 1
 click 337 272
 wait 1
 shot I_round4
+dump I_round4
 click 552 302
 wait 22
 click 337 272
@@ -60,6 +61,7 @@ wait 1
 click 337 272
 wait 1
 shot I_round8
+dump I_round8
 click 552 302
 wait 22
 click 337 272
@@ -85,6 +87,7 @@ wait 1
 click 337 272
 wait 1
 shot I_round12
+dump I_round12
 click 552 302
 wait 22
 click 337 272
@@ -94,4 +97,5 @@ wait 1
 shot I_end
 wait 3
 shot I_end2
+dump I_end2
 exit

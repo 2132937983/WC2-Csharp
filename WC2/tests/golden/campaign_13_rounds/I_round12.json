@@ -1,0 +1,1293 @@
+{
+  "mode": "CAMPAIGN",
+  "battle": "battle_axis1.xml",
+  "turn": 4,
+  "currentCountryIndex": 1,
+  "result": false,
+  "resultWin": false,
+  "randSeed": 858356819,
+  "aiRandSeed": 846350355,
+  "commander": {
+    "level": 0,
+    "medal": 50,
+    "warMedal": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "campaignProgress": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "countries": [
+    {
+      "id": "de2",
+      "alliance": 1,
+      "defeatType": "LAND",
+      "ai": false,
+      "defeated": false,
+      "money": 18,
+      "industry": 30,
+      "taxRate": "1",
+      "tech": 3,
+      "techTurn": 0,
+      "commander": "",
+      "commanderTurn": 3,
+      "commanderAlive": false,
+      "borrowedLoan": false,
+      "areas": [
+        167,
+        169,
+        170,
+        1019,
+        1020,
+        1021,
+        1022,
+        1023,
+        1024,
+        1026,
+        1029,
+        1030,
+        1031,
+        1032,
+        1041,
+        1043,
+        1045,
+        1046,
+        166,
+        168,
+        1033,
+        165,
+        163,
+        1018,
+        162,
+        156
+      ],
+      "capitals": [],
+      "cardRound": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cardTimes": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        3,
+        2,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "warMedal": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "destroyCount": [
+        2,
+        1,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "de1",
+      "alliance": 1,
+      "defeatType": "LAND",
+      "ai": true,
+      "defeated": false,
+      "money": 7,
+      "industry": 462,
+      "taxRate": "1",
+      "tech": 3,
+      "techTurn": 0,
+      "commander": "Guderian",
+      "commanderTurn": 0,
+      "commanderAlive": true,
+      "borrowedLoan": false,
+      "areas": [
+        123,
+        125,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        171,
+        172,
+        139,
+        122,
+        151,
+        138,
+        152,
+        137,
+        164,
+        153,
+        136,
+        127,
+        135,
+        134,
+        154
+      ],
+      "capitals": [
+        149,
+        154
+      ],
+      "cardRound": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cardTimes": [
+        1,
+        4,
+        0,
+        0,
+        9,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        4,
+        2,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        6,
+        4,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "warMedal": [
+        2,
+        1,
+        1,
+        3,
+        1,
+        2
+      ],
+      "destroyCount": [
+        6,
+        2,
+        6,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "pl",
+      "alliance": 3,
+      "defeatType": "CORE",
+      "ai": true,
+      "defeated": true,
+      "money": 92,
+      "industry": 58,
+      "taxRate": "1.1",
+      "tech": 3,
+      "techTurn": 0,
+      "commander": "common3",
+      "commanderTurn": 5,
+      "commanderAlive": false,
+      "borrowedLoan": false,
+      "areas": [],
+      "capitals": [],
+      "cardRound": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cardTimes": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "warMedal": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "destroyCount": [
+        3,
+        3,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "areas": [
+    {
+      "id": 122,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 123,
+      "owner": "de1",
+      "construction": "INDUSTRY",
+      "level": 1,
+      "installation": "ENTRENCHMENT",
+      "units": [
+        {
+          "type": 1,
+          "country": "de1",
+          "hp": 17,
+          "maxHp": 90,
+          "movement": 2,
+          "level": 2,
+          "exp": 81,
+          "morale": 0,
+          "cards": 3,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 125,
+      "owner": "de1",
+      "construction": "INDUSTRY",
+      "level": 1,
+      "installation": "FORT",
+      "units": []
+    },
+    {
+      "id": 127,
+      "owner": "de1",
+      "construction": "INDUSTRY",
+      "level": 1,
+      "installation": "ENTRENCHMENT",
+      "units": [
+        {
+          "type": 1,
+          "country": "de1",
+          "hp": 46,
+          "maxHp": 90,
+          "movement": 3,
+          "level": 2,
+          "exp": 98,
+          "morale": 2,
+          "cards": 3,
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": 134,
+      "owner": "de1",
+      "construction": "CITY",
+      "level": 2,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 4,
+          "country": "de1",
+          "hp": 187,
+          "maxHp": 187,
+          "movement": 2,
+          "level": 0,
+          "exp": 98,
+          "morale": 0,
+          "cards": 11,
+          "active": true
+        },
+        {
+          "type": 1,
+          "country": "de1",
+          "hp": 43,
+          "maxHp": 90,
+          "movement": 3,
+          "level": 2,
+          "exp": 126,
+          "morale": 0,
+          "cards": 3,
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": 135,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 4,
+          "country": "de1",
+          "hp": 66,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 125,
+          "morale": 0,
+          "cards": 3,
+          "active": true
+        },
+        {
+          "type": 4,
+          "country": "de1",
+          "hp": 64,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 34,
+          "morale": 0,
+          "cards": 4,
+          "active": true
+        },
+        {
+          "type": 1,
+          "country": "de1",
+          "hp": 41,
+          "maxHp": 90,
+          "movement": 1,
+          "level": 1,
+          "exp": 36,
+          "morale": 0,
+          "cards": 4,
+          "active": true
+        },
+        {
+          "type": 2,
+          "country": "de1",
+          "hp": 17,
+          "maxHp": 50,
+          "movement": 1,
+          "level": 1,
+          "exp": 32,
+          "morale": 0,
+          "cards": 2,
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": 136,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "ENTRENCHMENT",
+      "units": [
+        {
+          "type": 4,
+          "country": "de1",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 2,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 5,
+          "active": true
+        },
+        {
+          "type": 2,
+          "country": "de1",
+          "hp": 36,
+          "maxHp": 50,
+          "movement": 2,
+          "level": 1,
+          "exp": 62,
+          "morale": 0,
+          "cards": 3,
+          "active": true
+        },
+        {
+          "type": 4,
+          "country": "de1",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 2,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": true
+        },
+        {
+          "type": 0,
+          "country": "de1",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 2,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 2,
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": 137,
+      "owner": "de1",
+      "construction": "CITY",
+      "level": 1,
+      "installation": "FORT",
+      "units": []
+    },
+    {
+      "id": 138,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 139,
+      "owner": "de1",
+      "construction": "AIRPORT",
+      "level": 1,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 140,
+      "owner": "de1",
+      "construction": "CITY",
+      "level": 1,
+      "installation": "ENTRENCHMENT",
+      "units": []
+    },
+    {
+      "id": 141,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "ENTRENCHMENT",
+      "units": []
+    },
+    {
+      "id": 142,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 143,
+      "owner": "de1",
+      "construction": "AIRPORT",
+      "level": 1,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 144,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 145,
+      "owner": "de1",
+      "construction": "INDUSTRY",
+      "level": 3,
+      "installation": "RADAR",
+      "units": []
+    },
+    {
+      "id": 146,
+      "owner": "de1",
+      "construction": "CITY",
+      "level": 4,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 147,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 148,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 149,
+      "owner": "de1",
+      "construction": "CITY",
+      "level": 4,
+      "installation": "ANTIAIRCRAFT",
+      "units": [
+        {
+          "type": 4,
+          "country": "de1",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 2,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 5,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 150,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "FORT",
+      "units": []
+    },
+    {
+      "id": 151,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 152,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 4,
+          "country": "de1",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": true
+        },
+        {
+          "type": 0,
+          "country": "de1",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 2,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 153,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "ENTRENCHMENT",
+      "units": [
+        {
+          "type": 4,
+          "country": "de1",
+          "hp": 59,
+          "maxHp": 110,
+          "movement": 2,
+          "level": 1,
+          "exp": 95,
+          "morale": 0,
+          "cards": 7,
+          "active": true
+        },
+        {
+          "type": 1,
+          "country": "de1",
+          "hp": 13,
+          "maxHp": 90,
+          "movement": 3,
+          "level": 1,
+          "exp": 43,
+          "morale": 0,
+          "cards": 4,
+          "active": true
+        },
+        {
+          "type": 4,
+          "country": "de1",
+          "hp": 61,
+          "maxHp": 110,
+          "movement": 2,
+          "level": 1,
+          "exp": 47,
+          "morale": 0,
+          "cards": 5,
+          "active": true
+        },
+        {
+          "type": 0,
+          "country": "de1",
+          "hp": 18,
+          "maxHp": 70,
+          "movement": 2,
+          "level": 1,
+          "exp": 39,
+          "morale": 0,
+          "cards": 2,
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": 154,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 0,
+          "country": "de1",
+          "hp": 37,
+          "maxHp": 70,
+          "movement": 1,
+          "level": 2,
+          "exp": 36,
+          "morale": 2,
+          "cards": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": 155,
+      "owner": "de1",
+      "construction": "CITY",
+      "level": 1,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 156,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 1,
+          "country": "de2",
+          "hp": 78,
+          "maxHp": 90,
+          "movement": 0,
+          "level": 0,
+          "exp": 5,
+          "morale": 0,
+          "cards": 1,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 162,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 0,
+          "country": "de2",
+          "hp": 48,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 0,
+          "exp": 5,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 163,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 2,
+          "country": "de2",
+          "hp": 42,
+          "maxHp": 50,
+          "movement": 0,
+          "level": 0,
+          "exp": 29,
+          "morale": 0,
+          "cards": 1,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "de2",
+          "hp": 23,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 0,
+          "exp": 34,
+          "morale": 0,
+          "cards": 1,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 164,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 4,
+          "country": "de1",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 1,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 5,
+          "active": true
+        },
+        {
+          "type": 4,
+          "country": "de1",
+          "hp": 36,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 2,
+          "exp": 110,
+          "morale": 0,
+          "cards": 1,
+          "active": true
+        },
+        {
+          "type": 4,
+          "country": "de1",
+          "hp": 82,
+          "maxHp": 110,
+          "movement": 2,
+          "level": 1,
+          "exp": 11,
+          "morale": 0,
+          "cards": 5,
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": 165,
+      "owner": "de2",
+      "construction": "CITY",
+      "level": 1,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 2,
+          "country": "de2",
+          "hp": 19,
+          "maxHp": 50,
+          "movement": 0,
+          "level": 0,
+          "exp": 41,
+          "morale": 0,
+          "cards": 1,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 166,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 167,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "FORT",
+      "units": []
+    },
+    {
+      "id": 168,
+      "owner": "de2",
+      "construction": "CITY",
+      "level": 1,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 169,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 170,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 171,
+      "owner": "de1",
+      "construction": "CITY",
+      "level": 4,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 172,
+      "owner": "de1",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 1018,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 1,
+          "country": "de2",
+          "hp": 19,
+          "maxHp": 90,
+          "movement": 0,
+          "level": 1,
+          "exp": 59,
+          "morale": 0,
+          "cards": 2,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1019,
+      "owner": "de2",
+      "construction": "INDUSTRY",
+      "level": 3,
+      "installation": "ENTRENCHMENT",
+      "units": [
+        {
+          "type": 2,
+          "country": "de2",
+          "hp": 40,
+          "maxHp": 50,
+          "movement": 0,
+          "level": 2,
+          "exp": 11,
+          "morale": 0,
+          "cards": 1,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1020,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "ENTRENCHMENT",
+      "units": []
+    },
+    {
+      "id": 1021,
+      "owner": "de2",
+      "construction": "AIRPORT",
+      "level": 1,
+      "installation": "RADAR",
+      "units": [
+        {
+          "type": 15,
+          "country": "de2",
+          "hp": 80,
+          "maxHp": 80,
+          "movement": 0,
+          "level": 0,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 1022,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 1023,
+      "owner": "de2",
+      "construction": "INDUSTRY",
+      "level": 3,
+      "installation": "ENTRENCHMENT",
+      "units": []
+    },
+    {
+      "id": 1024,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 1026,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 1029,
+      "owner": "de2",
+      "construction": "CITY",
+      "level": 3,
+      "installation": "ENTRENCHMENT",
+      "units": []
+    },
+    {
+      "id": 1030,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 1031,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 1032,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 1033,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "FORT",
+      "units": []
+    },
+    {
+      "id": 1041,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "ENTRENCHMENT",
+      "units": []
+    },
+    {
+      "id": 1043,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 1045,
+      "owner": "de2",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 1046,
+      "owner": "de2",
+      "construction": "CITY",
+      "level": 4,
+      "installation": "ANTIAIRCRAFT",
+      "units": [
+        {
+          "type": 4,
+          "country": "de2",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 0,
+          "exp": 0,
+          "morale": 0,
+          "cards": 3,
+          "active": false
+        }
+      ]
+    }
+  ]
+}

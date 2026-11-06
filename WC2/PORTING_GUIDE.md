@@ -4,7 +4,32 @@ Source: `E:\CSharpProject\WC2C#\Reference\WC2-C\app\src\main\cpp` (`code/` = rew
 `easytech/includes/easytech/*.h` = class layouts / method lists).
 Target: `E:\CSharpProject\WC2C#\WC2` (MonoGame DesktopGL, net9.0). Build with `dotnet build` in that folder.
 
-## Golden rules
+## Working on the newEngine branch
+
+The port itself is done; these rules apply to changes made on top of it (see `NEW_ENGINE_PLAN.md`).
+
+1. **Rules code keeps the original names** (classes, methods, fields of the game logic) so it stays
+   comparable with the decompiled original, the remake and the audits.
+2. **Assets only through `AssetSystem`** (`WC2.Engine/IO/AssetSystem.cs`): `AssetSystem.Exists/OpenRead/
+   ReadAllBytes/ReadAllText`, or `GetPath(name)` handed to `ecFile` / `TiXmlDocument`. Never `File.*` on
+   an asset: the package may be a folder, a zip, an APK or overlaid by mods. Real files (saves, settings,
+   exports) use `GetDocumentPath`.
+3. **Game data is JSON** (`docs/DATA.md`): read it with `JsonData.LoadMerged(path)` so mods merge, with
+   the `JsonData` accessors (they parse numbers exactly like the original XML attributes). Paths live in
+   `WC2.Game/Data/DataPaths.cs`. A new data file needs a reader, a converter or built-in default, and an
+   entry in `WC2.Game/Data/DataMigration.cs` so `--verify-data` covers it.
+4. **No terrain constants in rules**: ask `Terrain.Area(type)`, `Terrain.Construction(type)`,
+   `Terrain.Installation(type)`, `Terrain.Rules` (`WC2.Game/Data/TerrainDefs.cs`) instead of testing for
+   `CAPITAL`, `PORT`, `FORT` or hard-coding healing, levels and AI area values.
+5. **Original files are never edited.** `WC2/assets` stays as shipped; authored data goes to
+   `WC2/content`, package layout and generated formats to `WC2/assets-layout.json`.
+6. **Layering**: `WC2.Engine` must not use game types (it does not reference `WC2.Game`, so this is a
+   compile error). Engine code lives in `WC2.Engine/`, game code in `WC2.Game/`.
+7. **Keep the goldens green.** `tests
+un-tests.ps1` must pass; record new goldens (`-Record`) only for
+   an intended rule or data change, and say so in the commit.
+
+## Golden rules (original porting phase; paths were `WC2/Engine`, `WC2/Game`, now `WC2.Engine`, `WC2.Game`)
 
 1. **Port 1:1.** Keep the algorithm, constants, magic numbers, coordinates, string keys and comments
    (translate Chinese comments to short English). Do not redesign, "fix" gameplay or drop features
@@ -71,7 +96,7 @@ Save files: write explicit little-endian layouts with the `ecFile` helpers (`Rea
 `WritePadding(n)`). Reproduce the C++ struct order; byte-exact compatibility with Android saves is
 not required, but Save and Load in this port must match each other.
 
-## Engine API cheat sheet (all in `WC2/Engine`)
+## Engine API cheat sheet (all in `WC2.Engine`)
 
 * `ecGraphics.Instance()`: `screenW/screenH` (logical, e.g. 568x320), `widthMode` (3 = tablet),
   `LoadTexture(name)` (also `LoadWEBPTexture`/`LoadETCTexture`, all resolve `@2x` and png/webp/pkm
@@ -137,7 +162,7 @@ JNI/Java calls, in-app purchases, advertising, Game Center / multiplayer session
 ## Engine semantics confirmed from the binary
 
 `Reference/decompiled` holds Hex-Rays pseudo-C of the original `libeasytech.so` (see its README).
-The engine layer in `WC2/Engine` follows it; the points below are the ones that differ from what a
+The engine layer in `WC2.Engine` follows it; the points below are the ones that differ from what a
 reasonable guess would be, so do not "fix" them:
 
 * **Event routing.** `GUIManager.PostEvent` → `GUIElement.PostEvent` walks the tree depth first

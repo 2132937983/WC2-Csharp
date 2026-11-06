@@ -21,6 +21,15 @@ public static class DebugTools
             case "--test-audio":
                 TestAudio(args.Length > 1 ? args[1] : null);
                 return true;
+            case "--convert-data":
+                // writes the JSON game data converted from the original XML (default: the project's content folder)
+                ecGame.ConfigurePaths(null, null);
+                DataMigration.Convert(args.Length > 1 && !args[1].StartsWith("--") ? args[1] : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "content")));
+                return true;
+            case "--verify-data":
+                ecGame.ConfigurePaths(null, args.Length > 1 && !args[1].StartsWith("--") ? args[1] : null);
+                Environment.ExitCode = DataMigration.Verify() == 0 ? 0 : 1;
+                return true;
             default:
                 return false;
         }
@@ -83,7 +92,7 @@ public static class DebugTools
     {
         ecGame.ConfigurePaths(null, null);
         if (!string.IsNullOrEmpty(outDir)) Directory.CreateDirectory(outDir);
-        foreach (var path in Directory.GetFiles(AssetsRoot, "*.mp3").OrderBy(p => p))
+        foreach (var path in AssetSystem.List().Where(p => p.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase)).OrderBy(p => Path.GetFileName(p)))
         {
             try
             {
@@ -118,12 +127,12 @@ public static class DebugTools
 
         // sound effects: load every WAV through MonoGame and compare the duration with the header
         int wavOk = 0, wavBad = 0;
-        foreach (var path in Directory.GetFiles(AssetsRoot, "*.wav").OrderBy(p => p))
+        foreach (var path in AssetSystem.List().Where(p => p.EndsWith(".wav", StringComparison.OrdinalIgnoreCase)).OrderBy(p => Path.GetFileName(p)))
         {
             try
             {
                 var header = ReadWavHeader(path);
-                using var fs = File.OpenRead(path);
+                using var fs = new MemoryStream(AssetSystem.ReadAllBytes(path));
                 using var effect = Microsoft.Xna.Framework.Audio.SoundEffect.FromStream(fs);
                 double loaded = effect.Duration.TotalSeconds;
                 bool ok = Math.Abs(loaded - header.seconds) < 0.05;
@@ -141,7 +150,7 @@ public static class DebugTools
 
     private static (int rate, int bits, int channels, double seconds) ReadWavHeader(string path)
     {
-        var d = File.ReadAllBytes(path);
+        var d = AssetSystem.ReadAllBytes(path);
         int i = 12, rate = 0, bits = 0, channels = 0, dataSize = 0;
         while (i + 8 <= d.Length)
         {

@@ -15,4 +15,5 @@ wait 10
 shot s8_ai2
 wait 10
 shot s9_ai3
+dump s9_ai3
 exit

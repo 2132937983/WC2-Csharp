@@ -1,0 +1,14 @@
+# first campaign battle (Poland 1939) played by the AI on both sides until it ends (golden dump at the end)
+wait 4.5
+click 510 116
+wait 2.5
+click 170 150
+wait 5
+click 552 302
+wait 7
+click 284 290
+wait 2
+autoplay 30
+dump END
+shot P_end
+exit

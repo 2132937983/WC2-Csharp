@@ -1,0 +1,20 @@
+# first conquest (Germany) played by the AI on both sides for up to 16 rounds (golden dumps every 4 rounds)
+wait 4.5
+click 510 152
+wait 2.5
+click 170 65
+wait 5
+click 552 302
+wait 6
+click 337 272
+wait 1
+autoplay 4
+dump R05
+autoplay 4
+dump R09
+autoplay 4
+dump R13
+autoplay 4
+dump R17
+shot Q_end
+exit

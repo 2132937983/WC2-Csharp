@@ -1,0 +1,16 @@
+{
+  "format": 1,
+  "about": "Language settings (converted from Localizable.strings): \"language\" is the code used in file names, \"stringtable\" / \"stringtable iPad\" name the string tables.",
+  "strings": {
+    "language": "ru",
+    "stringtable": "stringtable_ru.xml",
+    "stringtable iPad": "stringtable_ru_iPad.xml",
+    "font1": "font1_ru.fnt",
+    "font2": "font2_ru.fnt",
+    "font3": "font3_ru.fnt",
+    "font4": "font4_ru.fnt",
+    "font5": "font5_ru.fnt",
+    "font6": "font6_ru.fnt",
+    "font7": "font7_ru.fnt"
+  }
+}

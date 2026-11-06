@@ -17,6 +17,7 @@ shot G1_save_slot
 click 552 302
 wait 1.5
 shot G2_after_save
+dump G2_after_save
 click 552 15
 wait 1
 click 282 249
@@ -32,4 +33,5 @@ wait 1
 click 552 302
 wait 7
 shot G5_loaded
+dump G5_loaded
 exit

@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="WC2.Android/WC2.Android.csproj" />
+  <Project Path="WC2.Engine/WC2.Engine.csproj" />
+  <Project Path="WC2.Game/WC2.Game.csproj" />
+  <Project Path="WC2.Tools/WC2.Tools.csproj" />
+  <Project Path="WC2/WC2.csproj" />
+</Solution>

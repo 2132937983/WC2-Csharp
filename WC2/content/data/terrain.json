@@ -1,0 +1,185 @@
+{
+  "format": 1,
+  "about": "Terrain definitions: area types (as named in maps/<id>/areas.json), buildings, installations and terrain-wide numbers. These values reproduce the original game; field reference: docs/DATA.md#terrain.",
+  "areaTypes": {
+    "normal": {
+      "id": 0,
+      "cityLevel": 0,
+      "industryLevel": 0,
+      "healing": 3,
+      "navyHealingMultiplier": 1,
+      "defence": 0,
+      "capital": false,
+      "port": false,
+      "keyArea": false,
+      "encirclementNeedsGarrison": false,
+      "medalBonus": 0,
+      "ai": {
+        "construction": 0,
+        "airStrike": 0,
+        "nuclear": 60,
+        "airborne": 260
+      }
+    },
+    "capital": {
+      "id": 1,
+      "cityLevel": 3,
+      "industryLevel": 2,
+      "healing": 9,
+      "navyHealingMultiplier": 1,
+      "defence": 1,
+      "capital": true,
+      "port": false,
+      "keyArea": true,
+      "encirclementNeedsGarrison": true,
+      "medalBonus": 12,
+      "ai": {
+        "construction": 30,
+        "airStrike": 20,
+        "nuclear": 80,
+        "airborne": 360
+      }
+    },
+    "port": {
+      "id": 2,
+      "cityLevel": 0,
+      "industryLevel": 0,
+      "healing": 6,
+      "navyHealingMultiplier": 2,
+      "defence": 0,
+      "capital": false,
+      "port": true,
+      "keyArea": true,
+      "encirclementNeedsGarrison": false,
+      "medalBonus": 0,
+      "ai": {
+        "construction": 0,
+        "airStrike": 10,
+        "nuclear": 70,
+        "airborne": 280
+      }
+    },
+    "large city": {
+      "id": 3,
+      "cityLevel": 2,
+      "industryLevel": 1,
+      "healing": 7,
+      "navyHealingMultiplier": 1,
+      "defence": 0,
+      "capital": false,
+      "port": false,
+      "keyArea": true,
+      "encirclementNeedsGarrison": true,
+      "medalBonus": 8,
+      "ai": {
+        "construction": 20,
+        "airStrike": 15,
+        "nuclear": 75,
+        "airborne": 340
+      }
+    },
+    "normal city": {
+      "id": 4,
+      "cityLevel": 1,
+      "industryLevel": 0,
+      "healing": 5,
+      "navyHealingMultiplier": 1,
+      "defence": 0,
+      "capital": false,
+      "port": false,
+      "keyArea": true,
+      "encirclementNeedsGarrison": false,
+      "medalBonus": 4,
+      "ai": {
+        "construction": 10,
+        "airStrike": 10,
+        "nuclear": 70,
+        "airborne": 310
+      }
+    }
+  },
+  "constructions": {
+    "city": {
+      "id": 1,
+      "maxLevel": 4,
+      "perLevel": 5,
+      "healingLevel": 0
+    },
+    "industry": {
+      "id": 2,
+      "maxLevel": 3,
+      "perLevel": 5,
+      "healingLevel": 0
+    },
+    "airport": {
+      "id": 3,
+      "maxLevel": 1,
+      "perLevel": 0,
+      "healingLevel": 1
+    }
+  },
+  "installations": {
+    "fort": {
+      "id": 1,
+      "defence": 1,
+      "minCounterRange": 1000,
+      "stopsAttackers": false,
+      "secondCounter": true,
+      "halvesRangedDamage": false,
+      "airStrikeDamagePercent": 100,
+      "protectsFromBombing": false,
+      "ai": {
+        "airStrikePenalty": 0
+      }
+    },
+    "entrenchment": {
+      "id": 2,
+      "defence": 1,
+      "minCounterRange": 0,
+      "stopsAttackers": true,
+      "secondCounter": false,
+      "halvesRangedDamage": false,
+      "airStrikeDamagePercent": 100,
+      "protectsFromBombing": false,
+      "ai": {
+        "airStrikePenalty": 0
+      }
+    },
+    "antiaircraft": {
+      "id": 3,
+      "defence": 0,
+      "minCounterRange": 0,
+      "stopsAttackers": false,
+      "secondCounter": false,
+      "halvesRangedDamage": false,
+      "airStrikeDamagePercent": 30,
+      "protectsFromBombing": true,
+      "ai": {
+        "airStrikePenalty": 100
+      }
+    },
+    "radar": {
+      "id": 4,
+      "defence": 0,
+      "minCounterRange": 0,
+      "stopsAttackers": false,
+      "secondCounter": false,
+      "halvesRangedDamage": true,
+      "airStrikeDamagePercent": 50,
+      "protectsFromBombing": false,
+      "ai": {
+        "airStrikePenalty": 0
+      }
+    }
+  },
+  "rules": {
+    "healingPerLevel": 3,
+    "seaMaxMovement": 1,
+    "ai": {
+      "airStrikeCityLevelWeight": 6,
+      "airStrikeIndustryLevelWeight": 8,
+      "airborneCityLevelWeight": 40,
+      "airborneIndustryLevelWeight": 80
+    }
+  }
+}

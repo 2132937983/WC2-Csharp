@@ -1,0 +1,8 @@
+{
+  // Merged into data/units.json: only the listed fields change, everything else stays as in the game.
+  "countries": {
+    "others": {
+      "tank": { "strength": 120, "maxAttack": 10 }
+    }
+  }
+}

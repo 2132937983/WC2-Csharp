@@ -1,0 +1,102 @@
+{
+  "format": 1,
+  "about": "Portraits shown in dialogues and on the commander screen (converted from generalphotos.xml). Field reference: docs/DATA.md#portraits.",
+  "portraits": {
+    "Rommel": {
+      "file": "general_rommel.webp",
+      "w": 275,
+      "h": 271,
+      "refx": 137
+    },
+    "Goering": {
+      "file": "general_goering.webp",
+      "w": 338,
+      "h": 253,
+      "refx": 169
+    },
+    "Guderian": {
+      "file": "general_guderian.webp",
+      "w": 298,
+      "h": 260,
+      "refx": 149
+    },
+    "MacArthur": {
+      "file": "general_macarthur.webp",
+      "w": 250,
+      "h": 261,
+      "refx": 125
+    },
+    "Patton": {
+      "file": "general_patton.webp",
+      "w": 321,
+      "h": 249,
+      "refx": 160
+    },
+    "Nimitz": {
+      "file": "general_nimitz.webp",
+      "w": 257,
+      "h": 265,
+      "refx": 128
+    },
+    "Zhukov": {
+      "file": "general_zhukov.webp",
+      "w": 241,
+      "h": 260,
+      "refx": 120
+    },
+    "Rokossovsky": {
+      "file": "general_rokossovsky.webp",
+      "w": 247,
+      "h": 267,
+      "refx": 123
+    },
+    "Montgomery": {
+      "file": "general_montgomery.webp",
+      "w": 241,
+      "h": 254,
+      "refx": 120
+    },
+    "de Gaulle": {
+      "file": "general_degaulle.webp",
+      "w": 208,
+      "h": 256,
+      "refx": 104
+    },
+    "Yamamoto": {
+      "file": "general_yamamoto.webp",
+      "w": 248,
+      "h": 253,
+      "refx": 124
+    },
+    "Graziani": {
+      "file": "general_graziani.webp",
+      "w": 316,
+      "h": 268,
+      "refx": 158
+    },
+    "Zhang": {
+      "file": "general_zhang.webp",
+      "w": 246,
+      "h": 254,
+      "refx": 123
+    },
+    "Peng": {
+      "file": "general_peng.webp",
+      "w": 228,
+      "h": 250,
+      "refx": 114
+    },
+    "Player": {
+      "file": "general_player.webp",
+      "w": 267,
+      "h": 252,
+      "refx": 133
+    },
+    "Guider": {
+      "file": "guider.webp",
+      "w": 210,
+      "h": 246,
+      "refx": 105
+    }
+  }
+}

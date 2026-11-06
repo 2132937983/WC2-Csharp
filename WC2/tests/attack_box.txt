@@ -16,4 +16,5 @@ shot A4_attackbox
 click 340 200
 wait 3
 shot A5_after_attack
+dump A5_after_attack
 exit

@@ -1,0 +1,468 @@
+{
+  "format": 1,
+  "about": "Unit definitions (converted from armydef.xml). Field reference: docs/DATA.md#units.",
+  "legacyCombatDefaults": false,
+  "weaponArmorRules": {},
+  "unitTypes": {
+    "infantry": {
+      "id": 0,
+      "image": "soldier"
+    },
+    "panzer": {
+      "id": 1,
+      "image": "panzer"
+    },
+    "artillery": {
+      "id": 2,
+      "image": "cannon"
+    },
+    "rocket": {
+      "id": 3,
+      "image": "rocketlauncher"
+    },
+    "tank": {
+      "id": 4,
+      "image": "tank"
+    },
+    "heavytank": {
+      "id": 5,
+      "image": "heavytank"
+    },
+    "destroyer": {
+      "id": 6,
+      "image": "destroyer"
+    },
+    "cruiser": {
+      "id": 7,
+      "image": "cruiser"
+    },
+    "battleship": {
+      "id": 8,
+      "image": "battleship"
+    },
+    "aircraftcarrier": {
+      "id": 9,
+      "image": "aircraftcarrier"
+    },
+    "carrier": {
+      "id": 10,
+      "image": "transportship",
+      "countryIndependent": true
+    },
+    "airstrike": {
+      "id": 11,
+      "image": "fighter",
+      "countryIndependent": true
+    },
+    "bomber": {
+      "id": 12,
+      "image": "bomber",
+      "countryIndependent": true
+    },
+    "airborne": {
+      "id": 13,
+      "image": "bomber",
+      "countryIndependent": true
+    },
+    "nuclearbomb": {
+      "id": 14,
+      "image": "bomber",
+      "countryIndependent": true
+    },
+    "eliteinfantry": {
+      "id": 15,
+      "image": "eliteinfantry"
+    },
+    "realbomber": {
+      "id": 16,
+      "image": "realbomber"
+    }
+  },
+  "countries": {
+    "others": {
+      "infantry": {
+        "unitType": 1,
+        "strength": 70,
+        "movement": 2,
+        "minAttack": 1,
+        "maxAttack": 6,
+        "combat": {
+          "attack": {
+            "mode": 0,
+            "engagement": 0,
+            "range": {
+              "shape": "graph",
+              "min": 0,
+              "max": 100
+            }
+          }
+        }
+      },
+      "panzer": {
+        "unitType": 2,
+        "strength": 90,
+        "movement": 3,
+        "minAttack": 1,
+        "maxAttack": 7,
+        "combat": {
+          "attack": {
+            "mode": 0,
+            "engagement": 0,
+            "range": {
+              "shape": "graph",
+              "min": 0,
+              "max": 100
+            },
+            "damage": [
+              {
+                "target": 1,
+                "phase": "attack",
+                "rate": "130%"
+              }
+            ]
+          }
+        }
+      },
+      "artillery": {
+        "unitType": 3,
+        "strength": 50,
+        "movement": 2,
+        "minAttack": 1,
+        "maxAttack": 9,
+        "weaponType": 1,
+        "combat": {
+          "traits": [
+            "cannot-occupy"
+          ],
+          "aiNoCounterBonus": 200,
+          "attack": {
+            "mode": 0,
+            "engagement": 1,
+            "range": {
+              "shape": "graph",
+              "min": 0,
+              "max": 1000
+            }
+          }
+        }
+      },
+      "rocket": {
+        "unitType": 3,
+        "strength": 35,
+        "movement": 2,
+        "minAttack": 2,
+        "maxAttack": 10,
+        "combat": {
+          "traits": [
+            "cannot-occupy"
+          ],
+          "attack": {
+            "mode": 1,
+            "engagement": 1,
+            "range": {
+              "shape": "graph",
+              "min": 1500,
+              "max": 2000
+            }
+          }
+        }
+      },
+      "tank": {
+        "unitType": 2,
+        "strength": 110,
+        "movement": 2,
+        "minAttack": 2,
+        "maxAttack": 9,
+        "armorType": 2,
+        "combat": {
+          "traits": [
+            "cross-entrenchment"
+          ],
+          "attack": {
+            "mode": 0,
+            "engagement": 0,
+            "range": {
+              "shape": "graph",
+              "min": 0,
+              "max": 100
+            }
+          },
+          "result": {
+            "movementRestoreOnKill": 1
+          }
+        }
+      },
+      "heavytank": {
+        "unitType": 2,
+        "strength": 130,
+        "movement": 2,
+        "minAttack": 3,
+        "maxAttack": 9,
+        "combat": {
+          "traits": [
+            "cross-entrenchment"
+          ],
+          "attack": {
+            "mode": 0,
+            "engagement": 0,
+            "range": {
+              "shape": "graph",
+              "min": 0,
+              "max": 1000
+            }
+          },
+          "result": {
+            "movementRestoreOnKill": 1
+          }
+        }
+      },
+      "eliteinfantry": {
+        "unitType": 1,
+        "strength": 80,
+        "movement": 2,
+        "minAttack": 3,
+        "maxAttack": 6,
+        "combat": {
+          "traits": [
+            "cross-entrenchment"
+          ],
+          "attack": {
+            "mode": 0,
+            "engagement": 0,
+            "range": {
+              "shape": "graph",
+              "min": 0,
+              "max": 1000
+            }
+          }
+        }
+      },
+      "destroyer": {
+        "unitType": 4,
+        "navy": true,
+        "strength": 180,
+        "movement": 2,
+        "minAttack": 3,
+        "maxAttack": 10,
+        "combat": {
+          "traits": [
+            "recv_fort_second_counter"
+          ],
+          "attack": {
+            "mode": 0,
+            "engagement": 0,
+            "range": {
+              "shape": "graph",
+              "min": 0,
+              "max": 1000
+            }
+          }
+        }
+      },
+      "cruiser": {
+        "unitType": 4,
+        "navy": true,
+        "strength": 290,
+        "movement": 2,
+        "minAttack": 4,
+        "maxAttack": 12,
+        "combat": {
+          "traits": [
+            "recv_fort_second_counter"
+          ],
+          "attack": {
+            "mode": 0,
+            "engagement": 0,
+            "range": {
+              "shape": "graph",
+              "min": 0,
+              "max": 1000
+            }
+          }
+        }
+      },
+      "battleship": {
+        "unitType": 4,
+        "navy": true,
+        "strength": 440,
+        "movement": 1,
+        "minAttack": 6,
+        "maxAttack": 14,
+        "combat": {
+          "traits": [
+            "recv_fort_second_counter"
+          ],
+          "attack": {
+            "mode": 0,
+            "engagement": 0,
+            "range": {
+              "shape": "graph",
+              "min": 0,
+              "max": 1000
+            }
+          },
+          "result": {
+            "constructionLevelDegrade": 1,
+            "constructionLevelChance": 30
+          }
+        }
+      },
+      "aircraftcarrier": {
+        "unitType": 4,
+        "navy": true,
+        "strength": 280,
+        "movement": 1,
+        "minAttack": 3,
+        "maxAttack": 8,
+        "combat": {
+          "traits": [
+            "recv_fort_second_counter"
+          ],
+          "attack": {
+            "mode": 2,
+            "payload": 1,
+            "attackCost": 1,
+            "range": {
+              "shape": "circle",
+              "min": 0,
+              "maxInclusive": false,
+              "radiusSource": "country"
+            }
+          },
+          "counter": {
+            "range": {
+              "shape": "graph",
+              "min": 0,
+              "max": 1000,
+              "maxInclusive": true
+            }
+          }
+        }
+      },
+      "carrier": {
+        "unitType": 0,
+        "strength": 0,
+        "movement": 1,
+        "minAttack": 0,
+        "maxAttack": 0
+      },
+      "airstrike": {
+        "unitType": 0,
+        "strength": 0,
+        "movement": 1,
+        "minAttack": 4,
+        "maxAttack": 10
+      },
+      "bomber": {
+        "unitType": 0,
+        "strength": 0,
+        "movement": 1,
+        "minAttack": 2,
+        "maxAttack": 10
+      },
+      "airborne": {
+        "unitType": 0,
+        "strength": 0,
+        "movement": 1,
+        "minAttack": 1,
+        "maxAttack": 7
+      },
+      "nuclearbomb": {
+        "unitType": 0,
+        "strength": 0,
+        "movement": 1,
+        "minAttack": 2,
+        "maxAttack": 8
+      },
+      "realbomber": {
+        "unitType": 5,
+        "strength": 100,
+        "movement": 2,
+        "minAttack": 5,
+        "maxAttack": 8,
+        "combat": {
+          "traits": [
+            "cross-entrenchment",
+            "cannot-occupy"
+          ],
+          "attack": {
+            "mode": 1,
+            "engagement": 0,
+            "range": {
+              "shape": "circle",
+              "min": 500,
+              "max": 3000
+            }
+          }
+        }
+      }
+    },
+    "cn": {
+      "infantry": {
+        "unitType": 1,
+        "strength": 80,
+        "movement": 2,
+        "minAttack": 2,
+        "maxAttack": 7,
+        "combat": {
+          "traits": [
+            "cross-entrenchment"
+          ],
+          "attack": {
+            "mode": 0,
+            "engagement": 0,
+            "range": {
+              "shape": "graph",
+              "min": 0,
+              "max": 150
+            }
+          }
+        }
+      }
+    },
+    "gb": {},
+    "am": {},
+    "te": {}
+  },
+  "levels": [
+    {
+      "attack": 0,
+      "defence": 0,
+      "turnRecovery": 0,
+      "instantRecovery": 0,
+      "maxHpPercent": 0,
+      "expToNext": 90
+    },
+    {
+      "attack": 1,
+      "defence": 0,
+      "turnRecovery": 0,
+      "instantRecovery": 10,
+      "maxHpPercent": 0,
+      "expToNext": 150
+    },
+    {
+      "attack": 1,
+      "defence": 1,
+      "turnRecovery": 0,
+      "instantRecovery": 20,
+      "maxHpPercent": 0,
+      "expToNext": 200
+    },
+    {
+      "attack": 1,
+      "defence": 1,
+      "turnRecovery": 0,
+      "instantRecovery": 30,
+      "maxHpPercent": 20,
+      "expToNext": 300
+    },
+    {
+      "attack": 1,
+      "defence": 1,
+      "turnRecovery": 2,
+      "instantRecovery": 40,
+      "maxHpPercent": 20
+    }
+  ]
+}

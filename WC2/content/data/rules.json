@@ -1,0 +1,16 @@
+{
+  "format": 1,
+  "about": "Global rule numbers (the values reproduce the original game). Field reference: docs/DATA.md#rules.",
+  "combat": {
+    "diceThresholds": [
+      50,
+      25,
+      15,
+      5
+    ]
+  },
+  "economy": {
+    "moneyCap": 99999,
+    "industryCap": 99999
+  }
+}

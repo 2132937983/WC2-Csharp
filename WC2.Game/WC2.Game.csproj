@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The game: the port of the remake's game code (rules, AI, scene, screens), the JSON data layer,
+       terrain definitions, and the host pieces shared by desktop and Android (MonoGame Game host,
+       script driver). The Android project compiles these sources directly (see WC2.Android.csproj). -->
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>WC2</RootNamespace>
+    <AssemblyName>WC2.Game</AssemblyName>
+    <!-- The port keeps the original C++ field names and some unused members on purpose. -->
+    <NoWarn>$(NoWarn);CS0108;CS0114;CS0169;CS0168;CS0219;CS0414;CS0649;CS0659;CS0661;CS8981;CS1717;CS0162;CS0067</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="WC2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../WC2.Engine/WC2.Engine.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,312 @@
+{
+  "format": 1,
+  "about": "Commanders that scenarios can assign (converted from commanderdef.xml): country, rank and the six medal levels. Field reference: docs/DATA.md#commanders.",
+  "commanders": {
+    "Rommel": {
+      "country": "de",
+      "rank": 13,
+      "infantry": 2,
+      "airforce": 1,
+      "artillery": 2,
+      "armour": 3,
+      "navy": 0,
+      "honour": 3
+    },
+    "Goering": {
+      "country": "de",
+      "rank": 14,
+      "infantry": 1,
+      "airforce": 3,
+      "artillery": 1,
+      "armour": 1,
+      "navy": 1,
+      "honour": 3
+    },
+    "Guderian": {
+      "country": "de",
+      "rank": 13,
+      "infantry": 2,
+      "airforce": 1,
+      "artillery": 1,
+      "armour": 3,
+      "navy": 1,
+      "honour": 2
+    },
+    "MacArthur": {
+      "country": "am",
+      "rank": 14,
+      "infantry": 1,
+      "airforce": 3,
+      "artillery": 0,
+      "armour": 1,
+      "navy": 2,
+      "honour": 3
+    },
+    "Patton": {
+      "country": "am",
+      "rank": 13,
+      "infantry": 2,
+      "airforce": 1,
+      "artillery": 2,
+      "armour": 3,
+      "navy": 0,
+      "honour": 2
+    },
+    "Nimitz": {
+      "country": "am",
+      "rank": 14,
+      "infantry": 1,
+      "airforce": 2,
+      "artillery": 1,
+      "armour": 0,
+      "navy": 3,
+      "honour": 3
+    },
+    "Zhukov": {
+      "country": "ru",
+      "rank": 14,
+      "infantry": 3,
+      "airforce": 1,
+      "artillery": 2,
+      "armour": 2,
+      "navy": 0,
+      "honour": 3
+    },
+    "Rokossovsky": {
+      "country": "ru",
+      "rank": 13,
+      "infantry": 2,
+      "airforce": 0,
+      "artillery": 3,
+      "armour": 2,
+      "navy": 0,
+      "honour": 2
+    },
+    "Montgomery": {
+      "country": "gb",
+      "rank": 13,
+      "infantry": 1,
+      "airforce": 2,
+      "artillery": 1,
+      "armour": 2,
+      "navy": 1,
+      "honour": 2
+    },
+    "de Gaulle": {
+      "country": "fr",
+      "rank": 12,
+      "infantry": 2,
+      "airforce": 1,
+      "artillery": 1,
+      "armour": 1,
+      "navy": 2,
+      "honour": 2
+    },
+    "Yamamoto": {
+      "country": "ja",
+      "rank": 13,
+      "infantry": 1,
+      "airforce": 3,
+      "artillery": 1,
+      "armour": 0,
+      "navy": 3,
+      "honour": 2
+    },
+    "Graziani": {
+      "country": "it",
+      "rank": 12,
+      "infantry": 1,
+      "airforce": 1,
+      "artillery": 1,
+      "armour": 1,
+      "navy": 2,
+      "honour": 2
+    },
+    "Zhang": {
+      "country": "tw",
+      "rank": 12,
+      "infantry": 1,
+      "airforce": 1,
+      "artillery": 1,
+      "armour": 0,
+      "navy": 1,
+      "honour": 2
+    },
+    "Peng": {
+      "country": "cn",
+      "rank": 12,
+      "infantry": 3,
+      "airforce": 0,
+      "artillery": 3,
+      "armour": 0,
+      "navy": 0,
+      "honour": 2
+    },
+    "common1": {
+      "country": "common",
+      "rank": 10,
+      "infantry": 1,
+      "airforce": 1,
+      "artillery": 1,
+      "armour": 1,
+      "navy": 1,
+      "honour": 1
+    },
+    "common2": {
+      "country": "common",
+      "rank": 9,
+      "infantry": 1,
+      "airforce": 0,
+      "artillery": 1,
+      "armour": 0,
+      "navy": 1,
+      "honour": 1
+    },
+    "common3": {
+      "country": "common",
+      "rank": 8,
+      "infantry": 0,
+      "airforce": 0,
+      "artillery": 0,
+      "armour": 0,
+      "navy": 0,
+      "honour": 0
+    }
+  },
+  "levels": [
+    {
+      "attack": 0,
+      "defence": 0,
+      "turnRecovery": 0,
+      "instantRecovery": 10,
+      "maxHpPercent": 5,
+      "coolDown": 4,
+      "medalsToNext": 5
+    },
+    {
+      "attack": 0,
+      "defence": 0,
+      "turnRecovery": 0,
+      "instantRecovery": 15,
+      "maxHpPercent": 10,
+      "coolDown": 4,
+      "medalsToNext": 8
+    },
+    {
+      "attack": 0,
+      "defence": 0,
+      "turnRecovery": 0,
+      "instantRecovery": 20,
+      "maxHpPercent": 15,
+      "coolDown": 4,
+      "medalsToNext": 12
+    },
+    {
+      "attack": 1,
+      "defence": 0,
+      "turnRecovery": 0,
+      "instantRecovery": 25,
+      "maxHpPercent": 20,
+      "coolDown": 4,
+      "medalsToNext": 19
+    },
+    {
+      "attack": 1,
+      "defence": 0,
+      "turnRecovery": 0,
+      "instantRecovery": 30,
+      "maxHpPercent": 25,
+      "coolDown": 4,
+      "medalsToNext": 30
+    },
+    {
+      "attack": 1,
+      "defence": 0,
+      "turnRecovery": 1,
+      "instantRecovery": 35,
+      "maxHpPercent": 30,
+      "coolDown": 3,
+      "medalsToNext": 48
+    },
+    {
+      "attack": 1,
+      "defence": 1,
+      "turnRecovery": 2,
+      "instantRecovery": 40,
+      "maxHpPercent": 35,
+      "coolDown": 3,
+      "medalsToNext": 75
+    },
+    {
+      "attack": 1,
+      "defence": 1,
+      "turnRecovery": 3,
+      "instantRecovery": 45,
+      "maxHpPercent": 40,
+      "coolDown": 3,
+      "medalsToNext": 120
+    },
+    {
+      "attack": 1,
+      "defence": 1,
+      "turnRecovery": 4,
+      "instantRecovery": 50,
+      "maxHpPercent": 45,
+      "coolDown": 3,
+      "medalsToNext": 190
+    },
+    {
+      "attack": 2,
+      "defence": 1,
+      "turnRecovery": 5,
+      "instantRecovery": 55,
+      "maxHpPercent": 50,
+      "coolDown": 3,
+      "medalsToNext": 300
+    },
+    {
+      "attack": 2,
+      "defence": 1,
+      "turnRecovery": 6,
+      "instantRecovery": 60,
+      "maxHpPercent": 55,
+      "coolDown": 2,
+      "medalsToNext": 480
+    },
+    {
+      "attack": 2,
+      "defence": 1,
+      "turnRecovery": 7,
+      "instantRecovery": 65,
+      "maxHpPercent": 60,
+      "coolDown": 2,
+      "medalsToNext": 760
+    },
+    {
+      "attack": 3,
+      "defence": 1,
+      "turnRecovery": 8,
+      "instantRecovery": 70,
+      "maxHpPercent": 65,
+      "coolDown": 2,
+      "medalsToNext": 1200
+    },
+    {
+      "attack": 3,
+      "defence": 1,
+      "turnRecovery": 9,
+      "instantRecovery": 75,
+      "maxHpPercent": 70,
+      "coolDown": 2,
+      "medalsToNext": 2000
+    },
+    {
+      "attack": 3,
+      "defence": 2,
+      "turnRecovery": 10,
+      "instantRecovery": 80,
+      "maxHpPercent": 75,
+      "coolDown": 2
+    }
+  ]
+}

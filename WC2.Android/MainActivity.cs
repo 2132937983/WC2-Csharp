@@ -30,10 +30,9 @@ public class MainActivity : AndroidGameActivity
     {
         base.OnCreate(bundle);
 
-        string assetsDir = Path.Combine(FilesDir.AbsolutePath, "game");
         string docsDir = Path.Combine(FilesDir.AbsolutePath, "documents");
-        try { AssetExtractor.EnsureExtracted(Assets, "game", assetsDir, PackageManager.GetPackageInfo(PackageName, 0).VersionCode.ToString()); }
-        catch (Exception ex) { Globals.Log("Asset extraction failed: " + ex); }
+        Globals.SetDocumentPath(docsDir);
+        RemoveOldExtraction();
 
         // original nativeInit: four phone buckets and the 1024x768 tablet layout, HD content on every device
         var metrics = Resources.DisplayMetrics;
@@ -42,8 +41,11 @@ public class MainActivity : AndroidGameActivity
         Globals.g_contenscalefactor = 2.0f;
         ecGame.SelectLayout(w, h, out int logicalW, out int logicalH);
 
-        ecGame.ConfigurePaths(assetsDir, null);
-        Globals.SetDocumentPath(docsDir);
+        // the runtime package is read straight from the APK (assets/pack); mods come from the app's
+        // external files folder (Android/data/<package>/files/mods, reachable over USB) and documents/mods
+        var package = new AndroidAssetSource(Assets, "pack");
+        string externalMods = GetExternalFilesDir(null)?.AbsolutePath is string ext ? Path.Combine(ext, "mods") : null;
+        ecGame.ConfigureAssets(package, package.Aliases, package.Name, new[] { externalMods, Path.Combine(docsDir, "mods") }, null);
         ecGame.HostHandlesLifecycle = true; // OnPause/OnResume below replace the window-focus polling
 
         ApplyWindowFlags();
@@ -83,6 +85,17 @@ public class MainActivity : AndroidGameActivity
         catch (Exception ex) { Globals.Log("Back failed: " + ex.Message); }
     }
 
+    /// <summary>Earlier builds copied all assets to files/game on first start; that copy is no longer used.</summary>
+    private void RemoveOldExtraction()
+    {
+        try
+        {
+            string old = Path.Combine(FilesDir.AbsolutePath, "game");
+            if (Directory.Exists(old)) Directory.Delete(old, true);
+        }
+        catch (Exception ex) { Globals.Log("Removing the old asset copy failed: " + ex.Message); }
+    }
+
     private void ApplyWindowFlags()
     {
         try
@@ -112,47 +125,5 @@ public class MainActivity : AndroidGameActivity
 #pragma warning restore CA1422
         }
         catch (Exception ex) { Globals.Log("Immersive mode failed: " + ex.Message); }
-    }
-}
-
-/// <summary>Copies the APK assets to a real folder once, so the engine can use plain file IO.</summary>
-public static class AssetExtractor
-{
-    public static void EnsureExtracted(Android.Content.Res.AssetManager assets, string sourceDir, string targetDir, string version)
-    {
-        string stamp = Path.Combine(targetDir, ".version");
-        if (Directory.Exists(targetDir) && File.Exists(stamp) && File.ReadAllText(stamp) == version && File.Exists(Path.Combine(targetDir, "carddef.xml")))
-            return;
-        Directory.CreateDirectory(targetDir);
-        CopyDir(assets, sourceDir, targetDir);
-        File.WriteAllText(stamp, version);
-    }
-
-    private static void CopyDir(Android.Content.Res.AssetManager assets, string source, string target)
-    {
-        string[] entries = assets.List(source) ?? Array.Empty<string>();
-        Directory.CreateDirectory(target);
-        foreach (var name in entries)
-        {
-            string src = source.Length == 0 ? name : source + "/" + name;
-            string dst = Path.Combine(target, name);
-            string[] children = null;
-            try { children = assets.List(src); } catch { }
-            if (children != null && children.Length > 0)
-            {
-                CopyDir(assets, src, dst);
-                continue;
-            }
-            try
-            {
-                using var input = assets.Open(src);
-                using var output = File.Create(dst);
-                input.CopyTo(output);
-            }
-            catch (Exception ex)
-            {
-                Globals.Log("Asset copy failed " + src + ": " + ex.Message);
-            }
-        }
     }
 }
