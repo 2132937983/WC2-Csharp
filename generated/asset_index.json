@@ -130,191 +130,191 @@
       "size": 13766,
       "legacy": "unlocked.wav"
     },
-    "data/bin/maps/1/adjion1.bin": {
+    "data/binary/maps/1/adjion1.bin": {
       "size": 132400,
       "legacy": "adjion1.bin"
     },
-    "data/bin/maps/1/area1.bin": {
+    "data/binary/maps/1/area1.bin": {
       "size": 85672,
       "legacy": "area1.bin"
     },
-    "data/bin/maps/1/areamark1.raw": {
+    "data/binary/maps/1/areamark1.raw": {
       "size": 876008,
       "legacy": "areamark1.raw"
     },
-    "data/bin/scenarios/battle_allies1.bin": {
+    "data/binary/scenarios/battle_allies1.bin": {
       "size": 1951,
       "legacy": "battle_allies1.bin"
     },
-    "data/bin/scenarios/battle_allies10.bin": {
+    "data/binary/scenarios/battle_allies10.bin": {
       "size": 1951,
       "legacy": "battle_allies10.bin"
     },
-    "data/bin/scenarios/battle_allies2.bin": {
+    "data/binary/scenarios/battle_allies2.bin": {
       "size": 1951,
       "legacy": "battle_allies2.bin"
     },
-    "data/bin/scenarios/battle_allies3.bin": {
+    "data/binary/scenarios/battle_allies3.bin": {
       "size": 1951,
       "legacy": "battle_allies3.bin"
     },
-    "data/bin/scenarios/battle_allies4.bin": {
+    "data/binary/scenarios/battle_allies4.bin": {
       "size": 1951,
       "legacy": "battle_allies4.bin"
     },
-    "data/bin/scenarios/battle_allies5.bin": {
+    "data/binary/scenarios/battle_allies5.bin": {
       "size": 1951,
       "legacy": "battle_allies5.bin"
     },
-    "data/bin/scenarios/battle_allies6.bin": {
+    "data/binary/scenarios/battle_allies6.bin": {
       "size": 1951,
       "legacy": "battle_allies6.bin"
     },
-    "data/bin/scenarios/battle_allies7.bin": {
+    "data/binary/scenarios/battle_allies7.bin": {
       "size": 1951,
       "legacy": "battle_allies7.bin"
     },
-    "data/bin/scenarios/battle_allies8.bin": {
+    "data/binary/scenarios/battle_allies8.bin": {
       "size": 1951,
       "legacy": "battle_allies8.bin"
     },
-    "data/bin/scenarios/battle_allies9.bin": {
+    "data/binary/scenarios/battle_allies9.bin": {
       "size": 1951,
       "legacy": "battle_allies9.bin"
     },
-    "data/bin/scenarios/battle_axis1.bin": {
+    "data/binary/scenarios/battle_axis1.bin": {
       "size": 1951,
       "legacy": "battle_axis1.bin"
     },
-    "data/bin/scenarios/battle_axis10.bin": {
+    "data/binary/scenarios/battle_axis10.bin": {
       "size": 1951,
       "legacy": "battle_axis10.bin"
     },
-    "data/bin/scenarios/battle_axis2.bin": {
+    "data/binary/scenarios/battle_axis2.bin": {
       "size": 1951,
       "legacy": "battle_axis2.bin"
     },
-    "data/bin/scenarios/battle_axis3.bin": {
+    "data/binary/scenarios/battle_axis3.bin": {
       "size": 1951,
       "legacy": "battle_axis3.bin"
     },
-    "data/bin/scenarios/battle_axis4.bin": {
+    "data/binary/scenarios/battle_axis4.bin": {
       "size": 1951,
       "legacy": "battle_axis4.bin"
     },
-    "data/bin/scenarios/battle_axis5.bin": {
+    "data/binary/scenarios/battle_axis5.bin": {
       "size": 1951,
       "legacy": "battle_axis5.bin"
     },
-    "data/bin/scenarios/battle_axis6.bin": {
+    "data/binary/scenarios/battle_axis6.bin": {
       "size": 1951,
       "legacy": "battle_axis6.bin"
     },
-    "data/bin/scenarios/battle_axis7.bin": {
+    "data/binary/scenarios/battle_axis7.bin": {
       "size": 1951,
       "legacy": "battle_axis7.bin"
     },
-    "data/bin/scenarios/battle_axis8.bin": {
+    "data/binary/scenarios/battle_axis8.bin": {
       "size": 1951,
       "legacy": "battle_axis8.bin"
     },
-    "data/bin/scenarios/battle_axis9.bin": {
+    "data/binary/scenarios/battle_axis9.bin": {
       "size": 1951,
       "legacy": "battle_axis9.bin"
     },
-    "data/bin/scenarios/battle_nato1.bin": {
+    "data/binary/scenarios/battle_nato1.bin": {
       "size": 1951,
       "legacy": "battle_nato1.bin"
     },
-    "data/bin/scenarios/battle_nato2.bin": {
+    "data/binary/scenarios/battle_nato2.bin": {
       "size": 1951,
       "legacy": "battle_nato2.bin"
     },
-    "data/bin/scenarios/battle_nato3.bin": {
+    "data/binary/scenarios/battle_nato3.bin": {
       "size": 1951,
       "legacy": "battle_nato3.bin"
     },
-    "data/bin/scenarios/battle_nato4.bin": {
+    "data/binary/scenarios/battle_nato4.bin": {
       "size": 1951,
       "legacy": "battle_nato4.bin"
     },
-    "data/bin/scenarios/battle_nato5.bin": {
+    "data/binary/scenarios/battle_nato5.bin": {
       "size": 1951,
       "legacy": "battle_nato5.bin"
     },
-    "data/bin/scenarios/battle_nato6.bin": {
+    "data/binary/scenarios/battle_nato6.bin": {
       "size": 1951,
       "legacy": "battle_nato6.bin"
     },
-    "data/bin/scenarios/battle_nato7.bin": {
+    "data/binary/scenarios/battle_nato7.bin": {
       "size": 1951,
       "legacy": "battle_nato7.bin"
     },
-    "data/bin/scenarios/battle_wto1.bin": {
+    "data/binary/scenarios/battle_wto1.bin": {
       "size": 1951,
       "legacy": "battle_wto1.bin"
     },
-    "data/bin/scenarios/battle_wto2.bin": {
+    "data/binary/scenarios/battle_wto2.bin": {
       "size": 1951,
       "legacy": "battle_wto2.bin"
     },
-    "data/bin/scenarios/battle_wto3.bin": {
+    "data/binary/scenarios/battle_wto3.bin": {
       "size": 1951,
       "legacy": "battle_wto3.bin"
     },
-    "data/bin/scenarios/battle_wto4.bin": {
+    "data/binary/scenarios/battle_wto4.bin": {
       "size": 1951,
       "legacy": "battle_wto4.bin"
     },
-    "data/bin/scenarios/battle_wto5.bin": {
+    "data/binary/scenarios/battle_wto5.bin": {
       "size": 1951,
       "legacy": "battle_wto5.bin"
     },
-    "data/bin/scenarios/battle_wto6.bin": {
+    "data/binary/scenarios/battle_wto6.bin": {
       "size": 1951,
       "legacy": "battle_wto6.bin"
     },
-    "data/bin/scenarios/battle_wto7.bin": {
+    "data/binary/scenarios/battle_wto7.bin": {
       "size": 1951,
       "legacy": "battle_wto7.bin"
     },
-    "data/bin/scenarios/conquest_1.bin": {
+    "data/binary/scenarios/conquest_1.bin": {
       "size": 1951,
       "legacy": "conquest_1.bin"
     },
-    "data/bin/scenarios/conquest_2.bin": {
+    "data/binary/scenarios/conquest_2.bin": {
       "size": 1951,
       "legacy": "conquest_2.bin"
     },
-    "data/bin/scenarios/conquest_3.bin": {
+    "data/binary/scenarios/conquest_3.bin": {
       "size": 1951,
       "legacy": "conquest_3.bin"
     },
-    "data/bin/scenarios/conquest_4.bin": {
+    "data/binary/scenarios/conquest_4.bin": {
       "size": 1951,
       "legacy": "conquest_4.bin"
     },
-    "data/bin/scenarios/conquest_5.bin": {
+    "data/binary/scenarios/conquest_5.bin": {
       "size": 1951,
       "legacy": "conquest_5.bin"
     },
-    "data/bin/scenarios/conquest_6.bin": {
+    "data/binary/scenarios/conquest_6.bin": {
       "size": 1951,
       "legacy": "conquest_6.bin"
     },
-    "data/bin/scenarios/conquest_7.bin": {
+    "data/binary/scenarios/conquest_7.bin": {
       "size": 1951,
       "legacy": "conquest_7.bin"
     },
-    "data/bin/scenarios/conquest_8.bin": {
+    "data/binary/scenarios/conquest_8.bin": {
       "size": 1951,
       "legacy": "conquest_8.bin"
     },
-    "data/bin/scenarios/conquest_9.bin": {
+    "data/binary/scenarios/conquest_9.bin": {
       "size": 1951,
       "legacy": "conquest_9.bin"
     },
-    "data/bin/scenarios/tutorails.bin": {
+    "data/binary/scenarios/tutorails.bin": {
       "size": 1951,
       "legacy": "tutorails.bin"
     },
@@ -6065,7 +6065,7 @@
     "English.lproj/font_text_newgame_4_en_hd.fnt": "image/fonts/hd/en/font_text_newgame_4.fnt",
     "English.lproj/font_text_newgame_4_en_hd.png": "image/fonts/hd/en/font_text_newgame_4.png",
     "English.lproj/locstrings.xml": "data/xml/text/en/locstrings.xml",
-    "adjion1.bin": "data/bin/maps/1/adjion1.bin",
+    "adjion1.bin": "data/binary/maps/1/adjion1.bin",
     "after_war.wav": "audio/sfx/after_war.wav",
     "aircraftcarrier.bin": "image/army/navy/common/aircraftcarrier.bin",
     "aircraftcarrier.png": "image/army/navy/common/aircraftcarrier.png",
@@ -6075,8 +6075,8 @@
     "aircraftcarrier_hd.xml": "image/army/navy/hd/aircraftcarrier.xml",
     "antiaircraft.png": "image/map/markers/common/antiaircraft.png",
     "antiaircraft@2x.png": "image/map/markers/hd/antiaircraft.png",
-    "area1.bin": "data/bin/maps/1/area1.bin",
-    "areamark1.raw": "data/bin/maps/1/areamark1.raw",
+    "area1.bin": "data/binary/maps/1/area1.bin",
+    "areamark1.raw": "data/binary/maps/1/areamark1.raw",
     "areatax1.xml": "data/xml/maps/1/areatax1.xml",
     "army_hd.webp": "image/army/atlas/hd/army.webp",
     "army_hd.xml": "image/army/atlas/hd/army.xml",
@@ -6120,73 +6120,73 @@
     "battle2.mp3": "audio/music/battle2.mp3",
     "battle3.mp3": "audio/music/battle3.mp3",
     "battle4.mp3": "audio/music/battle4.mp3",
-    "battle_allies1.bin": "data/bin/scenarios/battle_allies1.bin",
+    "battle_allies1.bin": "data/binary/scenarios/battle_allies1.bin",
     "battle_allies1.xml": "data/xml/scenarios/battle_allies1.xml",
-    "battle_allies10.bin": "data/bin/scenarios/battle_allies10.bin",
+    "battle_allies10.bin": "data/binary/scenarios/battle_allies10.bin",
     "battle_allies10.xml": "data/xml/scenarios/battle_allies10.xml",
-    "battle_allies2.bin": "data/bin/scenarios/battle_allies2.bin",
+    "battle_allies2.bin": "data/binary/scenarios/battle_allies2.bin",
     "battle_allies2.xml": "data/xml/scenarios/battle_allies2.xml",
-    "battle_allies3.bin": "data/bin/scenarios/battle_allies3.bin",
+    "battle_allies3.bin": "data/binary/scenarios/battle_allies3.bin",
     "battle_allies3.xml": "data/xml/scenarios/battle_allies3.xml",
-    "battle_allies4.bin": "data/bin/scenarios/battle_allies4.bin",
+    "battle_allies4.bin": "data/binary/scenarios/battle_allies4.bin",
     "battle_allies4.xml": "data/xml/scenarios/battle_allies4.xml",
-    "battle_allies5.bin": "data/bin/scenarios/battle_allies5.bin",
+    "battle_allies5.bin": "data/binary/scenarios/battle_allies5.bin",
     "battle_allies5.xml": "data/xml/scenarios/battle_allies5.xml",
-    "battle_allies6.bin": "data/bin/scenarios/battle_allies6.bin",
+    "battle_allies6.bin": "data/binary/scenarios/battle_allies6.bin",
     "battle_allies6.xml": "data/xml/scenarios/battle_allies6.xml",
-    "battle_allies7.bin": "data/bin/scenarios/battle_allies7.bin",
+    "battle_allies7.bin": "data/binary/scenarios/battle_allies7.bin",
     "battle_allies7.xml": "data/xml/scenarios/battle_allies7.xml",
-    "battle_allies8.bin": "data/bin/scenarios/battle_allies8.bin",
+    "battle_allies8.bin": "data/binary/scenarios/battle_allies8.bin",
     "battle_allies8.xml": "data/xml/scenarios/battle_allies8.xml",
-    "battle_allies9.bin": "data/bin/scenarios/battle_allies9.bin",
+    "battle_allies9.bin": "data/binary/scenarios/battle_allies9.bin",
     "battle_allies9.xml": "data/xml/scenarios/battle_allies9.xml",
-    "battle_axis1.bin": "data/bin/scenarios/battle_axis1.bin",
+    "battle_axis1.bin": "data/binary/scenarios/battle_axis1.bin",
     "battle_axis1.xml": "data/xml/scenarios/battle_axis1.xml",
-    "battle_axis10.bin": "data/bin/scenarios/battle_axis10.bin",
+    "battle_axis10.bin": "data/binary/scenarios/battle_axis10.bin",
     "battle_axis10.xml": "data/xml/scenarios/battle_axis10.xml",
-    "battle_axis2.bin": "data/bin/scenarios/battle_axis2.bin",
+    "battle_axis2.bin": "data/binary/scenarios/battle_axis2.bin",
     "battle_axis2.xml": "data/xml/scenarios/battle_axis2.xml",
-    "battle_axis3.bin": "data/bin/scenarios/battle_axis3.bin",
+    "battle_axis3.bin": "data/binary/scenarios/battle_axis3.bin",
     "battle_axis3.xml": "data/xml/scenarios/battle_axis3.xml",
-    "battle_axis4.bin": "data/bin/scenarios/battle_axis4.bin",
+    "battle_axis4.bin": "data/binary/scenarios/battle_axis4.bin",
     "battle_axis4.xml": "data/xml/scenarios/battle_axis4.xml",
-    "battle_axis5.bin": "data/bin/scenarios/battle_axis5.bin",
+    "battle_axis5.bin": "data/binary/scenarios/battle_axis5.bin",
     "battle_axis5.xml": "data/xml/scenarios/battle_axis5.xml",
-    "battle_axis6.bin": "data/bin/scenarios/battle_axis6.bin",
+    "battle_axis6.bin": "data/binary/scenarios/battle_axis6.bin",
     "battle_axis6.xml": "data/xml/scenarios/battle_axis6.xml",
-    "battle_axis7.bin": "data/bin/scenarios/battle_axis7.bin",
+    "battle_axis7.bin": "data/binary/scenarios/battle_axis7.bin",
     "battle_axis7.xml": "data/xml/scenarios/battle_axis7.xml",
-    "battle_axis8.bin": "data/bin/scenarios/battle_axis8.bin",
+    "battle_axis8.bin": "data/binary/scenarios/battle_axis8.bin",
     "battle_axis8.xml": "data/xml/scenarios/battle_axis8.xml",
-    "battle_axis9.bin": "data/bin/scenarios/battle_axis9.bin",
+    "battle_axis9.bin": "data/binary/scenarios/battle_axis9.bin",
     "battle_axis9.xml": "data/xml/scenarios/battle_axis9.xml",
-    "battle_nato1.bin": "data/bin/scenarios/battle_nato1.bin",
+    "battle_nato1.bin": "data/binary/scenarios/battle_nato1.bin",
     "battle_nato1.xml": "data/xml/scenarios/battle_nato1.xml",
-    "battle_nato2.bin": "data/bin/scenarios/battle_nato2.bin",
+    "battle_nato2.bin": "data/binary/scenarios/battle_nato2.bin",
     "battle_nato2.xml": "data/xml/scenarios/battle_nato2.xml",
-    "battle_nato3.bin": "data/bin/scenarios/battle_nato3.bin",
+    "battle_nato3.bin": "data/binary/scenarios/battle_nato3.bin",
     "battle_nato3.xml": "data/xml/scenarios/battle_nato3.xml",
-    "battle_nato4.bin": "data/bin/scenarios/battle_nato4.bin",
+    "battle_nato4.bin": "data/binary/scenarios/battle_nato4.bin",
     "battle_nato4.xml": "data/xml/scenarios/battle_nato4.xml",
-    "battle_nato5.bin": "data/bin/scenarios/battle_nato5.bin",
+    "battle_nato5.bin": "data/binary/scenarios/battle_nato5.bin",
     "battle_nato5.xml": "data/xml/scenarios/battle_nato5.xml",
-    "battle_nato6.bin": "data/bin/scenarios/battle_nato6.bin",
+    "battle_nato6.bin": "data/binary/scenarios/battle_nato6.bin",
     "battle_nato6.xml": "data/xml/scenarios/battle_nato6.xml",
-    "battle_nato7.bin": "data/bin/scenarios/battle_nato7.bin",
+    "battle_nato7.bin": "data/binary/scenarios/battle_nato7.bin",
     "battle_nato7.xml": "data/xml/scenarios/battle_nato7.xml",
-    "battle_wto1.bin": "data/bin/scenarios/battle_wto1.bin",
+    "battle_wto1.bin": "data/binary/scenarios/battle_wto1.bin",
     "battle_wto1.xml": "data/xml/scenarios/battle_wto1.xml",
-    "battle_wto2.bin": "data/bin/scenarios/battle_wto2.bin",
+    "battle_wto2.bin": "data/binary/scenarios/battle_wto2.bin",
     "battle_wto2.xml": "data/xml/scenarios/battle_wto2.xml",
-    "battle_wto3.bin": "data/bin/scenarios/battle_wto3.bin",
+    "battle_wto3.bin": "data/binary/scenarios/battle_wto3.bin",
     "battle_wto3.xml": "data/xml/scenarios/battle_wto3.xml",
-    "battle_wto4.bin": "data/bin/scenarios/battle_wto4.bin",
+    "battle_wto4.bin": "data/binary/scenarios/battle_wto4.bin",
     "battle_wto4.xml": "data/xml/scenarios/battle_wto4.xml",
-    "battle_wto5.bin": "data/bin/scenarios/battle_wto5.bin",
+    "battle_wto5.bin": "data/binary/scenarios/battle_wto5.bin",
     "battle_wto5.xml": "data/xml/scenarios/battle_wto5.xml",
-    "battle_wto6.bin": "data/bin/scenarios/battle_wto6.bin",
+    "battle_wto6.bin": "data/binary/scenarios/battle_wto6.bin",
     "battle_wto6.xml": "data/xml/scenarios/battle_wto6.xml",
-    "battle_wto7.bin": "data/bin/scenarios/battle_wto7.bin",
+    "battle_wto7.bin": "data/binary/scenarios/battle_wto7.bin",
     "battle_wto7.xml": "data/xml/scenarios/battle_wto7.xml",
     "battlebg1_568hd.pkm": "image/battlebg/phone-568-hd/battlebg1.pkm",
     "battlebg1_568hd.xml": "image/battlebg/phone-568-hd/battlebg1.xml",
@@ -6278,23 +6278,23 @@
     "commonbg@2x.png": "image/ui/hd/commonbg.png",
     "commonbg_iPad.png": "image/ui/tablet/commonbg.png",
     "conquest.xml": "data/xml/legacy/conquest.xml",
-    "conquest_1.bin": "data/bin/scenarios/conquest_1.bin",
+    "conquest_1.bin": "data/binary/scenarios/conquest_1.bin",
     "conquest_1.xml": "data/xml/scenarios/conquest_1.xml",
-    "conquest_2.bin": "data/bin/scenarios/conquest_2.bin",
+    "conquest_2.bin": "data/binary/scenarios/conquest_2.bin",
     "conquest_2.xml": "data/xml/scenarios/conquest_2.xml",
-    "conquest_3.bin": "data/bin/scenarios/conquest_3.bin",
+    "conquest_3.bin": "data/binary/scenarios/conquest_3.bin",
     "conquest_3.xml": "data/xml/scenarios/conquest_3.xml",
-    "conquest_4.bin": "data/bin/scenarios/conquest_4.bin",
+    "conquest_4.bin": "data/binary/scenarios/conquest_4.bin",
     "conquest_4.xml": "data/xml/scenarios/conquest_4.xml",
-    "conquest_5.bin": "data/bin/scenarios/conquest_5.bin",
+    "conquest_5.bin": "data/binary/scenarios/conquest_5.bin",
     "conquest_5.xml": "data/xml/scenarios/conquest_5.xml",
-    "conquest_6.bin": "data/bin/scenarios/conquest_6.bin",
+    "conquest_6.bin": "data/binary/scenarios/conquest_6.bin",
     "conquest_6.xml": "data/xml/scenarios/conquest_6.xml",
-    "conquest_7.bin": "data/bin/scenarios/conquest_7.bin",
+    "conquest_7.bin": "data/binary/scenarios/conquest_7.bin",
     "conquest_7.xml": "data/xml/scenarios/conquest_7.xml",
-    "conquest_8.bin": "data/bin/scenarios/conquest_8.bin",
+    "conquest_8.bin": "data/binary/scenarios/conquest_8.bin",
     "conquest_8.xml": "data/xml/scenarios/conquest_8.xml",
-    "conquest_9.bin": "data/bin/scenarios/conquest_9.bin",
+    "conquest_9.bin": "data/binary/scenarios/conquest_9.bin",
     "conquest_9.xml": "data/xml/scenarios/conquest_9.xml",
     "conquestlist.xml": "data/xml/conquestlist.xml",
     "cruiser.bin": "image/army/navy/common/cruiser.bin",
@@ -7082,7 +7082,7 @@
     "title_cn_hd.xml": "image/ui/hd/cn/title.xml",
     "title_hd.png": "image/ui/hd/title.png",
     "title_hd.xml": "image/ui/hd/title.xml",
-    "tutorails.bin": "data/bin/scenarios/tutorails.bin",
+    "tutorails.bin": "data/binary/scenarios/tutorails.bin",
     "tutorails.xml": "data/xml/scenarios/tutorails.xml",
     "tutorails1@2x.webp": "image/ui/hd/tutorails1.webp",
     "tutorails_script-512h.xml": "scripts/tutorial/tutorails_script-512h.xml",

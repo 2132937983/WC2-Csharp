@@ -32,7 +32,7 @@ assets/
     xml/                   the original XML data, untouched: armydef.xml, carddef.xml, ...,
                            scenarios/ (campaign battles, conquests, tutorial), text/ (string tables),
                            maps/1/ (area tax table), battle/ (animation definitions), legacy/
-    bin/                   original binary data: maps/1/ (area geometry), scenarios/ (area masks)
+    binary/                original binary data: maps/1/ (area geometry), scenarios/ (area masks)
     strings/<lang>/        Localizable.strings, InfoPlist.strings
     legacy/                map.ini
   scripts/

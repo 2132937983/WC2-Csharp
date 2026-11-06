@@ -76,7 +76,7 @@ game log (`--log FILE`) names every mounted mod. Paths and original names of all
 
 ## Limits
 
-* Map geometry (`data/bin/maps/<id>/`: `area<id>.bin`, `adjion<id>.bin`, `areamark<id>.raw`) and
+* Map geometry (`data/binary/maps/<id>/`: `area<id>.bin`, `adjion<id>.bin`, `areamark<id>.raw`) and
   scenario area masks are binary; new maps need those files.
 * New area types (`data/json/terrain/terrain.json`) are fully data driven; new installation or building kinds are
   not (their behaviour is code), but their numbers are data.
