@@ -16,6 +16,7 @@ namespace WC2;
 ///   autoplay ROUNDS         - play N rounds without input (presses the round button, closes boxes)
 ///   settle                  - close boxes and finish AI moves until the human side can act
 ///   dump NAME               - write the rule state as JSON (golden tests)
+///   hittest LABEL           - off-screen and hidden buttons must not react to touches (logs failures)
 ///   log TEXT                - write to the log
 ///   exit                    - quit
 /// Lines starting with # are comments.
@@ -155,6 +156,10 @@ public static class SmokeTest
                 GameStateDigest.Write(Path.Combine(OutputDirectory ?? ".", name));
                 break;
             }
+            case "hittest":
+                // touches every off-screen or hidden button; logs "hittest failed" for each one that reacts
+                HitTestProbe.Run(c.args.Length > 0 ? c.args[0] : "hittest");
+                break;
             case "log":
                 Log("Smoke: " + string.Join(' ', c.args));
                 break;

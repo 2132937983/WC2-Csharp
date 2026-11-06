@@ -1,0 +1,27 @@
+# Hidden controls must not react to touches (HitTestProbe): every button that lies off the screen,
+# or is hidden, is touched through the input entry and straight through the GUI tree. The runner
+# fails the script on any "hittest failed" line. Phone layout (568x320).
+wait 4.5
+hittest menu
+click 510 116
+wait 2.5
+hittest campaign_series
+click 170 150
+wait 5
+hittest battle_list
+click 552 302
+wait 7
+# battle intro: the round, card and pause buttons and the gold panel still wait off the screen
+hittest battle_intro
+shot H1_intro
+click 284 290
+wait 2
+hittest ingame
+click 15 300
+wait 1.5
+hittest card_shop
+shot H2_cards
+back
+wait 1
+hittest pause_or_back
+exit

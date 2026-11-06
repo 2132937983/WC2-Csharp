@@ -105,6 +105,8 @@ public sealed class WC2Game : Game
             string dir = string.IsNullOrEmpty(ScreenshotPath) ? AppContext.BaseDirectory : Path.GetDirectoryName(ScreenshotPath) ?? ".";
             pendingShot = Path.Combine(dir, name.EndsWith(".png") ? name : name + ".png");
         };
+        HitTestProbe.WindowToLogical = (px, py) => { ToLogical(px, py, out float lx, out float ly); return (lx, ly); };
+        HitTestProbe.WindowSize = () => (GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
         previousMouse = Mouse.GetState();
         previousKeyboard = Keyboard.GetState();
         previousScrollValue = previousMouse.ScrollWheelValue;

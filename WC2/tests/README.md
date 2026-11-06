@@ -6,20 +6,26 @@
 2. **data**: `--verify-data` loads every JSON data file and the original XML it was converted from and
    compares the definitions field by field. A deliberate data change shows up here; that is intended
    (the game data is meant to match the original until someone changes it on purpose).
-3. **scripts**: every `*.txt` here, in deterministic mode: `--seed 20261106 --fixed-step` and a fresh
+3. **assets**: `WC2.Tools validate` checks the built package: every original is reachable by its old
+   name, every index entry exists.
+4. **scripts**: every `*.txt` here, in deterministic mode: `--seed 20261106 --fixed-step` and a fresh
    documents folder per script (`out/<script>/docs`). Each `dump NAME` writes the rule state
    (countries, areas, units, commander) as JSON; the runner compares it byte for byte with
-   `golden/<script>/NAME.json`.
+   `golden/<script>/NAME.json`. Each `shot NAME` is compared with `golden/<script>/NAME.jpg`
+   (`WC2.Tools compare-image`: scaled to the reference size, a pixel counts as changed when a channel
+   differs by more than 40, the shot fails above 1 % changed pixels; a `NAME.diff.png` marks them).
+   A script whose first line is `#! ARGS` gets ARGS on the command line (window size).
 
 ```powershell
 .\tests\run-tests.ps1                 # everything
 .\tests\run-tests.ps1 -Filter conquest
 .\tests\run-tests.ps1 -Record         # store this run's dumps as the new goldens
+.\tests\run-tests.ps1 -RecordShots    # store this run's screenshots as the new references
 .\tests\run-tests.ps1 -RealTime       # real clock, no goldens (the old smoke-test behaviour)
 ```
 
-Record new goldens only when a rule change is intended, and say so in the commit. Screenshots and
-logs go to `out/`.
+Record new goldens only when a rule change is intended, and new reference screenshots only when a
+visual change is intended; say so in the commit. Screenshots and logs go to `out/`.
 
 ## Script commands
 
@@ -36,6 +42,7 @@ Coordinates are logical screen units (568 x 320 phone layout; scripts named `ipa
 | `autoplay ROUNDS` | play N rounds without input: ends the human turn (the AI hosting option plays it), fast-forwards AI turns and closes boxes; stops early when the battle ends |
 | `settle` | close boxes and finish AI moves until the human side can act (ends no turn) |
 | `dump NAME` | write the rule state as `NAME.json` next to the screenshots |
+| `hittest LABEL` | every button off the screen is touched there (at a window pixel in the letterbox bars when the window has them, and at a synthetic point) through the input entry and straight through the GUI tree; every hidden button must refuse input. Buttons do not fire while probing; each one that would have fires a `hittest failed` log line |
 | `shot NAME` | screenshot |
 | `log TEXT` | write to the log |
 | `exit` | quit |
@@ -52,3 +59,4 @@ Lines starting with `#` are comments.
 | `attack_box`, `card_shop`, `commander_and_options`, `pause_options_save`, `save_and_load` | screens and flows |
 | `tutorial`, `ipad_tutorial` | the tutorial on the phone and tablet layouts |
 | `campaign_start`, `conquest_start` | starting both modes |
+| `hit_test`, `hit_test_wide`, `ipad_hit_test` | hidden and off-screen controls refuse touches: phone layout, a 1600x600 window (640x320 layout, bars left and right), a 1000x1000 window (tablet layout, bars above and below) |

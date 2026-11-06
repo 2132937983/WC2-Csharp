@@ -1,0 +1,16 @@
+#! --width 1000 --height 1000
+# Hidden controls in a letterboxed tablet window: 1000x1000 picks the 1024x768 layout with bars above
+# and below (the gold panel waits above the screen until it slides in). See hit_test.txt.
+wait 4.5
+hittest menu
+click 910 465
+wait 1.5
+hittest tutorial_start
+shot T1_tutorial
+wait 6.5
+hittest tutorial
+click 512 384
+wait 2
+hittest tutorial2
+shot T2_tutorial
+exit

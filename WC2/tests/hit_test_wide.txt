@@ -1,0 +1,21 @@
+#! --width 1600 --height 600
+# Hidden controls in a letterboxed window: 1600x600 picks the 640x320 layout with bars left and right
+# (window pixels there map to logical x below 0 and above 640). See hit_test.txt.
+wait 4.5
+hittest menu
+click 582 116
+wait 2.5
+hittest campaign_series
+shot W1_series
+click 208 144
+wait 5
+hittest battle_list
+click 624 302
+wait 7
+hittest battle_intro
+shot W2_intro
+click 320 290
+wait 2
+hittest ingame
+shot W3_ingame
+exit

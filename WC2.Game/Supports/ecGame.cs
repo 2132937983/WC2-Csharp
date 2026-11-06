@@ -332,9 +332,19 @@ public static class ecGame
         graphics.RenderEnd();
     }
 
+    /// <summary>Touches that began outside the logical screen; their moves and ends are dropped too.</summary>
+    private static readonly HashSet<int> s_rejectedTouches = new();
+
+    /// <summary>
+    /// A finger down in the letterbox area (outside the logical screen) is ignored with its whole
+    /// gesture: the original never received such touches, and controls it hid off the screen are
+    /// there (see <see cref="GUIElement.CheckInRect(float, float)"/>).
+    /// </summary>
     public static void ecTouchBegin(float x, float y, int index)
     {
         if (!s_initialized) return;
+        if (!GUIElement.IsOnScreen(x, y)) { s_rejectedTouches.Add(index); return; }
+        s_rejectedTouches.Remove(index);
         ecMultipleTouch.Instance().TouchBegan(index, x, y);
         var evt = Event.Touch(Event.Info.TouchInfo.BEGIN, x, y, index);
         if (!GUIManager.Instance().PostEvent(evt))
@@ -344,6 +354,7 @@ public static class ecGame
     public static void ecTouchMove(float x, float y, int index)
     {
         if (!s_initialized) return;
+        if (s_rejectedTouches.Contains(index)) return;
         ecMultipleTouch.Instance().TouchMoved(index, x, y);
         var evt = Event.Touch(Event.Info.TouchInfo.MOVE, x, y, index);
         if (!GUIManager.Instance().PostEvent(evt))
@@ -353,6 +364,7 @@ public static class ecGame
     public static void ecTouchEnd(float x, float y, int index)
     {
         if (!s_initialized) return;
+        if (s_rejectedTouches.Remove(index)) return;
         var evt = Event.Touch(Event.Info.TouchInfo.END, x, y, index);
         bool consumed = GUIManager.Instance().PostEvent(evt);
         if (!consumed) CStateManager.Instance().TouchEnd(x, y, index);

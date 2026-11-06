@@ -5,6 +5,8 @@ using WC2.Tools;
 //       Builds the runtime asset package: the original assets (never modified) are copied into the
 //       folder-by-purpose tree described by the layout file, the authored content is laid on top,
 //       runtime formats are generated, and index.json lists every file and its legacy name.
+//   compare-image --golden REF.png --actual SHOT.png [--max-percent P] [--diff OUT.png] [--record]
+//       Screenshot regression: compares a screenshot with its reference (see ImageCompare).
 //   validate --pack DIR [--source DIR]
 //       Checks a built package: every index entry exists, every legacy name resolves, and (with
 //       --source) every original asset is reachable through its legacy name.
@@ -27,6 +29,9 @@ namespace WC2.Tools
                             opts.ContainsKey("force"));
                     case "validate":
                         return PackValidator.Validate(Require(opts, "pack"), opts.GetValueOrDefault("source"));
+                    case "compare-image":
+                        Require(opts, "golden"); Require(opts, "actual");
+                        return ImageCompare.Run(opts);
                     default:
                         Usage();
                         return 2;
@@ -59,6 +64,7 @@ namespace WC2.Tools
         {
             Console.WriteLine("usage: WC2.Tools build-pack --assets DIR --content DIR --layout FILE --out DIR [--force]");
             Console.WriteLine("       WC2.Tools validate --pack DIR [--source DIR]");
+            Console.WriteLine("       WC2.Tools compare-image --golden REF.png --actual SHOT.png [--max-percent 1.0] [--pixel-tolerance 40] [--diff OUT.png] [--record [--width 320]]");
         }
     }
 

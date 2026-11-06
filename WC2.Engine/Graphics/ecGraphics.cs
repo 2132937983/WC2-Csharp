@@ -96,6 +96,13 @@ public sealed class ecGraphics
     public float offsetY;
 
     /// <summary>
+    /// Window pixels of the logical screen. Drawing is clipped to it, so whatever the original placed
+    /// off the screen (controls waiting to slide in, map edges) stays invisible in letterbox bars.
+    /// </summary>
+    private Rectangle screenClip;
+    private static readonly RasterizerState s_clipToScreen = new() { CullMode = CullMode.None, ScissorTestEnable = true };
+
+    /// <summary>
     /// Updates the physical window size, keeping the logical layout. The logical screen is
     /// scaled uniformly and centered, so a window with another aspect ratio gets black bars
     /// instead of a distorted picture.
@@ -111,6 +118,9 @@ public sealed class ecGraphics
         layoutToScreenMultiplier[1] = scale;
         offsetX = MathF.Floor((layoutW - screenW * scale) * 0.5f);
         offsetY = MathF.Floor((layoutH - screenH * scale) * 0.5f);
+        screenClip = new Rectangle((int)offsetX, (int)offsetY,
+            Math.Min(layoutW - (int)offsetX, (int)MathF.Ceiling(screenW * scale)),
+            Math.Min(layoutH - (int)offsetY, (int)MathF.Ceiling(screenH * scale)));
         projection = Matrix.CreateOrthographicOffCenter(0, layoutW, layoutH, 0, -1f, 1f);
         matricesDirty = true;
     }
@@ -237,7 +247,8 @@ public sealed class ecGraphics
         effect.Texture = currentTexture ?? whiteTexture;
         device.BlendState = CurrentBlendState();
         device.SamplerStates[0] = sampler;
-        device.RasterizerState = RasterizerState.CullNone;
+        device.RasterizerState = s_clipToScreen;
+        device.ScissorRectangle = screenClip;
         device.DepthStencilState = DepthStencilState.None;
         foreach (var pass in effect.CurrentTechnique.Passes)
         {
