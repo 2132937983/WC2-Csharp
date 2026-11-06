@@ -324,8 +324,8 @@ public static class ecGame
     {
         if (!s_initialized || s_waiting || s_paused) return;
         CommanderAutoSave();
-        CStateManager.Instance().Update(deltaTimeS);
-        GUIManager.Instance().Update(deltaTimeS);
+        using (PerfStats.Measure("update.state")) CStateManager.Instance().Update(deltaTimeS);
+        using (PerfStats.Measure("update.gui")) GUIManager.Instance().Update(deltaTimeS);
         GUIMotionManager.Instance().ProcMotion(deltaTimeS);
         CCSoundBox.GetInstance().UpdateSound();
     }

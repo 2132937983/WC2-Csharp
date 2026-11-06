@@ -343,8 +343,8 @@ public sealed partial class CCountry
                     StartArea.MoveArmyToFront(action.armyIndex, false);
                     action.armyIndex = 0;
                 }
-                StartArea.MoveArmyTo(TargetArea);
-                g_SoundRes.PlayCharSE(TargetArea.info.sea ? SHIP_WAV : MOVE_WAV);
+                using (PerfStats.Measure("act.moveArmy")) StartArea.MoveArmyTo(TargetArea);
+                using (PerfStats.Measure("act.sound")) g_SoundRes.PlayCharSE(TargetArea.info.sea ? SHIP_WAV : MOVE_WAV);
                 break;
             }
 
@@ -401,7 +401,7 @@ public sealed partial class CCountry
                 }
                 if (Army.movement > 0)
                 {
-                    ((CGameState)CStateManager.Instance().GetStatePtr(GAME)).StartBattale(
+                    using (PerfStats.Measure("act.battle")) ((CGameState)CStateManager.Instance().GetStatePtr(GAME)).StartBattale(
                         action.startAreaId, action.targetAreaId, 1, NeedBattleAnimation);
                 }
                 else
@@ -563,7 +563,7 @@ public sealed partial class CCountry
             }
 
             actionWaitCamera = false;
-            DoAction();
+            using (PerfStats.Measure("game.doAction")) DoAction();
             return;
         }
 
@@ -574,7 +574,7 @@ public sealed partial class CCountry
         {
             CArea targetArea = g_Scene.GetArea(action.targetAreaId);
             if (targetArea.armyMovingIn != null || actionTimer <= 0.6f) return;
-            FinishAction();
+            using (PerfStats.Measure("game.finish")) FinishAction();
             return;
         }
 

@@ -29,12 +29,13 @@ public sealed partial class CGameManager
         }
 
         // update the country
-        Country.Update(time);
+        using (PerfStats.Measure("game.country")) Country.Update(time);
         // the country action is still running: no further update
         if (!Country.IsActionFinish()) return;
 
         // a newly defeated country shows the defeat window
-        CCountry DefeatedCountry = GetNewDefeatedCountry();
+        CCountry DefeatedCountry;
+        using (PerfStats.Measure("game.defeated")) DefeatedCountry = GetNewDefeatedCountry();
         CGameState GameState = CStateManager.Instance().GetStatePtr(GAME) as CGameState;
         if (DefeatedCountry != null)
         {
@@ -45,7 +46,7 @@ public sealed partial class CGameManager
         // country progress bar
         if (Country.ai)
         {
-            GameState.UpdateAIProgress();
+            using (PerfStats.Measure("game.aiProgress")) GameState.UpdateAIProgress();
             AIAction = true;
         }
         if (!AIAction)
@@ -74,7 +75,8 @@ public sealed partial class CGameManager
         }
 
         // run the AI logic
-        ActionNode actionNode = CActionAI.Instance().setCpuDriverbyId(currentCountryIndex, x38);
+        ActionNode actionNode;
+        using (PerfStats.Measure("ai.decide")) actionNode = CActionAI.Instance().setCpuDriverbyId(currentCountryIndex, x38);
         // no AI action left: end the turn
         if (actionNode == null)
         {

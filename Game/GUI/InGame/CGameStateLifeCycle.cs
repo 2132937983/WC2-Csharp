@@ -405,13 +405,13 @@ public sealed partial class CGameState
             }
 
             // update the effects
-            ecEffectManager.Instance().Update(time);
+            using (PerfStats.Measure("game.effects")) ecEffectManager.Instance().Update(time);
 
             // update the scene
-            g_Scene.Update(time);
+            using (PerfStats.Measure("game.scene")) g_Scene.Update(time);
 
             // update the floating texts
-            g_FightTextMgr.Update(time);
+            using (PerfStats.Measure("game.fightText")) g_FightTextMgr.Update(time);
 
             // Stop the skip loop when the game got interrupted (defeat window, result screen ...).
             if ((guiDefeated != null && (guiDefeated.flags & SHOWN) != 0) || !gameNotInterrupted || g_GameManager.result)
@@ -420,7 +420,7 @@ public sealed partial class CGameState
             // During the bombing animation only the presentation is updated so new country actions
             // do not interleave with the explosion.
             if (!g_Scene.IsBombing())
-                g_GameManager.GameUpdate(time);
+                using (PerfStats.Measure("game.manager")) g_GameManager.GameUpdate(time);
             // With SkipMode on, keep running GameUpdate until an area change shows up (DisplayAreaChange):
             // only the game logic runs, nothing is rendered in between.
         } while (g_GameManager.SkipMode && !g_GameManager.DisplayAreaChange);

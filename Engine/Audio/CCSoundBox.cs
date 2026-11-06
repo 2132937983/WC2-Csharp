@@ -62,11 +62,14 @@ public sealed class CCSoundBox
 
     // ---- sound effects ----------------------------------------------------------------
 
+    /// <summary>Sounds that do not exist (looked up and logged once, not on every play).</summary>
+    private readonly HashSet<string> missingEffects = new(StringComparer.OrdinalIgnoreCase);
+
     public void LoadSE(string seName)
     {
-        if (!audioAvailable || string.IsNullOrEmpty(seName) || effects.ContainsKey(seName)) return;
+        if (!audioAvailable || string.IsNullOrEmpty(seName) || effects.ContainsKey(seName) || missingEffects.Contains(seName)) return;
         byte[] data = AssetSystem.ReadAllBytes(seName);
-        if (data == null) { Log("Sound missing: " + seName); return; }
+        if (data == null) { missingEffects.Add(seName); Log("Sound missing: " + seName); return; }
         try
         {
             using var ms = new MemoryStream(data, writable: false);

@@ -310,6 +310,29 @@ public sealed class ecParticleSystem
         for (int i = 0; i < MaxParticles; i++) particle[i] = new Particle();
     }
 
+    // Pool: an effect of the manager that dies hands its systems back (100 particles each, about 14 KB),
+    // so the effects of every fight do not allocate them again.
+    private static readonly Stack<ecParticleSystem> s_pool = new();
+    private const int PoolLimit = 64;
+
+    /// <summary>A system from the pool (or a new one), in the state of a freshly constructed one.</summary>
+    public static ecParticleSystem Rent()
+    {
+        if (s_pool.Count == 0) return new ecParticleSystem();
+        var ps = s_pool.Pop();
+        // spawning sets every particle field except the position of line and ellipse emitters, which
+        // keep the slot's previous position: a fresh system has 0 there
+        for (int i = 0; i < MaxParticles; i++) { particle0(ps, i).x = 0f; particle0(ps, i).y = 0f; }
+        return ps;
+    }
+
+    private static Particle particle0(ecParticleSystem ps, int i) => ps.particle[i];
+
+    public static void Return(ecParticleSystem ps)
+    {
+        if (ps != null && s_pool.Count < PoolLimit) s_pool.Push(ps);
+    }
+
     public void Init(ecEmitterAttr attr)
     {
         emitterAttr = attr;
@@ -556,11 +579,18 @@ public sealed class ecEffect
         if (res == null) return false;
         foreach (var attr in res.emitterAttr)
         {
-            var ps = new ecParticleSystem();
+            var ps = ecParticleSystem.Rent();
             ps.Init(attr);
             particleSystem.Add(ps);
         }
         return true;
+    }
+
+    /// <summary>Hands the particle systems back to the pool (the effect is not used afterwards).</summary>
+    public void Recycle()
+    {
+        foreach (var ps in particleSystem) ecParticleSystem.Return(ps);
+        particleSystem.Clear();
     }
 
     public void FireAt(float x, float y, float angleOffset = 0f) { foreach (var ps in particleSystem) ps.FireAt(x, y, angleOffset); }
@@ -610,7 +640,11 @@ public sealed class ecEffectManager
         {
             var e = effect[i];
             e.Update(deltaTimeS);
-            if (!e.IsLive() && e.autoRemove) effect.RemoveAt(i);
+            if (!e.IsLive() && e.autoRemove)
+            {
+                effect.RemoveAt(i);
+                e.Recycle();   // AddEffect callers only use the effect right away (FireAt)
+            }
         }
     }
 

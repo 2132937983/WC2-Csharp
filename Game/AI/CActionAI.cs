@@ -149,7 +149,7 @@ public sealed partial class CActionAI
             }
 
             // basic situation of the country, including usable cards
-            analyseCompositePower();
+            using (PerfStats.Measure("ai.analyse")) analyseCompositePower();
 
             // pick a card category at random; the lowest card id of the category stands for it
             int choice = GetAIRand() % 100;
@@ -182,11 +182,11 @@ public sealed partial class CActionAI
             }
 
             // try to buy a card
-            purChaseCard(cardId);
+            using (PerfStats.Measure("ai.cards")) purChaseCard(cardId);
             // try to move a unit to the top
-            sortArmyToFront();
+            using (PerfStats.Measure("ai.sort")) sortArmyToFront();
             // try to move or attack
-            moveAndAttack();
+            using (PerfStats.Measure("ai.move")) moveAndAttack();
             if (action)
                 return CActionAssist.Instance().actionNode;
             // original: forget the working country when it has nothing left to do

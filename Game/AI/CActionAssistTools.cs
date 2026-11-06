@@ -14,8 +14,9 @@ public sealed partial class CActionAssist
     /// <returns>the next area to act on towards the target</returns>
     public int searchNodeByID(int AreaID, int ArmyIndex)
     {
-        // init the search space
-        visited = new bool[g_Scene.areaCount];
+        // init the search space (the array is reused; only a map with another area count reallocates)
+        if (visited.Length != g_Scene.areaCount) visited = new bool[g_Scene.areaCount];
+        else Array.Clear(visited);
         searchHead = -1;
         searchTail = 0;
         searchQueue[0].areaId = AreaID;

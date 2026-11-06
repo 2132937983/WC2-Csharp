@@ -7,6 +7,8 @@ public sealed partial class CActionAssist
     /// Uses the official CFight rules to find out whether the target can counter the AI's attack.
     /// A temporary CFight is used; no damage is applied, only range, engagement mode and fort correction.
     /// </summary>
+    private static CFight s_counterCheck;
+
     private static bool CanCounterForAI(int startAreaId, int targetAreaId,
         CArmy startArmy, CArmy targetArmy, CArea targetArea)
     {
@@ -15,7 +17,8 @@ public sealed partial class CActionAssist
             return false;
         }
 
-        var counterCheck = new CFight();
+        // one reused CFight (the check sets every input and CheckCounter resets its outputs)
+        var counterCheck = s_counterCheck ??= new CFight();
         counterCheck.startAreaId = startAreaId;
         counterCheck.targetAreaId = targetAreaId;
         counterCheck.topologicalDistance = g_Scene.GetTopologicalDistance(startAreaId, targetAreaId);

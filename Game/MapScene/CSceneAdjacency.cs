@@ -138,6 +138,7 @@ public sealed partial class CScene
     /// <summary>Creates a bidirectional adjacency between two areas.</summary>
     public void MakeAdjoin(int areaId1, int areaId2)
     {
+        ClearDistanceCache();
         const int kAdjoinValuesPerArea = 17;
         const int kMaxAdjacentAreas = 16;
 
@@ -183,6 +184,7 @@ public sealed partial class CScene
     /// <summary>Removes the bidirectional adjacency between two areas.</summary>
     public void DelAdjoin(int areaId1, int areaId2)
     {
+        ClearDistanceCache();
         if (adjoinRaw == null ||
             areaId1 < 0 || areaId2 < 0 ||
             areaId1 >= areaCount || areaId2 >= areaCount)

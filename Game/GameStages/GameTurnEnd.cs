@@ -45,6 +45,7 @@ public sealed partial class CGameManager
     /// <summary>Turn end: mostly the current country's TurnEnd.</summary>
     public void TurnEnd()
     {
+        using var perf = PerfStats.Measure("turn.end");
         CCountry country = GetCurCountry();
         if (country != null)
         {

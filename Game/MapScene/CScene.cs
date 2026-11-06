@@ -179,6 +179,7 @@ public sealed partial class CScene
         LoadAreaData(mapId);
         LoadAdjoin(mapId);
         InitAreas(mapId, areasEnable);
+        ClearDistanceCache();   // InitAreas builds the adjacency of the enabled areas
         CheckAdjacentData();
         BuildCombatSpatialIndex();
 
@@ -212,28 +213,99 @@ public sealed partial class CScene
     public List<int> BFS(int startAreaId, int maxDepth, Func<AreaBFSNode<int>, bool> addPredicate)
         => BFS(startAreaId, maxDepth, addPredicate, (node, nextId) => node.depth + 1);
 
-    /// <summary>BFS with custom depth update.</summary>
+    /// <summary>
+    /// BFS with custom depth update. The queue and the visited marks are reused between calls (a
+    /// visit stamp per area instead of a fresh set); the visiting order is the plain FIFO order, so
+    /// the results are the same as with a new queue each time. A BFS started from inside a predicate
+    /// falls back to its own arrays.
+    /// </summary>
     public List<int> BFS<T>(int startAreaId, T maxDepth, Func<AreaBFSNode<T>, bool> addPredicate, Func<AreaBFSNode<T>, int, T> updatePredicate) where T : IComparable<T>
     {
-        var q = new Queue<AreaBFSNode<T>>();
-        var visited = new HashSet<int>();
-        q.Enqueue(new AreaBFSNode<T> { id = startAreaId, depth = default });
-        visited.Add(startAreaId);
-        var res = new List<int>();
-        while (q.Count > 0)
+        bool nested = bfsActive;
+        bfsActive = true;
+        try
         {
-            var node = q.Dequeue();
-            if (addPredicate(node)) res.Add(node.id);
-            if (node.depth.CompareTo(maxDepth) >= 0) continue;
-            int neighborCount = GetNumAdjacentAreas(node.id);
+            int areaCount = Math.Max(GetNumAreas(), startAreaId + 1);
+            int[] stamp = nested ? new int[areaCount] : BfsStamps(areaCount);
+            int mark = nested ? 1 : ++bfsMark;
+            var queue = nested ? new AreaBFSNode<T>[64] : BfsQueue<T>.items;
+            int head = 0, tail = 0;
+            queue[tail++] = new AreaBFSNode<T> { id = startAreaId, depth = default };
+            if (startAreaId >= 0 && startAreaId < stamp.Length) stamp[startAreaId] = mark;
+            var res = new List<int>();
+            while (head < tail)
+            {
+                var node = queue[head++];
+                if (addPredicate(node)) res.Add(node.id);
+                if (node.depth.CompareTo(maxDepth) >= 0) continue;
+                int neighborCount = GetNumAdjacentAreas(node.id);
+                for (int i = 0; i < neighborCount; ++i)
+                {
+                    int nextId = GetAdjacentAreaID(node.id, i);
+                    if (nextId >= 0 && nextId < stamp.Length)
+                    {
+                        if (stamp[nextId] == mark) continue;
+                        stamp[nextId] = mark;
+                    }
+                    if (tail == queue.Length)
+                    {
+                        Array.Resize(ref queue, queue.Length * 2);
+                        if (!nested) BfsQueue<T>.items = queue;
+                    }
+                    queue[tail++] = new AreaBFSNode<T> { id = nextId, depth = updatePredicate(node, nextId) };
+                }
+            }
+            return res;
+        }
+        finally { bfsActive = nested; }
+    }
+
+    private bool bfsActive;
+    private int bfsMark;
+    private int[] bfsStamp = Array.Empty<int>();
+
+    private int[] BfsStamps(int areaCount)
+    {
+        if (bfsStamp.Length < areaCount) { bfsStamp = new int[areaCount]; bfsMark = 1; }
+        if (bfsMark == int.MaxValue) { Array.Clear(bfsStamp); bfsMark = 1; }
+        return bfsStamp;
+    }
+
+    private static class BfsQueue<T> { public static AreaBFSNode<T>[] items = new AreaBFSNode<T>[256]; }
+
+    /// <summary>
+    /// Hop distances from one area to every area (cached per start area: the adjacency of a battle does
+    /// not change; <see cref="ClearDistanceCache"/> runs when a map is set up).
+    /// </summary>
+    private readonly Dictionary<int, short[]> hopDistanceCache = new();
+
+    public void ClearDistanceCache() => hopDistanceCache.Clear();
+
+    internal short[] HopDistancesFrom(int startAreaId)
+    {
+        if (hopDistanceCache.TryGetValue(startAreaId, out var cached)) return cached;
+        int areaCount = GetNumAreas();
+        var dist = new short[areaCount];
+        Array.Fill(dist, (short)-1);
+        var queue = new int[areaCount];
+        int head = 0, tail = 0;
+        dist[startAreaId] = 0;
+        queue[tail++] = startAreaId;
+        while (head < tail)
+        {
+            int id = queue[head++];
+            int neighborCount = GetNumAdjacentAreas(id);
             for (int i = 0; i < neighborCount; ++i)
             {
-                int nextId = GetAdjacentAreaID(node.id, i);
-                if (visited.Add(nextId))
-                    q.Enqueue(new AreaBFSNode<T> { id = nextId, depth = updatePredicate(node, nextId) });
+                int next = GetAdjacentAreaID(id, i);
+                if (next < 0 || next >= areaCount || dist[next] >= 0) continue;
+                dist[next] = (short)(dist[id] + 1);
+                queue[tail++] = next;
             }
         }
-        return res;
+        if (hopDistanceCache.Count >= 512) hopDistanceCache.Clear();
+        hopDistanceCache[startAreaId] = dist;
+        return dist;
     }
 
     /// <summary>BFS where the depth is the accumulated map distance.</summary>

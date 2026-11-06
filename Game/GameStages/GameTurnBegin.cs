@@ -8,6 +8,7 @@ public sealed partial class CGameManager
     /// </summary>
     public void TurnBegin()
     {
+        using var perf = PerfStats.Measure("turn.begin");
         CCountry pCountry = GetCurCountry();
 
         if (pCountry == null)

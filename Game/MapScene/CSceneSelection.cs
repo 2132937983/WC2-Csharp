@@ -129,15 +129,9 @@ public sealed partial class CScene
         if (startAreaId == targetAreaId)
             return 0;
 
-        int distance = -1;
-        int maxDepth = Math.Max(0, areaCount);
-        BFS(startAreaId, maxDepth, (AreaBFSNode<int> node) =>
-        {
-            if (node.id == targetAreaId && distance < 0)
-                distance = node.depth;
-            return false;
-        });
-        return distance;
+        // hop count of the shortest path over the adjacency graph (cached per start area; the same
+        // breadth first search the original ran per query)
+        return HopDistancesFrom(startAreaId)[targetAreaId];
     }
 
     /// <summary>Computes the moveable and attackable targets of the selected area.</summary>

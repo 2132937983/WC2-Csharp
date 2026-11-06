@@ -142,7 +142,8 @@ public sealed class WC2Game : Game
         {
             if (IsActive && !FixedStep) PollInput();
             SmokeTest.Step(elapsed, dt);
-            ecGame.ecGameUpdate(dt);
+            using (PerfStats.Measure("update")) ecGame.ecGameUpdate(dt);
+            PerfStats.Frame();
         }
         catch (Exception ex)
         {
@@ -265,7 +266,7 @@ public sealed class WC2Game : Game
     {
         try
         {
-            ecGame.ecGameRender();
+            using (PerfStats.Measure("render")) ecGame.ecGameRender();
         }
         catch (Exception ex)
         {

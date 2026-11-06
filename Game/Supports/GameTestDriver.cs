@@ -42,6 +42,7 @@ public static class GameTestDriver
         s_idle = 0f;
         s_active = s_roundsLeft > 0;
         Log($"Autoplay: {rounds} round(s) from turn {s_lastTurn + 1}");
+        PerfStats.Reset();
     }
 
     /// <summary>Called every frame by the script driver while autoplay runs.</summary>
@@ -64,6 +65,7 @@ public static class GameTestDriver
         }
         if (g_GameManager.currentTurnNumMinusOne != s_lastTurn)
         {
+            Log($"Perf round {s_lastTurn + 1}: {PerfStats.Report()}");
             s_lastTurn = g_GameManager.currentTurnNumMinusOne;
             if (--s_roundsLeft <= 0)
             {
