@@ -1,0 +1,12 @@
+#! --mods $TESTS/../mods --ai standard
+# conquest on the generated world map (mods/map-natural-earth, built from Natural Earth by WC2.Tools build-map,
+# MAP_PIPELINE.md) as France, the standard AI on every side; the classic map is not involved
+wait 4.5
+startconquest conquest_world.xml fr
+wait 8
+shot WM1_start
+hittest world_map
+autoplay 4
+dump WR05
+shot WM2_round5
+exit

@@ -19,6 +19,7 @@ namespace WC2;
 ///   hittest LABEL           - off-screen and hidden buttons must not react to touches (logs failures)
 ///   texstats LABEL          - log the live texture memory
 ///   dumpafter COUNTRY NAME  - write the rule state when COUNTRY's turn ends (before the next acts)
+///   startconquest FILE ID   - start a conquest with any scenario file as country ID (generated maps)
 ///   log TEXT                - write to the log
 ///   exit                    - quit
 /// Lines starting with # are comments.
@@ -41,6 +42,19 @@ public static class SmokeTest
     private static bool s_dragging;
     private static double s_dragStart, s_dragDuration;
     private static float s_dragX1, s_dragY1, s_dragX2, s_dragY2;
+
+    /// <summary>Script lines given directly (the desktop --scenario option).</summary>
+    public static void LoadLines(IEnumerable<string> lines)
+    {
+        foreach (var raw in lines)
+        {
+            string line = raw.Trim();
+            if (line.Length == 0 || line.StartsWith("#")) continue;
+            var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            s_commands.Add(new Command { name = parts[0].ToLowerInvariant(), args = parts.Skip(1).ToArray() });
+        }
+        s_loaded = s_commands.Count > 0;
+    }
 
     public static void LoadScript(string path)
     {
@@ -158,6 +172,10 @@ public static class SmokeTest
                 GameStateDigest.Write(Path.Combine(OutputDirectory ?? ".", name));
                 break;
             }
+            case "startconquest":
+                // startconquest FILE COUNTRY: a conquest with any scenario (a generated map, MAP_PIPELINE.md)
+                GameTestDriver.StartConquest(c.args[0], c.args.Length > 1 ? c.args[1] : "de");
+                break;
             case "dumpafter":
             {
                 // dumpafter COUNTRY NAME: write the rule state when that country's turn ends (AI tests)

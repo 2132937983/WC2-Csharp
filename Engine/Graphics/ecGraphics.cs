@@ -703,11 +703,26 @@ public sealed class ecGraphics
             }
             if (rgba == null) { Log("Texture decode failed: " + path); return null; }
             Texture2D tex2d;
-            if (LoadFormat(path) == "rgba5551")
+            string loadFormat = LoadFormat(path);
+            if (loadFormat == "alpha8" && alphaSampling == AlphaSampling.Unknown) alphaSampling = ProbeAlpha8();
+            if (loadFormat == "rgba5551")
             {
                 // load-time runtime format (assets/build.json, generated/texture_formats.json)
                 tex2d = new Texture2D(device, w, h, false, SurfaceFormat.Bgra5551);
                 tex2d.SetData(PackRgba5551(rgba, w * h));
+            }
+            else if (loadFormat == "rgb565")
+            {
+                tex2d = new Texture2D(device, w, h, false, SurfaceFormat.Bgr565);
+                tex2d.SetData(PackRgb565(rgba, w * h));
+            }
+            else if (loadFormat == "alpha8" && (alphaSampling == AlphaSampling.Luminance || alphaSampling == AlphaSampling.AlphaChannel))
+            {
+                // a white mask: only its alpha is kept, the draw colour tints it
+                var alpha = new byte[w * h];
+                for (int i = 0; i < alpha.Length; i++) alpha[i] = rgba[i * 4 + 3];
+                tex2d = new Texture2D(device, w, h, false, SurfaceFormat.Alpha8);
+                tex2d.SetData(alpha);
             }
             else if (opaque && DecodeEtcTo565)
             {
@@ -756,10 +771,11 @@ public sealed class ecGraphics
     {
         if (s_loadFormats == null)
         {
+            // every layer's list counts (a mod adds the formats of its own textures)
             s_loadFormats = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            string text = AssetSystem.ReadAllText("generated/texture_formats.json");
-            if (text != null && JsonData.Parse(text) is System.Text.Json.Nodes.JsonObject o && o.Obj("textures") is System.Text.Json.Nodes.JsonObject list)
-                foreach (var (key, value) in list) s_loadFormats[key] = value?.Text();
+            foreach (var (_, text) in AssetSystem.ReadAllVersions("generated/texture_formats.json"))
+                if (JsonData.Parse(text) is System.Text.Json.Nodes.JsonObject o && o.Obj("textures") is System.Text.Json.Nodes.JsonObject list)
+                    foreach (var (key, value) in list) s_loadFormats[key] = value?.Text();
         }
         return s_loadFormats.TryGetValue(path, out var f) ? f : null;
     }

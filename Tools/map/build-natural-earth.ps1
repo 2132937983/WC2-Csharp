@@ -1,5 +1,6 @@
 # Downloads the Natural Earth source data (public domain, naturalearthdata.com; GeoJSON from the
-# nvkelso/natural-earth-vector repository) and builds the map pack assets/data/maps/natural-earth.
+# nvkelso/natural-earth-vector repository) and builds the map pack assets/data/maps/natural-earth and
+# the playable map mod mods/map-natural-earth (map 2 with the conquest conquest_world.xml).
 # Usage: .\Tools\map\build-natural-earth.ps1 [-Source DIR] [-SkipDownload]
 # The downloads (about 50 MB) go to Tools\map\source (not in git). See MAP_PIPELINE.md.
 param([string]$Source = "", [switch]$SkipDownload)
@@ -21,5 +22,6 @@ if (-not $SkipDownload) {
 
 & dotnet build (Join-Path $repo 'Tools\WC2.Tools.csproj') -v q --nologo | Out-Null
 & dotnet (Join-Path $repo 'Tools\bin\Debug\net9.0\WC2.Tools.dll') build-map `
-    --config (Join-Path $PSScriptRoot 'natural-earth.json') --source $Source --out (Join-Path $repo 'assets\data\maps\natural-earth')
+    --config (Join-Path $PSScriptRoot 'natural-earth.json') --source $Source --out (Join-Path $repo 'assets\data\maps\natural-earth') `
+    --classic-out (Join-Path $repo 'mods\map-natural-earth')
 if ($LASTEXITCODE -ne 0) { throw "build-map failed" }

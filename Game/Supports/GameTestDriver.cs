@@ -50,6 +50,20 @@ public static class GameTestDriver
     private static string s_watchCountry, s_watchFile;
     private static bool s_watchSeen;
 
+    /// <summary>
+    /// Starts a conquest with any scenario file (the map comes from the scenario: a generated map pack
+    /// is map 2) as the given country, the way the conquest menu does: script command startconquest,
+    /// desktop option --scenario FILE --country ID.
+    /// </summary>
+    public static void StartConquest(string scenarioFile, string countryId)
+    {
+        g_GameManager.NewGame((int)CGameManager.CONQUEST, -1, 0, 1);
+        g_GameManager.battleFileName = scenarioFile;
+        g_GameManager.SetConquestPlayerCountryID(countryId);
+        Log($"Start conquest {scenarioFile} as {countryId}");
+        CStateManager.Instance().SetCurState(EState.LOAD);
+    }
+
     public static void DumpAfterTurn(string countryId, string file)
     {
         s_watchCountry = countryId;

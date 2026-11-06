@@ -1,0 +1,9 @@
+{
+  "id": "map-natural-earth",
+  "name": "World map (Natural Earth)",
+  "version": "1.0",
+  "author": "WC2.Tools build-map",
+  "description": "The World (Natural Earth) map as map 2 with the conquest conquest_world.xml: generated from Natural Earth (MAP_PIPELINE.md). The classic map and every campaign are untouched; remove or disable the mod to revert.",
+  "priority": 0,
+  "enabled": true
+}

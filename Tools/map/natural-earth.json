@@ -32,6 +32,46 @@
   "ports": { "maxScalerank": 5 },
   "airfields": { "types": ["major", "major and military"], "maxScalerank": 4 },
 
+  // --classic-out: the map in the scene's own formats as map 2, written as a mod with a conquest
+  // (MAP_PIPELINE.md). players: the countries of the scenario (the rest of the land starts unowned).
+  "classicExport": {
+    "mapId": 2, "scale": 2, "scenario": "conquest_world.xml",
+    "modId": "map-natural-earth", "modName": "World map (Natural Earth)",
+    "players": {
+      "de": { "alliance": "a", "commander": "Guderian", "color": [71, 87, 99] },
+      "it": { "alliance": "a", "commander": "Graziani", "color": [80, 20, 200] },
+      "ja": { "alliance": "a", "commander": "Yamamoto", "color": [255, 128, 0] },
+      "hu": { "alliance": "a", "color": [128, 64, 90] },
+      "ro": { "alliance": "a", "color": [149, 55, 53] },
+      "bg": { "alliance": "a", "color": [0, 0, 128] },
+      "fl": { "alliance": "a", "color": [146, 205, 220] },
+      "gb": { "alliance": "b", "commander": "Montgomery", "color": [255, 255, 0] },
+      "fr": { "alliance": "b", "commander": "de Gaulle", "color": [0, 170, 170] },
+      "am": { "alliance": "b", "commander": "Patton", "color": [64, 199, 64] },
+      "ca": { "alliance": "b", "color": [0, 162, 232] },
+      "au": { "alliance": "b", "color": [0, 49, 146] },
+      "pl": { "alliance": "b", "color": [255, 128, 64] },
+      "nl": { "alliance": "b", "color": [255, 192, 0] },
+      "be": { "alliance": "b", "color": [148, 138, 84] },
+      "no": { "alliance": "b", "color": [255, 0, 128] },
+      "dk": { "alliance": "b", "color": [141, 180, 226] },
+      "gr": { "alliance": "b", "color": [83, 141, 213] },
+      "yu": { "alliance": "b", "color": [218, 150, 148] },
+      "in": { "alliance": "b", "color": [0, 102, 0] },
+      "mx": { "alliance": "b", "color": [64, 30, 169] },
+      "tw": { "alliance": "b", "commander": "Zhang", "color": [0, 50, 200] },
+      "rk": { "alliance": "b", "color": [128, 45, 34] },
+      "ru": { "alliance": "c", "commander": "Rokossovsky", "color": [255, 0, 0] },
+      "cn": { "alliance": "c", "commander": "Peng", "color": [255, 90, 90] },
+      "nk": { "alliance": "c", "color": [255, 153, 153] },
+      "es": { "alliance": "n", "color": [255, 0, 128] },
+      "pt": { "alliance": "n", "color": [127, 127, 127] },
+      "se": { "alliance": "n", "color": [0, 0, 204] },
+      "ch": { "alliance": "n", "color": [141, 180, 0] },
+      "tr": { "alliance": "n", "color": [0, 128, 192] }
+    }
+  },
+
   // Natural Earth ADM0_A3 -> the game's country ids (data/json/countries/countries.json); every other
   // country keeps its ISO code in lower case.
   "countries": {

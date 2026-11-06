@@ -2,20 +2,21 @@
 
 The classic map of the game (map 1: hand-drawn tiles, area geometry in `data/binary/maps/1/`) stays as
 it is, and every campaign and conquest keeps using it. Next to it, maps can now be generated from
-real geography: `WC2.Tools build-map` turns Natural Earth GeoJSON into a **map pack**, a data pack in
-`assets/data/maps/<id>/` that nothing uses unless a mode or a mod selects it. Deleting the folder
-reverts it completely.
+real geography: `WC2.Tools build-map` turns Natural Earth GeoJSON into a **map pack** (a data pack in
+`assets/data/maps/<id>/`) and into a **playable map mod** (`mods/map-natural-earth/`: the map as map
+2 with a world conquest). Disabling or deleting the mod reverts it completely.
 
 ## Running it
 
 ```powershell
 .\Tools\map\build-natural-earth.ps1          # downloads the source data once (about 50 MB, Tools\map\source,
-                                             # not in git) and rebuilds assets\data\maps\natural-earth
+                                             # not in git), rebuilds assets\data\maps\natural-earth and
+                                             # mods\map-natural-earth
 # or by hand:
 dotnet Tools\bin\Debug\net9.0\WC2.Tools.dll build-map --config Tools\map\natural-earth.json --source <dir> --out <dir>
 ```
 
-It takes about 5 seconds and is deterministic: the same sources and configuration give byte-identical
+It takes about 5 seconds (50 with the map mod) and is deterministic: the same sources and configuration give byte-identical
 files.
 
 ## Sources
@@ -88,16 +89,40 @@ per country).
 * `--verify-data` and the unit tests check `map.json` and `regions.json` against their schemas; the
   asset checker includes the pack.
 
-## Not done yet: playing on a generated map
+## Playing on the generated map
 
-The pack holds everything the rules need (regions, adjacency, terrain types, ownership, cities, ports,
-airfields). Playing on it still needs, in the game:
+`build-map --classic-out DIR` (the `classicExport` section of the configuration) also writes the map in
+the formats the game's scene already reads for the classic map, as **map 2**, together with a
+conquest, into a mod: `mods/map-natural-earth/` (3.2 MB, enabled; the build script writes it).
 
-* a scene that draws regions from `regions.raster` (country colours, borders, the unit and building
-  anchors at each region's `pixel`) instead of the classic tile art and area masks;
-* the classic area geometry formats (`area1.bin`, `adjion1.bin`, `areamark1.raw`) or a reader that
-  builds `CScene`'s area table and adjacency from the pack;
-* a scenario for it (starting armies and money per country; the pack already gives ownership and
-  capitals) and a menu entry or mod that selects it.
+| File | Read by | Content |
+|---|---|---|
+| `area2.bin` | `CScene.LoadAreaData` | per area: zone image position and size, army, building and installation anchors (the pixel farthest from the region's edge), land or sea; map units = raster pixels x 2 (8192 x 2060) |
+| `adjion2.bin` | `CScene.LoadAdjoin` | up to 16 neighbours per area: the longest borders, kept only when both sides keep them |
+| `areamark2.raw` | `CAreaMark` | the area under every 8 x 8 block of map units (touch picking) |
+| `data/json/maps/2/areas.json` | `LoadAreaTax` | area types and base taxes (3 to 31: size, city, capital) |
+| `map2_<n>.png` | `CBackground` | 85 background tiles of 500 units: land, sea, coast, country and region lines |
+| `m2_zone<n>_1.png/.xml` | `InitAreaImage` | 7 atlas pages with the region masks (sprite `<id>.png`), tinted with the owner's colour |
+| `generated/texture_formats.json` | `ecGraphics` | tiles uploaded as RGB565, masks as Alpha8 (merged with the game's own list) |
+| `conquest_world.xml` | `LoadBattle` | the conquest: 31 countries (`players`: side, commander, colour), their regions, armies in capitals and cities; the rest of the land starts unowned |
 
-Until then the pack is data only; the classic map and its campaigns are untouched.
+Start it on the desktop with `dotnet run --project Hosts/Desktop -- --scenario conquest_world.xml
+--country fr` (any of the 31 countries), or from a script with `startconquest conquest_world.xml fr`.
+On Android, copy the mod folder to `Android/data/com.wc2remake.csharp/files/mods/` (there is no menu
+entry for it yet). The classic map and every campaign and conquest are untouched; removing or
+disabling the mod reverts everything. Texture memory at the start of the world conquest: 168 MB
+(desktop).
+
+`Tests/world_autoplay` starts the world conquest as France and lets the standard AI play four rounds
+on every side (golden dump, reference screenshots, hit test); the unit tests check the exported files
+of a synthetic world (record sizes, symmetric adjacency, area ids in the mask, scenario, formats).
+
+### Still to do
+
+* A menu entry (the conquest list shows the nine original conquests and their preview on the classic
+  map) and a minimap for the generated map.
+* Finer art: the region shapes come from the raster (one map unit = half a raster pixel), so coasts
+  and borders show steps when zoomed in; drawing the province polygons directly into the tiles would
+  smooth them.
+* Sea zones are a plain grid; ports have no fleets at the start; the scenario has no dialogues.
+* Balance: start money, taxes and armies are simple rules of the export, not tuned by play.

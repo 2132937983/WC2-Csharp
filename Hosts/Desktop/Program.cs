@@ -8,8 +8,14 @@ using WC2;
 //   --docs DIR    saves, settings and the commander file live in DIR instead of the user folder
 //   --mods DIR    load mods from DIR as well (mods are always read from <documents>/mods)
 //   --no-mods     start with the base package only
-//   --assets DIR  a generated package (with index.json) or a flat folder of the original assets
+//   --assets DIR  a generated package, the assets/ tree, a flat folder of the originals, or a .zip/.apk
+//   --all-mods    also load mods marked "enabled": false
+//   --ai NAME     AI profile (data/json/ai/profiles.json: classic, standard, hard)
+//   --scenario FILE [--country ID]  start a conquest with that scenario right after the menu appears
+//                 (e.g. conquest_world.xml from the map-natural-earth mod, MAP_PIPELINE.md)
 int logicalW = 568, logicalH = 320;
+string startScenario = null, startCountry = "de";
+bool scriptGiven = false;
 int windowW = 1136, windowH = 640;
 string assets = null;
 string lang = null;
@@ -27,7 +33,7 @@ for (int i = 0; i < args.Length; i++)
         case "--exit-after" when i + 1 < args.Length: double.TryParse(args[++i], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out WC2Game.ExitAfterSeconds); break;
         case "--screenshot" when i + 1 < args.Length: WC2Game.ScreenshotPath = args[++i]; break;
         case "--screenshot-every" when i + 1 < args.Length: double.TryParse(args[++i], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out WC2Game.ScreenshotEverySeconds); break;
-        case "--script" when i + 1 < args.Length: SmokeTest.LoadScript(args[++i]); break;
+        case "--script" when i + 1 < args.Length: SmokeTest.LoadScript(args[++i]); scriptGiven = true; break;
         case "--log" when i + 1 < args.Length: Globals.LogFile = args[++i]; break;
         case "--seed" when i + 1 < args.Length: if (int.TryParse(args[++i], out int seed)) SetSeedOverride(seed); break;
         case "--fixed-step": WC2Game.FixedStep = true; break;
@@ -36,6 +42,8 @@ for (int i = 0; i < args.Length; i++)
         case "--no-mods": ecGame.ModsDisabled = true; break;
         case "--all-mods": ModManager.IncludeDisabled = true; break;
         case "--ai" when i + 1 < args.Length: AiProfiles.Override = args[++i]; break;
+        case "--scenario" when i + 1 < args.Length: startScenario = args[++i]; break;
+        case "--country" when i + 1 < args.Length: startCountry = args[++i]; break;
         case "--texture-stats": ecGraphics.TextureStatsEvery = 120; break;
     }
 }
@@ -49,6 +57,8 @@ if (DebugTools.TryRun(args)) return;
 if (ipad && windowW == 1136 && windowH == 640) { windowW = 1024; windowH = 768; }
 g_contenscalefactor = 2.0f;
 ecGame.ConfigurePaths(assets, lang);   // first: the layout profiles are data
+if (startScenario != null && !scriptGiven)
+    SmokeTest.LoadLines(new[] { "wait 4.5", $"startconquest {startScenario} {startCountry}" });
 ecGame.SelectLayout(windowW, windowH, out logicalW, out logicalH);
 
 using var game = new WC2Game(logicalW, logicalH, windowW, windowH);

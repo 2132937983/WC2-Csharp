@@ -81,7 +81,9 @@ public class MapPackTests
           "sea": { "cellDegrees": 20, "minSeaPixels": 50 }, "minBorderPixels": 2,
           "cities": { "minPopulation": 1000000, "largeCityPopulation": 5000000 },
           "ports": { "maxScalerank": 5 }, "airfields": { "types": ["major"], "maxScalerank": 4 },
-          "countries": { "AAA": "aa", "BBB": "bb" } }
+          "countries": { "AAA": "aa", "BBB": "bb" },
+          "classicExport": { "mapId": 7, "scale": 2, "scenario": "conquest_test.xml", "modId": "map-test", "modName": "Test map",
+            "players": { "aa": { "alliance": "a", "color": [10, 20, 30] }, "bb": { "alliance": "b", "color": [40, 50, 60] } } } }
         """;
         string source = Support.TempTree(
             ("ne_10m_admin_1_states_provinces.geojson", provinces), ("ne_50m_populated_places.geojson", places),
@@ -90,7 +92,9 @@ public class MapPackTests
         Assert.Equal(0, MapPipeline.Run(new Dictionary<string, string>
         {
             ["config"] = Path.Combine(source, "config.json"), ["source"] = source, ["out"] = outDir, ["preview-width"] = "200",
+            ["classic-out"] = Path.Combine(source, "classic"),
         }));
+        CheckClassicExport(Path.Combine(source, "classic"));
 
         AssetSystem.Reset();
         AssetSystem.Mount(new AssetLayer { Id = "test", Source = new DirectoryAssetSource(source) });
@@ -117,5 +121,40 @@ public class MapPackTests
         Assert.Contains(east.id, west.neighbours);                     // the two countries touch
         Assert.True(west.coastal && east.coastal);
         Assert.Null(pack.LandRegionNear(25.1, 20.1, 0));               // the islet is water now
+    }
+
+    /// <summary>The map in the scene's own formats (map 7 here): what the game's loaders read.</summary>
+    private static void CheckClassicExport(string dir)
+    {
+        // area7.bin: count, then 11 ints per area; type 1 = sea
+        var area = File.ReadAllBytes(Path.Combine(dir, "area7.bin"));
+        int count = BitConverter.ToInt32(area, 0);
+        Assert.Equal(4 + count * 44, area.Length);
+        int seas = Enumerable.Range(0, count).Count(i => BitConverter.ToInt32(area, 4 + i * 44 + 40) == 1);
+        Assert.Equal(2, count - seas);                                  // the two land regions
+        // adjion7.bin: count, then 17 ints per area (neighbour count + 16 ids); symmetric
+        var adj = File.ReadAllBytes(Path.Combine(dir, "adjion7.bin"));
+        Assert.Equal(count, BitConverter.ToInt32(adj, 0));
+        int[] Neighbours(int a) => Enumerable.Range(0, BitConverter.ToInt32(adj, 4 + a * 68)).Select(k => BitConverter.ToInt32(adj, 4 + a * 68 + 4 + k * 4)).ToArray();
+        for (int a = 0; a < count; a++)
+            foreach (int b in Neighbours(a)) Assert.Contains(a, Neighbours(b));
+        // areamark7.raw: width, height, one area id (or -1) per 8x8 block
+        var mark = File.ReadAllBytes(Path.Combine(dir, "areamark7.raw"));
+        int mw = BitConverter.ToInt32(mark, 0), mh = BitConverter.ToInt32(mark, 4);
+        Assert.Equal(8 + mw * mh * 2, mark.Length);
+        Assert.All(Enumerable.Range(0, mw * mh), i => Assert.InRange(BitConverter.ToInt16(mark, 8 + i * 2), -1, count - 1));
+        // the scenario, the area table, the textures and their load formats, the mod manifest
+        string scenario = File.ReadAllText(Path.Combine(dir, "conquest_test.xml"));
+        Assert.Contains("map=\"7\"", scenario);
+        Assert.Contains("country id=\"aa\"", scenario);
+        Assert.Contains("country id=\"bb\"", scenario);
+        Assert.Contains("type=\"tank\"", scenario);                    // the capital's army
+        Assert.True(File.Exists(Path.Combine(dir, "data", "json", "maps", "7", "areas.json")));
+        Assert.True(File.Exists(Path.Combine(dir, "map7_1.png")));
+        Assert.True(File.Exists(Path.Combine(dir, "m7_zone1_1.xml")));
+        string formats = File.ReadAllText(Path.Combine(dir, "generated", "texture_formats.json"));
+        Assert.Contains("\"map7_1.png\": \"rgb565\"", formats);
+        Assert.Contains("\"m7_zone1_1.png\": \"alpha8\"", formats);
+        Assert.Contains("\"map-test\"", File.ReadAllText(Path.Combine(dir, "mod.json")));
     }
 }

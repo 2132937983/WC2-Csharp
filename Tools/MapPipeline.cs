@@ -24,7 +24,7 @@ namespace WC2.Tools;
 /// Output (the map pack): map.json, regions.json, regions.raster (the region of every pixel, uint16,
 /// deflate), preview.png.
 /// </summary>
-internal static class MapPipeline
+internal static partial class MapPipeline
 {
     private sealed class Province
     {
@@ -204,6 +204,10 @@ internal static class MapPipeline
             int v = raster[i];
             regionRaster[i] = v > 0 && provinces[v - 1].region >= 0 ? provinces[v - 1].region + 1 : 0;
         }
+        // parts of a land region far from its main body (islands across the date line, e.g. the
+        // Aleutians at the other edge of the map) are left out: a region stays one place on the map
+        double maxSpan = rules["maxPartDistanceDegrees"]?.GetValue<double>() ?? 25;
+        DropFarParts(regionRaster, width, height, regions.Count, maxSpan * pxPerDeg);
         int landRegions = regions.Count;
         int cellPx = Math.Max(4, (int)Math.Round(cellDegrees * pxPerDeg));
         var seaLabel = new int[raster.Length];
@@ -404,17 +408,62 @@ internal static class MapPipeline
             ["landRegions"] = regions.Count(r => !r.sea),
             ["seaZones"] = regions.Count(r => r.sea),
             ["countries"] = new JsonObject(countries.Select(kv => KeyValuePair.Create(kv.Key, (JsonNode)kv.Value))),
-            ["config"] = config.DeepClone(),
+            // the build configuration (without the classic export, which describes the separate map mod)
+            ["config"] = WithoutKey(config, "classicExport"),
         };
         File.WriteAllText(Path.Combine(outDir, "map.json"), mapDoc.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = json.Encoder }) + "\n");
         WriteRaster(Path.Combine(outDir, "regions.raster"), regionRaster, width, height);
         WritePreview(Path.Combine(outDir, "preview.png"), regionRaster, width, height, regions, opts.GetValueOrDefault("preview-width", "2048"));
+        if (opts.TryGetValue("classic-out", out var classicOut) && config["classicExport"] != null)
+            ExportClassic(classicOut, config, regions, regionRaster, width, height);
         Console.WriteLine($"build-map: {regions.Count(r => !r.sea)} land regions in {countries.Count} countries, {regions.Count(r => r.sea)} sea zones, " +
                           $"{regions.Count(r => r.type == "capital")} capitals, {regions.Count(r => r.port)} ports, {regions.Count(r => r.airfield)} airfields, " +
                           $"{sw.ElapsedMilliseconds} ms -> {outDir}");
         return 0;
 
         bool InBounds(double lon, double lat) => lon >= west && lon <= east && lat >= south && lat <= north;
+    }
+
+    private static JsonObject WithoutKey(JsonObject o, string key)
+    {
+        var copy = (JsonObject)o.DeepClone();
+        copy.Remove(key);
+        return copy;
+    }
+
+    /// <summary>Clears the connected parts of each value whose centre is farther than maxDistance pixels from the value's largest part.</summary>
+    private static void DropFarParts(int[] raster, int width, int height, int count, double maxDistance)
+    {
+        var label = new int[raster.Length];
+        var parts = new List<(int value, List<int> pixels)>();
+        var stack = new Stack<int>();
+        for (int i = 0; i < raster.Length; i++)
+        {
+            if (raster[i] == 0 || label[i] != 0) continue;
+            int v = raster[i];
+            var pixels = new List<int>();
+            label[i] = parts.Count + 1; stack.Push(i);
+            while (stack.Count > 0)
+            {
+                int j = stack.Pop(); pixels.Add(j);
+                int x = j % width, y = j / width;
+                foreach (int k in new[] { x > 0 ? j - 1 : -1, x < width - 1 ? j + 1 : -1, y > 0 ? j - width : -1, y < height - 1 ? j + width : -1 })
+                    if (k >= 0 && raster[k] == v && label[k] == 0) { label[k] = parts.Count + 1; stack.Push(k); }
+            }
+            parts.Add((v, pixels));
+        }
+        foreach (var group in parts.GroupBy(p => p.value))
+        {
+            var main = group.OrderByDescending(p => p.pixels.Count).First();
+            double mx = main.pixels.Average(j => j % width), my = main.pixels.Average(j => j / width);
+            foreach (var part in group)
+            {
+                if (ReferenceEquals(part.pixels, main.pixels)) continue;
+                double px = part.pixels.Average(j => j % width), py = part.pixels.Average(j => j / width);
+                if (Math.Sqrt((px - mx) * (px - mx) + (py - my) * (py - my)) > maxDistance)
+                    foreach (int j in part.pixels) raster[j] = 0;
+            }
+        }
     }
 
     /// <summary>For every value of the raster: the touching values and the border length in pixels (4-neighbourhood).</summary>
