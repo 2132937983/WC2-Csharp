@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "units.schema.json",
+  "title": "Unit types, their stats per country, combat rules and unit levels",
+  "description": "Field reference: DATA_SCHEMA.md. Checked whenever the game loads the file (mods included).",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version of this file format."
+    },
+    "about": {
+      "type": "string",
+      "description": "Free text for people reading the file."
+    },
+    "legacyCombatDefaults": {
+      "type": "boolean"
+    },
+    "weaponArmorRules": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "unitTypes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "image": {
+            "type": "string"
+          },
+          "countryIndependent": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "image"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "countries": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "unitType": {
+              "type": "integer"
+            },
+            "strength": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "movement": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "minAttack": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "maxAttack": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "combat": {
+              "type": "object",
+              "properties": {
+                "attack": {
+                  "type": "object",
+                  "properties": {
+                    "mode": {
+                      "type": "integer"
+                    },
+                    "engagement": {
+                      "type": "integer"
+                    },
+                    "range": {
+                      "type": "object",
+                      "properties": {
+                        "shape": {
+                          "type": "string"
+                        },
+                        "min": {
+                          "type": "integer"
+                        },
+                        "max": {
+                          "type": "integer"
+                        },
+                        "maxInclusive": {
+                          "type": "boolean"
+                        },
+                        "radiusSource": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "shape",
+                        "min"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "damage": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "target": {
+                            "type": "integer"
+                          },
+                          "phase": {
+                            "type": "string"
+                          },
+                          "rate": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "target",
+                          "phase",
+                          "rate"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "payload": {
+                      "type": "integer"
+                    },
+                    "attackCost": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "mode",
+                    "range"
+                  ],
+                  "additionalProperties": false
+                },
+                "traits": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "aiNoCounterBonus": {
+                  "type": "integer"
+                },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "movementRestoreOnKill": {
+                      "type": "integer"
+                    },
+                    "constructionLevelDegrade": {
+                      "type": "integer"
+                    },
+                    "constructionLevelChance": {
+                      "type": "integer"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "counter": {
+                  "type": "object",
+                  "properties": {
+                    "range": {
+                      "type": "object",
+                      "properties": {
+                        "shape": {
+                          "type": "string"
+                        },
+                        "min": {
+                          "type": "integer"
+                        },
+                        "max": {
+                          "type": "integer"
+                        },
+                        "maxInclusive": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "shape",
+                        "min",
+                        "max",
+                        "maxInclusive"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "range"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "attack"
+              ],
+              "additionalProperties": false
+            },
+            "weaponType": {
+              "type": "integer"
+            },
+            "armorType": {
+              "type": "integer"
+            },
+            "navy": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "unitType",
+            "strength",
+            "movement",
+            "minAttack",
+            "maxAttack"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "levels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "attack": {
+            "type": "integer"
+          },
+          "defence": {
+            "type": "integer"
+          },
+          "turnRecovery": {
+            "type": "integer"
+          },
+          "instantRecovery": {
+            "type": "integer"
+          },
+          "maxHpPercent": {
+            "type": "integer"
+          },
+          "expToNext": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "attack",
+          "defence",
+          "turnRecovery",
+          "instantRecovery",
+          "maxHpPercent"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "format",
+    "legacyCombatDefaults",
+    "weaponArmorRules",
+    "unitTypes",
+    "countries",
+    "levels"
+  ],
+  "additionalProperties": false
+}

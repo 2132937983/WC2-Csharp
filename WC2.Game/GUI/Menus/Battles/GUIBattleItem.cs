@@ -265,7 +265,7 @@ public sealed class GUIBattleItem : GUIElement
                 if (touched)
                 {
                     touched = false;
-                    CCSoundBox.GetInstance().PlaySE("btn.wav");
+                    CCSoundBox.GetInstance().PlaySE(AudioDefs.Ui("click"));
 
                     // dispatched through the base so the parent receives a "this entry was clicked" BUTTON event
                     base.OnEvent(Event.Button(this));

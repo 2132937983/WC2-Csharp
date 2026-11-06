@@ -13,17 +13,52 @@ public static class DataPaths
     public const string Medals = "data/json/rules/medals.json";
     public const string Rules = "data/json/rules/rules.json";
     public const string OptionsLayout = "data/json/layout/options.json";
+    public const string LayoutProfiles = "data/json/layout/profiles.json";
+    public const string Audio = "data/json/audio/audio.json";
+    public const string Countries = "data/json/countries/countries.json";
 
     /// <summary>Language settings of the current language folder (was Localizable.strings).</summary>
     public const string Language = "language.json";
 
     public static string MapAreas(int mapId) => $"data/json/maps/{mapId}/areas.json";
 
-    /// <summary>Scenario of a legacy file name: "battle_axis1.xml" -> "data/json/scenarios/battle_axis1.json".</summary>
+    /// <summary>Index of the scenarios and tutorial scripts (the files stay the original XML).</summary>
+    public const string ScenarioIndex = "data/json/scenarios/index.json";
+
+    /// <summary>
+    /// A scenario in the JSON format (exported battles, mods; the game ships none):
+    /// "battle_axis1.xml" -> "data/json/scenarios/battle_axis1.json".
+    /// </summary>
     public static string Scenario(string legacyName) => "data/json/scenarios/" + Path.GetFileNameWithoutExtension(legacyName) + ".json";
 
-    /// <summary>Tutorial script of a legacy name: "tutorails_script-568h.xml" -> "data/json/scenarios/tutorial/tutorails_script-568h.json".</summary>
+    /// <summary>A tutorial script in the JSON format (mods only): "tutorails_script-568h.xml" -> "data/json/scenarios/tutorial/tutorails_script-568h.json".</summary>
     public static string TutorialScript(string legacyName) => "data/json/scenarios/tutorial/" + Path.GetFileNameWithoutExtension(legacyName) + ".json";
+
+    /// <summary>Folder of the JSON schemas (one per data file kind, DATA_SCHEMA.md).</summary>
+    public const string SchemaFolder = "data/json/schemas/";
+
+    private static readonly (string prefix, string suffix, string schema)[] SchemaRules =
+    {
+        (Units, null, "units"), (Cards, null, "cards"), (Commanders, null, "commanders"), (Portraits, null, "portraits"),
+        (Campaigns, null, "campaigns"), (Conquests, null, "conquests"), (Terrain, null, "terrain"), (Medals, null, "medals"),
+        (Rules, null, "rules"), (OptionsLayout, null, "options-layout"), (LayoutProfiles, null, "layout-profiles"),
+        (Audio, null, "audio"), (Countries, null, "countries"), (ScenarioIndex, null, "scenario-index"),
+        ("data/json/maps/", "/areas.json", "map-areas"), ("data/json/text/", ".json", "text"),
+    };
+
+    /// <summary>The schema a data file is checked against when it loads (null: none).</summary>
+    public static string SchemaFor(string path)
+    {
+        if (string.IsNullOrEmpty(path)) return null;
+        string p = path.Replace('\\', '/');
+        foreach (var (prefix, suffix, schema) in SchemaRules)
+        {
+            bool match = suffix == null ? p.Equals(prefix, StringComparison.OrdinalIgnoreCase)
+                                        : p.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) && p.EndsWith(suffix, StringComparison.OrdinalIgnoreCase);
+            if (match) return SchemaFolder + schema + ".schema.json";
+        }
+        return null;
+    }
 
     /// <summary>
     /// JSON version of an original string table, by original name or package path:

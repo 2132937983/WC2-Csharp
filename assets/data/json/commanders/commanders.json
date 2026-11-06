@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "about": "Commanders that scenarios can assign (converted from commanderdef.xml): country, rank and the six medal levels. Field reference: docs/DATA.md#commanders.",
+  "about": "Commanders that scenarios can assign (converted from commanderdef.xml): country, rank and the six medal levels. Field reference: DATA_SCHEMA.md#commanders.",
   "commanders": {
     "Rommel": {
       "country": "de",

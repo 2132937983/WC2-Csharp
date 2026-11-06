@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 namespace WC2;
 
 /// <summary>
-/// JSON versions of the smaller definition tables (see docs/DATA.md):
+/// JSON versions of the smaller definition tables (see DATA_SCHEMA.md):
 /// <list type="bullet">
 /// <item><c>data/cards.json</c> (carddef.xml): <c>{"countries": {"others": {"Tank": {"id": 4, "type": "army", "price": 220, ...}}}}</c></item>
 /// <item><c>data/commanders.json</c> (commanderdef.xml): <c>{"commanders": {"Rommel": {"country": "de", "rank": 9, "armour": 3, ...}}}</c></item>
@@ -90,7 +90,7 @@ public sealed partial class CObjectDef
         return new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "Cards per country (converted from carddef.xml); \"others\" applies to every country without an own entry. Field reference: docs/DATA.md#cards.",
+            ["about"] = "Cards per country (converted from carddef.xml); \"others\" applies to every country without an own entry. Field reference: DATA_SCHEMA.md#cards.",
             ["countries"] = countries,
         };
     }
@@ -131,7 +131,7 @@ public sealed partial class CObjectDef
         return new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "Commanders that scenarios can assign (converted from commanderdef.xml): country, rank and the six medal levels. Field reference: docs/DATA.md#commanders.",
+            ["about"] = "Commanders that scenarios can assign (converted from commanderdef.xml): country, rank and the six medal levels. Field reference: DATA_SCHEMA.md#commanders.",
             ["commanders"] = commanders,
             // commander levels were constants in the code; they start as the built-in table
             ["levels"] = LevelTablesJson.CommanderLevelsJson(),
@@ -176,7 +176,7 @@ public sealed partial class CObjectDef
         return new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "Portraits shown in dialogues and on the commander screen (converted from generalphotos.xml). Field reference: docs/DATA.md#portraits.",
+            ["about"] = "Portraits shown in dialogues and on the commander screen (converted from generalphotos.xml). Field reference: DATA_SCHEMA.md#portraits.",
             ["portraits"] = portraits,
         };
     }
@@ -265,7 +265,7 @@ public sealed partial class CObjectDef
         return new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "Campaign battles on the selection map (converted from battlelist.xml): position, era label, victory turns, flags and arrows (rot in degrees). Field reference: docs/DATA.md#campaigns.",
+            ["about"] = "Campaign battles on the selection map (converted from battlelist.xml): position, era label, victory turns, flags and arrows (rot in degrees). Field reference: DATA_SCHEMA.md#campaigns.",
             ["battles"] = battles,
         };
     }
@@ -295,7 +295,7 @@ public sealed partial class CObjectDef
         return new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "Conquests on the selection map (converted from conquestlist.xml): position and flags (rot in degrees). Field reference: docs/DATA.md#conquests.",
+            ["about"] = "Conquests on the selection map (converted from conquestlist.xml): position and flags (rot in degrees). Field reference: DATA_SCHEMA.md#conquests.",
             ["conquests"] = conquests,
         };
     }

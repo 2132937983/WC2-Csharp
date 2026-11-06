@@ -54,7 +54,7 @@ public static class GameRules
         return new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "Global rule numbers (the values reproduce the original game). Field reference: docs/DATA.md#rules.",
+            ["about"] = "Global rule numbers (the values reproduce the original game). Field reference: DATA_SCHEMA.md#rules.",
             ["combat"] = new JsonObject { ["diceThresholds"] = new JsonArray(diceThresholds.Select(t => (JsonNode)t).ToArray()) },
             ["economy"] = new JsonObject { ["moneyCap"] = moneyCap, ["industryCap"] = industryCap },
         };

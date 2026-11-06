@@ -24,7 +24,7 @@ namespace WC2;
 /// }
 /// </code>
 /// Field meanings, accepted names and defaults are those of the XML format (documented in
-/// docs/DATA.md); this reader goes through the same parsing helpers, and <c>--verify-data</c> proves
+/// DATA_SCHEMA.md); this reader goes through the same parsing helpers, and <c>--verify-data</c> proves
 /// that both files produce identical definitions. Mods merge into this file entry by entry.
 /// </summary>
 public sealed partial class CObjectDef
@@ -108,7 +108,7 @@ public sealed partial class CObjectDef
         var root = new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "Unit definitions (converted from armydef.xml). Field reference: docs/DATA.md#units.",
+            ["about"] = "Unit definitions (converted from armydef.xml). Field reference: DATA_SCHEMA.md#units.",
         };
         if (armies.Attribute("legacy-combat-defaults") is string legacy) root["legacyCombatDefaults"] = JsonData.Value(legacy);
 

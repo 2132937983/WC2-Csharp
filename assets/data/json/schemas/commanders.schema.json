@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "commanders.schema.json",
+  "title": "Commanders and the commander level table",
+  "description": "Field reference: DATA_SCHEMA.md. Checked whenever the game loads the file (mods included).",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version of this file format."
+    },
+    "about": {
+      "type": "string",
+      "description": "Free text for people reading the file."
+    },
+    "commanders": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string"
+          },
+          "rank": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "infantry": {
+            "type": "integer"
+          },
+          "airforce": {
+            "type": "integer"
+          },
+          "artillery": {
+            "type": "integer"
+          },
+          "armour": {
+            "type": "integer"
+          },
+          "navy": {
+            "type": "integer"
+          },
+          "honour": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "country",
+          "rank",
+          "infantry",
+          "airforce",
+          "artillery",
+          "armour",
+          "navy",
+          "honour"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "levels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "attack": {
+            "type": "integer"
+          },
+          "defence": {
+            "type": "integer"
+          },
+          "turnRecovery": {
+            "type": "integer"
+          },
+          "instantRecovery": {
+            "type": "integer"
+          },
+          "maxHpPercent": {
+            "type": "integer"
+          },
+          "coolDown": {
+            "type": "integer"
+          },
+          "medalsToNext": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "attack",
+          "defence",
+          "turnRecovery",
+          "instantRecovery",
+          "maxHpPercent",
+          "coolDown"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "format",
+    "commanders",
+    "levels"
+  ],
+  "additionalProperties": false
+}

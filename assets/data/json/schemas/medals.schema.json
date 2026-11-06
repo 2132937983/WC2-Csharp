@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "medals.schema.json",
+  "title": "War medal effects",
+  "description": "Field reference: DATA_SCHEMA.md. Checked whenever the game loads the file (mods included).",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version of this file format."
+    },
+    "about": {
+      "type": "string",
+      "description": "Free text for people reading the file."
+    },
+    "upgradeCost": {
+      "type": "object",
+      "properties": {
+        "base": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "perLevel": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "base",
+        "perLevel"
+      ],
+      "additionalProperties": false
+    },
+    "commerce": {
+      "type": "object",
+      "properties": {
+        "incomePercentPerLevel": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "incomePercentPerLevel"
+      ],
+      "additionalProperties": false
+    },
+    "airforce": {
+      "type": "object",
+      "properties": {
+        "attackBonus": {
+          "type": "integer"
+        },
+        "attackBonusFromLevel": {
+          "type": "integer"
+        },
+        "radius": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "radiusUpgraded": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "radiusUpgradedFromLevel": {
+          "type": "integer"
+        },
+        "noCooldownFromLevel": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "attackBonus",
+        "attackBonusFromLevel",
+        "radius",
+        "radiusUpgraded",
+        "radiusUpgradedFromLevel",
+        "noCooldownFromLevel"
+      ],
+      "additionalProperties": false
+    },
+    "draftBonuses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "medal": {
+            "type": "string"
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "cardType": {
+            "type": "string"
+          },
+          "addTactics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cards": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "upgrades": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "medal",
+          "level"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "format",
+    "upgradeCost",
+    "commerce",
+    "airforce",
+    "draftBonuses"
+  ],
+  "additionalProperties": false
+}

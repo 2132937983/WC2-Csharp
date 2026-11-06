@@ -50,9 +50,16 @@ with the game's file:
 
 The field reference of every data file is in `DATA_SCHEMA.md`.
 
-**Scenarios and tutorial scripts** (`data/json/scenarios/*.json`) are ordered lists; a mod's file
-replaces the game's file of the same name. To add a scenario, add `data/json/scenarios/<name>.json` and
-its entry in `data/json/campaigns/campaigns.json` or `data/json/conquests/conquests.json`. The pause box **Save** button writes the running
+**Scenarios and tutorial scripts** are the original XML files (`data/xml/scenarios/`,
+`scripts/tutorial/`); a mod's file replaces the game's file by path or original name. To add a
+scenario, add its XML, an entry in `data/json/scenarios/index.json` (`"file"` says where the XML is) and
+its entry in `data/json/campaigns/campaigns.json` or `data/json/conquests/conquests.json`. A battle
+exported with the pause box **Save** button (`game.json`, JSON scenario format, DATA_SCHEMA.md) can be
+put into a mod as `data/json/scenarios/<name>.json`; it is then read instead of the XML of that name.
+
+Every data file is checked against its schema (`data/json/schemas/`) when it loads. If a mod makes a
+file invalid, the log says where (`$.countries.others.Tank.price: -5 is below the minimum 0`) and the
+mod's changes to that file are ignored. The pause box **Save** button writes the running
 battle as `game.json` in the documents folder, ready to be copied into a mod as a scenario.
 
 **Any other file** (textures, atlases, fonts, sounds, music) is replaced:

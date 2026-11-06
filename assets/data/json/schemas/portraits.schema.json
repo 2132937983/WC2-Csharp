@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "portraits.schema.json",
+  "title": "General portraits (atlas entries)",
+  "description": "Field reference: DATA_SCHEMA.md. Checked whenever the game loads the file (mods included).",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version of this file format."
+    },
+    "about": {
+      "type": "string",
+      "description": "Free text for people reading the file."
+    },
+    "portraits": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "w": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "h": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "refx": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "file",
+          "w",
+          "h",
+          "refx"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "format",
+    "portraits"
+  ],
+  "additionalProperties": false
+}

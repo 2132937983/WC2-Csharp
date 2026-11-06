@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "about": "Conquests on the selection map (converted from conquestlist.xml): position and flags (rot in degrees). Field reference: docs/DATA.md#conquests.",
+  "about": "Conquests on the selection map (converted from conquestlist.xml): position and flags (rot in degrees). Field reference: DATA_SCHEMA.md#conquests.",
   "conquests": {
     "conquest 1": {
       "centerX": 261,

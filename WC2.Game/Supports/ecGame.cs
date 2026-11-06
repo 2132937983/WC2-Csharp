@@ -98,10 +98,16 @@ public static class ecGame
     {
         AssetsRoot = description ?? "";
         ecStringTable.JsonTwinResolver = DataPaths.TextJson;
+        JsonData.SchemaResolver = DataPaths.SchemaFor;   // every data file is checked against its schema when it loads
+        JsonData.ResetSchemas();
         AssetSystem.Reset();
         AssetSystem.Mount(new AssetLayer { Id = "base", Name = "Base game", Source = baseSource, Aliases = aliases });
         if (!ModsDisabled) ModManager.MountMods(modFolders ?? Array.Empty<string>());
         Log("Assets: " + AssetsRoot + (aliases != null ? " (package)" : " (legacy folder)") + ", " + ModManager.Loaded.Count + " mod(s)");
+        // definitions needed before the game initialises (layout choice, sounds, country art)
+        LayoutProfiles.LoadJson();
+        AudioDefs.LoadJson();
+        CountryDefs.LoadJson();
 
         string lang = langOverride;
         if (string.IsNullOrEmpty(lang))
@@ -225,7 +231,7 @@ public static class ecGame
         GUIManager guiManager = GUIManager.Instance();
         var screenRect = new GUIRect(0f, 0f, graphics.screenW, graphics.screenH);
         guiManager.Init(screenRect);
-        GUIButton.PlayClickSound = () => CCSoundBox.GetInstance().PlaySE("btn.wav");
+        GUIButton.PlayClickSound = () => CCSoundBox.GetInstance().PlaySE(AudioDefs.Ui("click"));
 
         CStateManager stateManager = CStateManager.Instance();
         stateManager.Init();
@@ -251,7 +257,7 @@ public static class ecGame
         Guard("CObjectDef.Init", () => CObjectDef.Instance().Init());
         Guard("CCommander.Load", () => g_Commander.Load());
 
-        sound.LoadSE("btn.wav");
+        foreach (var file in AudioDefs.preload) sound.LoadSE(file);
         InitGlobalFonts();
         s_initialized = true;
     }
@@ -298,14 +304,16 @@ public static class ecGame
     /// Java_com_easytech_wc2_ecRenderer_nativeInit: the logical layout follows the screen aspect
     /// ratio in four phone buckets (640/568/534/480 x 320) and the 1024x768 tablet layout below 1.40625.
     /// </summary>
+    /// <summary>
+    /// Picks the screen layout (data/json/layout/profiles.json; built in: the original nativeInit buckets
+    /// 640/568/534/480 x 320 by aspect ratio, 1024x768 below 1.40625). Call after the assets are mounted.
+    /// </summary>
     public static void SelectLayout(int screenW, int screenH, out int logicalW, out int logicalH)
     {
-        float aspect = (float)screenW / Math.Max(1, screenH);
-        if (aspect > 1.8875f) { logicalW = 640; logicalH = 320; }
-        else if (aspect > 1.721875f) { logicalW = 568; logicalH = 320; }
-        else if (aspect > 1.584375f) { logicalW = 534; logicalH = 320; }
-        else if (aspect < 1.40625f) { logicalW = 1024; logicalH = 768; }
-        else { logicalW = 480; logicalH = 320; }
+        var profile = LayoutProfiles.Select(screenW, screenH);
+        logicalW = profile.width;
+        logicalH = profile.height;
+        Log($"Layout: {profile} for a {screenW}x{screenH} screen");
     }
 
     /// <summary>Per frame update (port of the library's ecGameUpdate plus the commander auto save hook).</summary>

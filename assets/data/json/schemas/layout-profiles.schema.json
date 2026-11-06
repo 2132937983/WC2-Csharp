@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "layout-profiles.schema.json",
+  "title": "Screen layouts",
+  "description": "Field reference: DATA_SCHEMA.md. Checked whenever the game loads the file (mods included).",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version of this file format."
+    },
+    "about": {
+      "type": "string",
+      "description": "Free text for people reading the file."
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "aspectAbove": {
+            "type": "number"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "widthMode": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "artVariant": {
+            "type": "string"
+          },
+          "aspectBelow": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "width",
+          "height",
+          "widthMode",
+          "artVariant"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "format",
+    "profiles"
+  ],
+  "additionalProperties": false
+}

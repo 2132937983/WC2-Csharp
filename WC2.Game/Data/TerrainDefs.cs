@@ -301,7 +301,7 @@ public static class Terrain
         return new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "Terrain definitions: area types (as named in maps/<id>/areas.json), buildings, installations and terrain-wide numbers. These values reproduce the original game; field reference: docs/DATA.md#terrain.",
+            ["about"] = "Terrain definitions: area types (as named in data/json/maps/<id>/areas.json), buildings, installations and terrain-wide numbers. These values reproduce the original game; field reference: DATA_SCHEMA.md#terrain.",
             ["areaTypes"] = areas,
             ["constructions"] = constructions,
             ["installations"] = installations,

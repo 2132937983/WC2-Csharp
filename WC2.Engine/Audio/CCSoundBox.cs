@@ -294,12 +294,19 @@ public enum SND_EFFECT
 /// <summary>Preloaded in-game sound effects addressed by the SND_EFFECT enum.</summary>
 public sealed class CSoundRes
 {
-    public static readonly string[] FileNames =
+    // (declared before FileNames: static fields initialise in order)
+    private static readonly string[] s_builtIn =
     {
         "draft.wav", "move.wav", "occupy.wav", "cannon.wav", "rocket.wav", "fire.wav", "exp.wav", "strike.wav",
         "select.wav", "cancel.wav", "ship.wav", "celebrate.wav", "after_war.wav", "buff.wav", "build.wav",
         "card_interface.wav", "gas.wav", "lvup.wav", "machine_gun.wav", "naval_gun.wav", "pop.wav", "supply.wav",
     };
+
+    /// <summary>The original file of each <see cref="SND_EFFECT"/>.</summary>
+    public static string[] BuiltInFileNames => s_builtIn;
+
+    /// <summary>File per <see cref="SND_EFFECT"/> (the game sets it from its audio data).</summary>
+    public static string[] FileNames = s_builtIn.ToArray();
 
     public bool loaded;
 

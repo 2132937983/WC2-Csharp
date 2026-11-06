@@ -82,21 +82,25 @@ public static class DataMigration
         },
         new Converter
         {
-            name = "scenarios (battle_*.xml, conquest_*.xml, tutorails.xml)",
-            inlineDepth = 2,
-            convert = () => BattleScenario.ScenarioSources().Select(f => (DataPaths.Scenario(f), (JsonNode)BattleScenario.ConvertScenarioXml(f))).Where(x => x.Item2 != null),
+            name = "scenario index (battle_*.xml, conquest_*.xml, tutorails*.xml)",
+            inlineDepth = 4,
+            convert = () => One(DataPaths.ScenarioIndex, ScenarioIndex.Build()),
             verify = () =>
             {
                 var diffs = new List<string>();
-                var files = BattleScenario.ScenarioSources();
-                if (files.Count == 0) diffs.Add("no scenarios found");
-                foreach (var f in files)
+                var built = ScenarioIndex.Build();
+                if (JsonData.LoadMerged(DataPaths.ScenarioIndex) is not JsonObject file) return new List<string> { DataPaths.ScenarioIndex + " missing" };
+                foreach (var section in new[] { "scenarios", "tutorialScripts" })
                 {
-                    var xml = new BattleScenarioData();
-                    var json = new BattleScenarioData();
-                    if (!BattleScenario.LoadScenarioXml(f, xml)) { diffs.Add(f + ": original unreadable"); continue; }
-                    if (!BattleScenario.LoadScenarioJson(DataPaths.Scenario(f), f, json)) { diffs.Add(DataPaths.Scenario(f) + " missing"); continue; }
-                    diffs.AddRange(DataCompare.Diff(xml, json, f));
+                    var a = built.Obj(section) ?? new JsonObject();
+                    var b = file.Obj(section) ?? new JsonObject();
+                    foreach (var kv in a)
+                        if (!JsonNode.DeepEquals(kv.Value, b.Get(kv.Key))) diffs.Add($"{section}.{kv.Key}: the index does not match the XML");
+                    foreach (var kv in b)
+                    {
+                        if (a.Get(kv.Key) == null) diffs.Add($"{section}.{kv.Key}: no such original file");
+                        if ((kv.Value as JsonObject)?.Str("file") is string f && !AssetSystem.Exists(f)) diffs.Add($"{section}.{kv.Key}: file {f} missing");
+                    }
                 }
                 return diffs;
             },
@@ -113,6 +117,26 @@ public static class DataMigration
                 if (!AssetSystem.Exists(DataPaths.OptionsLayout)) return new List<string> { DataPaths.OptionsLayout + " missing" };
                 return DataCompare.Diff(OptionsLayoutJson.Describe(xml), OptionsLayoutJson.Describe(OptionsLayoutJson.Load()), "options");
             },
+        },
+        new Converter
+        {
+            name = "layout profiles (built-in buckets)",
+            inlineDepth = 2,
+            convert = () => One(DataPaths.LayoutProfiles, LayoutProfiles.BuiltInJson()),
+            verify = () => BuiltInVsJson(DataPaths.LayoutProfiles, "layout", LayoutProfiles.LoadBuiltIn, LayoutProfiles.LoadJson, LayoutProfiles.Snapshot),
+        },
+        new Converter
+        {
+            name = "audio (built-in file names)",
+            convert = () => One(DataPaths.Audio, AudioDefs.BuiltInJson()),
+            verify = () => BuiltInVsJson(DataPaths.Audio, "audio", AudioDefs.LoadBuiltIn, AudioDefs.LoadJson, AudioDefs.Snapshot),
+        },
+        new Converter
+        {
+            name = "countries (built-in lists)",
+            inlineDepth = 2,
+            convert = () => One(DataPaths.Countries, CountryDefs.BuiltInJson()),
+            verify = () => BuiltInVsJson(DataPaths.Countries, "countries", CountryDefs.LoadBuiltIn, CountryDefs.LoadJson, CountryDefs.Snapshot),
         },
         new Converter
         {
@@ -167,22 +191,6 @@ public static class DataMigration
                 return diffs;
             },
         },
-        new Converter
-        {
-            name = "tutorial scripts (tutorails_script*.xml)",
-            convert = () => TutorialScripts().Select(f => (DataPaths.TutorialScript(f), (JsonNode)GUITutorails.ConvertScriptXml(f))).Where(x => x.Item2 != null),
-            verify = () =>
-            {
-                var diffs = new List<string>();
-                foreach (var f in TutorialScripts())
-                {
-                    var json = GUITutorails.ReadScriptJson(DataPaths.TutorialScript(f));
-                    if (json == null) { diffs.Add(DataPaths.TutorialScript(f) + " missing"); continue; }
-                    diffs.AddRange(DataCompare.Diff(GUITutorails.ReadScriptXml(f), json, f));
-                }
-                return diffs;
-            },
-        },
     };
 
     private static List<int> MapIds() => AssetSystem.List()
@@ -191,10 +199,14 @@ public static class DataMigration
         .Select(n => int.TryParse(n.Substring(7, n.Length - 11), out int id) ? id : -1)
         .Where(id => id >= 0).OrderBy(id => id).ToList();
 
-    private static List<string> TutorialScripts() => AssetSystem.List()
-        .Select(Path.GetFileName)
-        .Where(n => n.StartsWith("tutorails_script", StringComparison.OrdinalIgnoreCase) && n.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
-        .OrderBy(n => n, StringComparer.Ordinal).ToList();
+    /// <summary>Loads the built-in values, then the JSON file, and compares the two.</summary>
+    private static List<string> BuiltInVsJson(string path, string label, Action loadBuiltIn, Func<bool> loadJson, Func<object> snapshot)
+    {
+        loadBuiltIn();
+        var builtIn = snapshot();
+        if (!loadJson()) return new List<string> { path + " missing" };
+        return DataCompare.Diff(builtIn, snapshot(), label);
+    }
 
     /// <summary>Every original string table of the package (all languages).</summary>
     private static List<string> StringTableSources() => AssetSystem.List()
@@ -256,6 +268,24 @@ public static class DataMigration
     public static int Verify()
     {
         int failures = 0;
+        // every JSON data file against its schema (loading validates; mods included)
+        JsonData.ValidationProblems.Clear();
+        int checkedFiles = 0;
+        foreach (var path in AssetSystem.List("data/json/").Where(p => p.EndsWith(".json", StringComparison.OrdinalIgnoreCase)).ToList())
+        {
+            if (DataPaths.SchemaFor(path) == null) continue;
+            JsonData.LoadMerged(path);
+            checkedFiles++;
+        }
+        var schemaProblems = JsonData.ValidationProblems.ToList();
+        if (schemaProblems.Count == 0) Console.WriteLine($"verify schemas ({checkedFiles} data files): identical");
+        else
+        {
+            failures++;
+            Console.WriteLine($"verify schemas ({checkedFiles} data files): {schemaProblems.Count} difference(s)");
+            foreach (var problem in schemaProblems.Take(40)) Console.WriteLine("   " + problem);
+        }
+
         foreach (var c in Converters())
         {
             List<string> diffs;

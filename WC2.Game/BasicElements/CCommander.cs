@@ -231,7 +231,7 @@ public sealed partial class CCommander
     {
         boughtMedal += medalIn;
         medal += medalIn;
-        CCSoundBox.GetInstance().PlaySE("buy.wav");
+        CCSoundBox.GetInstance().PlaySE(AudioDefs.Ui("buy"));
     }
 
     /// <summary>Level of a war medal.</summary>

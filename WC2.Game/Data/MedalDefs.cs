@@ -166,7 +166,7 @@ public static class Medals
         return new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "War medal rules (the values reproduce the original game). draftBonuses: a unit drafted with a card gets 'upgrades' level-ups and 'addTactics' when the owner's medal is at 'level' or above; 'cards' are card ids (data/cards.json), 'cardType' a card type. Field reference: docs/DATA.md#medals.",
+            ["about"] = "War medal rules (the values reproduce the original game). draftBonuses: a unit drafted with a card gets 'upgrades' level-ups and 'addTactics' when the owner's medal is at 'level' or above; 'cards' are card ids (data/json/cards/cards.json), 'cardType' a card type. Field reference: DATA_SCHEMA.md#medals.",
             ["upgradeCost"] = new JsonObject { ["base"] = upgradeCostBase, ["perLevel"] = upgradeCostPerLevel },
             ["commerce"] = new JsonObject { ["incomePercentPerLevel"] = commerceIncomePercentPerLevel },
             ["airforce"] = new JsonObject

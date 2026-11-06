@@ -75,7 +75,7 @@ public sealed partial class CGameManager
         var root = new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "Battle exported from a running game (turn " + (currentTurnNumMinusOne + 1) + ", " + battleFileName + "). Copy it into a mod as scenarios/<name>.json to play it. Field reference: docs/DATA.md#scenarios.",
+            ["about"] = "Battle exported from a running game (turn " + (currentTurnNumMinusOne + 1) + ", " + battleFileName + "). Copy it into a mod as scenarios/<name>.json to play it. Field reference: DATA_SCHEMA.md#scenarios.",
             ["map"] = mapId,
         };
         if (!string.IsNullOrEmpty(areasEnable)) root["areasEnable"] = areasEnable;

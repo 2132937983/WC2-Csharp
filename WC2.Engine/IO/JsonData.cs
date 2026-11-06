@@ -37,27 +37,80 @@ public static class JsonData
 
     public static JsonNode Parse(string text) => JsonNode.Parse(text, NodeOptions, DocumentOptions);
 
-    /// <summary>The merged document of a data file over all layers, or null when no layer has it.</summary>
+    /// <summary>
+    /// The schema (asset path) a data file is checked against, or null; set by the game
+    /// (DataPaths.SchemaFor). Without a resolver nothing is validated.
+    /// </summary>
+    public static Func<string, string> SchemaResolver;
+
+    /// <summary>Validation problems found while loading ("path: problem"); --verify-data reports them.</summary>
+    public static readonly List<string> ValidationProblems = new();
+
+    private static readonly Dictionary<string, JsonSchema> s_schemas = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>Forgets the loaded schemas (after the asset layers change).</summary>
+    public static void ResetSchemas() => s_schemas.Clear();
+
+    /// <summary>
+    /// The merged document of a data file over all layers, or null when no layer has it. The result is
+    /// validated against the file's schema (see <see cref="SchemaResolver"/>): problems are logged and
+    /// collected in <see cref="ValidationProblems"/>; when only the mods' version is invalid, the mods'
+    /// changes to this file are dropped and the game's own data is used.
+    /// </summary>
     public static JsonObject LoadMerged(string path)
     {
-        JsonObject merged = null;
+        JsonObject merged = null, baseOnly = null;
+        var mods = new List<string>();
         foreach (var (layer, text) in AssetSystem.ReadAllVersions(path))
         {
             JsonNode node;
             try { node = Parse(text); }
             catch (JsonException ex)
             {
-                Log($"JSON error in {path} ({layer.Id}): {ex.Message}");
+                Report($"{path} ({layer.Id}): JSON error: {ex.Message}");
                 continue;
             }
             if (node is not JsonObject obj)
             {
-                Log($"JSON error in {path} ({layer.Id}): the root must be an object");
+                Report($"{path} ({layer.Id}): the root must be an object");
                 continue;
             }
+            if (layer.IsMod && mods.Count == 0) baseOnly = (JsonObject)merged?.DeepClone();
+            if (layer.IsMod) mods.Add(layer.Id);
             merged = merged == null ? obj : (JsonObject)Merge(merged, obj);
         }
+        if (merged == null) return null;
+
+        var schema = SchemaOf(path);
+        if (schema == null) return merged;
+        var errors = schema.Validate(merged);
+        if (errors.Count == 0) return merged;
+        if (mods.Count > 0 && baseOnly != null && schema.Validate(baseOnly).Count == 0)
+        {
+            foreach (var e in errors) Report($"{path}: {e} (from {string.Join(", ", mods)}; their changes to this file are ignored)");
+            return baseOnly;
+        }
+        foreach (var e in errors) Report($"{path}: {e}");
         return merged;
+    }
+
+    private static JsonSchema SchemaOf(string path)
+    {
+        string schemaPath = SchemaResolver?.Invoke(path);
+        if (string.IsNullOrEmpty(schemaPath)) return null;
+        if (!s_schemas.TryGetValue(schemaPath, out var schema))
+        {
+            try { schema = JsonSchema.Load(schemaPath); }
+            catch (Exception ex) { Report($"{schemaPath}: unreadable schema: {ex.Message}"); }
+            s_schemas[schemaPath] = schema;
+        }
+        return schema;
+    }
+
+    private static void Report(string problem)
+    {
+        Log("Data: " + problem);
+        if (ValidationProblems.Count < 200) ValidationProblems.Add(problem);
     }
 
     /// <summary>Merges <paramref name="overlay"/> into <paramref name="baseNode"/> (see the class remarks).</summary>
@@ -89,8 +142,10 @@ public static class JsonData
     {
         string dir = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-        string text = inlineDepth > 0 ? Format(node, 0, inlineDepth) : node.ToJsonString(WriteOptions);
-        File.WriteAllText(path, text + "\n", new UTF8Encoding(false));
+        string text = (inlineDepth > 0 ? Format(node, 0, inlineDepth) : node.ToJsonString(WriteOptions)) + "\n";
+        // an unchanged file is left alone (also when only its line endings differ, e.g. after a git checkout)
+        if (File.Exists(path) && File.ReadAllText(path).Replace("\r\n", "\n") == text.Replace("\r\n", "\n")) return;
+        File.WriteAllText(path, text, new UTF8Encoding(false));
     }
 
     private static readonly JsonSerializerOptions CompactOptions = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };

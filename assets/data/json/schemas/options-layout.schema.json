@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "options-layout.schema.json",
+  "title": "Layout of the options page (phone and tablet)",
+  "description": "Field reference: DATA_SCHEMA.md. Checked whenever the game loads the file (mods included).",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version of this file format."
+    },
+    "about": {
+      "type": "string",
+      "description": "Free text for people reading the file."
+    },
+    "phone": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "element": {
+            "type": "string"
+          },
+          "item": {
+            "type": "string"
+          },
+          "src": {
+            "type": "string"
+          },
+          "x": {
+            "type": "integer"
+          },
+          "y": {
+            "type": "integer"
+          },
+          "w": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "h": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "id": {
+            "type": "string"
+          },
+          "normalImage": {
+            "type": "string"
+          },
+          "pressedImage": {
+            "type": "string"
+          },
+          "backgroundImage": {
+            "type": "string"
+          },
+          "font": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "align": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "knobX": {
+            "type": "integer"
+          },
+          "knobY": {
+            "type": "integer"
+          },
+          "initial": {
+            "type": "integer"
+          },
+          "multiplier": {
+            "type": "integer"
+          },
+          "horizontal": {
+            "type": "integer"
+          },
+          "checkedImage": {
+            "type": "string"
+          },
+          "checkedPressedImage": {
+            "type": "string"
+          },
+          "imageX": {
+            "type": "integer"
+          },
+          "imageY": {
+            "type": "integer"
+          },
+          "levels": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "element",
+          "x",
+          "y",
+          "w",
+          "h"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "tablet": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "element": {
+            "type": "string"
+          },
+          "item": {
+            "type": "string"
+          },
+          "src": {
+            "type": "string"
+          },
+          "x": {
+            "type": "integer"
+          },
+          "y": {
+            "type": "integer"
+          },
+          "w": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "h": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "id": {
+            "type": "string"
+          },
+          "normalImage": {
+            "type": "string"
+          },
+          "pressedImage": {
+            "type": "string"
+          },
+          "backgroundImage": {
+            "type": "string"
+          },
+          "font": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "align": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "knobX": {
+            "type": "integer"
+          },
+          "knobY": {
+            "type": "integer"
+          },
+          "initial": {
+            "type": "integer"
+          },
+          "multiplier": {
+            "type": "integer"
+          },
+          "horizontal": {
+            "type": "integer"
+          },
+          "checkedImage": {
+            "type": "string"
+          },
+          "checkedPressedImage": {
+            "type": "string"
+          },
+          "imageX": {
+            "type": "integer"
+          },
+          "imageY": {
+            "type": "integer"
+          },
+          "levels": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "element",
+          "x",
+          "y",
+          "w",
+          "h"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "format",
+    "phone",
+    "tablet"
+  ],
+  "additionalProperties": false
+}

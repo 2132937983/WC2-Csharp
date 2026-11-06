@@ -155,7 +155,7 @@ public sealed class GUIVictory : GUIElement
         {
             CCSoundBox soundBox = CCSoundBox.GetInstance();
             soundBox.UnloadMusic();
-            soundBox.LoadMusic("defeat_music.mp3", null);
+            soundBox.LoadMusic(AudioDefs.Music("defeat") ?? "defeat_music.mp3", null);
             soundBox.PlayMusic(true);
         }
     }

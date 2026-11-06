@@ -1,0 +1,880 @@
+{
+  "format": 1,
+  "about": "Scenarios and tutorial scripts. The files stay the original XML; this index says where each one is and summarises it (generated from the XML by --convert-data, checked by --verify-data). Field reference: DATA_SCHEMA.md#scenarios.",
+  "scenarios": {
+    "battle_allies1": {
+      "file": "data/xml/scenarios/battle_allies1.xml",
+      "mode": "campaign",
+      "series": "allies",
+      "level": 1,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_allies1.bin",
+      "countries": [
+        {"id": "ru1", "alliance": 3, "player": true},
+        {"id": "de1", "alliance": 1},
+        {"id": "de2", "alliance": 1},
+        {"id": "ru2", "alliance": 3},
+        {"id": "ru3", "alliance": 3},
+        {"id": "fl", "alliance": 1},
+        {"id": "ro", "alliance": 1}
+      ],
+      "areas": 156,
+      "dialogues": 4
+    },
+    "battle_allies10": {
+      "file": "data/xml/scenarios/battle_allies10.xml",
+      "mode": "campaign",
+      "series": "allies",
+      "level": 10,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_allies10.bin",
+      "countries": [
+        {"id": "am1", "alliance": 2, "player": true},
+        {"id": "ja", "alliance": 1},
+        {"id": "ru", "alliance": 2},
+        {"id": "tw", "alliance": 2},
+        {"id": "am2", "alliance": 2},
+        {"id": "ca", "alliance": 2}
+      ],
+      "areas": 101,
+      "dialogues": 5
+    },
+    "battle_allies2": {
+      "file": "data/xml/scenarios/battle_allies2.xml",
+      "mode": "campaign",
+      "series": "allies",
+      "level": 2,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_allies2.bin",
+      "countries": [
+        {"id": "am1", "alliance": 2, "player": true},
+        {"id": "ja", "alliance": 1},
+        {"id": "am2", "alliance": 2}
+      ],
+      "areas": 30,
+      "dialogues": 5
+    },
+    "battle_allies3": {
+      "file": "data/xml/scenarios/battle_allies3.xml",
+      "mode": "campaign",
+      "series": "allies",
+      "level": 3,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_allies3.bin",
+      "countries": [
+        {"id": "gb1", "alliance": 2, "player": true},
+        {"id": "de", "alliance": 1},
+        {"id": "gb2", "alliance": 2},
+        {"id": "it", "alliance": 1},
+        {"id": "au", "alliance": 2},
+        {"id": "fr", "alliance": 2},
+        {"id": "gr", "alliance": 2}
+      ],
+      "areas": 149,
+      "dialogues": 3
+    },
+    "battle_allies4": {
+      "file": "data/xml/scenarios/battle_allies4.xml",
+      "mode": "campaign",
+      "series": "allies",
+      "level": 4,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_allies4.bin",
+      "countries": [
+        {"id": "ru0", "alliance": 3, "player": true},
+        {"id": "de1", "alliance": 1},
+        {"id": "de2", "alliance": 1},
+        {"id": "ru1", "alliance": 3},
+        {"id": "ru2", "alliance": 3},
+        {"id": "ro", "alliance": 1}
+      ],
+      "areas": 125,
+      "dialogues": 5
+    },
+    "battle_allies5": {
+      "file": "data/xml/scenarios/battle_allies5.xml",
+      "mode": "campaign",
+      "series": "allies",
+      "level": 5,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_allies5.bin",
+      "countries": [
+        {"id": "gb", "alliance": 2, "player": true},
+        {"id": "it", "alliance": 1},
+        {"id": "am", "alliance": 2},
+        {"id": "de", "alliance": 1},
+        {"id": "bg", "alliance": 1}
+      ],
+      "areas": 50,
+      "dialogues": 3
+    },
+    "battle_allies6": {
+      "file": "data/xml/scenarios/battle_allies6.xml",
+      "mode": "campaign",
+      "series": "allies",
+      "level": 6,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_allies6.bin",
+      "countries": [
+        {"id": "gb", "alliance": 2, "player": true},
+        {"id": "ja", "alliance": 1},
+        {"id": "in", "alliance": 2},
+        {"id": "tw", "alliance": 2}
+      ],
+      "areas": 96,
+      "dialogues": 4
+    },
+    "battle_allies7": {
+      "file": "data/xml/scenarios/battle_allies7.xml",
+      "mode": "campaign",
+      "series": "allies",
+      "level": 7,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_allies7.bin",
+      "countries": [
+        {"id": "am", "alliance": 2, "player": true},
+        {"id": "am1", "alliance": 2},
+        {"id": "fr", "alliance": 2},
+        {"id": "gb", "alliance": 2},
+        {"id": "ca", "alliance": 2},
+        {"id": "de", "alliance": 1},
+        {"id": "ch", "alliance": 4},
+        {"id": "es", "alliance": 4}
+      ],
+      "areas": 81,
+      "dialogues": 5
+    },
+    "battle_allies8": {
+      "file": "data/xml/scenarios/battle_allies8.xml",
+      "mode": "campaign",
+      "series": "allies",
+      "level": 8,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_allies8.bin",
+      "countries": [
+        {"id": "am", "alliance": 2, "player": true},
+        {"id": "fr", "alliance": 2},
+        {"id": "gb", "alliance": 2},
+        {"id": "ru", "alliance": 2},
+        {"id": "de1", "alliance": 1},
+        {"id": "de2", "alliance": 1},
+        {"id": "de3", "alliance": 1},
+        {"id": "ro", "alliance": 1},
+        {"id": "hu", "alliance": 1},
+        {"id": "ch", "alliance": 4},
+        {"id": "se", "alliance": 4}
+      ],
+      "areas": 152,
+      "dialogues": 5
+    },
+    "battle_allies9": {
+      "file": "data/xml/scenarios/battle_allies9.xml",
+      "mode": "campaign",
+      "series": "allies",
+      "level": 9,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_allies9.bin",
+      "countries": [
+        {"id": "tw1", "alliance": 3, "player": true},
+        {"id": "tw2", "alliance": 3},
+        {"id": "ru", "alliance": 3},
+        {"id": "ja", "alliance": 1}
+      ],
+      "areas": 167,
+      "dialogues": 3
+    },
+    "battle_axis1": {
+      "file": "data/xml/scenarios/battle_axis1.xml",
+      "mode": "campaign",
+      "series": "axis",
+      "level": 1,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_axis1.bin",
+      "countries": [
+        {"id": "de1", "alliance": 1},
+        {"id": "de2", "alliance": 1, "player": true},
+        {"id": "pl", "alliance": 3}
+      ],
+      "areas": 54,
+      "dialogues": 5
+    },
+    "battle_axis10": {
+      "file": "data/xml/scenarios/battle_axis10.xml",
+      "mode": "campaign",
+      "series": "axis",
+      "level": 10,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_axis10.bin",
+      "countries": [
+        {"id": "de", "alliance": 1, "player": true},
+        {"id": "ja", "alliance": 1},
+        {"id": "it", "alliance": 1},
+        {"id": "am1", "alliance": 2},
+        {"id": "am2", "alliance": 2},
+        {"id": "am3", "alliance": 2},
+        {"id": "ca", "alliance": 2}
+      ],
+      "areas": 249,
+      "dialogues": 5
+    },
+    "battle_axis2": {
+      "file": "data/xml/scenarios/battle_axis2.xml",
+      "mode": "campaign",
+      "series": "axis",
+      "level": 2,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_axis2.bin",
+      "countries": [
+        {"id": "de1", "alliance": 1},
+        {"id": "de2", "alliance": 1, "player": true},
+        {"id": "fr", "alliance": 3},
+        {"id": "dk", "alliance": 3},
+        {"id": "no", "alliance": 3},
+        {"id": "nl", "alliance": 3},
+        {"id": "be", "alliance": 3},
+        {"id": "se", "alliance": 4}
+      ],
+      "areas": 68,
+      "dialogues": 5
+    },
+    "battle_axis3": {
+      "file": "data/xml/scenarios/battle_axis3.xml",
+      "mode": "campaign",
+      "series": "axis",
+      "level": 3,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_axis3.bin",
+      "countries": [
+        {"id": "gb", "alliance": 3},
+        {"id": "fr", "alliance": 3},
+        {"id": "de1", "alliance": 1, "player": true},
+        {"id": "de2", "alliance": 1},
+        {"id": "de3", "alliance": 1},
+        {"id": "ch", "alliance": 4}
+      ],
+      "areas": 89,
+      "dialogues": 3
+    },
+    "battle_axis4": {
+      "file": "data/xml/scenarios/battle_axis4.xml",
+      "mode": "campaign",
+      "series": "axis",
+      "level": 4,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_axis4.bin",
+      "countries": [
+        {"id": "bg", "alliance": 1},
+        {"id": "gb", "alliance": 3},
+        {"id": "gr", "alliance": 3},
+        {"id": "it1", "alliance": 1},
+        {"id": "it2", "alliance": 1, "player": true},
+        {"id": "ro", "alliance": 1},
+        {"id": "yu", "alliance": 3}
+      ],
+      "areas": 34,
+      "dialogues": 3
+    },
+    "battle_axis5": {
+      "file": "data/xml/scenarios/battle_axis5.xml",
+      "mode": "campaign",
+      "series": "axis",
+      "level": 5,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_axis5.bin",
+      "countries": [
+        {"id": "de1", "alliance": 1},
+        {"id": "de2", "alliance": 1, "player": true},
+        {"id": "gb", "alliance": 3},
+        {"id": "it", "alliance": 1},
+        {"id": "au", "alliance": 3},
+        {"id": "gr", "alliance": 3}
+      ],
+      "areas": 118,
+      "dialogues": 4
+    },
+    "battle_axis6": {
+      "file": "data/xml/scenarios/battle_axis6.xml",
+      "mode": "campaign",
+      "series": "axis",
+      "level": 6,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_axis6.bin",
+      "countries": [
+        {"id": "de1", "alliance": 1},
+        {"id": "de2", "alliance": 1, "player": true},
+        {"id": "ru1", "alliance": 3},
+        {"id": "ru2", "alliance": 3},
+        {"id": "fl", "alliance": 1},
+        {"id": "ro", "alliance": 1},
+        {"id": "hu", "alliance": 1}
+      ],
+      "areas": 184,
+      "dialogues": 5
+    },
+    "battle_axis7": {
+      "file": "data/xml/scenarios/battle_axis7.xml",
+      "mode": "campaign",
+      "series": "axis",
+      "level": 7,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_axis7.bin",
+      "countries": [
+        {"id": "ja1", "alliance": 1},
+        {"id": "ja2", "alliance": 1, "player": true},
+        {"id": "am", "alliance": 2}
+      ],
+      "areas": 32,
+      "dialogues": 3
+    },
+    "battle_axis8": {
+      "file": "data/xml/scenarios/battle_axis8.xml",
+      "mode": "campaign",
+      "series": "axis",
+      "level": 8,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_axis8.bin",
+      "countries": [
+        {"id": "ja", "alliance": 1, "player": true},
+        {"id": "gb", "alliance": 2},
+        {"id": "am", "alliance": 2},
+        {"id": "au", "alliance": 2}
+      ],
+      "areas": 75,
+      "dialogues": 3
+    },
+    "battle_axis9": {
+      "file": "data/xml/scenarios/battle_axis9.xml",
+      "mode": "campaign",
+      "series": "axis",
+      "level": 9,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_axis9.bin",
+      "countries": [
+        {"id": "gb", "alliance": 2},
+        {"id": "in", "alliance": 2},
+        {"id": "ja", "alliance": 1, "player": true},
+        {"id": "ja2", "alliance": 1},
+        {"id": "tw", "alliance": 2}
+      ],
+      "areas": 88,
+      "dialogues": 3
+    },
+    "battle_nato1": {
+      "file": "data/xml/scenarios/battle_nato1.xml",
+      "mode": "campaign",
+      "series": "nato",
+      "level": 1,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_nato1.bin",
+      "countries": [
+        {"id": "am", "alliance": 2, "player": true},
+        {"id": "ru", "alliance": 3},
+        {"id": "am1", "alliance": 2},
+        {"id": "mx", "alliance": 4}
+      ],
+      "areas": 108,
+      "dialogues": 4
+    },
+    "battle_nato2": {
+      "file": "data/xml/scenarios/battle_nato2.xml",
+      "mode": "campaign",
+      "series": "nato",
+      "level": 2,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_nato2.bin",
+      "countries": [
+        {"id": "fr", "alliance": 2, "player": true},
+        {"id": "ru", "alliance": 3},
+        {"id": "gb", "alliance": 2},
+        {"id": "pl", "alliance": 3},
+        {"id": "it", "alliance": 2},
+        {"id": "ro", "alliance": 3},
+        {"id": "yu", "alliance": 3},
+        {"id": "bg", "alliance": 3},
+        {"id": "hu", "alliance": 3},
+        {"id": "dk", "alliance": 2},
+        {"id": "nl", "alliance": 2},
+        {"id": "be", "alliance": 2},
+        {"id": "ch", "alliance": 4},
+        {"id": "pt", "alliance": 4},
+        {"id": "es", "alliance": 4}
+      ],
+      "areas": 199,
+      "dialogues": 4
+    },
+    "battle_nato3": {
+      "file": "data/xml/scenarios/battle_nato3.xml",
+      "mode": "campaign",
+      "series": "nato",
+      "level": 3,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_nato3.bin",
+      "countries": [
+        {"id": "gb", "alliance": 2, "player": true},
+        {"id": "fr", "alliance": 2},
+        {"id": "am3", "alliance": 2},
+        {"id": "pl", "alliance": 3},
+        {"id": "hu", "alliance": 3},
+        {"id": "ru", "alliance": 3}
+      ],
+      "areas": 141,
+      "dialogues": 5
+    },
+    "battle_nato4": {
+      "file": "data/xml/scenarios/battle_nato4.xml",
+      "mode": "campaign",
+      "series": "nato",
+      "level": 4,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_nato4.bin",
+      "countries": [
+        {"id": "am", "alliance": 2, "player": true},
+        {"id": "am1", "alliance": 2},
+        {"id": "ru", "alliance": 3},
+        {"id": "tr", "alliance": 2}
+      ],
+      "areas": 103,
+      "dialogues": 3
+    },
+    "battle_nato5": {
+      "file": "data/xml/scenarios/battle_nato5.xml",
+      "mode": "campaign",
+      "series": "nato",
+      "level": 5,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_nato5.bin",
+      "countries": [
+        {"id": "am", "alliance": 2, "player": true},
+        {"id": "gb", "alliance": 2},
+        {"id": "am1", "alliance": 2},
+        {"id": "ru", "alliance": 3},
+        {"id": "in", "alliance": 3}
+      ],
+      "areas": 114,
+      "dialogues": 3
+    },
+    "battle_nato6": {
+      "file": "data/xml/scenarios/battle_nato6.xml",
+      "mode": "campaign",
+      "series": "nato",
+      "level": 6,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_nato6.bin",
+      "countries": [
+        {"id": "am", "alliance": 2, "player": true},
+        {"id": "nk", "alliance": 3},
+        {"id": "ru", "alliance": 3},
+        {"id": "am1", "alliance": 2},
+        {"id": "au", "alliance": 2}
+      ],
+      "areas": 87,
+      "dialogues": 2
+    },
+    "battle_nato7": {
+      "file": "data/xml/scenarios/battle_nato7.xml",
+      "mode": "campaign",
+      "series": "nato",
+      "level": 7,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_nato7.bin",
+      "countries": [
+        {"id": "am", "alliance": 2, "player": true},
+        {"id": "ru1", "alliance": 3},
+        {"id": "ru2", "alliance": 3}
+      ],
+      "areas": 223,
+      "dialogues": 4
+    },
+    "battle_wto1": {
+      "file": "data/xml/scenarios/battle_wto1.xml",
+      "mode": "campaign",
+      "series": "wto",
+      "level": 1,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_wto1.bin",
+      "countries": [
+        {"id": "cn1", "alliance": 3, "player": true},
+        {"id": "cn2", "alliance": 3},
+        {"id": "tw", "alliance": 2},
+        {"id": "nk", "alliance": 3},
+        {"id": "rk", "alliance": 2},
+        {"id": "am", "alliance": 2}
+      ],
+      "areas": 92,
+      "dialogues": 4
+    },
+    "battle_wto2": {
+      "file": "data/xml/scenarios/battle_wto2.xml",
+      "mode": "campaign",
+      "series": "wto",
+      "level": 2,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_wto2.bin",
+      "countries": [
+        {"id": "cn1", "alliance": 3, "player": true},
+        {"id": "cn2", "alliance": 3},
+        {"id": "gb", "alliance": 2},
+        {"id": "in", "alliance": 2}
+      ],
+      "areas": 58,
+      "dialogues": 4
+    },
+    "battle_wto3": {
+      "file": "data/xml/scenarios/battle_wto3.xml",
+      "mode": "campaign",
+      "series": "wto",
+      "level": 3,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_wto3.bin",
+      "countries": [
+        {"id": "ru", "alliance": 3, "player": true},
+        {"id": "ru1", "alliance": 3},
+        {"id": "am", "alliance": 2},
+        {"id": "gb", "alliance": 2},
+        {"id": "tr", "alliance": 4}
+      ],
+      "areas": 89,
+      "dialogues": 2
+    },
+    "battle_wto4": {
+      "file": "data/xml/scenarios/battle_wto4.xml",
+      "mode": "campaign",
+      "series": "wto",
+      "level": 4,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_wto4.bin",
+      "countries": [
+        {"id": "ru", "alliance": 3, "player": true},
+        {"id": "am", "alliance": 2},
+        {"id": "ca", "alliance": 2},
+        {"id": "ru1", "alliance": 3}
+      ],
+      "areas": 104,
+      "dialogues": 3
+    },
+    "battle_wto5": {
+      "file": "data/xml/scenarios/battle_wto5.xml",
+      "mode": "campaign",
+      "series": "wto",
+      "level": 5,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_wto5.bin",
+      "countries": [
+        {"id": "ro", "alliance": 3, "player": true},
+        {"id": "tr", "alliance": 2},
+        {"id": "bg", "alliance": 3},
+        {"id": "gr", "alliance": 2},
+        {"id": "yu", "alliance": 2},
+        {"id": "hu", "alliance": 3}
+      ],
+      "areas": 30,
+      "dialogues": 2
+    },
+    "battle_wto6": {
+      "file": "data/xml/scenarios/battle_wto6.xml",
+      "mode": "campaign",
+      "series": "wto",
+      "level": 6,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_wto6.bin",
+      "countries": [
+        {"id": "ru", "alliance": 3, "player": true},
+        {"id": "am", "alliance": 2},
+        {"id": "fr", "alliance": 2},
+        {"id": "gb", "alliance": 2},
+        {"id": "hu", "alliance": 3},
+        {"id": "it", "alliance": 2},
+        {"id": "pl", "alliance": 3},
+        {"id": "ro", "alliance": 3},
+        {"id": "dk", "alliance": 2},
+        {"id": "nl", "alliance": 2},
+        {"id": "be", "alliance": 2}
+      ],
+      "areas": 121,
+      "dialogues": 2
+    },
+    "battle_wto7": {
+      "file": "data/xml/scenarios/battle_wto7.xml",
+      "mode": "campaign",
+      "series": "wto",
+      "level": 7,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/battle_wto7.bin",
+      "countries": [
+        {"id": "ru", "alliance": 3, "player": true},
+        {"id": "am", "alliance": 2},
+        {"id": "mx", "alliance": 2}
+      ],
+      "areas": 110,
+      "dialogues": 3
+    },
+    "conquest_1": {
+      "file": "data/xml/scenarios/conquest_1.xml",
+      "mode": "conquest",
+      "level": 1,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/conquest_1.bin",
+      "countries": [
+        {"id": "de", "alliance": 1},
+        {"id": "ru", "alliance": 2},
+        {"id": "gb", "alliance": 2},
+        {"id": "fr", "alliance": 2},
+        {"id": "it", "alliance": 1},
+        {"id": "pl", "alliance": 2},
+        {"id": "es", "alliance": 1},
+        {"id": "yu", "alliance": 2},
+        {"id": "ro", "alliance": 1},
+        {"id": "gr", "alliance": 2},
+        {"id": "bg", "alliance": 1},
+        {"id": "hu", "alliance": 1},
+        {"id": "fl", "alliance": 1},
+        {"id": "dk", "alliance": 2},
+        {"id": "nl", "alliance": 2},
+        {"id": "be", "alliance": 2},
+        {"id": "no", "alliance": 2},
+        {"id": "tr", "alliance": 4},
+        {"id": "pt", "alliance": 4},
+        {"id": "se", "alliance": 4},
+        {"id": "ch", "alliance": 4}
+      ],
+      "areas": 382,
+      "dialogues": 0
+    },
+    "conquest_2": {
+      "file": "data/xml/scenarios/conquest_2.xml",
+      "mode": "conquest",
+      "level": 2,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/conquest_2.bin",
+      "countries": [
+        {"id": "am", "alliance": 2},
+        {"id": "ja", "alliance": 1},
+        {"id": "ru", "alliance": 2},
+        {"id": "gb", "alliance": 2},
+        {"id": "tw", "alliance": 2},
+        {"id": "au", "alliance": 2},
+        {"id": "ca", "alliance": 2}
+      ],
+      "areas": 126,
+      "dialogues": 0
+    },
+    "conquest_3": {
+      "file": "data/xml/scenarios/conquest_3.xml",
+      "mode": "conquest",
+      "level": 3,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/conquest_3.bin",
+      "countries": [
+        {"id": "am", "alliance": 2},
+        {"id": "gb", "alliance": 2},
+        {"id": "fr", "alliance": 2},
+        {"id": "ca", "alliance": 2},
+        {"id": "de", "alliance": 1},
+        {"id": "it", "alliance": 1},
+        {"id": "ru", "alliance": 2},
+        {"id": "ro", "alliance": 1},
+        {"id": "bg", "alliance": 1},
+        {"id": "hu", "alliance": 1},
+        {"id": "fl", "alliance": 1},
+        {"id": "tr", "alliance": 2},
+        {"id": "es", "alliance": 1},
+        {"id": "pt", "alliance": 4},
+        {"id": "se", "alliance": 4},
+        {"id": "ch", "alliance": 4}
+      ],
+      "areas": 395,
+      "dialogues": 0
+    },
+    "conquest_4": {
+      "file": "data/xml/scenarios/conquest_4.xml",
+      "mode": "conquest",
+      "level": 4,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/conquest_4.bin",
+      "countries": [
+        {"id": "de", "alliance": 1},
+        {"id": "gb", "alliance": 2},
+        {"id": "fr", "alliance": 2},
+        {"id": "it", "alliance": 1},
+        {"id": "es", "alliance": 1},
+        {"id": "au", "alliance": 2},
+        {"id": "gr", "alliance": 2},
+        {"id": "tr", "alliance": 2},
+        {"id": "pt", "alliance": 4}
+      ],
+      "areas": 168,
+      "dialogues": 0
+    },
+    "conquest_5": {
+      "file": "data/xml/scenarios/conquest_5.xml",
+      "mode": "conquest",
+      "level": 5,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/conquest_5.bin",
+      "countries": [
+        {"id": "de", "alliance": 1},
+        {"id": "ja", "alliance": 1},
+        {"id": "it", "alliance": 1},
+        {"id": "am", "alliance": 2},
+        {"id": "ca", "alliance": 2},
+        {"id": "mx", "alliance": 2}
+      ],
+      "areas": 258,
+      "dialogues": 0
+    },
+    "conquest_6": {
+      "file": "data/xml/scenarios/conquest_6.xml",
+      "mode": "conquest",
+      "level": 6,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/conquest_6.bin",
+      "countries": [
+        {"id": "am", "alliance": 2},
+        {"id": "ru", "alliance": 3},
+        {"id": "cn", "alliance": 3},
+        {"id": "tw", "alliance": 2},
+        {"id": "nk", "alliance": 3},
+        {"id": "rk", "alliance": 2},
+        {"id": "gb", "alliance": 2},
+        {"id": "in", "alliance": 2},
+        {"id": "ja", "alliance": 2},
+        {"id": "au", "alliance": 2},
+        {"id": "ca", "alliance": 2}
+      ],
+      "areas": 223,
+      "dialogues": 0
+    },
+    "conquest_7": {
+      "file": "data/xml/scenarios/conquest_7.xml",
+      "mode": "conquest",
+      "level": 7,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/conquest_7.bin",
+      "countries": [
+        {"id": "ru", "alliance": 3},
+        {"id": "am", "alliance": 1},
+        {"id": "gb", "alliance": 1},
+        {"id": "fr", "alliance": 1},
+        {"id": "it", "alliance": 1},
+        {"id": "pl", "alliance": 3},
+        {"id": "yu", "alliance": 3},
+        {"id": "ro", "alliance": 3},
+        {"id": "gr", "alliance": 1},
+        {"id": "bg", "alliance": 3},
+        {"id": "hu", "alliance": 3},
+        {"id": "dk", "alliance": 1},
+        {"id": "tr", "alliance": 1},
+        {"id": "no", "alliance": 1},
+        {"id": "nl", "alliance": 1},
+        {"id": "be", "alliance": 1},
+        {"id": "se", "alliance": 4},
+        {"id": "ch", "alliance": 4},
+        {"id": "fl", "alliance": 4}
+      ],
+      "areas": 354,
+      "dialogues": 0
+    },
+    "conquest_8": {
+      "file": "data/xml/scenarios/conquest_8.xml",
+      "mode": "conquest",
+      "level": 8,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/conquest_8.bin",
+      "countries": [
+        {"id": "ru", "alliance": 3},
+        {"id": "am", "alliance": 1},
+        {"id": "gb", "alliance": 1},
+        {"id": "fr", "alliance": 1},
+        {"id": "it", "alliance": 1},
+        {"id": "cn", "alliance": 3},
+        {"id": "pl", "alliance": 3},
+        {"id": "tr", "alliance": 3},
+        {"id": "es", "alliance": 1},
+        {"id": "in", "alliance": 3},
+        {"id": "au", "alliance": 1},
+        {"id": "ca", "alliance": 1},
+        {"id": "yu", "alliance": 3},
+        {"id": "ro", "alliance": 3},
+        {"id": "gr", "alliance": 1},
+        {"id": "bg", "alliance": 3},
+        {"id": "hu", "alliance": 3},
+        {"id": "nk", "alliance": 3}
+      ],
+      "areas": 243,
+      "dialogues": 0
+    },
+    "conquest_9": {
+      "file": "data/xml/scenarios/conquest_9.xml",
+      "mode": "conquest",
+      "level": 9,
+      "map": 1,
+      "areaMask": "data/binary/scenarios/conquest_9.bin",
+      "countries": [
+        {"id": "de", "alliance": 1},
+        {"id": "ru", "alliance": 2},
+        {"id": "gb", "alliance": 2},
+        {"id": "fr", "alliance": 2},
+        {"id": "it", "alliance": 1},
+        {"id": "pl", "alliance": 2},
+        {"id": "es", "alliance": 1},
+        {"id": "yu", "alliance": 2},
+        {"id": "ro", "alliance": 1},
+        {"id": "gr", "alliance": 2},
+        {"id": "bg", "alliance": 1},
+        {"id": "hu", "alliance": 1},
+        {"id": "fl", "alliance": 1},
+        {"id": "dk", "alliance": 2},
+        {"id": "nl", "alliance": 2},
+        {"id": "be", "alliance": 2},
+        {"id": "no", "alliance": 2},
+        {"id": "tr", "alliance": 4},
+        {"id": "pt", "alliance": 4},
+        {"id": "se", "alliance": 4},
+        {"id": "ch", "alliance": 4}
+      ],
+      "areas": 382,
+      "dialogues": 0
+    },
+    "tutorails": {
+      "file": "data/xml/scenarios/tutorails.xml",
+      "mode": "tutorial",
+      "map": 1,
+      "areaMask": "data/binary/scenarios/tutorails.bin",
+      "countries": [
+        {"id": "gb1", "alliance": 2, "player": true},
+        {"id": "gb2", "alliance": 2},
+        {"id": "fr", "alliance": 2},
+        {"id": "de", "alliance": 1},
+        {"id": "be", "alliance": 4},
+        {"id": "nl", "alliance": 4},
+        {"id": "dk", "alliance": 4},
+        {"id": "no", "alliance": 4},
+        {"id": "se", "alliance": 4},
+        {"id": "pl", "alliance": 4},
+        {"id": "ch", "alliance": 4}
+      ],
+      "areas": 122,
+      "dialogues": 5
+    }
+  },
+  "tutorialScripts": {
+    "tutorails_script-512h": {
+      "file": "scripts/tutorial/tutorails_script-512h.xml"
+    },
+    "tutorails_script-534h": {
+      "file": "scripts/tutorial/tutorails_script-534h.xml"
+    },
+    "tutorails_script-568h": {
+      "file": "scripts/tutorial/tutorails_script-568h.xml"
+    },
+    "tutorails_script-640h": {
+      "file": "scripts/tutorial/tutorails_script-640h.xml"
+    },
+    "tutorails_script": {
+      "file": "scripts/tutorial/tutorails_script.xml"
+    },
+    "tutorails_script_iPad": {
+      "file": "scripts/tutorial/tutorails_script_iPad.xml"
+    }
+  }
+}

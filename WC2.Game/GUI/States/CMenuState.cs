@@ -82,7 +82,7 @@ public sealed class CMenuState : CBaseState
         GUIManager.Instance().currentState = this;
         GUIMotionManager.Instance().currentState = this;
 
-        CCSoundBox.GetInstance().LoadMusic("battle1.mp3", null);
+        CCSoundBox.GetInstance().LoadMusic(AudioDefs.Music("menu") ?? "battle1.mp3", null);
         CCSoundBox.GetInstance().PlayMusic(true);
 
         guiMainMenu = new GUIMainMenu();

@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "terrain.schema.json",
+  "title": "Area types, buildings and installations",
+  "description": "Field reference: DATA_SCHEMA.md. Checked whenever the game loads the file (mods included).",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version of this file format."
+    },
+    "about": {
+      "type": "string",
+      "description": "Free text for people reading the file."
+    },
+    "areaTypes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "cityLevel": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "industryLevel": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "healing": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "navyHealingMultiplier": {
+            "type": "integer"
+          },
+          "defence": {
+            "type": "integer"
+          },
+          "capital": {
+            "type": "boolean"
+          },
+          "port": {
+            "type": "boolean"
+          },
+          "keyArea": {
+            "type": "boolean"
+          },
+          "encirclementNeedsGarrison": {
+            "type": "boolean"
+          },
+          "medalBonus": {
+            "type": "integer"
+          },
+          "ai": {
+            "type": "object",
+            "properties": {
+              "construction": {
+                "type": "integer"
+              },
+              "airStrike": {
+                "type": "integer"
+              },
+              "nuclear": {
+                "type": "integer"
+              },
+              "airborne": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "construction",
+              "airStrike",
+              "nuclear",
+              "airborne"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "cityLevel",
+          "industryLevel",
+          "healing",
+          "navyHealingMultiplier",
+          "defence",
+          "capital",
+          "port",
+          "keyArea",
+          "encirclementNeedsGarrison",
+          "medalBonus",
+          "ai"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "constructions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "maxLevel": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "perLevel": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "healingLevel": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "maxLevel",
+          "perLevel",
+          "healingLevel"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "installations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "defence": {
+            "type": "integer"
+          },
+          "minCounterRange": {
+            "type": "integer"
+          },
+          "stopsAttackers": {
+            "type": "boolean"
+          },
+          "secondCounter": {
+            "type": "boolean"
+          },
+          "halvesRangedDamage": {
+            "type": "boolean"
+          },
+          "airStrikeDamagePercent": {
+            "type": "integer"
+          },
+          "protectsFromBombing": {
+            "type": "boolean"
+          },
+          "ai": {
+            "type": "object",
+            "properties": {
+              "airStrikePenalty": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "airStrikePenalty"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "defence",
+          "minCounterRange",
+          "stopsAttackers",
+          "secondCounter",
+          "halvesRangedDamage",
+          "airStrikeDamagePercent",
+          "protectsFromBombing",
+          "ai"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "healingPerLevel": {
+          "type": "integer"
+        },
+        "seaMaxMovement": {
+          "type": "integer"
+        },
+        "ai": {
+          "type": "object",
+          "properties": {
+            "airStrikeCityLevelWeight": {
+              "type": "integer"
+            },
+            "airStrikeIndustryLevelWeight": {
+              "type": "integer"
+            },
+            "airborneCityLevelWeight": {
+              "type": "integer"
+            },
+            "airborneIndustryLevelWeight": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "airStrikeCityLevelWeight",
+            "airStrikeIndustryLevelWeight",
+            "airborneCityLevelWeight",
+            "airborneIndustryLevelWeight"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "healingPerLevel",
+        "seaMaxMovement",
+        "ai"
+      ],
+      "additionalProperties": false
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "format",
+    "areaTypes",
+    "constructions",
+    "installations",
+    "rules"
+  ],
+  "additionalProperties": false
+}

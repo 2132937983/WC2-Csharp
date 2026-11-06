@@ -248,8 +248,9 @@ public sealed partial class CGameState
 
         motionGuiGold = GUIMotionManager.Instance().AddMotion(guiGold, 0.0f, 0.0f, 3.0f, 0);
         // Pick one of the four battle tracks at random each time the level is entered.
-        int random = GetRand() % 4;
-        string tmp_char = Sprintf("battle%d.mp3", random + 1);
+        // (data/json/audio/audio.json "battle": the original four tracks)
+        int random = GetRand() % Math.Max(1, AudioDefs.MusicCount("battle"));
+        string tmp_char = AudioDefs.Music("battle", random) ?? Sprintf("battle%d.mp3", random + 1);
         CCSoundBox.GetInstance().LoadMusic(tmp_char, null);
         CCSoundBox.GetInstance().PlayMusic(true);
         GUIManager.Instance().FadeIn(1);

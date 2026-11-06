@@ -16,6 +16,7 @@
   "knownMissingReferences": [
     "image.png",    // only in a comment of data/xml/armydef.xml
     "center.png",   // the sprite "intense center.png" of eff.xml (the scan stops at the space)
-    "editres.png"   // data/xml/legacy/editres.xml: the original editor's resource list
+    "editres.png",  // data/xml/legacy/editres.xml: the original editor's resource list
+    "boom.wav"      // data/json/audio/audio.json "explosion": the original preloads it but never shipped it
   ]
 }

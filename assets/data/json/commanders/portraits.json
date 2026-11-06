@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "about": "Portraits shown in dialogues and on the commander screen (converted from generalphotos.xml). Field reference: docs/DATA.md#portraits.",
+  "about": "Portraits shown in dialogues and on the commander screen (converted from generalphotos.xml). Field reference: DATA_SCHEMA.md#portraits.",
   "portraits": {
     "Rommel": {
       "file": "general_rommel.webp",

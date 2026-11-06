@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "scenario-index.schema.json",
+  "title": "Scenarios and tutorial scripts (the files stay the original XML)",
+  "description": "Field reference: DATA_SCHEMA.md. Checked whenever the game loads the file (mods included).",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version of this file format."
+    },
+    "about": {
+      "type": "string",
+      "description": "Free text for people reading the file."
+    },
+    "scenarios": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "series": {
+            "type": "string"
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "map": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "areaMask": {
+            "type": "string"
+          },
+          "countries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "alliance": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9
+                },
+                "player": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "alliance"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "areas": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "dialogues": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "file",
+          "mode",
+          "map",
+          "areaMask",
+          "countries",
+          "areas",
+          "dialogues"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "tutorialScripts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "format",
+    "scenarios",
+    "tutorialScripts"
+  ],
+  "additionalProperties": false
+}

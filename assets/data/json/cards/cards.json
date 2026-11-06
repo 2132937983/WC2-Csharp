@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "about": "Cards per country (converted from carddef.xml); \"others\" applies to every country without an own entry. Field reference: docs/DATA.md#cards.",
+  "about": "Cards per country (converted from carddef.xml); \"others\" applies to every country without an own entry. Field reference: DATA_SCHEMA.md#cards.",
   "countries": {
     "others": {
       "Infantry": {

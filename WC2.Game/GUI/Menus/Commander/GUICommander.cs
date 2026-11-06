@@ -234,7 +234,7 @@ public sealed class GUICommander : GUIElement
                     // upgrading the commander
                     if (g_Commander.CheckUpgarde())
                     {
-                        CCSoundBox.GetInstance().PlaySE("commander_lvup.wav");
+                        CCSoundBox.GetInstance().PlaySE(AudioDefs.Ui("commanderLevelUp"));
                         g_Commander.Upgrade();
                         SetCommanderInfo();
                         g_Commander.Save();
@@ -267,7 +267,7 @@ public sealed class GUICommander : GUIElement
                     if (g_Commander.CheckUpgradeWarMedal(medalId))
                     {
                         // upgrading a war medal
-                        CCSoundBox.GetInstance().PlaySE("commander_lvup.wav");
+                        CCSoundBox.GetInstance().PlaySE(AudioDefs.Ui("commanderLevelUp"));
                         g_Commander.UpgradeWarMedal(medalId);
                         SetCommanderInfo();
                         g_Commander.Save();

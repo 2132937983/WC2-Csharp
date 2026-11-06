@@ -318,260 +318,170 @@
       "size": 1951,
       "legacy": "tutorails.bin"
     },
+    "data/json/audio/audio.json": {
+      "size": 1250
+    },
     "data/json/campaigns/campaigns.json": {
-      "size": 59083
+      "size": 59084
     },
     "data/json/cards/cards.json": {
-      "size": 8163
+      "size": 8164
     },
     "data/json/commanders/commanders.json": {
-      "size": 6315
+      "size": 6316
     },
     "data/json/commanders/portraits.json": {
-      "size": 2078
+      "size": 2079
     },
     "data/json/conquests/conquests.json": {
-      "size": 15818
+      "size": 15819
+    },
+    "data/json/countries/countries.json": {
+      "size": 929
     },
     "data/json/layout/options.json": {
-      "size": 10498
+      "size": 10426
+    },
+    "data/json/layout/profiles.json": {
+      "size": 813
     },
     "data/json/maps/1/areas.json": {
-      "size": 83374
+      "size": 81421
     },
     "data/json/rules/medals.json": {
-      "size": 2244
+      "size": 2256
     },
     "data/json/rules/rules.json": {
-      "size": 302
+      "size": 303
     },
-    "data/json/scenarios/battle_allies1.json": {
-      "size": 21382
+    "data/json/scenarios/index.json": {
+      "size": 26716
     },
-    "data/json/scenarios/battle_allies10.json": {
-      "size": 16675
+    "data/json/schemas/audio.schema.json": {
+      "size": 1166
     },
-    "data/json/scenarios/battle_allies2.json": {
-      "size": 5894
+    "data/json/schemas/campaigns.schema.json": {
+      "size": 3011
     },
-    "data/json/scenarios/battle_allies3.json": {
-      "size": 21952
+    "data/json/schemas/cards.schema.json": {
+      "size": 1802
     },
-    "data/json/scenarios/battle_allies4.json": {
-      "size": 19335
+    "data/json/schemas/commanders.schema.json": {
+      "size": 2443
     },
-    "data/json/scenarios/battle_allies5.json": {
-      "size": 9373
+    "data/json/schemas/conquests.schema.json": {
+      "size": 1715
     },
-    "data/json/scenarios/battle_allies6.json": {
-      "size": 15146
+    "data/json/schemas/countries.schema.json": {
+      "size": 1065
     },
-    "data/json/scenarios/battle_allies7.json": {
-      "size": 14500
+    "data/json/schemas/layout-profiles.schema.json": {
+      "size": 1514
     },
-    "data/json/scenarios/battle_allies8.json": {
-      "size": 25208
+    "data/json/schemas/map-areas.schema.json": {
+      "size": 1055
     },
-    "data/json/scenarios/battle_allies9.json": {
-      "size": 22869
+    "data/json/schemas/medals.schema.json": {
+      "size": 2855
     },
-    "data/json/scenarios/battle_axis1.json": {
-      "size": 8881
+    "data/json/schemas/options-layout.schema.json": {
+      "size": 4604
     },
-    "data/json/scenarios/battle_axis10.json": {
-      "size": 33878
+    "data/json/schemas/portraits.schema.json": {
+      "size": 1239
     },
-    "data/json/scenarios/battle_axis2.json": {
-      "size": 11880
+    "data/json/schemas/rules.schema.json": {
+      "size": 1304
     },
-    "data/json/scenarios/battle_axis3.json": {
-      "size": 14329
+    "data/json/schemas/scenario-index.schema.json": {
+      "size": 2627
     },
-    "data/json/scenarios/battle_axis4.json": {
-      "size": 7488
+    "data/json/schemas/terrain.schema.json": {
+      "size": 5686
     },
-    "data/json/scenarios/battle_axis5.json": {
-      "size": 17658
+    "data/json/schemas/text.schema.json": {
+      "size": 782
     },
-    "data/json/scenarios/battle_axis6.json": {
-      "size": 25133
-    },
-    "data/json/scenarios/battle_axis7.json": {
-      "size": 6048
-    },
-    "data/json/scenarios/battle_axis8.json": {
-      "size": 11686
-    },
-    "data/json/scenarios/battle_axis9.json": {
-      "size": 13144
-    },
-    "data/json/scenarios/battle_nato1.json": {
-      "size": 15712
-    },
-    "data/json/scenarios/battle_nato2.json": {
-      "size": 29946
-    },
-    "data/json/scenarios/battle_nato3.json": {
-      "size": 21347
-    },
-    "data/json/scenarios/battle_nato4.json": {
-      "size": 15411
-    },
-    "data/json/scenarios/battle_nato5.json": {
-      "size": 17936
-    },
-    "data/json/scenarios/battle_nato6.json": {
-      "size": 14206
-    },
-    "data/json/scenarios/battle_nato7.json": {
-      "size": 26610
-    },
-    "data/json/scenarios/battle_wto1.json": {
-      "size": 15232
-    },
-    "data/json/scenarios/battle_wto2.json": {
-      "size": 9438
-    },
-    "data/json/scenarios/battle_wto3.json": {
-      "size": 14005
-    },
-    "data/json/scenarios/battle_wto4.json": {
-      "size": 15900
-    },
-    "data/json/scenarios/battle_wto5.json": {
-      "size": 6321
-    },
-    "data/json/scenarios/battle_wto6.json": {
-      "size": 20241
-    },
-    "data/json/scenarios/battle_wto7.json": {
-      "size": 15264
-    },
-    "data/json/scenarios/conquest_1.json": {
-      "size": 52242
-    },
-    "data/json/scenarios/conquest_2.json": {
-      "size": 19710
-    },
-    "data/json/scenarios/conquest_3.json": {
-      "size": 54930
-    },
-    "data/json/scenarios/conquest_4.json": {
-      "size": 25401
-    },
-    "data/json/scenarios/conquest_5.json": {
-      "size": 34857
-    },
-    "data/json/scenarios/conquest_6.json": {
-      "size": 33475
-    },
-    "data/json/scenarios/conquest_7.json": {
-      "size": 50344
-    },
-    "data/json/scenarios/conquest_8.json": {
-      "size": 38301
-    },
-    "data/json/scenarios/conquest_9.json": {
-      "size": 52242
-    },
-    "data/json/scenarios/tutorails.json": {
-      "size": 16759
-    },
-    "data/json/scenarios/tutorial/tutorails_script-512h.json": {
-      "size": 7676
-    },
-    "data/json/scenarios/tutorial/tutorails_script-534h.json": {
-      "size": 7677
-    },
-    "data/json/scenarios/tutorial/tutorails_script-568h.json": {
-      "size": 7678
-    },
-    "data/json/scenarios/tutorial/tutorails_script-640h.json": {
-      "size": 7679
-    },
-    "data/json/scenarios/tutorial/tutorails_script.json": {
-      "size": 7671
-    },
-    "data/json/scenarios/tutorial/tutorails_script_iPad.json": {
-      "size": 7263
+    "data/json/schemas/units.schema.json": {
+      "size": 7761
     },
     "data/json/terrain/terrain.json": {
-      "size": 4357
+      "size": 4368
     },
     "data/json/text/cn/Localizable.json": {
-      "size": 548,
+      "size": 547,
       "lang": "cn"
     },
     "data/json/text/cn/stringtable_cn.json": {
-      "size": 48463,
+      "size": 48462,
       "lang": "cn"
     },
     "data/json/text/cn/stringtable_cn_iPad.json": {
-      "size": 47380,
+      "size": 47379,
       "lang": "cn"
     },
     "data/json/text/en/Localizable.json": {
-      "size": 548,
+      "size": 547,
       "lang": "en"
     },
     "data/json/text/en/stringtable_en.json": {
-      "size": 47993,
+      "size": 47992,
       "lang": "en"
     },
     "data/json/text/en/stringtable_en_iPad.json": {
-      "size": 48119,
+      "size": 48118,
       "lang": "en"
     },
     "data/json/text/ja/Localizable.json": {
-      "size": 518,
+      "size": 517,
       "lang": "ja"
     },
     "data/json/text/ja/stringtable_ja.json": {
-      "size": 57801,
+      "size": 57800,
       "lang": "ja"
     },
     "data/json/text/ja/stringtable_ja_iPad.json": {
-      "size": 57934,
+      "size": 57933,
       "lang": "ja"
     },
     "data/json/text/kr/Localizable.json": {
-      "size": 548,
+      "size": 547,
       "lang": "kr"
     },
     "data/json/text/kr/stringtable_kr.json": {
-      "size": 64770,
+      "size": 64769,
       "lang": "kr"
     },
     "data/json/text/kr/stringtable_kr_iPad.json": {
-      "size": 64775,
+      "size": 64774,
       "lang": "kr"
     },
     "data/json/text/ru/Localizable.json": {
-      "size": 548,
+      "size": 547,
       "lang": "ru"
     },
     "data/json/text/ru/stringtable_ru.json": {
-      "size": 79077,
+      "size": 79076,
       "lang": "ru"
     },
     "data/json/text/ru/stringtable_ru_iPad.json": {
-      "size": 79082,
+      "size": 79081,
       "lang": "ru"
     },
     "data/json/text/tw/Localizable.json": {
-      "size": 518,
+      "size": 517,
       "lang": "tw"
     },
     "data/json/text/tw/stringtable_tw.json": {
-      "size": 46534,
+      "size": 46533,
       "lang": "tw"
     },
     "data/json/text/tw/stringtable_tw_iPad.json": {
-      "size": 46663,
+      "size": 46662,
       "lang": "tw"
     },
     "data/json/units/units.json": {
-      "size": 10236
+      "size": 10237
     },
     "data/legacy/map.ini": {
       "size": 1,

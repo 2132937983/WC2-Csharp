@@ -57,14 +57,9 @@ public sealed class CGameRes
     /// <summary>Runtime cache: army type + country to unit image and navy flag.</summary>
     public Dictionary<int, Dictionary<string, CGameResArmyRenderCacheEntry>> armyRenderCache = new();
 
-    // Country ids that may own dedicated unit art / flags in the resource pack; "others" is the fallback key.
-    public static readonly List<string> country_list = new()
-    {
-        "gb", "ru", "am", "fr", "ja", "it", "de", "ca", "fl", "ro",
-        "bg", "be", "gr", "cn", "tw", "in", "au", "pl", "hu", "yu",
-        "ch", "se", "pt", "dk", "no", "nl", "es", "mx", "nk", "rk",
-        "tr", "ne", "others", "tes",
-    };
+    // Country ids that may own dedicated unit art / flags in the resource pack; "others" is the fallback key
+    // (data/json/countries/countries.json, see CountryDefs).
+    public static List<string> country_list => CountryDefs.ids;
 
     // [0] land, [1] navy: converts the ArmyDef id to the resource name prefix used in army.xml
     // (listed in key order, like the std::map of the original).
@@ -88,7 +83,7 @@ public sealed class CGameRes
             new KeyValuePair<int, string>((int)AIRCRAFT_CARRIER, "aircraftcarrier"),
         },
     };
-    private static readonly string[] medal_list = { "gb", "de", "am", "fr", "it", "ru", "ja", "cn", "tw", "common_1", "common_2", "common_3" };
+    private static List<string> medal_list => CountryDefs.medals;
     private static readonly string[] alliance_list = { "blue", "green", "red", "gray" };
     private static readonly string[] installtion_list = { "fortress", "wire", "aagun", "radar" };
 

@@ -693,7 +693,7 @@ public sealed class GUIMainMenu : GUIElement
         }
 
         if (soundBox != null)
-            soundBox.PlaySE("main_interface.wav");
+            soundBox.PlaySE(AudioDefs.Ui("mainMenu"));
         return base.OnEvent(evt);
     }
 

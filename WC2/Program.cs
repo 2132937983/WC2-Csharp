@@ -47,9 +47,8 @@ if (DebugTools.TryRun(args)) return;
 // (640/568/534/480 x 320 by aspect ratio, 1024x768 below 1.40625) with HD content, as on Android.
 if (ipad && windowW == 1136 && windowH == 640) { windowW = 1024; windowH = 768; }
 g_contenscalefactor = 2.0f;
+ecGame.ConfigurePaths(assets, lang);   // first: the layout profiles are data
 ecGame.SelectLayout(windowW, windowH, out logicalW, out logicalH);
-
-ecGame.ConfigurePaths(assets, lang);
 
 using var game = new WC2Game(logicalW, logicalH, windowW, windowH);
 game.Run();

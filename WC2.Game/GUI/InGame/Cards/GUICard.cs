@@ -88,7 +88,7 @@ public sealed class GUICard : GUIElement
                 {
                     touched = false;
                     iTouched = 0;
-                    CCSoundBox.GetInstance().PlaySE("btn.wav");
+                    CCSoundBox.GetInstance().PlaySE(AudioDefs.Ui("click"));
                     base.OnEvent(Event.Button(this));
                 }
                 break;

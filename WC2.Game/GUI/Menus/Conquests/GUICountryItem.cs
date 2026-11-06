@@ -172,7 +172,7 @@ public sealed class GUICountryItem : GUIElement
                 if (touched)
                 {
                     touched = false;
-                    CCSoundBox.GetInstance().PlaySE("btn.wav");
+                    CCSoundBox.GetInstance().PlaySE(AudioDefs.Ui("click"));
 
                     base.OnEvent(Event.Button(this));
                 }

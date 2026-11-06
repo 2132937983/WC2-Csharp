@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "about": "Unit definitions (converted from armydef.xml). Field reference: docs/DATA.md#units.",
+  "about": "Unit definitions (converted from armydef.xml). Field reference: DATA_SCHEMA.md#units.",
   "legacyCombatDefaults": false,
   "weaponArmorRules": {},
   "unitTypes": {

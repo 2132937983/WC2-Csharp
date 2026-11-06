@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "campaigns.schema.json",
+  "title": "Campaign battles on the selection map",
+  "description": "Field reference: DATA_SCHEMA.md. Checked whenever the game loads the file (mods included).",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version of this file format."
+    },
+    "about": {
+      "type": "string",
+      "description": "Free text for people reading the file."
+    },
+    "battles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "age": {
+            "type": "string"
+          },
+          "centerX": {
+            "type": "integer"
+          },
+          "centerY": {
+            "type": "integer"
+          },
+          "ageX": {
+            "type": "integer"
+          },
+          "ageY": {
+            "type": "integer"
+          },
+          "victory": {
+            "type": "integer"
+          },
+          "greatVictory": {
+            "type": "integer"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "x": {
+                  "type": "integer"
+                },
+                "y": {
+                  "type": "integer"
+                },
+                "scale": {
+                  "type": [
+                    "number",
+                    "string"
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "x",
+                "y"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "arrows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "x": {
+                  "type": "integer"
+                },
+                "y": {
+                  "type": "integer"
+                },
+                "rot": {
+                  "type": "number"
+                },
+                "scale": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "name",
+                "x",
+                "y",
+                "rot",
+                "scale"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "age",
+          "centerX",
+          "centerY",
+          "ageX",
+          "ageY",
+          "victory",
+          "greatVictory",
+          "flags",
+          "arrows"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "format",
+    "battles"
+  ],
+  "additionalProperties": false
+}

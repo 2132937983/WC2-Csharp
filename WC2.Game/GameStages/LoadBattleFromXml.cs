@@ -124,7 +124,9 @@ public static partial class BattleScenario
     }
 
     /// <summary>
-    /// Reads a scenario: scenarios/&lt;name&gt;.json when the package has it, the original XML otherwise.
+    /// Reads a scenario: the original XML (located through data/json/scenarios/index.json). A scenario in
+    /// the JSON format (data/json/scenarios/&lt;name&gt;.json: a battle exported by the pause box Save button
+    /// and put into a mod) is read instead when one exists; the game itself ships none.
     /// </summary>
     /// <param name="fileName">scenario name (the original XML file name, e.g. "conquest_1.xml")</param>
     /// <param name="outData">receives the data</param>
@@ -134,16 +136,16 @@ public static partial class BattleScenario
         if (fileName == null || outData == null) return false;
         string jsonPath = DataPaths.Scenario(fileName);
         if (AssetSystem.Exists(jsonPath)) return LoadScenarioJson(jsonPath, fileName, outData);
-        return LoadScenarioXml(fileName, outData);
+        return LoadScenarioXml(fileName, outData, ScenarioIndex.FileOf(fileName));
     }
 
-    /// <summary>The original battle XML.</summary>
-    public static bool LoadScenarioXml(string fileName, BattleScenarioData outData)
+    /// <summary>The original battle XML (<paramref name="path"/>: where to read it, default the name itself).</summary>
+    public static bool LoadScenarioXml(string fileName, BattleScenarioData outData, string path = null)
     {
         outData.Clear();
         outData.fileName = fileName;
 
-        var document = new TiXmlDocument(GetPath(fileName, null));
+        var document = new TiXmlDocument(GetPath(path ?? fileName, null));
         if (!document.LoadFile(TIXML_ENCODING_UNKNOWN)) return false;
 
         TiXmlElement battle = document.FirstChildElement("battle");
@@ -309,7 +311,7 @@ public static partial class BattleScenario
         var root = new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "Scenario (converted from " + fileName + "). Countries are in turn order; alliance a/b/c are the sides, anything else is neutral. Field reference: docs/DATA.md#scenarios.",
+            ["about"] = "Scenario (converted from " + fileName + "). Countries are in turn order; alliance a/b/c are the sides, anything else is neutral. Field reference: DATA_SCHEMA.md#scenarios.",
         };
         Copy(battle, root, "map", "map");
         Copy(battle, root, "areasenable", "areasEnable");
@@ -464,7 +466,7 @@ public sealed partial class CGameManager
     public void LoadBattle(string FileName)
     {
         ClearBattle();
-        CCSoundBox.GetInstance().LoadSE("boom.wav");
+        CCSoundBox.GetInstance().LoadSE(AudioDefs.Ui("explosion"));
         SetRandSeed(TimeSeed());
         LoadBattleXml(FileName);
     }

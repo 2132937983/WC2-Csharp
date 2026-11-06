@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rules.schema.json",
+  "title": "Global rule numbers",
+  "description": "Field reference: DATA_SCHEMA.md. Checked whenever the game loads the file (mods included).",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version of this file format."
+    },
+    "about": {
+      "type": "string",
+      "description": "Free text for people reading the file."
+    },
+    "combat": {
+      "type": "object",
+      "properties": {
+        "diceThresholds": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "diceThresholds"
+      ],
+      "additionalProperties": false
+    },
+    "economy": {
+      "type": "object",
+      "properties": {
+        "moneyCap": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "industryCap": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "moneyCap",
+        "industryCap"
+      ],
+      "additionalProperties": false
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "format",
+    "combat",
+    "economy"
+  ],
+  "additionalProperties": false
+}

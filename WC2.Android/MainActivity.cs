@@ -39,13 +39,13 @@ public class MainActivity : AndroidGameActivity
         int w = Math.Max(metrics.WidthPixels, metrics.HeightPixels);
         int h = Math.Min(metrics.WidthPixels, metrics.HeightPixels);
         Globals.g_contenscalefactor = 2.0f;
-        ecGame.SelectLayout(w, h, out int logicalW, out int logicalH);
 
         // the runtime package is read straight from the APK (assets/pack); mods come from the app's
         // external files folder (Android/data/<package>/files/mods, reachable over USB) and documents/mods
         var (package, aliases, description) = OpenPackage();
         string externalMods = GetExternalFilesDir(null)?.AbsolutePath is string ext ? Path.Combine(ext, "mods") : null;
         ecGame.ConfigureAssets(package, aliases, description, new[] { externalMods, Path.Combine(docsDir, "mods") }, null);
+        ecGame.SelectLayout(w, h, out int logicalW, out int logicalH);   // after the assets: the layout profiles are data
         ecGame.HostHandlesLifecycle = true; // OnPause/OnResume below replace the window-focus polling
 
         ApplyWindowFlags();

@@ -1,0 +1,52 @@
+{
+  "format": 1,
+  "about": "Which sound plays for what (the values are the original game's files). Field reference: DATA_SCHEMA.md#audio.",
+  "music": {
+    "menu": [
+      "battle1.mp3"
+    ],
+    "battle": [
+      "battle1.mp3",
+      "battle2.mp3",
+      "battle3.mp3",
+      "battle4.mp3"
+    ],
+    "defeat": [
+      "defeat_music.mp3"
+    ]
+  },
+  "ui": {
+    "click": "btn.wav",
+    "buy": "buy.wav",
+    "commanderLevelUp": "commander_lvup.wav",
+    "mainMenu": "main_interface.wav",
+    "explosion": "boom.wav"
+  },
+  "effects": {
+    "draft": "draft.wav",
+    "move": "move.wav",
+    "occupy": "occupy.wav",
+    "cannon": "cannon.wav",
+    "rocket": "rocket.wav",
+    "fire": "fire.wav",
+    "exp": "exp.wav",
+    "strike": "strike.wav",
+    "select": "select.wav",
+    "cancel": "cancel.wav",
+    "ship": "ship.wav",
+    "celebrate": "celebrate.wav",
+    "after_war": "after_war.wav",
+    "buff": "buff.wav",
+    "build": "build.wav",
+    "card_interface": "card_interface.wav",
+    "gas": "gas.wav",
+    "lv_up": "lvup.wav",
+    "machine_gun": "machine_gun.wav",
+    "naval_gun": "naval_gun.wav",
+    "pop": "pop.wav",
+    "supply": "supply.wav"
+  },
+  "preload": [
+    "btn.wav"
+  ]
+}

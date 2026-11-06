@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "about": "Campaign battles on the selection map (converted from battlelist.xml): position, era label, victory turns, flags and arrows (rot in degrees). Field reference: docs/DATA.md#campaigns.",
+  "about": "Campaign battles on the selection map (converted from battlelist.xml): position, era label, victory turns, flags and arrows (rot in degrees). Field reference: DATA_SCHEMA.md#campaigns.",
   "battles": {
     "axis 1": {
       "age": "1939.9",

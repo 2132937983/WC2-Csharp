@@ -316,7 +316,7 @@ public sealed class GUICountryList : GUIElement
 
         ResetSelect();
         SetSelect(index);
-        CCSoundBox.GetInstance().PlaySE("btn.wav");
+        CCSoundBox.GetInstance().PlaySE(AudioDefs.Ui("click"));
 
         float targetY = y;
         float itemTop = targetY + index * dyCountryItem;

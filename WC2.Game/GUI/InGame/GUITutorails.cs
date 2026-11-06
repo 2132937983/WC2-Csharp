@@ -76,7 +76,8 @@ public sealed class GUITutorails : GUIElement
         else file = "tutorails_script-640h.xml";
 
         // the JSON script (scenarios/tutorial/<name>.json) wins over the original XML
-        var commands = ReadScriptJson(DataPaths.TutorialScript(file)) ?? ReadScriptXml(file);
+        // the original XML script (data/json/scenarios/index.json says where); a mod may ship a JSON version
+        var commands = ReadScriptJson(DataPaths.TutorialScript(file)) ?? ReadScriptXml(ScenarioIndex.ScriptFileOf(file));
         if (commands == null) { Log("Tutorial script missing: " + file); return; }
         cmd.AddRange(commands);
     }
@@ -183,7 +184,7 @@ public sealed class GUITutorails : GUIElement
     {
         textDlg.SetText(text);
         Show();
-        CCSoundBox.GetInstance().PlaySE("btn.wav");
+        CCSoundBox.GetInstance().PlaySE(AudioDefs.Ui("click"));
     }
 
     public void HideDlg() => Hide();

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cards.schema.json",
+  "title": "Cards per country (\"others\" for every other country)",
+  "description": "Field reference: DATA_SCHEMA.md. Checked whenever the game loads the file (mods included).",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1,
+      "description": "Version of this file format."
+    },
+    "about": {
+      "type": "string",
+      "description": "Free text for people reading the file."
+    },
+    "countries": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "type": {
+              "type": "string"
+            },
+            "price": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "industry": {
+              "type": "integer"
+            },
+            "round": {
+              "type": "integer"
+            },
+            "tech": {
+              "type": "integer"
+            },
+            "relatedArmyId": {
+              "type": "integer"
+            },
+            "image": {
+              "type": "string"
+            },
+            "intro": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "price",
+            "industry",
+            "round",
+            "tech",
+            "image",
+            "intro"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "format",
+    "countries"
+  ],
+  "additionalProperties": false
+}

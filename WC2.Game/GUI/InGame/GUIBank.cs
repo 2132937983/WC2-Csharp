@@ -110,7 +110,7 @@ public sealed class GUIBank : GUIElement
                 x78 += moneyGain;
                 g_Commander.medal -= medalCost;
                 country.borrowedLoan = true;
-                CCSoundBox.GetInstance().PlaySE("buy.wav");
+                CCSoundBox.GetInstance().PlaySE(AudioDefs.Ui("buy"));
             }
         }
 

@@ -1,0 +1,11 @@
+{
+  "format": 1,
+  "about": "Screen layouts, tried in order: the first whose aspect range (width / height) contains the screen's wins. The values are the original buckets. Field reference: DATA_SCHEMA.md#layout-profiles.",
+  "profiles": [
+    {"id": "phone-640", "aspectAbove": 1.8875, "width": 640, "height": 320, "widthMode": 2, "artVariant": "phone-640-hd"},
+    {"id": "phone-568", "aspectAbove": 1.721875, "width": 568, "height": 320, "widthMode": 2, "artVariant": "phone-568-hd"},
+    {"id": "phone-534", "aspectAbove": 1.584375, "width": 534, "height": 320, "widthMode": 2, "artVariant": "hd"},
+    {"id": "tablet", "aspectBelow": 1.40625, "width": 1024, "height": 768, "widthMode": 3, "artVariant": "tablet"},
+    {"id": "phone-480", "width": 480, "height": 320, "widthMode": 2, "artVariant": "hd"}
+  ]
+}
