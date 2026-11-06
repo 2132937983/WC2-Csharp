@@ -890,12 +890,12 @@
       "legacy": "zh_TW.lproj/locstrings.xml"
     },
     "generated/image/fonts/hd/cn/fontht.wctex": {
-      "size": 2307512,
+      "size": 3445139,
       "lang": "cn",
       "from": "image/fonts/hd/cn/fontht.png"
     },
     "generated/image/fonts/hd/cn/fontkt.wctex": {
-      "size": 2386705,
+      "size": 3542387,
       "lang": "cn",
       "from": "image/fonts/hd/cn/fontkt.png"
     },

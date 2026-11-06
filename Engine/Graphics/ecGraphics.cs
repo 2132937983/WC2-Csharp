@@ -178,6 +178,7 @@ public sealed class ecGraphics
             {
                 SurfaceFormat.RgbEtc1 or SurfaceFormat.Rgb8Etc2 => pixels / 2,
                 SurfaceFormat.Bgra4444 or SurfaceFormat.Bgr565 or SurfaceFormat.Bgra5551 => pixels * 2,
+                SurfaceFormat.Alpha8 => pixels,
                 _ => pixels * 4,
             };
             bytes += size;
@@ -252,25 +253,167 @@ public sealed class ecGraphics
             matricesDirty = false;
         }
         effect.Texture = currentTexture ?? whiteTexture;
-        device.BlendState = CurrentBlendState();
         device.SamplerStates[0] = sampler;
         device.RasterizerState = s_clipToScreen;
         device.ScissorRectangle = screenClip;
         device.DepthStencilState = DepthStencilState.None;
-        foreach (var pass in effect.CurrentTechnique.Passes)
+        if (AlphaTexture && alphaSampling == AlphaSampling.Luminance)
         {
-            pass.Apply();
-            device.DrawUserPrimitives(PrimitiveType.TriangleList, vertices, 0, vertexCount / 3);
+            DrawCoverageBatch();
+            drawCalls += 2;
+            vertexCount = 0;
+            return;
         }
+        if (AlphaTexture)
+        {
+            // the coverage is in alpha, the colour black: fog at full strength (start == end) gives
+            // rgb = fog colour * alpha (premultiplied), alpha = texture alpha * vertex alpha
+            effect.FogEnabled = true;
+            effect.FogStart = 0f;
+            effect.FogEnd = 0f;
+            effect.FogColor = new Vector3((alphaTint & 0xFF) / 255f, ((alphaTint >> 8) & 0xFF) / 255f, ((alphaTint >> 16) & 0xFF) / 255f);
+            device.BlendState = blendMode == 1 ? s_premultipliedAdditive : blendMode == 3 ? s_multiply : BlendState.AlphaBlend;
+        }
+        else
+        {
+            effect.FogEnabled = false;
+            device.BlendState = CurrentBlendState();
+        }
+        DrawBatch();
         drawCalls++;
         vertexCount = 0;
     }
 
     private static Color ToColor(uint abgr) => new Color { PackedValue = abgr };
 
+    /// <summary>
+    /// Colour of the current batch on an alpha-only texture (Alpha8 samples as black with alpha): the
+    /// batch is drawn with BasicEffect's fog at full strength in this colour, which keeps the texture's
+    /// alpha times the vertex alpha and replaces the colour. A different vertex colour starts a new
+    /// batch (at a triangle boundary).
+    /// </summary>
+    private uint alphaTint;
+    private bool AlphaTexture => currentTexture != null && currentTexture.Format == SurfaceFormat.Alpha8;
+
+    /// <summary>How the GPU samples an Alpha8 texture (probed once, see <see cref="ProbeAlpha8"/>).</summary>
+    private enum AlphaSampling { Unknown, AlphaChannel, Luminance, Unsupported }
+    private AlphaSampling alphaSampling = AlphaSampling.Unknown;
+
+    private void DrawBatch()
+    {
+        foreach (var pass in effect.CurrentTechnique.Passes)
+        {
+            pass.Apply();
+            device.DrawUserPrimitives(PrimitiveType.TriangleList, vertices, 0, vertexCount / 3);
+        }
+    }
+
+    // coverage in the colour channels (an Alpha8 texture uploaded as luminance, MonoGame on OpenGL):
+    // pass 1 darkens the destination by the coverage, pass 2 adds the colour times the coverage;
+    // together dst * (1 - L * a) + c * L * a, which is ordinary alpha blending of colour c
+    private static readonly BlendState s_coverageErase = new BlendState
+    {
+        ColorSourceBlend = Blend.Zero, ColorDestinationBlend = Blend.InverseSourceColor,
+        AlphaSourceBlend = Blend.Zero, AlphaDestinationBlend = Blend.One,
+    };
+    private static readonly BlendState s_coverageAdd = new BlendState
+    {
+        ColorSourceBlend = Blend.One, ColorDestinationBlend = Blend.One,
+        AlphaSourceBlend = Blend.Zero, AlphaDestinationBlend = Blend.One,
+    };
+    private Color[] coverageColors = Array.Empty<Color>();
+
+    private void DrawCoverageBatch()
+    {
+        effect.FogEnabled = false;
+        if (coverageColors.Length < vertexCount) coverageColors = new Color[vertices.Length];
+        for (int i = 0; i < vertexCount; i++) coverageColors[i] = vertices[i].Color;
+        if (blendMode != 1)
+        {
+            for (int i = 0; i < vertexCount; i++)
+            {
+                byte a = coverageColors[i].A;
+                vertices[i].Color = new Color(a, a, a, a);
+            }
+            device.BlendState = s_coverageErase;
+            DrawBatch();
+        }
+        for (int i = 0; i < vertexCount; i++)
+        {
+            var c = coverageColors[i];
+            vertices[i].Color = new Color(c.R * c.A / 255, c.G * c.A / 255, c.B * c.A / 255, c.A);
+        }
+        device.BlendState = s_coverageAdd;
+        DrawBatch();
+        for (int i = 0; i < vertexCount; i++) vertices[i].Color = coverageColors[i];
+    }
+
+    /// <summary>
+    /// Draws one Alpha8 pixel of value 255 into a 1x1 target and reads it back: (0,0,0,1) means the
+    /// coverage arrives in alpha (GL_ALPHA), (1,1,1,1) in the colour channels (luminance, MonoGame's
+    /// OpenGL mapping). Anything else, or an error, and Alpha8 textures are expanded to RGBA4444.
+    /// </summary>
+    private AlphaSampling ProbeAlpha8()
+    {
+        try
+        {
+            using var tex = new Texture2D(device, 1, 1, false, SurfaceFormat.Alpha8);
+            tex.SetData(new byte[] { 255 });
+            using var target = new RenderTarget2D(device, 1, 1, false, SurfaceFormat.Color, DepthFormat.None);
+            var previous = device.GetRenderTargets();
+            device.SetRenderTarget(target);
+            device.Clear(Color.Transparent);
+            using var fx = new BasicEffect(device)
+            {
+                TextureEnabled = true, VertexColorEnabled = true, Texture = tex,
+                Projection = Matrix.CreateOrthographicOffCenter(0, 1, 1, 0, -1, 1), View = Matrix.Identity, World = Matrix.Identity,
+            };
+            device.BlendState = BlendState.Opaque;
+            device.RasterizerState = RasterizerState.CullNone;
+            device.DepthStencilState = DepthStencilState.None;
+            device.SamplerStates[0] = SamplerState.PointClamp;
+            var quad = new[]
+            {
+                new VertexPositionColorTexture(new Vector3(0, 0, 0), Color.White, new Vector2(0, 0)),
+                new VertexPositionColorTexture(new Vector3(1, 0, 0), Color.White, new Vector2(1, 0)),
+                new VertexPositionColorTexture(new Vector3(0, 1, 0), Color.White, new Vector2(0, 1)),
+                new VertexPositionColorTexture(new Vector3(1, 0, 0), Color.White, new Vector2(1, 0)),
+                new VertexPositionColorTexture(new Vector3(1, 1, 0), Color.White, new Vector2(1, 1)),
+                new VertexPositionColorTexture(new Vector3(0, 1, 0), Color.White, new Vector2(0, 1)),
+            };
+            foreach (var pass in fx.CurrentTechnique.Passes) { pass.Apply(); device.DrawUserPrimitives(PrimitiveType.TriangleList, quad, 0, 2); }
+            device.SetRenderTargets(previous);
+            var pixel = new Color[1];
+            target.GetData(pixel);
+            var p = pixel[0];
+            var mode = p.A > 200 && p.R < 50 ? AlphaSampling.AlphaChannel
+                     : p.A > 200 && p.R > 200 ? AlphaSampling.Luminance
+                     : AlphaSampling.Unsupported;
+            Log($"Textures: Alpha8 samples as ({p.R},{p.G},{p.B},{p.A}) -> {mode}");
+            return mode;
+        }
+        catch (Exception ex)
+        {
+            Log("Textures: Alpha8 probe failed (" + ex.Message + "), alpha pages become RGBA4444");
+            try { device.SetRenderTarget(null); } catch { }
+            return AlphaSampling.Unsupported;
+        }
+    }
+
+    private static readonly BlendState s_premultipliedAdditive = new BlendState
+    {
+        ColorSourceBlend = Blend.One, AlphaSourceBlend = Blend.One,
+        ColorDestinationBlend = Blend.One, AlphaDestinationBlend = Blend.One,
+    };
+
     private void AddVertex(float x, float y, uint color, float u, float v)
     {
         if (vertexCount >= MaxVertices) Flush();
+        if (AlphaTexture && alphaSampling == AlphaSampling.AlphaChannel && (color & 0x00FFFFFFu) != alphaTint && vertexCount % 3 == 0)
+        {
+            Flush();
+            alphaTint = color & 0x00FFFFFFu;
+        }
         vertices[vertexCount++] = new VertexPositionColorTexture(new Vector3(x, y, 0f), ToColor(color), new Vector2(u, v));
     }
 
@@ -641,8 +784,9 @@ public sealed class ecGraphics
     public const string GeneratedTextureExtension = ".wctex";
 
     /// <summary>
-    /// A generated texture: "WCTX", version 1, format (1 = RGBA4444, 2 = RGBA5551), width, height, then
-    /// the deflate compressed 16 bit pixels in GL_UNSIGNED_SHORT_4_4_4_4 / 5_5_5_1 order.
+    /// A generated texture: "WCTX", version 1, format (1 = RGBA4444, 2 = RGBA5551, 3 = Alpha8), width,
+    /// height, then the deflate compressed pixels (16 bit GL_UNSIGNED_SHORT_4_4_4_4 / 5_5_5_1, or 8 bit
+    /// alpha). An Alpha8 texture samples as (0, 0, 0, a); Flush tints it (see <see cref="alphaTint"/>).
     /// </summary>
     private ecTexture LoadGeneratedTexture(byte[] data, string path)
     {
@@ -651,8 +795,8 @@ public sealed class ecGraphics
         int format = BitConverter.ToUInt16(data, 6);
         int width = BitConverter.ToInt32(data, 8);
         int height = BitConverter.ToInt32(data, 12);
-        if (version != 1 || (format != 1 && format != 2) || width <= 0 || height <= 0) return null;
-        var pixels = new byte[width * height * 2];
+        if (version != 1 || format < 1 || format > 3 || width <= 0 || height <= 0) return null;
+        var pixels = new byte[width * height * (format == 3 ? 1 : 2)];
         using (var input = new System.IO.Compression.DeflateStream(new MemoryStream(data, 16, data.Length - 16), System.IO.Compression.CompressionMode.Decompress))
         {
             int read = 0;
@@ -664,8 +808,26 @@ public sealed class ecGraphics
             }
             if (read != pixels.Length) return null;
         }
+        if (format == 3)
+        {
+            if (alphaSampling == AlphaSampling.Unknown) alphaSampling = ProbeAlpha8();
+            if (alphaSampling == AlphaSampling.Unsupported)
+            {
+                // expand to RGBA4444: white with the alpha in the low nibble
+                var expanded = new byte[width * height * 2];
+                for (int i = 0; i < pixels.Length; i++)
+                {
+                    int a = (pixels[i] * 15 + 127) / 255;
+                    expanded[i * 2] = (byte)(0xF0 | a);
+                    expanded[i * 2 + 1] = 0xFF;
+                }
+                pixels = expanded;
+                format = 1;
+            }
+        }
         // MonoGame maps Bgra4444 / Bgra5551 to GL RGBA with UNSIGNED_SHORT_4_4_4_4 / 5_5_5_1 on OpenGL and OpenGL ES
-        var tex2d = new Texture2D(device, width, height, false, format == 2 ? SurfaceFormat.Bgra5551 : SurfaceFormat.Bgra4444);
+        var tex2d = new Texture2D(device, width, height, false,
+            format == 3 ? SurfaceFormat.Alpha8 : format == 2 ? SurfaceFormat.Bgra5551 : SurfaceFormat.Bgra4444);
         tex2d.SetData(pixels);
         return new ecTexture { handle = tex2d, pixelW = width, pixelH = height, w = width, h = height, refCount = 1 };
     }

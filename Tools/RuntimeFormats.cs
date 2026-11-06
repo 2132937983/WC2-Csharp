@@ -47,12 +47,13 @@ internal static class RuntimeFormats
             }
             string generated = GeneratedPath(target);
             string dest = Path.Combine(outDir, generated);
-            if (force || !File.Exists(dest) || File.GetLastWriteTimeUtc(dest) < File.GetLastWriteTimeUtc(source))
+            if (force || !File.Exists(dest) || File.GetLastWriteTimeUtc(dest) < File.GetLastWriteTimeUtc(source) || StoredFormat(dest) != FormatCode(rule.format))
             {
                 switch (rule.format)
                 {
                     case "rgba4444": WriteRgba4444(source, dest); break;
                     case "rgba5551": WriteRgba5551(source, dest); break;
+                    case "alpha8": WriteAlpha8(source, dest); break;
                     default: throw new ToolException("unknown runtime format " + rule.format);
                 }
                 File.SetLastWriteTimeUtc(dest, File.GetLastWriteTimeUtc(source));
@@ -75,6 +76,20 @@ internal static class RuntimeFormats
         if (!File.Exists(listPath) || File.ReadAllText(listPath) != text) File.WriteAllText(listPath, text);
         sizes[TextureFormatsFile] = new FileInfo(listPath).Length;
         return count + atLoad.Count;
+    }
+
+    private static int FormatCode(string format) => format switch { "rgba4444" => 1, "rgba5551" => 2, "alpha8" => 3, _ => 0 };
+
+    /// <summary>The format code in a .wctex header (a changed rule regenerates the file).</summary>
+    private static int StoredFormat(string path)
+    {
+        try
+        {
+            using var fs = File.OpenRead(path);
+            var header = new byte[8];
+            return fs.Read(header, 0, 8) == 8 ? BitConverter.ToUInt16(header, 6) : -1;
+        }
+        catch (IOException) { return -1; }
     }
 
     /// <summary>Package path of the load-time conversion list.</summary>
@@ -138,6 +153,29 @@ internal static class RuntimeFormats
             packed[i * 2 + 1] = (byte)(v >> 8);
         }
         WriteWctex(dest, 2, info.Width, info.Height, packed);
+    }
+
+    /// <summary>
+    /// Alpha8 (format 3): only the alpha channel, 8 bits; for pages whose colour is plain white (the
+    /// Kai/Hei glyph pages). A quarter of RGBA8; the game tints them with the text colour.
+    /// </summary>
+    private static void WriteAlpha8(string source, string dest)
+    {
+        using var codec = SKCodec.Create(source) ?? throw new ToolException("cannot decode " + source);
+        var info = new SKImageInfo(codec.Info.Width, codec.Info.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+        using var bitmap = new SKBitmap(info);
+        var result = codec.GetPixels(info, bitmap.GetPixels());
+        if (result != SKCodecResult.Success && result != SKCodecResult.IncompleteInput) throw new ToolException("cannot decode " + source + ": " + result);
+        byte[] rgba = bitmap.Bytes;
+        int pixels = info.Width * info.Height;
+        var alpha = new byte[pixels];
+        for (int i = 0; i < pixels; i++)
+        {
+            // a glyph page is white; where it is not, the luminance scales the alpha so nothing turns brighter
+            int lum = (rgba[i * 4] * 299 + rgba[i * 4 + 1] * 587 + rgba[i * 4 + 2] * 114) / 1000;
+            alpha[i] = (byte)(rgba[i * 4 + 3] * lum / 255);
+        }
+        WriteWctex(dest, 3, info.Width, info.Height, alpha);
     }
 
     private static void WriteWctex(string dest, ushort format, int width, int height, byte[] packed)

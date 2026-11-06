@@ -5,13 +5,14 @@
   "exclude": [ "^build\\.json$", "^legacy-names\\.json$", "\\.md$" ],
 
   // Runtime formats generated under generated/ ("match" is a regex on the package path).
-  // rgba4444: the 4096 px Kai/Hei glyph pages (white glyphs, shape in alpha) as 16 bit pixels:
-  // 32 MB instead of 64 MB each on the GPU and no PNG decode when the game starts.
+  // alpha8: the 4096 px Kai/Hei glyph pages (white glyphs, shape in alpha) as their alpha channel
+  // only: 16 MB instead of 64 MB each on the GPU and no PNG decode when the game starts (the game
+  // tints them with the text colour). rgba4444 is the 16 bit alternative.
   // rgba5551@load: the area overlays of the map (greyscale, hard edges): 32 grey levels and a 1 bit
   // alpha, half the memory of RGBA8 (about 25 MB less on a conquest). "@load": the game converts them
   // when it loads them (listed in generated/texture_formats.json), so the package does not grow.
   "runtimeFormats": [
-    { "match": "^image/fonts/hd/cn/font(ht|kt)\\.png$", "format": "rgba4444" },
+    { "match": "^image/fonts/hd/cn/font(ht|kt)\\.png$", "format": "alpha8" },
     { "match": "^image/map/regions/.*\\.webp$", "format": "rgba5551@load" }
   ],
 
