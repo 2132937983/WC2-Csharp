@@ -49,6 +49,20 @@ internal static class PackBuilder
                 throw new ToolException("generated/ is written by the build; remove " + rel + " from the asset tree");
             plan[rel] = file;
         }
+        // built-in mods (assets/build.json "builtInMods": folders relative to assets/): packaged under
+        // mods/<folder name>/ and mounted by the game as mods (--no-mods leaves them out)
+        foreach (var modDir in settings.BuiltInMods)
+        {
+            string dir = Path.GetFullPath(Path.Combine(assetsDir, modDir));
+            if (!File.Exists(Path.Combine(dir, "mod.json"))) throw new ToolException("built-in mod without mod.json: " + dir);
+            string name = Path.GetFileName(dir.TrimEnd(Path.DirectorySeparatorChar, '/'));
+            foreach (var file in Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories))
+            {
+                string rel = Path.GetRelativePath(dir, file).Replace('\\', '/');
+                if (rel.EndsWith(".md", StringComparison.OrdinalIgnoreCase)) continue;
+                plan["mods/" + name + "/" + rel] = file;
+            }
+        }
         var planKeys = new HashSet<string>(plan.Keys, StringComparer.OrdinalIgnoreCase);
         var missing = legacy.Where(kv => !planKeys.Contains(kv.Value)).Select(kv => $"{kv.Key} -> {kv.Value}").ToList();
         if (missing.Count > 0)
@@ -195,6 +209,7 @@ internal sealed class BuildSettings
     public readonly List<Regex> Exclude = new();
     public readonly List<(Regex match, string format)> RuntimeFormats = new();
     public readonly HashSet<string> KnownMissingReferences = new(StringComparer.OrdinalIgnoreCase);
+    public readonly List<string> BuiltInMods = new();
 
     public bool IsExcluded(string rel) => Exclude.Any(r => r.IsMatch(rel));
 
@@ -214,6 +229,8 @@ internal sealed class BuildSettings
         if (root.TryGetProperty("runtimeFormats", out var rf))
             foreach (var r in rf.EnumerateArray())
                 s.RuntimeFormats.Add((new Regex(r.GetProperty("match").GetString()!, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), r.GetProperty("format").GetString()!));
+        if (root.TryGetProperty("builtInMods", out var bm))
+            foreach (var m in bm.EnumerateArray()) s.BuiltInMods.Add(m.GetString()!);
         if (root.TryGetProperty("knownMissingReferences", out var km))
             foreach (var k in km.EnumerateArray()) s.KnownMissingReferences.Add(k.GetString()!);
         return s;

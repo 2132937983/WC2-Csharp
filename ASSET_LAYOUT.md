@@ -81,7 +81,9 @@ shipped as `assets/pack/` in the APK). It:
 1. copies the tree to the package (same paths; `build.json`, `legacy-names.json` and Markdown files
    stay out), incrementally;
 2. generates runtime formats under `generated/` (see below);
-3. writes `generated/asset_index.json`: every file with its size, variant, language and original
+3. packages the mods listed in `build.json` `builtInMods` under `mods/<id>/` (the game mounts them as
+   mods; `--no-mods` leaves them out);
+4. writes `generated/asset_index.json`: every file with its size, variant, language and original
    name(s), and the full original name -> path map. The desktop build also writes a copy to
    `generated/asset_index.json` in the repository root, so a review shows what changed.
 

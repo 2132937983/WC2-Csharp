@@ -89,7 +89,7 @@ mod (`mods/map-natural-earth`: conquest 10 "WORLD (NATURAL EARTH)" in the conque
 
 `Hosts/Android` compiles the engine, data and game sources with `MonoGame.Framework.Android`. The
 generated package ships inside the APK as `assets/pack/` and is read in place through its index; only
-when that fails is it extracted once. Mods go to `Android/data/com.wc2remake.csharp/files/mods/`.
+when that fails is it extracted once. The world map mod is built in (conquest 10). Mods go to `Android/data/com.wc2remake.csharp/files/mods/`.
 Requirements: the .NET Android workload, an Android SDK (platform 34+), JDK 17. The project points at
 `C:\Android` and `C:\Program Files\Java\jdk-17.0.2` when they exist; override with
 `-p:AndroidSdkDirectory=... -p:JavaSdkDirectory=...`.

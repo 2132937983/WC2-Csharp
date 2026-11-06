@@ -8,7 +8,11 @@ ASSET_LAYOUT.md). Mods are read from:
 | Windows | `%LOCALAPPDATA%\WC2CSharp\mods\<mod>\`, `mods\` next to the program, and in a development build the repository's `mods/` folder (or only the folder passed with `--mods <folder>`) |
 | Android | `Android/data/com.wc2remake.csharp/files/mods/<mod>/` (reachable over USB), and `files/documents/mods/` |
 
-`--no-mods` starts the desktop build without them; `--all-mods` also loads mods marked
+Mods can also be **built into the package**: `assets/build.json` `builtInMods` lists mod folders that
+the build packages under `mods/<id>/` (the APK included); the game mounts them like folder mods, a
+folder mod with the same id replaces them. The generated world map ships this way.
+
+`--no-mods` starts the desktop build without any of them; `--all-mods` also loads mods marked
 `"enabled": false`. `mods/example-balance` is a working example (shipped disabled).
 
 ## mod.json

@@ -16,6 +16,12 @@
     { "match": "^image/map/regions/.*\\.webp$", "format": "rgba5551@load" }
   ],
 
+  // Mods built into the package (folders relative to assets/): packaged under mods/<name>/ and mounted
+  // by the game like any mod (--no-mods leaves them out; a mod folder with the same id replaces them).
+  // The generated world map (MAP_PIPELINE.md): conquest 10 in the conquest list. Remove the line to
+  // ship the game without it.
+  "builtInMods": [ "../mods/map-natural-earth" ],
+
   // Asset names the original data mentions although the original game never shipped them
   // (validate reports them but does not fail).
   "knownMissingReferences": [

@@ -107,11 +107,14 @@ conquest, into a mod: `mods/map-natural-earth/` (3.2 MB, enabled; the build scri
 | `conquest_10.xml`, `conquest_10.bin` | `LoadBattle` | the conquest: 31 countries (`players`: side, commander, colour), their regions, armies in capitals and cities, every area enabled; the rest of the land starts unowned |
 | `data/json/conquests/conquests.json`, `data/json/text/<lang>/stringtable_<lang>[_iPad].json`, `button_conquest10@2x.png` | the conquest menu | the entry "conquest 10" (merged into the game's list), its title, the country names, intros and victory texts (English in every language), and its button |
 
-With the mod mounted, the conquest list has a tenth entry, **WORLD (NATURAL EARTH)** (second page),
+The mod is **built into the package** (`assets/build.json` `builtInMods`: it ships inside the APK and
+next to the desktop program under `mods/map-natural-earth/` and is mounted like any mod; `--no-mods`
+leaves it out, a mod folder with the same id replaces it, removing the line from `build.json` ships
+the game without it). So the conquest list has a tenth entry, **WORLD (NATURAL EARTH)** (second page),
 with a live preview of the map and the 31 countries to choose from. On the desktop it can also start
 right away: `dotnet run --project Hosts/Desktop -- --scenario conquest_10.xml --country fr` (any of
 the 31 countries), or from a script with `startconquest conquest_10.xml fr`. On Android, copy the mod
-folder to `Android/data/com.wc2remake.csharp/files/mods/`. The classic map and every campaign and conquest are untouched; removing or
+folder to `Android/data/com.wc2remake.csharp/files/mods/` only to replace the built-in copy. The classic map and every campaign and conquest are untouched; removing or
 disabling the mod reverts everything. Texture memory at the start of the world conquest: 168 MB
 (desktop).
 

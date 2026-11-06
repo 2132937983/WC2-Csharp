@@ -106,7 +106,8 @@ public static class ecGame
         ecGraphics.ResetLoadFormats();
         AssetSystem.Reset();
         AssetSystem.Mount(new AssetLayer { Id = "base", Name = "Base game", Source = baseSource, Aliases = aliases });
-        if (!ModsDisabled) ModManager.MountMods(modFolders ?? Array.Empty<string>());
+        // mods from the folders, then the mods built into the package (mods/<id>/, e.g. the world map)
+        if (!ModsDisabled) ModManager.MountMods(modFolders ?? Array.Empty<string>(), baseSource);
         Log("Assets: " + AssetsRoot + (aliases != null ? " (package)" : " (legacy folder)") + ", " + ModManager.Loaded.Count + " mod(s)");
         // definitions needed before the game initialises (layout choice, sounds, country art)
         LayoutProfiles.LoadJson();

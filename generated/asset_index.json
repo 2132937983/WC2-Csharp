@@ -5957,6 +5957,381 @@
       "variant": "tablet",
       "legacy": "victorybg_wto_iPad.webp"
     },
+    "mods/map-natural-earth/adjion2.bin": {
+      "size": 91532
+    },
+    "mods/map-natural-earth/area2.bin": {
+      "size": 59228
+    },
+    "mods/map-natural-earth/areamark2.raw": {
+      "size": 528392
+    },
+    "mods/map-natural-earth/button_conquest10@2x.png": {
+      "size": 10911
+    },
+    "mods/map-natural-earth/conquest_10.bin": {
+      "size": 1350
+    },
+    "mods/map-natural-earth/conquest_10.xml": {
+      "size": 49766
+    },
+    "mods/map-natural-earth/data/json/conquests/conquests.json": {
+      "size": 238
+    },
+    "mods/map-natural-earth/data/json/maps/2/areas.json": {
+      "size": 31925
+    },
+    "mods/map-natural-earth/data/json/text/cn/stringtable_cn.json": {
+      "size": 9808,
+      "lang": "cn"
+    },
+    "mods/map-natural-earth/data/json/text/cn/stringtable_cn_iPad.json": {
+      "size": 9808,
+      "lang": "cn"
+    },
+    "mods/map-natural-earth/data/json/text/en/stringtable_en.json": {
+      "size": 9808,
+      "lang": "en"
+    },
+    "mods/map-natural-earth/data/json/text/en/stringtable_en_iPad.json": {
+      "size": 9808,
+      "lang": "en"
+    },
+    "mods/map-natural-earth/data/json/text/ja/stringtable_ja.json": {
+      "size": 9808,
+      "lang": "ja"
+    },
+    "mods/map-natural-earth/data/json/text/ja/stringtable_ja_iPad.json": {
+      "size": 9808,
+      "lang": "ja"
+    },
+    "mods/map-natural-earth/data/json/text/kr/stringtable_kr.json": {
+      "size": 9808,
+      "lang": "kr"
+    },
+    "mods/map-natural-earth/data/json/text/kr/stringtable_kr_iPad.json": {
+      "size": 9808,
+      "lang": "kr"
+    },
+    "mods/map-natural-earth/data/json/text/ru/stringtable_ru.json": {
+      "size": 9808,
+      "lang": "ru"
+    },
+    "mods/map-natural-earth/data/json/text/ru/stringtable_ru_iPad.json": {
+      "size": 9808,
+      "lang": "ru"
+    },
+    "mods/map-natural-earth/data/json/text/tw/stringtable_tw.json": {
+      "size": 9808,
+      "lang": "tw"
+    },
+    "mods/map-natural-earth/data/json/text/tw/stringtable_tw_iPad.json": {
+      "size": 9808,
+      "lang": "tw"
+    },
+    "mods/map-natural-earth/generated/texture_formats.json": {
+      "size": 2920
+    },
+    "mods/map-natural-earth/m2_zone1_1.png": {
+      "size": 49513
+    },
+    "mods/map-natural-earth/m2_zone1_1.xml": {
+      "size": 2702
+    },
+    "mods/map-natural-earth/m2_zone2_1.png": {
+      "size": 50012
+    },
+    "mods/map-natural-earth/m2_zone2_1.xml": {
+      "size": 7712
+    },
+    "mods/map-natural-earth/m2_zone3_1.png": {
+      "size": 29003
+    },
+    "mods/map-natural-earth/m2_zone3_1.xml": {
+      "size": 8582
+    },
+    "mods/map-natural-earth/m2_zone4_1.png": {
+      "size": 35813
+    },
+    "mods/map-natural-earth/m2_zone4_1.xml": {
+      "size": 8579
+    },
+    "mods/map-natural-earth/m2_zone5_1.png": {
+      "size": 61735
+    },
+    "mods/map-natural-earth/m2_zone5_1.xml": {
+      "size": 11163
+    },
+    "mods/map-natural-earth/m2_zone6_1.png": {
+      "size": 101499
+    },
+    "mods/map-natural-earth/m2_zone6_1.xml": {
+      "size": 26410
+    },
+    "mods/map-natural-earth/m2_zone7_1.png": {
+      "size": 102339
+    },
+    "mods/map-natural-earth/m2_zone7_1.xml": {
+      "size": 42583
+    },
+    "mods/map-natural-earth/map2_1.png": {
+      "size": 19267
+    },
+    "mods/map-natural-earth/map2_10.png": {
+      "size": 36840
+    },
+    "mods/map-natural-earth/map2_11.png": {
+      "size": 30138
+    },
+    "mods/map-natural-earth/map2_12.png": {
+      "size": 24640
+    },
+    "mods/map-natural-earth/map2_13.png": {
+      "size": 23019
+    },
+    "mods/map-natural-earth/map2_14.png": {
+      "size": 23013
+    },
+    "mods/map-natural-earth/map2_15.png": {
+      "size": 26825
+    },
+    "mods/map-natural-earth/map2_16.png": {
+      "size": 18996
+    },
+    "mods/map-natural-earth/map2_17.png": {
+      "size": 13201
+    },
+    "mods/map-natural-earth/map2_18.png": {
+      "size": 13048
+    },
+    "mods/map-natural-earth/map2_19.png": {
+      "size": 12313
+    },
+    "mods/map-natural-earth/map2_2.png": {
+      "size": 23050
+    },
+    "mods/map-natural-earth/map2_20.png": {
+      "size": 22293
+    },
+    "mods/map-natural-earth/map2_21.png": {
+      "size": 26997
+    },
+    "mods/map-natural-earth/map2_22.png": {
+      "size": 22208
+    },
+    "mods/map-natural-earth/map2_23.png": {
+      "size": 12380
+    },
+    "mods/map-natural-earth/map2_24.png": {
+      "size": 11958
+    },
+    "mods/map-natural-earth/map2_25.png": {
+      "size": 29324
+    },
+    "mods/map-natural-earth/map2_26.png": {
+      "size": 31410
+    },
+    "mods/map-natural-earth/map2_27.png": {
+      "size": 37710
+    },
+    "mods/map-natural-earth/map2_28.png": {
+      "size": 36954
+    },
+    "mods/map-natural-earth/map2_29.png": {
+      "size": 32728
+    },
+    "mods/map-natural-earth/map2_3.png": {
+      "size": 18139
+    },
+    "mods/map-natural-earth/map2_30.png": {
+      "size": 32937
+    },
+    "mods/map-natural-earth/map2_31.png": {
+      "size": 32766
+    },
+    "mods/map-natural-earth/map2_32.png": {
+      "size": 20774
+    },
+    "mods/map-natural-earth/map2_33.png": {
+      "size": 12036
+    },
+    "mods/map-natural-earth/map2_34.png": {
+      "size": 12330
+    },
+    "mods/map-natural-earth/map2_35.png": {
+      "size": 12117
+    },
+    "mods/map-natural-earth/map2_36.png": {
+      "size": 12105
+    },
+    "mods/map-natural-earth/map2_37.png": {
+      "size": 12386
+    },
+    "mods/map-natural-earth/map2_38.png": {
+      "size": 22277
+    },
+    "mods/map-natural-earth/map2_39.png": {
+      "size": 33858
+    },
+    "mods/map-natural-earth/map2_4.png": {
+      "size": 17692
+    },
+    "mods/map-natural-earth/map2_40.png": {
+      "size": 23480
+    },
+    "mods/map-natural-earth/map2_41.png": {
+      "size": 11918
+    },
+    "mods/map-natural-earth/map2_42.png": {
+      "size": 30119
+    },
+    "mods/map-natural-earth/map2_43.png": {
+      "size": 36921
+    },
+    "mods/map-natural-earth/map2_44.png": {
+      "size": 37919
+    },
+    "mods/map-natural-earth/map2_45.png": {
+      "size": 22198
+    },
+    "mods/map-natural-earth/map2_46.png": {
+      "size": 19942
+    },
+    "mods/map-natural-earth/map2_47.png": {
+      "size": 35169
+    },
+    "mods/map-natural-earth/map2_48.png": {
+      "size": 31974
+    },
+    "mods/map-natural-earth/map2_49.png": {
+      "size": 13886
+    },
+    "mods/map-natural-earth/map2_5.png": {
+      "size": 26545
+    },
+    "mods/map-natural-earth/map2_50.png": {
+      "size": 11933
+    },
+    "mods/map-natural-earth/map2_51.png": {
+      "size": 12244
+    },
+    "mods/map-natural-earth/map2_52.png": {
+      "size": 12088
+    },
+    "mods/map-natural-earth/map2_53.png": {
+      "size": 12450
+    },
+    "mods/map-natural-earth/map2_54.png": {
+      "size": 12631
+    },
+    "mods/map-natural-earth/map2_55.png": {
+      "size": 12612
+    },
+    "mods/map-natural-earth/map2_56.png": {
+      "size": 30221
+    },
+    "mods/map-natural-earth/map2_57.png": {
+      "size": 23713
+    },
+    "mods/map-natural-earth/map2_58.png": {
+      "size": 20650
+    },
+    "mods/map-natural-earth/map2_59.png": {
+      "size": 12081
+    },
+    "mods/map-natural-earth/map2_6.png": {
+      "size": 23313
+    },
+    "mods/map-natural-earth/map2_60.png": {
+      "size": 27287
+    },
+    "mods/map-natural-earth/map2_61.png": {
+      "size": 37261
+    },
+    "mods/map-natural-earth/map2_62.png": {
+      "size": 20297
+    },
+    "mods/map-natural-earth/map2_63.png": {
+      "size": 12546
+    },
+    "mods/map-natural-earth/map2_64.png": {
+      "size": 16208
+    },
+    "mods/map-natural-earth/map2_65.png": {
+      "size": 24243
+    },
+    "mods/map-natural-earth/map2_66.png": {
+      "size": 25934
+    },
+    "mods/map-natural-earth/map2_67.png": {
+      "size": 18806
+    },
+    "mods/map-natural-earth/map2_68.png": {
+      "size": 13450
+    },
+    "mods/map-natural-earth/map2_69.png": {
+      "size": 12149
+    },
+    "mods/map-natural-earth/map2_7.png": {
+      "size": 12184
+    },
+    "mods/map-natural-earth/map2_70.png": {
+      "size": 12513
+    },
+    "mods/map-natural-earth/map2_71.png": {
+      "size": 12731
+    },
+    "mods/map-natural-earth/map2_72.png": {
+      "size": 12658
+    },
+    "mods/map-natural-earth/map2_73.png": {
+      "size": 14525
+    },
+    "mods/map-natural-earth/map2_74.png": {
+      "size": 16329
+    },
+    "mods/map-natural-earth/map2_75.png": {
+      "size": 12153
+    },
+    "mods/map-natural-earth/map2_76.png": {
+      "size": 12104
+    },
+    "mods/map-natural-earth/map2_77.png": {
+      "size": 14016
+    },
+    "mods/map-natural-earth/map2_78.png": {
+      "size": 16038
+    },
+    "mods/map-natural-earth/map2_79.png": {
+      "size": 14230
+    },
+    "mods/map-natural-earth/map2_8.png": {
+      "size": 27772
+    },
+    "mods/map-natural-earth/map2_80.png": {
+      "size": 12664
+    },
+    "mods/map-natural-earth/map2_81.png": {
+      "size": 12526
+    },
+    "mods/map-natural-earth/map2_82.png": {
+      "size": 13037
+    },
+    "mods/map-natural-earth/map2_83.png": {
+      "size": 12354
+    },
+    "mods/map-natural-earth/map2_84.png": {
+      "size": 13431
+    },
+    "mods/map-natural-earth/map2_85.png": {
+      "size": 12574
+    },
+    "mods/map-natural-earth/map2_9.png": {
+      "size": 46271
+    },
+    "mods/map-natural-earth/mod.json": {
+      "size": 399
+    },
     "scripts/tutorial/tutorails_script-512h.xml": {
       "size": 4184,
       "legacy": "tutorails_script-512h.xml"

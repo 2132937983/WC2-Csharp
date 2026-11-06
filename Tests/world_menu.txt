@@ -1,6 +1,6 @@
-#! --mods $TESTS/../mods --ai standard
-# the generated world map through the menu: conquest list page 2, conquest 10 (added by mods/map-natural-earth),
-# its preview, then a game with the first country of the list (Germany)
+#! --mods $TESTS/no-such-mod-folder --ai standard
+# the generated world map through the menu, from the mod built into the package (the --mods folder does not exist,
+# so the repository's mods/ folder is not mounted): conquest list page 2, conquest 10, its preview, then a game
 wait 4.5
 click 510 152
 wait 2.5
