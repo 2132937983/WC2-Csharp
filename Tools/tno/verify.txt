@@ -1,0 +1,18 @@
+# Smoke script for the TNO mod:
+#   WC2.exe --mods <repo>/mods --script Tools/tno/verify.txt
+# Starts conquest 11 as Germany, closes the round box, counts the units on the map and
+# photographs the capital (flags at city zoom), then the world zoomed out.
+wait 6
+startconquest conquest_11.xml de
+wait 10
+settle
+wait 2
+count tno
+shot tno-flags
+wheel -4
+wait 1
+wheel -4
+wait 1
+shot tno-world
+wait 1
+exit
