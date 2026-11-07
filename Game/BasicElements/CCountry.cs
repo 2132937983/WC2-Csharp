@@ -17,6 +17,12 @@ public sealed partial class CCountry
     public float taxRate;
     public string id = "";
     public string name = "";
+    /// <summary>The scenario's own flag (scenario JSON "flag": flag_&lt;key&gt;.png from a mod), empty for the
+    /// art's flag; lets one scenario fly a period flag without changing the country's flag elsewhere.</summary>
+    public string flag = "";
+
+    /// <summary>The key of the country's flag pictures: the scenario's flag, else the art id.</summary>
+    public string FlagKey => string.IsNullOrEmpty(flag) ? name : flag;
     public byte r, g, b, a;
     public bool ai;
     public bool defeated;

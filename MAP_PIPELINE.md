@@ -203,7 +203,7 @@ are (`flags: "armies"`), the colours show the owners.
 | `historicalBorders` | `file`, `minFragmentKm2` 1500, `minFragmentWidthPixels` 2, `fallback`, `corrections` (name, `unit`, `eras`, `polygon` lon/lat: the Memel Territory) |
 | `water` | `lakes` (file, `maxScalerank` 2), `historicLakes` (file, names: the Aral Sea), `channels` (name, path lon/lat, `widthPixels`) |
 | `homeUnits` | game country -> its CShapes units (capitals of every era) |
-| `regions` | `minIslandKm2` 1500, `minPartKm2` 1500, `islandSplitDegrees` 4, `islandClusterDegrees` 1, `maxPartDistanceDegrees` 25 |
+| `regions` | `minIslandKm2` 1500, `minPartKm2` 1500, `islandSplitDegrees` 4, `islandClusterDegrees` 1, `maxPartDistanceDegrees` 25, `keepIslands` (name, lon, lat: small islands kept as provinces of their own: Barbados, Martinique, Guadeloupe, Minorca, Malta, ...) |
 | `detail` | `defaultKm2` 22 000, `mergeBelow` 0.5, `splitAbove` 1.6; zones from 5 000 km2 (western and central Europe) to 60 000 (northern Canada); countries (Japan, Korea 5 000, Greenland 150 000) |
 | `sea` | `coastRadiusDegrees` 1.8, `oceanRadiusDegrees` 14, `growth` 0.9, `relaxIterations` 2, `minSeaPixels` 300 |
 | `straits` | links between sea zones: Kiel Canal, Bab-el-Mandeb, the rivers between the Great Lakes (the others are channels) |
@@ -438,7 +438,7 @@ LibTessDotNet（MIT）三角化。区域和边界按竖条（`chunkWidth`）存�
 | `historicalBorders` | `file`、`minFragmentKm2` 1500、`minFragmentWidthPixels` 2、`fallback`、`corrections`（名称、`unit`、`eras`、经纬度 `polygon`：梅梅尔地区） |
 | `water` | `lakes`（文件，`maxScalerank` 2）、`historicLakes`（文件，名称：咸海）、`channels`（名称，经纬度路径，`widthPixels`） |
 | `homeUnits` | 游戏国家 → 它的 CShapes 单元（各时代的首都） |
-| `regions` | `minIslandKm2` 1500、`minPartKm2` 1500、`islandSplitDegrees` 4、`islandClusterDegrees` 1、`maxPartDistanceDegrees` 25 |
+| `regions` | `minIslandKm2` 1500、`minPartKm2` 1500、`islandSplitDegrees` 4、`islandClusterDegrees` 1、`maxPartDistanceDegrees` 25、`keepIslands`（名称、经度、纬度：作为独立省份保留的小岛：巴巴多斯、马提尼克、瓜德罗普、梅诺卡、马耳他……） |
 | `detail` | `defaultKm2` 22 000、`mergeBelow` 0.5、`splitAbove` 1.6；区域范围从 5 000 km2（西欧和中欧）到 60 000（加拿大北部）；国家（日本、朝鲜半岛 5 000，格陵兰 150 000） |
 | `sea` | `coastRadiusDegrees` 1.8、`oceanRadiusDegrees` 14、`growth` 0.9、`relaxIterations` 2、`minSeaPixels` 300 |
 | `straits` | 海区之间的连接：基尔运河、曼德海峡、五大湖之间的河流（其余的是通道） |

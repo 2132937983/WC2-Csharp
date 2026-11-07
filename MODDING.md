@@ -252,14 +252,17 @@ restart the game.
 * `countries`, in turn order: `id`; `art` uses the game's own flag and units of an existing country (`de`,
   `ja`, `tw`, ...), otherwise `flag` draws one: a design `{"bands": [colours], "vertical": false, "weights":
   [...], "overlays": [...]}` with overlays `rect`, `cross`, `saltire`, `disc`, `ring`, `star`, `triangle`,
-  `crescent`, `diamond`, `checker`, `border`, or a PNG next to the rules. Then `faction` (or `alliance`),
+  `crescent`, `diamond`, `checker`, `lozengy`, `raggedSaltire`, `border`, `text` and `path` (below), cut by a
+  `shape` (`triangle`, `swallowtail`), or a PNG next to the rules; with both `art` and `flag` the flag is this
+  scenario's own (below). Then `faction` (or `alliance`),
   `tags`, `name`, `intro`, `victory`, `color`, `commander`, `techLevel`, `capital` (lon, lat: the nearest
   owned capital area gets a fort and the capital garrison), `garrison` (extra infantry in capitals and
-  large cities), `fleets` (destroyers along the coast), `economy`.
+  large cities), `fleets` (ships along the coast; `fleetUnit` picks the type, default `destroyer`), `economy`.
 * `owners`: rules in order, a later rule winning. A region matches when every condition holds:
   `countries` (today's country code), `provinces` (ISO 3166-2 codes; `"AM-"` takes all of a country),
   `era` (`{"1939": ["gw:255"]}`: the unit holding it in that era of the map pack), `lon` and `lat`
-  (`[min, max]`), `near` (`[lon, lat, km]`), `regions` (ids) and `not` (a rule that must not match).
+  (`[min, max]`), `near` (`[lon, lat, km]`), `regions` (ids; they change when the map is rebuilt), `nearest` (`[lon, lat]` or a list of them: the
+  province nearest each point, for a trading post or a fort) and `not` (a rule that must not match).
   `"to": null` leaves regions to nobody.
 * `armies`: extra units on the owned area nearest a point (fronts).
 
@@ -276,6 +279,22 @@ may be the plain flag (the game puts it on a pole) or a complete map flag taller
 the game's atlas flags (65 x 115: pole at x 18-23, cloth from (19, 19) to (65, 46), the pole's foot at
 (21, 99)). `button_<id>@2x.png` and `sflag_<id>@2x.png` replace the list button and preview flag when
 present. `Tests/mods-flags/flag-override` is an example with one of each.
+
+**Flags of one scenario**: a country with `art` (the game's own units) and a `flag` of its own gets the key
+`c<conquest>_<id>` (or its `flagKey`): build-scenario draws `flag_<key>.png`, `button_<key>@2x.png` and
+`sflag_<key>@2x.png`, and the scenario's country says `"flag": "<key>"`. The game flies that flag for this
+country in this scenario only (map, boxes, conquest list, preview, saved games); the game's own flag of the
+art id stays everywhere else. This is how the Seven Years' War gives Britain the Union Flag of 1707.
+
+**Heraldry**: `symbols` in the rules are named shapes, SVG path data in a `box` (100 x 100 unless given),
+made of `parts`, each with a `role` and its `d` (`"mirror": true` draws it twice, mirrored; `"stroke": width`
+makes it a line). A `path` overlay draws a `symbol` (or its own `d`) centred at `x`, `y` with height `h` (or
+`"full": true` over the whole cloth, `w` for another width), with `colors` per role, `flip`, `rotate`, and
+`at` ([[x, y], ...]) to repeat it (the fleurs-de-lis of France). `text` writes letters (the FR on Prussia's
+eagle). `--preview FILE` writes the whole world in the owners' colours, to check the borders.
+
+`mods/seven-years-war-1756` (conquest 11, built into the game) uses all of this: 59 countries of 1756,
+eagles, lions, a dragon and a knight drawn as paths, period flags for the countries with the game's art.
 
 Everything here is data, so a mod can name countries, draw borders and bring pictures as its author wants.
 Use pictures you may use: the sample draws its flags from simple designs (national flags and new ones).
@@ -530,13 +549,16 @@ dotnet run --project Hosts/Desktop -- --verify-data --mods <folder that contains
 * `countries`，按回合顺序：`id`；`art` 使用游戏中某个已有国家自己的国旗和单位（`de`、`ja`、`tw` ……），
   否则由 `flag` 绘制国旗：一个设计 `{"bands": [颜色], "vertical": false, "weights": [...], "overlays": [...]}`，
   叠加图形有 `rect`、`cross`、`saltire`、`disc`、`ring`、`star`、`triangle`、`crescent`、`diamond`、
-  `checker`、`border`，或者规则文件旁边的一张 PNG。然后是 `faction`（或 `alliance`）、`tags`、`name`、
+  `checker`、`lozengy`、`raggedSaltire`、`border`、`text` 和 `path`（见下文），可用 `shape`（`triangle`、
+  `swallowtail`）裁剪旗面，或者规则文件旁边的一张 PNG；同时给出 `art` 和 `flag` 时，这面旗只属于本剧本（见下文）。
+  然后是 `faction`（或 `alliance`）、`tags`、`name`、
   `intro`、`victory`、`color`、`commander`、`techLevel`、`capital`（经度、纬度：最近的己方首都地区获得要塞
-  和首都守军）、`garrison`（首都和大城市额外的步兵）、`fleets`（沿海的驱逐舰）、`economy`。
+  和首都守军）、`garrison`（首都和大城市额外的步兵）、`fleets`（沿海的舰船；`fleetUnit` 选择舰种，默认 `destroyer`）、`economy`。
 * `owners`：按顺序排列的规则，后面的规则优先。当所有条件都满足时，一个区域与规则匹配：`countries`（今天的
   国家代码）、`provinces`（ISO 3166-2 代码；`"AM-"` 表示整个国家）、`era`（`{"1939": ["gw:255"]}`：地图包
   在该时代中拥有它的政治单元）、`lon` 和 `lat`（`[最小, 最大]`）、`near`（`[经度, 纬度, 公里]`）、`regions`
-  （id）以及 `not`（一条不能匹配的规则）。`"to": null` 让区域不属于任何国家。
+  （id；重新生成地图后会改变）、`nearest`（`[经度, 纬度]` 或其列表：离每个点最近的省份，用于商站或要塞）
+  以及 `not`（一条不能匹配的规则）。`"to": null` 让区域不属于任何国家。
 * `armies`：在离某点最近的己方地区放置额外部队（前线）。
 
 **不用工具添加新国家**：游戏不认识的 id 需要（1）在 `data/json/countries/countries.json` 中登记，以及（2）一张
@@ -550,6 +572,20 @@ dotnet run --project Hosts/Desktop -- --verify-data --mods <folder that contains
 游戏图集中的旗帜相同（65 x 115：旗杆位于 x 18-23，旗面从 (19, 19) 到 (65, 46)，旗杆底部在 (21, 99)）。如果提供了
 `button_<id>@2x.png` 和 `sflag_<id>@2x.png`，它们会替换列表按钮和预览小旗。`Tests/mods-flags/flag-override` 是一个
 两种格式各有一张的示例。
+
+**单个剧本的国旗**：同时带有 `art`（游戏自带单位）和自己 `flag` 的国家会得到键 `c<征服编号>_<id>`（或它的
+`flagKey`）：build-scenario 绘制 `flag_<键>.png`、`button_<键>@2x.png` 和 `sflag_<键>@2x.png`，剧本中的国家写上
+`"flag": "<键>"`。游戏只在这个剧本中为该国使用这面旗（地图、对话框、征服列表、预览、存档）；在其他所有地方，该
+美术 id 的游戏国旗保持不变。七年战争就是这样让英国使用 1707 年的联合旗。
+
+**纹章**：规则中的 `symbols` 是具名图形，即放在 `box`（默认 100 x 100）中的 SVG 路径数据，由若干 `parts` 组成，每个
+部分有 `role` 和 `d`（`"mirror": true` 会镜像再画一次；`"stroke": 宽度` 把它画成线条）。`path` 叠加图形绘制一个
+`symbol`（或自己的 `d`），中心位于 `x`、`y`，高度为 `h`（或 `"full": true` 铺满整个旗面，`w` 指定另一个宽度），按
+role 给出 `colors`，还有 `flip`、`rotate` 以及用于重复绘制的 `at`（[[x, y], ...]，例如法国的百合花）。`text` 书写
+字母（普鲁士鹰胸前的 FR）。`--preview FILE` 会生成一张按归属着色的全世界图片，用于检查边界。
+
+`mods/seven-years-war-1756`（征服 11，内置在游戏中）用到了以上所有功能：1756 年的 59 个国家，以路径绘制的鹰、
+狮、龙和骑士，以及使用游戏美术的国家的时代旗帜。
 
 这里的一切都是数据，所以模组可以按作者的意愿命名国家、划定边界、提供图片。请使用你有权使用的图片：本示例的
 国旗是由简单的设计绘制的（各国国旗以及新设计的旗帜）。

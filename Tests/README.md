@@ -85,6 +85,7 @@ against the dumps (the AI tests).
 | `ai_standard_autoplay` | conquest 1 played by the standard AI for 16 rounds |
 | `world_menu`, `world_autoplay` | the generated world map, WORLD 1939 (`mods/map-natural-earth`, MAP_PIPELINE.md, 7 737 provinces drawn as a mesh, from the polar islands to Cape Horn): through the conquest menu (list, preview, game); as France with the seam at the Bering Strait, fully zoomed out (no black bars) and fully zoomed out at the seam (Asia left of America, no empty water), fully zoomed in (units fitted to the provinces), the flag markers, four rounds of the standard AI and the naval count (`world_autoplay.expect`: harbours, transports and ships at sea) |
 | `world1962_autoplay` | the sample total conversion `samples/mods/world-1962` (`--mods samples/mods`): 66 countries on ten faction sides, new countries' flags on the map (Dijon), the successor states and East Asia; four rounds of the standard AI: borders move in the wars, none between countries at peace (`.expect`) |
+| `war1756_autoplay` | conquest 11, the Seven Years' War (`mods/seven-years-war-1756`): the scenario's own period flags on the map (the Prussian eagle at Berlin), Europe, North America, India; five rounds of the standard AI: Prussia's and Russia's wars begin, no area changes hands between countries at peace (`.expect`) |
 | `flag_override` | the test mod `Tests/mods-flags/flag-override` replaces the flags of France (a plain picture on an atlas pole) and Britain (a complete map flag with its pole) on the world map |
 
 ## Unit tests (`Unit/`, `dotnet test Tests`)
@@ -98,7 +99,7 @@ against the dumps (the AI tests).
 | `MapPackTests.cs` | the world base map (consistency, wrapping, the units of every era, historical borders splitting provinces, coverage up to the polar islands and over the date line, capitals of today and of earlier eras, Marseille); the pipeline and the classic export on a synthetic world with a historical border, a harbour and transports; the mesh covers every region exactly and the game reads it; ships pass the straits and canals, the lakes are inland seas; every province one landmass, the date line seamless; Memel and South Tyrol by era |
 | `CameraTests.cs` | zooming out stops when the map fills the screen; a wrapping map scrolls past its edges and the camera takes the short way over the seam |
 | `BuiltInModTests.cs` | mods built into the package mount and merge like folder mods, a folder mod replaces one with the same id, the world map is built in |
-| `DiplomacyTests.cs` | factions are sides of their own; relations by selector, round and order (the last that holds decides); lasting peace; no relations = the original rules; the wars and truces of the 1962 sample, every new country registered with its pictures |
+| `DiplomacyTests.cs` | factions are sides of their own; relations by selector, round and order (the last that holds decides); lasting peace; no relations = the original rules; the wars and truces of the 1962 sample, every new country registered with its pictures; the Seven Years' War breaking out round by round, every period flag under the scenario's own key |
 
 ---
 
@@ -170,6 +171,7 @@ against the dumps (the AI tests).
 | `ai_standard_autoplay` | 征服 1，由 standard AI 进行 16 个回合 |
 | `world_menu`、`world_autoplay` | 生成的世界地图 WORLD 1939（`mods/map-natural-earth`，MAP_PIPELINE.md，以网格绘制的 7 737 个省份，从北极群岛到合恩角）：通过征服菜单进入（列表、预览、游戏）；以法国开局，查看白令海峡处的接缝、最大缩小（没有黑边）以及在接缝处最大缩小（亚洲在美洲左侧，没有空白海面）、最大放大（部队缩放到省份内）、旗帜标记、standard AI 进行四个回合，以及海军统计（`world_autoplay.expect`：港口、海上的运输船和舰船） |
 | `world1962_autoplay` | 全面改造示例 `samples/mods/world-1962`（`--mods samples/mods`）：分属十个阵营的 66 个国家，新国家在地图上的国旗（第戎），苏联继承国和东亚；standard AI 进行四个回合：战争中边界变化，处于和平的国家之间没有任何地区易手（`.expect`） |
+| `war1756_autoplay` | 征服 11，七年战争（`mods/seven-years-war-1756`）：地图上本剧本自己的时代旗帜（柏林的普鲁士鹰）、欧洲、北美、印度；standard AI 进行五个回合：普鲁士和俄国的战争开始，处于和平的国家之间没有任何地区易手（`.expect`） |
 | `flag_override` | 测试模组 `Tests/mods-flags/flag-override` 在世界地图上替换法国（挂在图集旗杆上的普通图片）和英国（带旗杆的完整地图旗帜）的国旗 |
 
 ## 单元测试（`Unit/`，`dotnet test Tests`）
@@ -183,4 +185,4 @@ against the dumps (the AI tests).
 | `MapPackTests.cs` | 世界底图（一致性、左右循环、各时代的单元、历史边界拆分省份、覆盖到北极群岛并跨越日期变更线、今天和早期时代的首都、马赛）；在一个带历史边界、港口和运输船的合成世界上测试生成流程和经典地图导出；网格精确覆盖每个区域，并且游戏能读取它；舰船能通过海峡和运河，湖泊是内海；每个省份都是一块完整的陆地，日期变更线处无缝；梅梅尔和南蒂罗尔的各时代归属 |
 | `CameraTests.cs` | 缩小到地图填满屏幕时停止；循环地图可以越过边缘滚动，镜头跨越接缝走近路 |
 | `BuiltInModTests.cs` | 内置于游戏资源包中的模组与文件夹模组一样挂载和合并；文件夹模组会替换 id 相同的内置模组；世界地图是内置的 |
-| `DiplomacyTests.cs` | 每个阵营都是独立的一方；外交关系按选择器、回合和顺序生效（最后一条有效的关系起决定作用）；永久和平；没有外交关系时即原版规则；1962 示例中的战争与停战，每个新国家都已登记并带有图片 |
+| `DiplomacyTests.cs` | 每个阵营都是独立的一方；外交关系按选择器、回合和顺序生效（最后一条有效的关系起决定作用）；永久和平；没有外交关系时即原版规则；1962 示例中的战争与停战，每个新国家都已登记并带有图片；七年战争逐回合爆发，每面时代旗帜都使用本剧本自己的键 |

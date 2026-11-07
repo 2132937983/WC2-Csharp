@@ -65,6 +65,20 @@ internal static class ScenarioBuilder
         {
             ruleNo++;
             var rule = ruleNode!.AsObject();
+            if (rule["nearest"] is JsonArray points)
+            {
+                // the land region closest to each point (a trading post, a fort, a small island)
+                var ids = new JsonArray();
+                var list = points.Count > 0 && points[0] is JsonArray ? points.Select(n => n!.AsArray()).ToList() : new List<JsonArray> { points };
+                foreach (var pt in list)
+                {
+                    double plon = pt[0]!.GetValue<double>(), plat = pt[1]!.GetValue<double>();
+                    ids.Add(regions.Where(r => !r.sea).OrderBy(r => Km(plon, plat, r.lon, r.lat)).First().id);
+                }
+                rule = (JsonObject)rule.DeepClone();
+                rule.Remove("nearest");
+                rule["regions"] = ids;
+            }
             string to = rule["to"]?.GetValue<string>();
             if (to != null && !countryIds.Contains(to)) throw new ToolException($"owner rule {ruleNo}: unknown country {to}");
             int matched = 0;
@@ -163,7 +177,7 @@ internal static class ScenarioBuilder
                 areasOut[sea] = new JsonObject
                 {
                     ["id"] = sea, ["country"] = id,
-                    ["units"] = new JsonArray(new JsonObject { ["type"] = "destroyer", ["level"] = 1, ["cards"] = 0 }),
+                    ["units"] = new JsonArray(new JsonObject { ["type"] = Setting(c, "fleetUnit")?.GetValue<string>() ?? "destroyer", ["level"] = 1, ["cards"] = 0 }),
                 };
                 fleets--; fleetsTotal++;
             }
@@ -210,6 +224,7 @@ internal static class ScenarioBuilder
                 ["commander"] = Setting(c, "commander")?.GetValue<string>() ?? "common1",
                 ["ai"] = 1,
             };
+            if (c["art"] != null && c["flag"] != null) o["flag"] = FlagKey(c, number);
             if (c["faction"] is JsonNode f) o["faction"] = f.GetValue<string>();
             else o["alliance"] = c["alliance"]?.GetValue<string>() ?? "n";
             if (c["tags"] is JsonArray tags) o["tags"] = tags.DeepClone();
@@ -317,28 +332,34 @@ internal static class ScenarioBuilder
                     ["strings"] = strings[lang].DeepClone(),
                 });
         }
-        // new countries: registered (the game loads flags and art per registered id) with their pictures
+        // flags: a new country is registered (the game loads flags and art per registered id) and brings
+        // flag_<id>.png; a country with the game's art and a flag of its own gets this scenario's flag key
+        // (flag_<key>.png, the game's flag stays everywhere else)
         var newCountries = new JsonObject();
         string sourceDir = Path.GetDirectoryName(Path.GetFullPath(configPath))!;
+        var symbols = cfg["symbols"]?.AsObject();
         int drawn = 0;
         foreach (var c in countries)
         {
             string id = c["id"]!.GetValue<string>();
-            if (c["art"] != null || c["flag"] == null) continue;   // the game's own art
-            newCountries[id] = new JsonObject();
-            using var cloth = FlagCloth(c["flag"]!, sourceDir);
-            SavePng(cloth, Path.Combine(outDir, $"flag_{id}.png"));
-            using (var listButton = CountryButton(cloth)) SavePng(listButton, Path.Combine(outDir, $"button_{id}@2x.png"));
-            using (var small = SmallFlag(cloth)) SavePng(small, Path.Combine(outDir, $"sflag_{id}@2x.png"));
+            if (c["flag"] == null) continue;   // the game's own flag
+            string key = c["art"] != null ? FlagKey(c, number) : id;
+            if (c["art"] == null) newCountries[id] = new JsonObject();
+            using var cloth = FlagCloth(c["flag"]!, sourceDir, symbols);
+            SavePng(cloth, Path.Combine(outDir, $"flag_{key}.png"));
+            using (var listButton = CountryButton(cloth)) SavePng(listButton, Path.Combine(outDir, $"button_{key}@2x.png"));
+            using (var small = SmallFlag(cloth)) SavePng(small, Path.Combine(outDir, $"sflag_{key}@2x.png"));
             drawn++;
         }
+        if (opts.GetValueOrDefault("preview") is string previewPath)
+            WriteOwnerPreview(previewPath, packDir, mapJson, regions, owner, countries);
         if (newCountries.Count > 0)
         {
             string dir = Path.Combine(outDir, "data", "json", "countries");
             Directory.CreateDirectory(dir);
             WriteJson(Path.Combine(dir, "countries.json"), new JsonObject
             {
-                ["about"] = "The countries this mod adds (merged into the game's list): each brings flag_<id>.png, button_<id>@2x.png and sflag_<id>@2x.png; units use the common art.",
+                ["about"] = "The countries this mod adds (merged into the game's list): each brings its flag, its conquest list button and its small preview flag, pictures named by its id (MODDING.md, section 4); units use the common art.",
                 ["countries"] = newCountries,
             });
         }
@@ -364,6 +385,9 @@ internal static class ScenarioBuilder
         Console.WriteLine("build-scenario: land areas per country: " + string.Join(", ", summary));
         return 0;
     }
+
+    /// <summary>The scenario's flag key of a country with the game's art: "flagKey", else c&lt;conquest&gt;_&lt;id&gt;.</summary>
+    private static string FlagKey(JsonObject c, int number) => c["flagKey"]?.GetValue<string>() ?? $"c{number}_{c["id"]!.GetValue<string>()}";
 
     // ---- rules ---------------------------------------------------------------------------------
 
@@ -405,14 +429,19 @@ internal static class ScenarioBuilder
 
     /// <summary>
     /// The plain flag (150 x 102): a PNG next to the rules (<c>"flag": "file.png"</c>, scaled to fit) or a
-    /// design: <c>{"bands": [colours], "vertical": false, "weights": [...], "overlays": [...]}</c>; overlays
-    /// are <c>rect</c> (x, y, w, h), <c>cross</c> (x, y, width; a Nordic cross with x below 0.5),
-    /// <c>saltire</c> (width), <c>disc</c> (x, y, r), <c>ring</c> (x, y, r, width), <c>star</c> (x, y, r, points),
-    /// <c>triangle</c> (w: a hoist triangle), <c>crescent</c> (x, y, r), <c>diamond</c> (x, y, w, h), <c>checker</c>
-    /// (x, y, r, n, color2) and <c>border</c> (width), each with a
-    /// <c>color</c>; every length is a fraction of the flag (r of its height).
+    /// design: <c>{"bands": [colours], "vertical": false, "weights": [...], "shape": "rect", "overlays": [...]}</c>.
+    /// <c>shape</c> <c>triangle</c> or <c>swallowtail</c> cuts the cloth (transparent outside). Overlays, each
+    /// with a <c>color</c>, lengths as fractions of the flag (r of its height): <c>rect</c> (x, y, w, h),
+    /// <c>cross</c> (x, y, width; a Nordic cross with x below 0.5), <c>saltire</c> (width), <c>raggedSaltire</c>
+    /// (width: the Cross of Burgundy), <c>disc</c> (x, y, r), <c>ring</c> (x, y, r, width), <c>star</c> (x, y, r,
+    /// points), <c>triangle</c> (w: a hoist triangle), <c>crescent</c> (x, y, r), <c>diamond</c> (x, y, w, h),
+    /// <c>checker</c> (x, y, r, n, color2), <c>lozengy</c> (n, color2), <c>border</c> (width), <c>text</c> (text, x, y,
+    /// h, bold, font) and <c>path</c>: SVG path data <c>d</c> or a <c>symbol</c> of the rules' <c>symbols</c>, in a
+    /// <c>box</c> [w, h], centred at x, y with height h (or <c>full</c>: the whole cloth), <c>mirror</c> (also
+    /// drawn mirrored), <c>flip</c>, <c>rotate</c> (degrees), <c>stroke</c> (a line of that width in box units),
+    /// <c>at</c> ([[x, y], ...]: repeated) and <c>colors</c> ({role: colour} for a symbol's parts).
     /// </summary>
-    private static SKBitmap FlagCloth(JsonNode design, string sourceDir)
+    private static SKBitmap FlagCloth(JsonNode design, string sourceDir, JsonObject symbols)
     {
         var bmp = new SKBitmap(ClothW, ClothH, SKColorType.Rgba8888, SKAlphaType.Premul);
         using var canvas = new SKCanvas(bmp);
@@ -424,6 +453,23 @@ internal static class ScenarioBuilder
             return bmp;
         }
         var d = design.AsObject();
+        // the cloth's outline: everything outside stays transparent
+        using (var shape = new SKPath())
+        {
+            switch (d["shape"]?.GetValue<string>() ?? "rect")
+            {
+                case "triangle":
+                    shape.MoveTo(0, 0); shape.LineTo(ClothW, ClothH / 2f); shape.LineTo(0, ClothH); shape.Close();
+                    break;
+                case "swallowtail":
+                    shape.MoveTo(0, 0); shape.LineTo(ClothW, 0); shape.LineTo(ClothW * 0.72f, ClothH / 2f); shape.LineTo(ClothW, ClothH); shape.LineTo(0, ClothH); shape.Close();
+                    break;
+                default:
+                    shape.AddRect(new SKRect(0, 0, ClothW, ClothH));
+                    break;
+            }
+            canvas.ClipPath(shape, SKClipOperation.Intersect, true);
+        }
         var bands = d["bands"]?.AsArray().Select(n => Color(n!.GetValue<string>())).ToList() ?? new List<SKColor> { SKColors.White };
         var weights = d["weights"]?.AsArray().Select(n => n!.GetValue<double>()).ToList() ?? bands.Select(_ => 1.0).ToList();
         bool vertical = d["vertical"]?.GetValue<bool>() ?? false;
@@ -439,91 +485,185 @@ internal static class ScenarioBuilder
         foreach (var oNode in d["overlays"]?.AsArray() ?? new JsonArray())
         {
             var o = oNode!.AsObject();
-            using var p = new SKPaint { Color = Color(o["color"]?.GetValue<string>() ?? "#ffffff"), IsAntialias = true };
-            float F(string key, double fallback) => (float)(o[key]?.GetValue<double>() ?? fallback);
-            float x = F("x", 0.5) * ClothW, y = F("y", 0.5) * ClothH, r = F("r", 0.25) * ClothH;
-            switch (o["type"]!.GetValue<string>())
-            {
-                case "rect":
-                    canvas.DrawRect(new SKRect(F("x", 0) * ClothW, F("y", 0) * ClothH, (F("x", 0) + F("w", 1)) * ClothW, (F("y", 0) + F("h", 1)) * ClothH), p);
-                    break;
-                case "cross":
-                {
-                    float w = F("width", 0.2) * ClothH;
-                    canvas.DrawRect(new SKRect(x - w / 2, 0, x + w / 2, ClothH), p);
-                    canvas.DrawRect(new SKRect(0, y - w / 2, ClothW, y + w / 2), p);
-                    break;
-                }
-                case "saltire":
-                {
-                    p.Style = SKPaintStyle.Stroke; p.StrokeWidth = F("width", 0.18) * ClothH;
-                    canvas.DrawLine(0, 0, ClothW, ClothH, p);
-                    canvas.DrawLine(ClothW, 0, 0, ClothH, p);
-                    break;
-                }
-                case "disc":
-                    canvas.DrawCircle(x, y, r, p);
-                    break;
-                case "ring":
-                    p.Style = SKPaintStyle.Stroke; p.StrokeWidth = F("width", 0.05) * ClothH;
-                    canvas.DrawCircle(x, y, r, p);
-                    break;
-                case "star":
-                    canvas.DrawPath(Star(x, y, r, o["points"]?.GetValue<int>() ?? 5), p);
-                    break;
-                case "triangle":
-                {
-                    using var path = new SKPath();
-                    path.MoveTo(0, 0); path.LineTo(F("w", 0.4) * ClothW, ClothH / 2f); path.LineTo(0, ClothH); path.Close();
-                    canvas.DrawPath(path, p);
-                    break;
-                }
-                case "crescent":
-                {
-                    using var outer = new SKPath(); outer.AddCircle(x, y, r);
-                    using var inner = new SKPath(); inner.AddCircle(x + r * 0.35f, y, r * 0.82f);
-                    using var moon = outer.Op(inner, SKPathOp.Difference);
-                    canvas.DrawPath(moon, p);
-                    break;
-                }
-                case "border":
-                {
-                    p.Style = SKPaintStyle.Stroke; float w = F("width", 0.08) * ClothH; p.StrokeWidth = w;
-                    canvas.DrawRect(new SKRect(w / 2, w / 2, ClothW - w / 2, ClothH - w / 2), p);
-                    break;
-                }
-                case "diamond":
-                {
-                    float hw = F("w", 0.8) * ClothW / 2, hh = F("h", 0.8) * ClothH / 2;
-                    using var path = new SKPath();
-                    path.MoveTo(x - hw, y); path.LineTo(x, y - hh); path.LineTo(x + hw, y); path.LineTo(x, y + hh); path.Close();
-                    canvas.DrawPath(path, p);
-                    break;
-                }
-                case "checker":
-                {
-                    int n = o["n"]?.GetValue<int>() ?? 5;
-                    float cell = 2 * r / n;
-                    using var p2 = new SKPaint { Color = Color(o["color2"]?.GetValue<string>() ?? "#ffffff") };
-                    for (int i = 0; i < n; i++)
-                        for (int j = 0; j < n; j++)
-                            canvas.DrawRect(SKRect.Create(x - r + i * cell, y - r + j * cell, cell, cell), (i + j) % 2 == 0 ? p : p2);
-                    break;
-                }
-                default:
-                    throw new ToolException("unknown flag overlay " + o["type"]);
-            }
+            var positions = o["at"] is JsonArray list
+                ? list.Select(n => (n![0]!.GetValue<double>(), n[1]!.GetValue<double>())).ToList()
+                : new List<(double, double)> { (o["x"]?.GetValue<double>() ?? 0.5, o["y"]?.GetValue<double>() ?? 0.5) };
+            foreach (var (px, py) in positions)
+                Overlay(canvas, o, (float)px, (float)py, symbols);
         }
         return bmp;
     }
 
-    private static SKPath Star(float cx, float cy, float r, int points)
+    private static void Overlay(SKCanvas canvas, JsonObject o, float fx, float fy, JsonObject symbols)
+    {
+        using var p = new SKPaint { Color = Color(o["color"]?.GetValue<string>() ?? "#ffffff"), IsAntialias = true };
+        float F(string key, double fallback) => (float)(o[key]?.GetValue<double>() ?? fallback);
+        float x = fx * ClothW, y = fy * ClothH, r = F("r", 0.25) * ClothH;
+        switch (o["type"]!.GetValue<string>())
+        {
+            case "rect":
+                canvas.DrawRect(new SKRect(F("x", 0) * ClothW, F("y", 0) * ClothH, (F("x", 0) + F("w", 1)) * ClothW, (F("y", 0) + F("h", 1)) * ClothH), p);
+                break;
+            case "cross":
+            {
+                float w = F("width", 0.2) * ClothH;
+                canvas.DrawRect(new SKRect(x - w / 2, 0, x + w / 2, ClothH), p);
+                canvas.DrawRect(new SKRect(0, y - w / 2, ClothW, y + w / 2), p);
+                break;
+            }
+            case "saltire":
+                p.Style = SKPaintStyle.Stroke; p.StrokeWidth = F("width", 0.18) * ClothH;
+                canvas.DrawLine(0, 0, ClothW, ClothH, p);
+                canvas.DrawLine(ClothW, 0, 0, ClothH, p);
+                break;
+            case "raggedSaltire":
+            {
+                // the Cross of Burgundy: two rough branches with the stubs of cut-off twigs
+                float w = F("width", 0.11) * ClothH;
+                p.Style = SKPaintStyle.Stroke; p.StrokeWidth = w; p.StrokeCap = SKStrokeCap.Round;
+                float m = w * 0.8f;
+                foreach (var (x0, y0, x1, y1) in new[] { (m, m, ClothW - m, ClothH - m), (ClothW - m, m, m, ClothH - m) })
+                {
+                    canvas.DrawLine(x0, y0, x1, y1, p);
+                    float dx = x1 - x0, dy = y1 - y0, len = MathF.Sqrt(dx * dx + dy * dy), nx = -dy / len, ny = dx / len;
+                    for (int k = 1; k <= 6; k++)
+                    {
+                        if (k == 3 || k == 4) continue;   // the middle stays clear where the branches cross
+                        float t = k / 7f, side = k % 2 == 0 ? 1 : -1;
+                        float sx = x0 + dx * t, sy = y0 + dy * t;
+                        canvas.DrawLine(sx, sy, sx + (nx * side + dx / len * 0.6f) * w * 1.1f, sy + (ny * side + dy / len * 0.6f) * w * 1.1f, p);
+                    }
+                }
+                break;
+            }
+            case "disc":
+                canvas.DrawCircle(x, y, r, p);
+                break;
+            case "ring":
+                p.Style = SKPaintStyle.Stroke; p.StrokeWidth = F("width", 0.05) * ClothH;
+                canvas.DrawCircle(x, y, r, p);
+                break;
+            case "star":
+            {
+                using var star = Star(x, y, r, o["points"]?.GetValue<int>() ?? 5, F("inner", 0.4));
+                canvas.DrawPath(star, p);
+                break;
+            }
+            case "triangle":
+            {
+                using var path = new SKPath();
+                path.MoveTo(0, 0); path.LineTo(F("w", 0.4) * ClothW, ClothH / 2f); path.LineTo(0, ClothH); path.Close();
+                canvas.DrawPath(path, p);
+                break;
+            }
+            case "crescent":
+            {
+                using var outer = new SKPath(); outer.AddCircle(x, y, r);
+                using var inner = new SKPath(); inner.AddCircle(x + r * F("offset", 0.35), y, r * F("inner", 0.82));
+                using var moon = outer.Op(inner, SKPathOp.Difference);
+                canvas.DrawPath(moon, p);
+                break;
+            }
+            case "border":
+            {
+                p.Style = SKPaintStyle.Stroke; float w = F("width", 0.08) * ClothH; p.StrokeWidth = w;
+                canvas.DrawRect(new SKRect(w / 2, w / 2, ClothW - w / 2, ClothH - w / 2), p);
+                break;
+            }
+            case "diamond":
+            {
+                float hw = F("w", 0.8) * ClothW / 2, hh = F("h", 0.8) * ClothH / 2;
+                using var path = new SKPath();
+                path.MoveTo(x - hw, y); path.LineTo(x, y - hh); path.LineTo(x + hw, y); path.LineTo(x, y + hh); path.Close();
+                canvas.DrawPath(path, p);
+                break;
+            }
+            case "checker":
+            {
+                int n = o["n"]?.GetValue<int>() ?? 5;
+                float cell = 2 * r / n;
+                using var p2 = new SKPaint { Color = Color(o["color2"]?.GetValue<string>() ?? "#ffffff") };
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < n; j++)
+                        canvas.DrawRect(SKRect.Create(x - r + i * cell, y - r + j * cell, cell, cell), (i + j) % 2 == 0 ? p : p2);
+                break;
+            }
+            case "lozengy":
+            {
+                // diamonds on a lattice, alternating the two colours (the Wittelsbach lozenges)
+                int n = o["n"]?.GetValue<int>() ?? 7;
+                float cw = (float)ClothW / n, ch = cw * F("aspect", 1.5);
+                using var p2 = new SKPaint { Color = Color(o["color2"]?.GetValue<string>() ?? "#ffffff"), IsAntialias = true };
+                canvas.DrawRect(new SKRect(0, 0, ClothW, ClothH), p2);
+                for (int j = -2; j * ch / 2 < ClothH + ch; j++)
+                    for (int i = -2; i * cw / 2 < ClothW + cw; i++)
+                    {
+                        if (((i + j) & 1) != 0 || (i & 1) != 0) continue;
+                        float cx = i * cw / 2, cy = j * ch / 2;
+                        using var path = new SKPath();
+                        path.MoveTo(cx - cw / 2, cy); path.LineTo(cx, cy - ch / 2); path.LineTo(cx + cw / 2, cy); path.LineTo(cx, cy + ch / 2); path.Close();
+                        canvas.DrawPath(path, p);
+                    }
+                break;
+            }
+            case "text":
+            {
+                bool bold = o["bold"]?.GetValue<bool>() ?? true;
+                using var font = new SKFont(SKTypeface.FromFamilyName(o["font"]?.GetValue<string>() ?? "Times New Roman",
+                    bold ? SKFontStyle.Bold : SKFontStyle.Normal), F("h", 0.2) * ClothH);
+                canvas.DrawText(o["text"]!.GetValue<string>(), x, y + font.Size * 0.36f, SKTextAlign.Center, font, p);
+                break;
+            }
+            case "path":
+            {
+                // the parts to draw: a symbol's (each with its own role and colour) or one path of this overlay
+                JsonObject sym = o["symbol"] is JsonNode sn
+                    ? symbols?[sn.GetValue<string>()]?.AsObject() ?? throw new ToolException("unknown symbol " + sn.GetValue<string>())
+                    : null;
+                var box = (o["box"] ?? sym?["box"] ?? new JsonArray(100.0, 100.0)).AsArray();
+                float bw = (float)box[0]!.GetValue<double>(), bh = (float)box[1]!.GetValue<double>();
+                var parts = sym?["parts"]?.AsArray().Select(n => n!.AsObject()).ToList()
+                            ?? new List<JsonObject> { new JsonObject { ["d"] = o["d"]!.GetValue<string>() } };
+                float sx, sy, cx = x, cy = y;
+                if (o["full"]?.GetValue<bool>() == true) { sx = ClothW / bw; sy = ClothH / bh; cx = ClothW / 2f; cy = ClothH / 2f; }
+                else { sy = F("h", 0.8) * ClothH / bh; sx = o["w"] != null ? F("w", 0.5) * ClothW / bw : sy; }
+                bool flipAll = o["flip"]?.GetValue<bool>() ?? false, mirrorAll = o["mirror"]?.GetValue<bool>() ?? false;
+                var colors = o["colors"]?.AsObject();
+                foreach (var part in parts)
+                {
+                    string role = part["role"]?.GetValue<string>();
+                    string colour = (role != null ? colors?[role]?.GetValue<string>() : null) ?? part["color"]?.GetValue<string>() ?? o["color"]?.GetValue<string>() ?? "#000000";
+                    if (colour == "none") continue;
+                    using var pp = new SKPaint { Color = Color(colour), IsAntialias = true };
+                    float? stroke = (float?)(part["stroke"]?.GetValue<double>() ?? o["stroke"]?.GetValue<double>());
+                    if (stroke is float sw) { pp.Style = SKPaintStyle.Stroke; pp.StrokeWidth = sw; pp.StrokeCap = SKStrokeCap.Round; pp.StrokeJoin = SKStrokeJoin.Round; }
+                    using var path = SKPath.ParseSvgPathData(part["d"]!.GetValue<string>()) ?? throw new ToolException("bad path " + part["d"]);
+                    bool mirror = mirrorAll || (part["mirror"]?.GetValue<bool>() ?? false);
+                    foreach (bool flipped in mirror ? new[] { false, true } : new[] { false })
+                    {
+                        canvas.Save();
+                        canvas.Translate(cx, cy);
+                        canvas.RotateDegrees(F("rotate", 0));
+                        canvas.Scale(sx * ((flipped ^ flipAll) ? -1 : 1), sy);
+                        canvas.Translate(-bw / 2, -bh / 2);
+                        canvas.DrawPath(path, pp);
+                        canvas.Restore();
+                    }
+                }
+                break;
+            }
+            default:
+                throw new ToolException("unknown flag overlay " + o["type"]);
+        }
+    }
+
+    private static SKPath Star(float cx, float cy, float r, int points, float inner = 0.4f)
     {
         var path = new SKPath();
         for (int i = 0; i < points * 2; i++)
         {
             double a = -Math.PI / 2 + i * Math.PI / points;
-            float rr = i % 2 == 0 ? r : r * 0.4f;
+            float rr = i % 2 == 0 ? r : r * inner;
             float px = cx + (float)(Math.Cos(a) * rr), py = cy + (float)(Math.Sin(a) * rr);
             if (i == 0) path.MoveTo(px, py); else path.LineTo(px, py);
         }
@@ -619,6 +759,30 @@ internal static class ScenarioBuilder
         using var white = new SKPaint { Color = SKColors.White, IsAntialias = true };
         canvas.DrawText("CONQUER", 12, 44, SKTextAlign.Left, bold, white);
         canvas.DrawText(title, 12, 72, SKTextAlign.Left, regular, white);
+        SavePng(bmp, path);
+    }
+
+    /// <summary>--preview FILE: the whole map, 2 raster pixels per picture pixel, in the owners' colours
+    /// (country borders dark, unowned land sand, water blue).</summary>
+    private static void WriteOwnerPreview(string path, string packDir, JsonObject mapJson, List<Region> regions, string[] owner, List<JsonObject> countries)
+    {
+        var raster = mapJson["raster"]!.AsObject();
+        int width = raster["width"]!.GetValue<int>(), height = raster["height"]!.GetValue<int>();
+        var ids = ReadRaster(Path.Combine(packDir, raster["file"]?.GetValue<string>() ?? "regions.raster"), width, height);
+        var colorOf = countries.ToDictionary(c => c["id"]!.GetValue<string>(),
+            c => { var a = (c["color"] ?? new JsonArray(200, 200, 200)).AsArray(); return new SKColor((byte)a[0]!.GetValue<int>(), (byte)a[1]!.GetValue<int>(), (byte)a[2]!.GetValue<int>()); });
+        int W = width / 2, H = height / 2;
+        using var bmp = new SKBitmap(W, H, SKColorType.Rgba8888, SKAlphaType.Premul);
+        string OwnerAt(int x, int y) { int v = ids[Math.Clamp(y, 0, height - 1) * width + (x % width + width) % width]; return v == 0 || regions[v - 1].sea ? "~" : owner[v - 1] ?? ""; }
+        for (int y = 0; y < H; y++)
+            for (int x = 0; x < W; x++)
+            {
+                string o = OwnerAt(2 * x, 2 * y);
+                SKColor c = o == "~" ? new SKColor(60, 90, 130) : o == "" ? new SKColor(215, 200, 160) : colorOf[o];
+                if (o != "~" && (OwnerAt(2 * x + 2, 2 * y) != o || OwnerAt(2 * x, 2 * y + 2) != o))
+                    c = new SKColor((byte)(c.Red * 0.45), (byte)(c.Green * 0.45), (byte)(c.Blue * 0.45));
+                bmp.SetPixel(x, y, c);
+            }
         SavePng(bmp, path);
     }
 

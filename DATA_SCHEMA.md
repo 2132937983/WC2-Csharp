@@ -307,6 +307,8 @@ that name. The game itself ships no JSON scenarios.
 * `countries` are in turn order. `alliance` `a`, `b`, `c` are the sides; anything else (`n`, `d`) is
   neutral. `defeated`: `land` (default), `army`, `core`. `ai` defaults to 1 (in conquests every
   country but the player's is AI anyway). Colour defaults to 255, `techLevel` to 1, `taxFactor` to 1.
+* `flag` (optional): the scenario's own flag key. The country flies `flag_<key>.png` (with `button_<key>` and
+  `sflag_<key>`, from a mod) in this scenario; the flag of its art id (`name`) stays everywhere else.
 * `areas`: `construction` `city`/`industry`/`airport` with `level` (≤ 0 means none), `installation`
   `fort`/`entrenchment`/`antiaircraft`/`radar`, `units` with `type` (a `units.json` type), `level`
   (default 1) and `cards` (tactic card bits).
@@ -676,6 +678,7 @@ AI 的征召顺序按国家分别依价格、然后工业、然后科技排列�
 ```
 
 * `countries` 按回合顺序排列。`alliance` 为 `a`、`b`、`c` 时表示各方阵营；其他任何值（`n`、`d`）表示中立。`defeated`：`land`（默认）、`army`、`core`。`ai` 默认为 1（在征服模式中，除玩家之外的每个国家本来就都是 AI）。颜色默认为 255，`techLevel` 默认为 1，`taxFactor` 默认为 1。
+* `flag`（可选）：本剧本自己的国旗键。该国在本剧本中使用 `flag_<键>.png`（以及 `button_<键>` 和 `sflag_<键>`，来自模组）；其美术 id（`name`）的国旗在其他地方保持不变。
 * `areas`：`construction` 为 `city`/`industry`/`airport`，配合 `level`（≤ 0 表示没有）；`installation` 为 `fort`/`entrenchment`/`antiaircraft`/`radar`；`units` 包含 `type`（`units.json` 中的一个类型）、`level`（默认 1）和 `cards`（战术卡牌位标志）。
 * `dialogues`：在第 `atRound` 回合显示的将领对话 `index`，肖像位于左侧或右侧。
 

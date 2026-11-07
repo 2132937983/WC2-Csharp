@@ -258,7 +258,7 @@ public sealed class GUICountryList : GUIElement
             var itemRect = new GUIRect(0f, index * dyCountryItem, rect.w, hCountryItem);
 
             var item = new GUICountryItem();
-            item.Init(belligerent.name, belligerent.id, itemRect);
+            item.Init(belligerent.name, belligerent.id, itemRect, belligerent.flag);
             AddChild(item, true);
             countryItem.Add(item);
             ++index;

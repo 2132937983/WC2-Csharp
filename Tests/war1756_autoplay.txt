@@ -1,0 +1,36 @@
+#! --mods $TESTS/../mods --ai standard
+# conquest 11, the Seven Years' War 1756 (mods/seven-years-war-1756, built by WC2.Tools build-scenario): the
+# Anglo-Prussian and Franco-Austrian alliances, seven neutral powers at peace with everyone, the period's
+# flags (the scenario's own flag keys: Britain flies the 1707 Union Flag here and nowhere else). As Great
+# Britain; the AI plays the rest. Prussia's war starts in round 3, Russia's in 5, Sweden's in 6.
+wait 4.5
+startconquest conquest_11.xml gb
+wait 8
+settle
+wait 2
+diplomacy W56D_start
+# Central Europe: Prussia, Saxony, the Habsburg lands, the Imperial states
+camera 19300 3150 0.5
+wait 0.5
+shot W56_europe
+# Berlin close up: the Prussian eagle on an atlas pole beside the Prussian army
+camera 19340 2970 1.4
+wait 0.5
+shot W56_prussia
+# North America: New France, the Thirteen Colonies, Rupert's Land
+camera 10400 3900 0.22
+wait 0.5
+shot W56_america
+# India: the Mughals, the Marathas, Hyderabad, Bengal, the British and French posts
+camera 26000 6400 0.3
+wait 0.5
+shot W56_india
+autoplay 5
+wait 1
+settle
+wait 2
+diplomacy W56D_round6
+camera 19300 3150 0.5
+wait 0.5
+shot W56_round6
+exit

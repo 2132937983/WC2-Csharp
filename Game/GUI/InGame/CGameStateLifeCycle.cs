@@ -629,7 +629,7 @@ public sealed partial class CGameState
         CCountry currentCountry = g_GameManager.GetCurCountry();
         if (currentCountry == null || !currentCountry.ai) return;
 
-        guiaiProgress.SetCurCountryName(currentCountry.name);
+        guiaiProgress.SetCurCountryName(currentCountry.FlagKey);
         guiaiProgress.progressCount = CActionAI.Instance().aiProgressPercentage;
     }
 

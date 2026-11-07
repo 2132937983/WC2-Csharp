@@ -960,13 +960,23 @@ public sealed class CGameRes
         if (own != null) imageFlag[countryName] = new ecImage(own);
     }
 
-    /// <summary>Renders a country flag; silently skips countries without a loaded flag.</summary>
+    /// <summary>
+    /// Renders a country flag (a flag key: the art id or a scenario's own flag); silently skips keys
+    /// without a flag. A scenario's flag is built from its picture the first time it is drawn.
+    /// </summary>
     public void RenderFlag(string countryName, float x, float y)
     {
         string key = countryName ?? "";
         if (imageFlag.TryGetValue(key, out ecImage flag) && flag != null)
             flag.Render(x, y);
         else if (modMapFlags.TryGetValue(key, out CountryArt.MapFlag built))
-            built.Render(x, y);
+            built?.Render(x, y);
+        else if (!imageFlag.ContainsKey(key))
+        {
+            ecImageAttr donor = textureResArmy.GetImage("flag_de.png")
+                                ?? CountryDefs.ids.Select(id => textureResArmy.GetImage($"flag_{id}.png")).FirstOrDefault(a => a != null);
+            modMapFlags[key] = CountryArt.MapFlag.Create(key, donor);
+            modMapFlags[key]?.Render(x, y);
+        }
     }
 }

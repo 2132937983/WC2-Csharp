@@ -1,0 +1,606 @@
+{
+  // THE SEVEN YEARS' WAR, 1756 - conquest 11 on the Natural Earth world map.
+  // Spring 1756, on the eve of the war: the Diplomatic Revolution has made France and Austria allies,
+  // Britain stands with Prussia, and in America and India the British and French are already fighting.
+  //
+  // Build:  dotnet run --project Tools -- build-scenario --config mods/seven-years-war-1756/source/seven-years-war-1756.json
+  // Check the borders:  add  --preview <file>.png  (the whole world in the owners' colours)
+  // Every field: MODDING.md, "A total conversion: build-scenario".
+  //
+  // The map's provinces follow today's borders and the borders of 1910-1949, so the 1756 borders are drawn
+  // from rules over them: today's country, ISO province, longitude and latitude, the nearest province to a
+  // place. Where a historical border cuts through one of the map's provinces, the province goes to the
+  // side holding most of it (README.md lists the simplifications).
+
+  "mod": {
+    "id": "seven-years-war-1756",
+    "name": "1756: The Seven Years' War",
+    "version": "1.0",
+    "description": "Conquest 11: the world on the eve of the Seven Years' War (spring 1756) on the world map: the Anglo-Prussian and Franco-Austrian alliances, the neutral powers, the colonies in America, India and Africa, flags of the period. Needs the world map (map-natural-earth, built in).",
+    "priority": 1
+  },
+  "conquest": 11,
+  "map": {
+    "id": 2,
+    "pack": "assets/data/maps/natural-earth",
+    "areas": "mods/map-natural-earth/data/json/maps/2/areas.json"
+  },
+  "texts": {
+    "name": { "en": "1756 SEVEN YEARS' WAR", "cn": "1756 七年战争" },
+    "age": { "en": "1756", "cn": "1756" },
+    "intro": {
+      "en": "Spring 1756. In the Diplomatic Revolution the old enemies France and Austria have become allies, and Britain has turned to Prussia. In the Ohio valley and in India the British and French are already at war. Frederick of Prussia will strike first, at Saxony, in round 3; Russia joins the war in round 5, Sweden in round 6, Spain in round 12. The Ottomans, Poland-Lithuania, Denmark-Norway, Persia, the Mughals, Qing China and Tokugawa Japan stay at peace with everyone.",
+      "cn": "1756年春。外交革命使宿敌法国与奥地利结成同盟，英国则转向普鲁士。在俄亥俄河谷和印度，英法两国早已开战。普鲁士的腓特烈将在第3回合率先进攻萨克森；俄国在第5回合参战，瑞典在第6回合，西班牙在第12回合。奥斯曼帝国、波兰立陶宛联邦、丹麦-挪威、波斯、莫卧儿、大清和德川日本与所有国家保持和平。"
+    }
+  },
+  "button": { "title": "1756 SEVEN YEARS' WAR", "lon": -25, "lat": 35, "degreesWide": 150 },
+  "camera": { "lon": 10, "lat": 50 },
+  "fogOfWar": false,
+  "leftRightWrap": true,
+
+  "economy": { "moneyBase": 200, "moneyPerTax": 1.0, "industryBase": 100, "industryPerTax": 0.5 },
+
+  "defaults": {
+    "commander": "common1",
+    "techLevel": 2,
+    "taxFactor": 1.2,
+    "fleets": 0,
+    "transportCards": true,
+    "units": {
+      "capital": ["infantry", "infantry", "artillery"],
+      "largeCity": ["infantry", "artillery"],
+      "city": ["infantry"],
+      "port": ["infantry"]
+    },
+    "intro": {
+      "en": "Spring 1756. The great powers of Europe have changed partners, and their quarrel will be fought on four continents.",
+      "cn": "1756年春。欧洲列强已经交换了盟友，它们的争端将在四大洲展开。"
+    },
+    "victory": {
+      "en": "Defeat every country at war with you or bound to be. The neutral powers, at peace with everyone, need not fall.",
+      "cn": "击败所有正在或将要与你交战的国家。与所有国家和平相处的中立强国无需消灭。"
+    }
+  },
+
+  "factions": [
+    { "id": "anglo", "name": { "en": "Anglo-Prussian Alliance", "cn": "英普同盟" }, "color": [200, 55, 50], "leader": "gb", "tags": ["alliance"] },
+    { "id": "franco", "name": { "en": "Franco-Austrian Alliance", "cn": "法奥同盟" }, "color": [60, 95, 205], "leader": "fr", "tags": ["alliance"] },
+    { "id": "ottoman", "name": { "en": "Ottoman Empire", "cn": "奥斯曼帝国" }, "color": [190, 90, 60], "leader": "ott", "tags": ["power"] },
+    { "id": "commonwealth", "name": { "en": "Polish-Lithuanian Commonwealth", "cn": "波兰立陶宛联邦" }, "color": [220, 130, 150], "leader": "plc", "tags": ["power"] },
+    { "id": "qing", "name": { "en": "Qing Empire", "cn": "大清" }, "color": [235, 200, 60], "leader": "qin", "tags": ["power"] },
+    { "id": "tokugawa", "name": { "en": "Tokugawa Shogunate", "cn": "德川幕府" }, "color": [240, 240, 240], "leader": "jap", "tags": ["power"] },
+    { "id": "mughal", "name": { "en": "Mughal Empire", "cn": "莫卧儿帝国" }, "color": [70, 160, 80], "leader": "mug", "tags": ["power"] },
+    { "id": "persia", "name": { "en": "Persia", "cn": "波斯" }, "color": [120, 200, 180], "leader": "per", "tags": ["power"] },
+    { "id": "denmark", "name": { "en": "Denmark-Norway", "cn": "丹麦-挪威" }, "color": [230, 120, 120], "leader": "dkn", "tags": ["power"] }
+  ],
+
+  // Different sides are at war unless a relation says otherwise; the last relation that holds decides.
+  "relations": [
+    { "between": ["country:pr", "franco"], "state": "peace", "until": 3,
+      "announce": { "commander": "Guderian", "end": {
+        "en": "August 1756. Frederick II marches into Saxony without a declaration of war. The war in Europe has begun.",
+        "cn": "1756年8月。腓特烈二世不宣而战，进军萨克森。欧洲战争爆发。" } } },
+    { "between": ["anglo", "country:ru"], "state": "peace", "until": 5,
+      "announce": { "commander": "Zhukov", "end": {
+        "en": "1757. Russia joins the coalition against Prussia: Apraksin's army marches into East Prussia.",
+        "cn": "1757年。俄国加入反普鲁士同盟：阿普拉克辛的军队攻入东普鲁士。" } } },
+    { "between": ["anglo", "country:se"], "state": "peace", "until": 6,
+      "announce": { "commander": "Rokossovsky", "end": {
+        "en": "September 1757. Sweden lands troops in Pomerania and declares war on Prussia.",
+        "cn": "1757年9月。瑞典在波美拉尼亚登陆并对普鲁士宣战。" } } },
+    { "between": ["anglo", "country:es"], "state": "peace", "until": 12,
+      "announce": { "commander": "de Gaulle", "end": {
+        "en": "1762. The Bourbon Family Compact brings Spain into the war beside France.",
+        "cn": "1762年。波旁家族盟约使西班牙站到法国一边参战。" } } },
+    { "between": ["tag:power", "*"], "state": "peace" }
+  ],
+
+  // Shapes for the flags (SVG path data in a box, 100 x 100 unless "box" says otherwise; parts with a
+  // "role" take the colour the flag gives that role, "mirror" parts are drawn twice, mirrored). All are
+  // drawings of the period's heraldry made for this mod.
+  "symbols": {
+    "fleur": { "parts": [
+      { "role": "lis", "d": "M50 2 C43 13 37 25 37 37 C37 47 43 54 50 60 C57 54 63 47 63 37 C63 25 57 13 50 2 Z" },
+      { "role": "lis", "mirror": true, "d": "M46 62 C38 54 30 46 24 34 C20 26 12 22 7 27 C2 32 5 41 13 42 C10 37 13 32 18 35 C23 44 30 56 40 64 Z" },
+      { "role": "lis", "d": "M24 60 L76 60 L76 68 L24 68 Z" },
+      { "role": "lis", "d": "M45 68 L55 68 L54 80 L50 88 L46 80 Z" },
+      { "role": "lis", "mirror": true, "d": "M44 68 C40 76 34 82 26 84 C22 85 19 83 19 80 C19 77 22 75 25 77 C31 75 36 72 39 68 Z" } ] },
+    "eagle": { "parts": [
+      { "role": "body", "mirror": true, "d": "M44 40 C34 34 22 26 10 14 L13 25 L5 26 L14 34 L5 38 L16 43 L7 49 L19 51 L12 58 L26 57 L21 64 L36 59 C41 54 44 48 44 40 Z" },
+      { "role": "body", "mirror": true, "d": "M50 30 C44 30 40 38 40 50 C40 62 44 70 50 74 Z" },
+      { "role": "body", "mirror": true, "d": "M46 70 L38 88 L45 84 L50 94 L50 70 Z" },
+      { "role": "body", "mirror": true, "d": "M43 66 L37 76 L31 77 L35 80 L39 79 L40 84 L43 79 L46 72 Z" },
+      { "role": "body", "d": "M53 34 C52 26 48 20 41 19 C36 18 32 21 30 25 L36 26 L31 30 C35 31 40 31 44 34 C46 37 48 39 52 40 Z" },
+      { "role": "crown", "d": "M33 17 L35 8 L38 13 L41 6 L44 13 L47 8 L49 17 Z" } ] },
+    "regalia": { "parts": [
+      { "role": "gold", "stroke": 3, "d": "M30 70 L16 46" },
+      { "role": "gold", "d": "M12 45 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 Z" },
+      { "role": "orb", "d": "M77 72 a7 7 0 1 0 14 0 a7 7 0 1 0 -14 0 Z" },
+      { "role": "gold", "stroke": 2, "d": "M84 57 L84 65 M80 61 L88 61" } ] },
+    "eagle2": { "parts": [
+      { "role": "body", "mirror": true, "d": "M44 42 C34 36 22 28 10 16 L13 27 L5 28 L14 36 L5 40 L16 45 L7 51 L19 53 L12 60 L26 59 L21 66 L36 61 C41 56 44 50 44 42 Z" },
+      { "role": "body", "mirror": true, "d": "M50 32 C44 32 40 40 40 52 C40 64 44 72 50 76 Z" },
+      { "role": "body", "mirror": true, "d": "M46 72 L38 90 L45 86 L50 96 L50 72 Z" },
+      { "role": "body", "mirror": true, "d": "M43 68 L37 78 L31 79 L35 82 L39 81 L40 86 L43 81 L46 74 Z" },
+      { "role": "body", "mirror": true, "d": "M48 36 C46 28 42 23 35 22 C30 21 26 24 24 28 L30 29 L25 33 C29 34 34 34 38 37 C41 40 44 42 48 43 Z" },
+      { "role": "crown", "mirror": true, "d": "M27 20 L29 12 L32 16 L35 10 L38 16 L41 12 L43 20 Z" },
+      { "role": "crown", "d": "M42 15 L44 4 L50 9 L56 4 L58 15 Z" } ] },
+    "lion": { "parts": [
+      { "role": "body", "d": "M38 30 C46 28 54 34 58 44 C62 54 66 62 64 70 C62 76 54 78 50 74 C46 68 44 60 40 54 C36 48 34 38 38 30 Z" },
+      { "role": "body", "d": "M28 14 L32 7 L36 12 L40 5 L43 11 L48 9 L48 16 L54 19 L49 24 L53 30 L46 31 L46 38 L39 35 L34 40 L32 33 Z" },
+      { "role": "body", "d": "M32 15 C26 13 20 15 15 19 L17 23 L12 26 L18 28 L15 33 L22 32 C26 32 30 30 33 28 Z" },
+      { "role": "body", "d": "M40 36 C34 34 28 32 22 30 L18 25 L15 29 L10 29 L14 33 L11 36 L18 36 L24 39 C30 41 36 43 40 45 Z" },
+      { "role": "body", "d": "M42 48 C36 48 30 48 24 50 L20 46 L17 50 L12 51 L16 55 L14 58 L21 57 L26 57 C32 57 38 57 44 57 Z" },
+      { "role": "body", "d": "M58 66 C60 74 58 82 54 88 L49 90 L51 95 L58 95 L63 92 L60 88 C64 82 66 74 64 66 Z" },
+      { "role": "body", "d": "M50 70 C46 74 42 78 36 80 L31 77 L29 82 L24 83 L29 86 L27 90 L34 88 L38 86 C44 84 50 80 54 74 Z" },
+      { "role": "body", "d": "M64 66 C72 66 78 58 78 48 C78 40 82 34 86 30 L83 25 L89 27 L91 22 L94 29 L90 34 C86 38 84 44 84 50 C84 62 76 72 66 72 Z" } ] },
+    "horse": { "parts": [
+      { "role": "body", "d": "M30 40 C36 34 48 34 60 40 C70 45 78 50 80 58 C82 66 76 70 68 68 C58 66 46 62 38 58 C30 54 26 46 30 40 Z" },
+      { "role": "body", "d": "M31 45 C27 37 25 29 23 23 C21 18 19 14 15 12 L10 14 L5 20 L7 24 L13 24 L18 27 C20 33 24 41 27 49 Z" },
+      { "role": "body", "d": "M15 13 L17 4 L21 12 Z" },
+      { "role": "body", "d": "M24 20 C29 25 31 31 33 38 L29 39 C27 33 25 28 22 24 Z" },
+      { "role": "body", "d": "M32 50 C26 54 20 54 16 50 L11 52 L13 57 L18 58 C24 60 30 58 36 56 Z" },
+      { "role": "body", "d": "M36 54 C32 60 28 66 22 68 L19 73 L24 75 L28 72 C34 68 38 62 42 58 Z" },
+      { "role": "body", "d": "M64 66 C66 76 64 84 60 92 L55 94 L64 96 L68 92 C70 84 72 76 70 66 Z" },
+      { "role": "body", "d": "M74 64 C78 72 80 80 82 88 L78 92 L87 94 L88 88 C86 78 84 70 80 62 Z" },
+      { "role": "body", "d": "M80 56 C88 54 94 60 96 70 C98 78 94 84 90 86 C92 78 90 70 86 64 C84 62 82 60 80 60 Z" } ] },
+    "rider": { "parts": [
+      { "role": "body", "d": "M45 40 L43 21 L52 19 L56 40 Z" },
+      { "role": "body", "d": "M44 14 a4.5 4.5 0 1 0 9 0 a4.5 4.5 0 1 0 -9 0 Z" },
+      { "role": "body", "d": "M49 40 L46 54 L50 55 L54 42 Z" },
+      { "role": "body", "stroke": 3.5, "d": "M48 25 L36 13 L24 3" },
+      { "role": "shield", "d": "M55 26 L64 26 L64 34 C64 38 60 41 59.5 41 C59 41 55 38 55 34 Z" } ] },
+    "dragon": { "parts": [
+      { "role": "body", "stroke": 11, "d": "M8 72 C20 40 34 90 48 60 C60 34 72 64 80 44" },
+      { "role": "body", "d": "M16 50 L20 42 L24 50 Z M40 78 L44 70 L48 76 Z M54 46 L58 38 L62 46 Z" },
+      { "role": "body", "d": "M74 34 L92 27 L98 35 L91 40 L96 47 L84 47 L74 54 Z" },
+      { "role": "body", "stroke": 3, "d": "M84 30 L78 18 M89 29 L92 17 M28 68 L20 82 M28 68 L35 83 M58 52 L51 66 M58 52 L66 66" },
+      { "role": "body", "d": "M8 72 L0 63 L3 77 Z" },
+      { "role": "pearl", "d": "M84 12 a6 6 0 1 0 12 0 a6 6 0 1 0 -12 0 Z" } ] },
+    "keys": { "parts": [
+      { "role": "key", "stroke": 6, "d": "M24 84 L72 22 M76 84 L28 22" },
+      { "role": "key", "stroke": 4, "d": "M15 88 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0 Z M69 88 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0 Z" },
+      { "role": "key", "d": "M64 16 h12 v8 h-12 Z M24 16 h12 v8 h-12 Z" } ] },
+    "wheel": { "parts": [
+      { "role": "wheel", "stroke": 8, "d": "M14 50 a36 36 0 1 0 72 0 a36 36 0 1 0 -72 0 Z" },
+      { "role": "wheel", "stroke": 7, "d": "M50 14 L50 86 M19 32 L81 68 M19 68 L81 32" },
+      { "role": "wheel", "d": "M42 50 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0 Z" } ] },
+    "antler": { "box": [100, 40], "parts": [
+      { "role": "antler", "stroke": 6, "d": "M8 30 C30 18 60 16 92 26 M24 24 L18 8 M44 19 L40 4 M64 19 L68 4 M82 23 L90 8" } ] },
+    "crancelin": { "box": [150, 102], "parts": [
+      { "role": "green", "stroke": 13, "d": "M-10 26 L160 86" },
+      { "role": "green", "d": "M17 28 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 Z M47 39 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 Z M77 49.5 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 Z M107 60 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 Z M137 70.6 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 Z" } ] },
+    "rake": { "box": [150, 102], "parts": [
+      { "role": "red", "d": "M0 0 H150 V44 L131 60 L112 44 L94 60 L75 44 L56 60 L37 44 L19 60 L0 44 Z" } ] },
+    "union": { "box": [150, 102], "parts": [
+      { "role": "field", "d": "M0 0 H150 V102 H0 Z" },
+      { "role": "white", "stroke": 20, "d": "M0 0 L150 102 M150 0 L0 102" },
+      { "role": "white", "stroke": 34, "d": "M75 0 V102 M0 51 H150" },
+      { "role": "red", "stroke": 20, "d": "M75 0 V102 M0 51 H150" } ] },
+    "shield": { "parts": [
+      { "role": "field", "d": "M20 8 L80 8 L80 50 C80 73 63 87 50 93 C37 87 20 73 20 50 Z" } ] },
+    "shieldpt": { "parts": [
+      { "role": "crown", "d": "M30 14 L32 3 L40 9 L50 1 L60 9 L68 3 L70 14 Z" },
+      { "role": "bordure", "d": "M20 16 L80 16 L80 55 C80 75 65 88 50 93 C35 88 20 75 20 55 Z" },
+      { "role": "field", "d": "M28 23 L72 23 L72 54 C72 70 62 80 50 85 C38 80 28 70 28 54 Z" },
+      { "role": "quinas", "d": "M45 30 h10 v12 h-10 Z M45 46 h10 v12 h-10 Z M45 62 h10 v12 h-10 Z M33 46 h10 v12 h-10 Z M57 46 h10 v12 h-10 Z" },
+      { "role": "castles", "d": "M22 21 h5 v5 h-5 Z M73 21 h5 v5 h-5 Z M22 41 h5 v5 h-5 Z M73 41 h5 v5 h-5 Z M25 63 h5 v5 h-5 Z M70 63 h5 v5 h-5 Z M47 87 h6 v4 h-6 Z" } ] },
+    "perron": { "parts": [
+      { "role": "gold", "d": "M45 22 h10 v52 h-10 Z M37 74 h26 v7 h-26 Z M33 81 h34 v7 h-34 Z M40 16 h20 v6 h-20 Z M48 3 h4 v13 h-4 Z M43 7 h14 v3 h-14 Z" } ] },
+    "tamga": { "parts": [
+      { "role": "gold", "stroke": 7, "d": "M50 88 L50 22 M28 18 L28 44 C28 58 72 58 72 44 L72 18" } ] },
+    "bull": { "parts": [
+      { "role": "bull", "d": "M34 40 C34 24 66 24 66 40 C66 60 58 72 50 74 C42 72 34 60 34 40 Z" },
+      { "role": "bull", "stroke": 6, "d": "M36 32 C26 28 20 18 23 8 M64 32 C74 28 80 18 77 8" },
+      { "role": "tongue", "d": "M46 72 h8 v10 h-8 Z" } ] },
+    "maltese": { "parts": [
+      { "role": "cross", "d": "M50 50 L36 8 L50 20 L64 8 Z M50 50 L92 36 L80 50 L92 64 Z M50 50 L64 92 L50 80 L36 92 Z M50 50 L8 64 L20 50 L8 36 Z" } ] },
+    "taegeuk": { "parts": [
+      { "role": "blue", "d": "M20 50 a30 30 0 1 0 60 0 a30 30 0 1 0 -60 0 Z" },
+      { "role": "red", "d": "M20 50 A30 30 0 0 1 80 50 A15 15 0 0 1 50 50 A15 15 0 0 0 20 50 Z" } ] },
+    "conch": { "parts": [
+      { "role": "shell", "stroke": 7, "d": "M58 22 C80 26 84 56 64 70 C48 80 32 70 36 54 C39 44 50 42 55 48 C59 53 55 60 50 58" },
+      { "role": "shell", "d": "M58 22 L48 10 L67 14 Z" } ] },
+    "peacock": { "parts": [
+      { "role": "tail", "d": "M18 80 A32 32 0 0 1 82 80 Z" },
+      { "role": "eyes", "d": "M28 62 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0 Z M38 54 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0 Z M56 54 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0 Z M66 62 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0 Z M47 51 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0 Z" },
+      { "role": "body", "d": "M44 82 C44 66 47 56 50 50 C53 56 56 66 56 82 Z M46 46 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 Z" } ] }
+  },
+
+  // Countries in turn order. "art": the game's own units (and, without a "flag", its flag); a "flag"
+  // here is this scenario's flag only (flag_c11_<id>.png), the game's flag stays everywhere else.
+  "countries": [
+    // ---- the Anglo-Prussian Alliance
+    { "id": "gb", "art": "gb", "faction": "anglo", "tags": ["great power", "maritime"],
+      "name": { "en": "KINGDOM OF GREAT BRITAIN", "cn": "大不列颠王国" },
+      "intro": { "en": "George II rules Britain, Ireland and Hanover. The Royal Navy is the strongest in the world, the Thirteen Colonies are booming, and in the Ohio valley and the Carnatic the war with France has already begun. Pitt will pay Prussia to fight in Europe while Britain takes the colonies.", "cn": "乔治二世统治着大不列颠、爱尔兰和汉诺威。皇家海军冠绝全球，十三殖民地蒸蒸日上，在俄亥俄河谷和卡纳蒂克，与法国的战争早已打响。皮特将出钱让普鲁士在欧洲作战，而英国去夺取殖民地。" },
+      "color": [200, 60, 60], "commander": "Montgomery", "techLevel": 3, "capital": [-0.13, 51.51], "garrison": 1, "fleets": 10, "fleetUnit": "battleship", "economy": 1.4,
+      "flag": { "bands": ["#012169"], "overlays": [ { "type": "path", "symbol": "union", "full": true, "colors": { "field": "#012169", "white": "#ffffff", "red": "#c8102e" } } ] } },
+    { "id": "pr", "art": "de", "faction": "anglo", "tags": ["great power", "military"],
+      "name": { "en": "KINGDOM OF PRUSSIA", "cn": "普鲁士王国" },
+      "intro": { "en": "Frederick II holds Silesia, taken from Austria in the last two wars, and knows Maria Theresa wants it back with France and Russia at her side. His army is the best drilled in Europe; his kingdom is small and scattered from the Rhine to the Memel. He means to strike first.", "cn": "腓特烈二世占据着在前两场战争中从奥地利夺来的西里西亚，他知道玛丽亚·特蕾莎想在法俄的支持下夺回它。他的军队是欧洲训练最精良的，但他的王国弱小，领土从莱茵河一直散布到梅梅尔河。他打算先发制人。" },
+      "color": [55, 75, 135], "commander": "Guderian", "techLevel": 3, "capital": [13.40, 52.52], "garrison": 2, "fleets": 1, "economy": 1.25,
+      "flag": { "bands": ["#ffffff"], "overlays": [
+        { "type": "path", "symbol": "eagle", "x": 0.5, "y": 0.52, "h": 0.9, "colors": { "body": "#111111", "crown": "#d4a017" } },
+        { "type": "path", "symbol": "regalia", "x": 0.5, "y": 0.52, "h": 0.9, "colors": { "gold": "#d4a017", "orb": "#1f4e9a" } },
+        { "type": "text", "text": "FR", "x": 0.5, "y": 0.55, "h": 0.17, "color": "#e8b923" } ] } },
+    { "id": "han", "faction": "anglo", "tags": ["electorate"], "name": { "en": "ELECTORATE OF HANOVER", "cn": "汉诺威选侯国" },
+      "intro": { "en": "King George's German electorate, ruled from London. France will march on it the moment the war begins; Britain has promised an Army of Observation to defend it.", "cn": "乔治国王在德意志的选侯国，由伦敦统治。战争一开始法国就会进军这里；英国已承诺组建一支观察军来保卫它。" },
+      "color": [215, 110, 90], "capital": [9.73, 52.37], "garrison": 1,
+      "flag": { "bands": ["#c8102e"], "overlays": [ { "type": "path", "symbol": "horse", "x": 0.5, "y": 0.52, "h": 0.82, "colors": { "body": "#ffffff" } } ] } },
+    { "id": "hes", "faction": "anglo", "tags": ["landgraviate"], "name": { "en": "LANDGRAVIATE OF HESSE-KASSEL", "cn": "黑森-卡塞尔伯爵领" }, "color": [160, 120, 170], "capital": [9.48, 51.31],
+      "flag": { "bands": ["#1f4e9a"], "overlays": [ { "type": "path", "symbol": "lion", "x": 0.5, "y": 0.5, "h": 0.88, "colors": { "body": "#ffffff" } } ] } },
+    { "id": "bru", "faction": "anglo", "tags": ["duchy"], "name": { "en": "DUCHY OF BRUNSWICK", "cn": "不伦瑞克公国" }, "color": [210, 175, 90], "capital": [10.52, 52.27],
+      "flag": { "bands": ["#b22234"], "overlays": [ { "type": "path", "symbol": "lion", "x": 0.5, "y": 0.5, "h": 0.88, "colors": { "body": "#e8b923" } } ] } },
+    { "id": "hbc", "faction": "anglo", "tags": ["company"], "name": { "en": "HUDSON'S BAY COMPANY", "cn": "哈德逊湾公司" },
+      "intro": { "en": "The Company's charter gives it every river that runs into Hudson Bay: Rupert's Land, from York Factory to the prairies. Its forts trade furs with the Cree and watch the French from Montreal.", "cn": "公司的特许状把流入哈德逊湾的每一条河流都划给了它：鲁珀特地，从约克工厂一直延伸到大草原。它的堡垒与克里人交易毛皮，并提防着来自蒙特利尔的法国人。" },
+      "color": [180, 80, 70], "capital": [-92.4, 57.0],
+      "flag": { "bands": ["#b22234"], "overlays": [
+        { "type": "path", "symbol": "union", "x": 0.25, "y": 0.25, "w": 0.5, "h": 0.5, "colors": { "field": "#012169", "white": "#ffffff", "red": "#c8102e" } },
+        { "type": "text", "text": "HBC", "x": 0.72, "y": 0.74, "h": 0.24, "color": "#ffffff" } ] } },
+
+    // ---- the Franco-Austrian Alliance
+    { "id": "fr", "art": "fr", "faction": "franco", "tags": ["great power"],
+      "name": { "en": "KINGDOM OF FRANCE", "cn": "法兰西王国" },
+      "intro": { "en": "Louis XV has made peace with the Habsburgs and war with Britain. France is the richest and most populous kingdom of Europe, with New France and Louisiana in America, Saint-Domingue in the Caribbean and Dupleix's posts in India. Its navy is half the size of Britain's.", "cn": "路易十五与哈布斯堡家族讲和，转而与英国开战。法国是欧洲最富庶、人口最多的王国，在美洲拥有新法兰西和路易斯安那，在加勒比海拥有圣多明各，在印度拥有杜普雷的据点。但它的海军只有英国的一半。" },
+      "color": [80, 110, 190], "commander": "de Gaulle", "techLevel": 3, "capital": [2.35, 48.86], "garrison": 1, "fleets": 7, "fleetUnit": "battleship", "economy": 1.4,
+      "flag": { "bands": ["#fbfaf2"], "overlays": [ { "type": "path", "symbol": "fleur", "h": 0.27, "colors": { "lis": "#d4a017" },
+        "at": [[0.14, 0.2], [0.42, 0.2], [0.7, 0.2], [0.98, 0.2], [0.28, 0.5], [0.56, 0.5], [0.84, 0.5], [0.0, 0.5], [0.14, 0.8], [0.42, 0.8], [0.7, 0.8], [0.98, 0.8]] } ] } },
+    { "id": "hab", "art": "hu", "faction": "franco", "tags": ["great power"],
+      "name": { "en": "HABSBURG MONARCHY", "cn": "哈布斯堡君主国" },
+      "intro": { "en": "Maria Theresa has never accepted the loss of Silesia. Kaunitz has turned France from an enemy into an ally, Russia is ready to march, and the lands of the Monarchy reach from the Austrian Netherlands to Transylvania and Milan.", "cn": "玛丽亚·特蕾莎从未接受失去西里西亚。考尼茨把法国从敌人变成了盟友，俄国已准备出兵，君主国的领土从奥属尼德兰一直延伸到特兰西瓦尼亚和米兰。" },
+      "color": [235, 215, 110], "commander": "Rommel", "techLevel": 3, "capital": [16.37, 48.21], "garrison": 1, "fleets": 1, "economy": 1.3,
+      "flag": { "bands": ["#f2c418"], "overlays": [ { "type": "path", "symbol": "eagle2", "x": 0.5, "y": 0.5, "h": 0.94, "colors": { "body": "#111111", "crown": "#7a5c12" } } ] } },
+    { "id": "ru", "art": "ru", "faction": "franco", "tags": ["great power"],
+      "name": { "en": "RUSSIAN EMPIRE", "cn": "俄罗斯帝国" },
+      "intro": { "en": "Empress Elizabeth hates Frederick and has promised Austria eighty thousand men. Russia stretches from the Baltic to the Pacific; its army is slow but enormous. It enters the war in round 5.", "cn": "伊丽莎白女皇憎恨腓特烈，已向奥地利许诺八万大军。俄国从波罗的海延伸到太平洋；它的军队行动迟缓，但规模庞大。它将在第5回合参战。" },
+      "color": [90, 150, 95], "commander": "Zhukov", "techLevel": 2, "capital": [30.31, 59.94], "garrison": 1, "fleets": 2, "economy": 1.1,
+      "flag": { "bands": ["#ffffff", "#1f4fa8", "#d52b1e"] } },
+    { "id": "es", "art": "es", "faction": "franco", "tags": ["great power", "maritime"],
+      "name": { "en": "SPANISH EMPIRE", "cn": "西班牙帝国" },
+      "intro": { "en": "Ferdinand VI keeps Spain out of the war, but its empire runs from California's edge to Cape Horn and the Philippines, and the Bourbon kings of France and Spain are cousins. Spain enters the war in round 12.", "cn": "费尔南多六世让西班牙置身战外，但它的帝国从加利福尼亚边缘一直延伸到合恩角和菲律宾，而且法国和西班牙的波旁国王是堂兄弟。西班牙将在第12回合参战。" },
+      "color": [225, 180, 70], "techLevel": 2, "capital": [-3.70, 40.42], "garrison": 1, "fleets": 6, "fleetUnit": "cruiser", "economy": 1.2,
+      "flag": { "bands": ["#fbfaf2"], "overlays": [ { "type": "raggedSaltire", "color": "#c60b1e", "width": 0.1 } ] } },
+    { "id": "se", "art": "se", "faction": "franco", "tags": ["kingdom"],
+      "name": { "en": "KINGDOM OF SWEDEN", "cn": "瑞典王国" },
+      "intro": { "en": "The Hats in the Riksdag want back what Sweden lost to Prussia in Pomerania. Sweden still holds Finland, Stralsund and Wismar. It enters the war in round 6.", "cn": "议会中的礼帽党想夺回瑞典在波美拉尼亚输给普鲁士的土地。瑞典仍拥有芬兰、施特拉尔松德和维斯马。它将在第6回合参战。" },
+      "color": [90, 150, 210], "techLevel": 2, "capital": [18.07, 59.33], "fleets": 2,
+      "flag": { "bands": ["#005293"], "overlays": [ { "type": "cross", "x": 0.375, "y": 0.5, "width": 0.2, "color": "#fecb00" } ] } },
+    { "id": "sax", "faction": "franco", "tags": ["electorate"], "name": { "en": "ELECTORATE OF SAXONY", "cn": "萨克森选侯国" },
+      "intro": { "en": "Augustus III is Elector of Saxony and King of Poland. Saxony is rich, its army small, and it lies between Prussia and Bohemia: Frederick's road to Austria runs through Dresden.", "cn": "奥古斯特三世既是萨克森选侯，也是波兰国王。萨克森富庶，军队弱小，又夹在普鲁士和波希米亚之间：腓特烈通往奥地利的道路正穿过德累斯顿。" },
+      "color": [130, 175, 110], "capital": [13.74, 51.05], "garrison": 1,
+      "flag": { "bands": ["#111111", "#e8b923", "#111111", "#e8b923", "#111111", "#e8b923", "#111111", "#e8b923", "#111111", "#e8b923"],
+        "overlays": [ { "type": "path", "symbol": "crancelin", "full": true, "colors": { "green": "#2e8b37" } } ] } },
+    { "id": "bav", "faction": "franco", "tags": ["electorate"], "name": { "en": "ELECTORATE OF BAVARIA", "cn": "巴伐利亚选侯国" }, "color": [120, 170, 225], "capital": [11.58, 48.14],
+      "flag": { "bands": ["#ffffff"], "overlays": [ { "type": "lozengy", "n": 7, "aspect": 1.5, "color": "#1f80c8", "color2": "#ffffff" } ] } },
+    { "id": "pal", "faction": "franco", "tags": ["electorate"], "name": { "en": "ELECTORAL PALATINATE", "cn": "普法尔茨选侯国" }, "color": [160, 130, 95], "capital": [8.47, 49.49],
+      "flag": { "bands": ["#141414"], "overlays": [ { "type": "path", "symbol": "lion", "x": 0.5, "y": 0.5, "h": 0.88, "colors": { "body": "#e8b923" } } ] } },
+    { "id": "wur", "faction": "franco", "tags": ["duchy"], "name": { "en": "DUCHY OF WÜRTTEMBERG", "cn": "符腾堡公国" }, "color": [190, 90, 90], "capital": [9.18, 48.78],
+      "flag": { "bands": ["#f4c430"], "overlays": [ { "type": "path", "symbol": "antler", "h": 0.22, "w": 0.7, "colors": { "antler": "#141414" }, "at": [[0.5, 0.2], [0.5, 0.5], [0.5, 0.8]] } ] } },
+    { "id": "col", "faction": "franco", "tags": ["ecclesiastical"], "name": { "en": "ELECTORATE OF COLOGNE", "cn": "科隆选侯国" }, "color": [215, 215, 205], "capital": [7.10, 50.73],
+      "flag": { "bands": ["#ffffff"], "overlays": [ { "type": "cross", "x": 0.5, "y": 0.5, "width": 0.2, "color": "#141414" } ] } },
+    { "id": "mai", "faction": "franco", "tags": ["ecclesiastical"], "name": { "en": "ELECTORATE OF MAINZ", "cn": "美因茨选侯国" }, "color": [175, 70, 95], "capital": [8.27, 50.0],
+      "flag": { "bands": ["#c8102e"], "overlays": [ { "type": "path", "symbol": "wheel", "x": 0.5, "y": 0.5, "h": 0.78, "colors": { "wheel": "#ffffff" } } ] } },
+    { "id": "tri", "faction": "franco", "tags": ["ecclesiastical"], "name": { "en": "ELECTORATE OF TRIER", "cn": "特里尔选侯国" }, "color": [190, 110, 110], "capital": [7.59, 50.36],
+      "flag": { "bands": ["#ffffff"], "overlays": [ { "type": "cross", "x": 0.5, "y": 0.5, "width": 0.2, "color": "#c8102e" } ] } },
+    { "id": "wbg", "faction": "franco", "tags": ["ecclesiastical"], "name": { "en": "FRANCONIAN PRINCE-BISHOPRICS", "cn": "法兰肯采邑主教国" }, "color": [200, 160, 110], "capital": [9.93, 49.79],
+      "flag": { "bands": ["#ffffff"], "overlays": [ { "type": "path", "symbol": "rake", "full": true, "colors": { "red": "#c8102e" } } ] } },
+
+    // ---- the neutral powers (each a side of its own, at peace with everyone)
+    { "id": "ott", "art": "tr", "faction": "ottoman", "tags": ["empire"], "name": { "en": "OTTOMAN EMPIRE", "cn": "奥斯曼帝国" },
+      "intro": { "en": "Sultan Osman III rules from the Danube to the Persian Gulf and from Algiers to the Caucasus. The Porte watches Russia and Austria fight Prussia and keeps its peace.", "cn": "苏丹奥斯曼三世统治着从多瑙河到波斯湾、从阿尔及尔到高加索的广袤土地。奥斯曼朝廷旁观俄奥与普鲁士交战，坚守和平。" },
+      "color": [195, 100, 70], "techLevel": 2, "capital": [28.98, 41.01], "garrison": 1, "fleets": 3,
+      "flag": { "bands": ["#d10f1f"], "overlays": [ { "type": "crescent", "x": 0.42, "y": 0.5, "r": 0.27, "color": "#ffffff" },
+        { "type": "star", "x": 0.63, "y": 0.5, "r": 0.11, "points": 8, "inner": 0.5, "color": "#ffffff" } ] } },
+    { "id": "plc", "art": "pl", "faction": "commonwealth", "tags": ["commonwealth"], "name": { "en": "POLISH-LITHUANIAN COMMONWEALTH", "cn": "波兰立陶宛联邦" },
+      "intro": { "en": "The Commonwealth is vast and weak: its Sejm is paralysed by the liberum veto, its king is the Elector of Saxony, and Russian armies will march across it to reach Prussia.", "cn": "联邦幅员辽阔却十分虚弱：它的议会被自由否决权所瘫痪，它的国王是萨克森选侯，俄国军队将穿过它的领土进攻普鲁士。" },
+      "color": [225, 140, 160], "techLevel": 2, "capital": [21.01, 52.23], "garrison": 1,
+      "flag": { "bands": ["#dc143c"], "overlays": [
+        { "type": "path", "symbol": "eagle", "x": 0.29, "y": 0.52, "h": 0.84, "colors": { "body": "#ffffff", "crown": "#e8b923" } },
+        { "type": "path", "symbol": "horse", "x": 0.72, "y": 0.54, "h": 0.8, "colors": { "body": "#ffffff" } },
+        { "type": "path", "symbol": "rider", "x": 0.72, "y": 0.54, "h": 0.8, "colors": { "body": "#ffffff", "shield": "#1f4e9a" } } ] } },
+    { "id": "qin", "art": "cn", "faction": "qing", "tags": ["empire"], "name": { "en": "QING EMPIRE", "cn": "大清" },
+      "intro": { "en": "The Qianlong Emperor is completing the conquest of the Dzungars. Qing China is the richest state on earth and trades with Europeans only at Canton.", "cn": "乾隆皇帝正在完成对准噶尔的征服。大清是世界上最富有的国家，只在广州与欧洲人通商。" },
+      "color": [235, 200, 70], "techLevel": 2, "capital": [116.40, 39.90], "garrison": 2, "fleets": 2,
+      "flag": { "shape": "triangle", "bands": ["#f7d000"], "overlays": [
+        { "type": "path", "symbol": "dragon", "x": 0.3, "y": 0.5, "h": 0.66, "colors": { "body": "#1f4fb0", "pearl": "#d10f1f" } } ] } },
+    { "id": "jap", "art": "ja", "faction": "tokugawa", "tags": ["shogunate"], "name": { "en": "TOKUGAWA SHOGUNATE", "cn": "德川幕府" },
+      "intro": { "en": "Shogun Ieshige rules a closed country: only Dutch and Chinese ships may trade, at Nagasaki. Japan keeps out of the world's wars.", "cn": "将军德川家重统治着一个锁国的国家：只有荷兰和中国的船只可以在长崎通商。日本置身于世界的战争之外。" },
+      "color": [240, 235, 230], "techLevel": 2, "capital": [139.69, 35.69], "garrison": 1, "fleets": 1,
+      "flag": { "bands": ["#ffffff"], "overlays": [ { "type": "disc", "x": 0.5, "y": 0.5, "r": 0.3, "color": "#bc002d" } ] } },
+    { "id": "mug", "art": "in", "faction": "mughal", "tags": ["empire"], "name": { "en": "MUGHAL EMPIRE", "cn": "莫卧儿帝国" },
+      "intro": { "en": "Emperor Alamgir II still reigns in Delhi, but the Marathas, the Nizam, the Nawab of Bengal and the Afghans have taken most of what Aurangzeb ruled. Europeans trade at the coasts by his leave.", "cn": "阿拉姆吉尔二世仍在德里称帝，但马拉塔人、尼扎姆、孟加拉纳瓦卜和阿富汗人已夺走了奥朗则布统治的大部分土地。欧洲人在他的许可下在沿海贸易。" },
+      "color": [70, 160, 80], "techLevel": 2, "capital": [77.21, 28.61], "garrison": 1,
+      "flag": { "bands": ["#2e7d32"], "overlays": [
+        { "type": "star", "x": 0.62, "y": 0.38, "r": 0.3, "points": 16, "inner": 0.6, "color": "#ffd54a" },
+        { "type": "path", "symbol": "lion", "x": 0.46, "y": 0.52, "h": 0.8, "colors": { "body": "#a8741a" } } ] } },
+    { "id": "per", "faction": "persia", "tags": ["kingdom"], "name": { "en": "PERSIA", "cn": "波斯" },
+      "intro": { "en": "Nader Shah's empire has fallen apart since his murder. Karim Khan Zand is winning the struggle for Persia; Khorasan is held by Nader's grandson under Afghan protection.", "cn": "纳迪尔沙遇刺后，他的帝国四分五裂。卡里姆汗·赞德正在赢得波斯的争夺；呼罗珊由纳迪尔的孙子在阿富汗人的庇护下统治。" },
+      "color": [120, 200, 175], "techLevel": 2, "capital": [51.67, 32.65], "garrison": 1,
+      "flag": { "bands": ["#ffffff"], "overlays": [
+        { "type": "star", "x": 0.62, "y": 0.38, "r": 0.3, "points": 16, "inner": 0.6, "color": "#f4b400" },
+        { "type": "path", "symbol": "lion", "x": 0.46, "y": 0.52, "h": 0.8, "colors": { "body": "#a8741a" } },
+        { "type": "border", "width": 0.07, "color": "#2e7d32" } ] } },
+    { "id": "dkn", "art": "dk", "faction": "denmark", "tags": ["kingdom"], "name": { "en": "DENMARK-NORWAY", "cn": "丹麦-挪威" },
+      "intro": { "en": "Frederick V rules Denmark, Norway, Iceland, Greenland and the duchies of Schleswig and Holstein. Copenhagen will stay neutral and trade with both sides.", "cn": "弗雷德里克五世统治着丹麦、挪威、冰岛、格陵兰以及石勒苏益格和荷尔斯泰因公国。哥本哈根将保持中立，并与双方通商。" },
+      "color": [230, 120, 120], "techLevel": 2, "capital": [12.57, 55.68], "fleets": 2,
+      "flag": { "shape": "swallowtail", "bands": ["#c8102e"], "overlays": [ { "type": "cross", "x": 0.36, "y": 0.5, "width": 0.14, "color": "#ffffff" } ] } },
+
+    // ---- the lesser neutral states (the original game's neutrals: they do not act, anyone may attack them)
+    { "id": "pt", "art": "pt", "alliance": "n", "name": { "en": "KINGDOM OF PORTUGAL", "cn": "葡萄牙王国" }, "color": [70, 150, 100], "capital": [-9.14, 38.72], "fleets": 2,
+      "flag": { "bands": ["#ffffff"], "overlays": [ { "type": "path", "symbol": "shieldpt", "x": 0.5, "y": 0.5, "h": 0.86,
+        "colors": { "crown": "#d4a017", "bordure": "#c8102e", "field": "#ffffff", "quinas": "#1f3f99", "castles": "#e8b923" } } ] } },
+    { "id": "nl", "art": "nl", "alliance": "n", "name": { "en": "DUTCH REPUBLIC", "cn": "荷兰共和国" }, "color": [235, 150, 70], "capital": [4.90, 52.37], "fleets": 3,
+      "flag": { "bands": ["#ae1c28", "#ffffff", "#21468b"] } },
+    { "id": "sui", "art": "ch", "alliance": "n", "name": { "en": "SWISS CONFEDERATION", "cn": "瑞士邦联" }, "color": [205, 90, 90], "capital": [7.45, 46.95],
+      "flag": { "bands": ["#d52b1e"], "overlays": [ { "type": "rect", "x": 0.44, "y": 0.18, "w": 0.12, "h": 0.64, "color": "#ffffff" },
+        { "type": "rect", "x": 0.31, "y": 0.41, "w": 0.38, "h": 0.18, "color": "#ffffff" } ] } },
+    { "id": "ven", "alliance": "n", "name": { "en": "REPUBLIC OF VENICE", "cn": "威尼斯共和国" }, "color": [185, 70, 80], "capital": [12.33, 45.44], "fleets": 1,
+      "flag": { "shape": "swallowtail", "bands": ["#8b0a1a"], "overlays": [ { "type": "path", "symbol": "lion", "x": 0.4, "y": 0.5, "h": 0.86, "colors": { "body": "#e8b923" } } ] } },
+    { "id": "gen", "alliance": "n", "name": { "en": "REPUBLIC OF GENOA", "cn": "热那亚共和国" }, "color": [225, 225, 225], "capital": [8.93, 44.41],
+      "flag": { "bands": ["#ffffff"], "overlays": [ { "type": "cross", "x": 0.5, "y": 0.5, "width": 0.2, "color": "#c8102e" } ] } },
+    { "id": "pap", "alliance": "n", "name": { "en": "PAPAL STATES", "cn": "教皇国" }, "color": [240, 225, 150], "capital": [12.48, 41.90],
+      "flag": { "bands": ["#b22234"], "overlays": [ { "type": "path", "symbol": "keys", "x": 0.5, "y": 0.5, "h": 0.92, "colors": { "key": "#e8b923" } } ] } },
+    { "id": "nap", "alliance": "n", "name": { "en": "KINGDOM OF NAPLES AND SICILY", "cn": "那不勒斯和西西里王国" }, "color": [150, 180, 215], "capital": [14.27, 40.85], "fleets": 1,
+      "flag": { "bands": ["#ffffff"], "overlays": [ { "type": "path", "symbol": "shield", "x": 0.5, "y": 0.5, "h": 0.86, "colors": { "field": "#1f3f99" } },
+        { "type": "path", "symbol": "fleur", "h": 0.2, "colors": { "lis": "#e8b923" }, "at": [[0.42, 0.33], [0.58, 0.33], [0.5, 0.58]] } ] } },
+    { "id": "sar", "alliance": "n", "name": { "en": "KINGDOM OF SARDINIA", "cn": "撒丁王国" }, "color": [180, 90, 90], "capital": [7.69, 45.07],
+      "flag": { "bands": ["#c8102e"], "overlays": [ { "type": "cross", "x": 0.5, "y": 0.5, "width": 0.18, "color": "#ffffff" } ] } },
+    { "id": "par", "alliance": "n", "name": { "en": "DUCHY OF PARMA", "cn": "帕尔马公国" }, "color": [120, 150, 205], "capital": [10.33, 44.80],
+      "flag": { "bands": ["#f4c430"], "overlays": [ { "type": "path", "symbol": "fleur", "h": 0.22, "colors": { "lis": "#1f3f99" },
+        "at": [[0.3, 0.25], [0.5, 0.25], [0.7, 0.25], [0.4, 0.52], [0.6, 0.52], [0.5, 0.78]] } ] } },
+    { "id": "mod", "alliance": "n", "name": { "en": "DUCHY OF MODENA", "cn": "摩德纳公国" }, "color": [140, 185, 225], "capital": [10.93, 44.65],
+      "flag": { "bands": ["#1f4e9a"], "overlays": [ { "type": "path", "symbol": "eagle", "x": 0.5, "y": 0.52, "h": 0.88, "colors": { "body": "#ffffff", "crown": "#e8b923" } } ] } },
+    { "id": "mal", "alliance": "n", "name": { "en": "ORDER OF MALTA", "cn": "马耳他骑士团" }, "color": [205, 70, 70], "capital": [14.51, 35.9],
+      "flag": { "bands": ["#c8102e"], "overlays": [ { "type": "path", "symbol": "maltese", "x": 0.5, "y": 0.5, "h": 0.82, "colors": { "cross": "#ffffff" } } ] } },
+    { "id": "lie", "alliance": "n", "name": { "en": "PRINCE-BISHOPRIC OF LIÈGE", "cn": "列日采邑主教国" }, "color": [195, 80, 80], "capital": [5.57, 50.63],
+      "flag": { "bands": ["#c8102e"], "overlays": [ { "type": "path", "symbol": "perron", "x": 0.5, "y": 0.5, "h": 0.86, "colors": { "gold": "#e8b923" } } ] } },
+    { "id": "mec", "alliance": "n", "name": { "en": "DUCHY OF MECKLENBURG", "cn": "梅克伦堡公国" }, "color": [210, 190, 90], "capital": [11.41, 53.63],
+      "flag": { "bands": ["#f4c430"], "overlays": [ { "type": "path", "symbol": "bull", "x": 0.5, "y": 0.5, "h": 0.86, "colors": { "bull": "#141414", "tongue": "#c8102e" } } ] } },
+    { "id": "bad", "alliance": "n", "name": { "en": "MARGRAVIATE OF BADEN", "cn": "巴登边疆伯爵领" }, "color": [235, 205, 80], "capital": [8.40, 49.01],
+      "flag": { "bands": ["#f4c430"], "overlays": [ { "type": "path", "full": true, "box": [150, 102], "stroke": 24, "d": "M0 0 L150 102", "color": "#c8102e" } ] } },
+    { "id": "crm", "alliance": "n", "name": { "en": "CRIMEAN KHANATE", "cn": "克里米亚汗国" }, "color": [110, 160, 210], "capital": [33.86, 44.75],
+      "flag": { "bands": ["#3b7dd8"], "overlays": [ { "type": "path", "symbol": "tamga", "x": 0.5, "y": 0.5, "h": 0.74, "colors": { "gold": "#f4c430" } } ] } },
+    { "id": "mor", "alliance": "n", "name": { "en": "SULTANATE OF MOROCCO", "cn": "摩洛哥苏丹国" }, "color": [180, 70, 70], "capital": [-5.55, 33.89],
+      "flag": { "bands": ["#c1272d"] } },
+    { "id": "eth", "alliance": "n", "name": { "en": "ETHIOPIAN EMPIRE", "cn": "埃塞俄比亚帝国" }, "color": [140, 170, 90], "capital": [37.47, 12.60],
+      "flag": { "bands": ["#078930", "#fcdd09", "#da121a"] } },
+    { "id": "oma", "alliance": "n", "name": { "en": "SULTANATE OF OMAN", "cn": "阿曼苏丹国" }, "color": [190, 80, 80], "capital": [58.40, 23.60], "fleets": 1,
+      "flag": { "bands": ["#c8102e"] } },
+    { "id": "mar", "alliance": "n", "name": { "en": "MARATHA CONFEDERACY", "cn": "马拉塔联盟" },
+      "color": [235, 150, 50], "capital": [73.86, 18.52], "garrison": 1,
+      "flag": { "shape": "swallowtail", "bands": ["#ff8c1a"] } },
+    { "id": "hyd", "alliance": "n", "name": { "en": "HYDERABAD", "cn": "海得拉巴" }, "color": [230, 215, 130], "capital": [78.47, 17.37],
+      "flag": { "bands": ["#f4c430"], "overlays": [ { "type": "disc", "x": 0.5, "y": 0.5, "r": 0.24, "color": "#ffffff" }, { "type": "ring", "x": 0.5, "y": 0.5, "r": 0.24, "width": 0.03, "color": "#8a6d0b" } ] } },
+    { "id": "ben", "alliance": "n", "name": { "en": "NAWAB OF BENGAL", "cn": "孟加拉纳瓦卜" }, "color": [110, 180, 120], "capital": [88.27, 24.18],
+      "flag": { "bands": ["#1b6e30"], "overlays": [ { "type": "crescent", "x": 0.45, "y": 0.5, "r": 0.28, "color": "#ffffff" }, { "type": "star", "x": 0.64, "y": 0.5, "r": 0.1, "color": "#ffffff" } ] } },
+    { "id": "mys", "alliance": "n", "name": { "en": "KINGDOM OF MYSORE", "cn": "迈索尔王国" }, "color": [190, 100, 100], "capital": [76.68, 12.42],
+      "flag": { "bands": ["#b22234"], "overlays": [ { "type": "path", "symbol": "eagle2", "x": 0.5, "y": 0.5, "h": 0.92, "colors": { "body": "#e8b923", "crown": "#e8b923" } } ] } },
+    { "id": "car", "alliance": "n", "name": { "en": "NAWAB OF THE CARNATIC", "cn": "卡纳蒂克纳瓦卜" }, "color": [130, 190, 150], "capital": [79.32, 12.90],
+      "flag": { "bands": ["#0f4d22"], "overlays": [ { "type": "crescent", "x": 0.48, "y": 0.5, "r": 0.28, "color": "#e8b923" }, { "type": "border", "width": 0.08, "color": "#ffffff" } ] } },
+    { "id": "trv", "alliance": "n", "name": { "en": "KINGDOM OF TRAVANCORE", "cn": "特拉凡科尔王国" }, "color": [195, 120, 100], "capital": [76.95, 8.52],
+      "flag": { "bands": ["#b22234"], "overlays": [ { "type": "path", "symbol": "conch", "x": 0.5, "y": 0.5, "h": 0.78, "colors": { "shell": "#ffffff" } } ] } },
+    { "id": "kan", "alliance": "n", "name": { "en": "KINGDOM OF KANDY", "cn": "康提王国" }, "color": [185, 70, 70], "capital": [80.64, 7.29],
+      "flag": { "bands": ["#8b0000"], "overlays": [ { "type": "path", "symbol": "lion", "x": 0.5, "y": 0.5, "h": 0.8, "colors": { "body": "#e8b923" } }, { "type": "border", "width": 0.07, "color": "#e8b923" } ] } },
+    { "id": "dur", "alliance": "n", "name": { "en": "DURRANI EMPIRE", "cn": "杜兰尼帝国" }, "color": [95, 95, 95], "capital": [65.70, 31.61], "garrison": 1,
+      "flag": { "bands": ["#141414"], "overlays": [ { "type": "star", "x": 0.5, "y": 0.5, "r": 0.3, "points": 16, "inner": 0.6, "color": "#e8b923" } ] } },
+    { "id": "kaz", "alliance": "n", "name": { "en": "KAZAKH KHANATE", "cn": "哈萨克汗国" }, "color": [120, 180, 215], "capital": [68.25, 43.30],
+      "flag": { "bands": ["#2f9ad6"], "overlays": [ { "type": "star", "x": 0.5, "y": 0.45, "r": 0.24, "points": 16, "inner": 0.6, "color": "#f4c430" } ] } },
+    { "id": "khi", "alliance": "n", "name": { "en": "KHANATE OF KHIVA", "cn": "希瓦汗国" }, "color": [160, 140, 95], "capital": [60.36, 41.38],
+      "flag": { "bands": ["#3a7d44"], "overlays": [ { "type": "crescent", "x": 0.46, "y": 0.5, "r": 0.27, "color": "#ffffff" } ] } },
+    { "id": "bkh", "alliance": "n", "name": { "en": "EMIRATE OF BUKHARA", "cn": "布哈拉埃米尔国" }, "color": [90, 150, 100], "capital": [64.42, 39.77],
+      "flag": { "bands": ["#ffffff"], "overlays": [ { "type": "crescent", "x": 0.46, "y": 0.5, "r": 0.27, "color": "#1f7a3a" }, { "type": "star", "x": 0.64, "y": 0.5, "r": 0.1, "color": "#1f7a3a" }, { "type": "border", "width": 0.07, "color": "#1f7a3a" } ] } },
+    { "id": "kor", "alliance": "n", "name": { "en": "JOSEON KOREA", "cn": "朝鲜王朝" }, "color": [205, 205, 230], "capital": [126.98, 37.57],
+      "flag": { "bands": ["#ffffff"], "overlays": [ { "type": "path", "symbol": "taegeuk", "x": 0.5, "y": 0.5, "h": 0.8, "colors": { "blue": "#0047a0", "red": "#cd2e3a" } } ] } },
+    { "id": "dvt", "alliance": "n", "name": { "en": "ĐẠI VIỆT", "cn": "大越" }, "color": [215, 185, 70], "capital": [105.85, 21.03],
+      "flag": { "bands": ["#f4c430"], "overlays": [ { "type": "border", "width": 0.1, "color": "#c8102e" } ] } },
+    { "id": "sia", "alliance": "n", "name": { "en": "AYUTTHAYA (SIAM)", "cn": "阿瑜陀耶（暹罗）" }, "color": [190, 70, 90], "capital": [100.57, 14.35],
+      "flag": { "bands": ["#c8102e"] } },
+    { "id": "bma", "alliance": "n", "name": { "en": "KONBAUNG BURMA", "cn": "贡榜缅甸" }, "color": [195, 175, 85], "capital": [95.70, 22.58],
+      "flag": { "bands": ["#ffffff"], "overlays": [ { "type": "path", "symbol": "peacock", "x": 0.5, "y": 0.36, "h": 1.15, "colors": { "tail": "#1f7a3a", "eyes": "#e8b923", "body": "#1f4e9a" } } ] } }
+  ],
+
+  // Owners: a region matches when every condition of a rule holds; later rules win. Unclaimed lands
+  // (the interior of Africa, Australia, the American West, ...) stay without an owner.
+  "owners": [
+    // ---- Britain and Ireland, Scandinavia, the Low Countries, Switzerland
+    { "to": "gb", "countries": ["gb", "ie"] },
+    { "to": "dkn", "countries": ["dk", "no", "is", "fo", "gl"] },
+    { "to": "se", "countries": ["se", "fl"] },
+    { "to": "nl", "countries": ["nl"] },
+    { "to": "hab", "countries": ["be", "lu"] },
+    { "to": "lie", "provinces": ["BE-WLG"] },
+    { "to": "sui", "countries": ["ch", "li"] },
+
+    // ---- France, Spain, Portugal
+    { "to": "fr", "countries": ["fr"] },
+    { "to": "sar", "provinces": ["FR-73", "FR-74", "FR-06"] },
+    { "to": "gen", "provinces": ["FR-2A", "FR-2B"] },
+    { "to": "pap", "provinces": ["FR-84"] },
+    { "to": "es", "countries": ["es"] },
+    { "to": "gb", "nearest": [4.03, 40.0] },
+    { "to": "pt", "countries": ["pt"] },
+
+    // ---- Italy (the map's provinces of today)
+    { "to": "sar", "provinces": ["IT-AO", "IT-TO", "IT-CN", "IT-AL", "IT-AT", "IT-VB", "IT-VC", "IT-BI", "IT-SS", "IT-OR", "IT-CA", "IT-OT", "IT-NU", "IT-OG", "IT-CI", "IT-VS"] },
+    { "to": "hab", "provinces": ["IT-MI", "IT-PV", "IT-CO", "IT-LC", "IT-MB", "IT-MN", "IT-CR", "IT-LO", "IT-TN", "IT-BZ",
+                                 "IT-PI", "IT-LI", "IT-LU", "IT-PT", "IT-PO", "IT-FI", "IT-GR", "IT-SI", "IT-AR", "IT-TS"] },
+    { "to": "ven", "provinces": ["IT-BG", "IT-BS", "IT-VR", "IT-VI", "IT-PD", "IT-RO", "IT-VE", "IT-PN", "IT-TV", "IT-BL", "IT-UD"] },
+    { "to": "sui", "provinces": ["IT-SO"] },
+    { "to": "gen", "provinces": ["IT-GE", "IT-SV", "IT-IM"] },
+    { "to": "par", "provinces": ["IT-PC", "IT-PR"] },
+    { "to": "mod", "provinces": ["IT-MO", "IT-RE"] },
+    { "to": "pap", "provinces": ["IT-BO", "IT-FE", "IT-RA", "IT-FC", "IT-RN", "IT-PU", "IT-AN", "IT-MC", "IT-AP", "IT-PG", "IT-RI", "IT-TR", "IT-VT", "IT-RM", "IT-FR"] },
+    { "to": "nap", "provinces": ["IT-AQ", "IT-CH", "IT-PE", "IT-CB", "IT-IS", "IT-CE", "IT-NA", "IT-AV", "IT-BN", "IT-SA", "IT-FG", "IT-BA", "IT-BT", "IT-TA", "IT-BR", "IT-LE",
+                                 "IT-PZ", "IT-MT", "IT-CS", "IT-CZ", "IT-KR", "IT-VV", "IT-RC", "IT-PA", "IT-AG", "IT-TP", "IT-EN", "IT-CL", "IT-CT", "IT-SR", "IT-RG", "IT-ME"] },
+    { "to": "mal", "countries": ["mt"] },
+
+    // ---- the Holy Roman Empire: the Habsburg lands, Germany province by province
+    { "to": "hab", "countries": ["at", "cz", "hu", "sk", "si"] },
+    { "to": "pr", "countries": ["de"] },
+    { "to": "dkn", "nearest": [[8.44, 54.74], [9.40, 54.36], [10.40, 53.97]] },
+    { "to": "se", "nearest": [[13.15, 54.25]] },
+    { "to": "mec", "nearest": [[12.63, 53.76], [11.81, 53.75], [11.09, 53.59]] },
+    { "to": "han", "nearest": [[8.86, 53.49], [9.87, 53.18], [10.76, 53.07], [9.15, 52.71], [10.21, 52.47], [9.70, 51.93]] },
+    { "to": "bru", "nearest": [[10.78, 52.40], [10.36, 51.81]] },
+    { "to": "col", "nearest": [[8.17, 52.67], [8.93, 51.77], [7.59, 51.84], [8.13, 51.26], [6.99, 50.92]] },
+    { "to": "pal", "nearest": [[6.22, 51.14], [7.97, 49.49], [6.90, 49.42], [8.72, 49.12]] },
+    { "to": "sax", "nearest": [[14.17, 51.97], [12.41, 51.92], [11.76, 51.42], [12.61, 51.35], [14.41, 51.23], [13.37, 51.05], [12.47, 50.60], [11.90, 50.81], [10.35, 50.69]] },
+    { "to": "mai", "nearest": [[10.50, 51.28], [11.13, 50.88], [8.31, 50.40], [8.81, 49.94], [9.38, 49.97]] },
+    { "to": "hes", "nearest": [[9.60, 51.02], [8.97, 50.85]] },
+    { "to": "tri", "nearest": [[7.64, 50.53], [6.59, 50.08], [7.33, 49.90]] },
+    { "to": "wbg", "nearest": [[10.07, 50.08], [11.50, 50.02], [10.83, 50.00], [10.58, 49.32]] },
+    { "to": "bav", "nearest": [[12.08, 49.67], [11.39, 48.98], [12.45, 48.91], [13.22, 48.75], [10.57, 48.41], [11.70, 48.17], [12.48, 48.01], [11.06, 47.82], [10.25, 47.72]] },
+    { "to": "wur", "nearest": [[9.45, 49.37], [9.91, 48.88], [9.00, 48.29]] },
+    { "to": "bad", "nearest": [[8.24, 48.52]] },
+    { "to": "hab", "nearest": [[9.64, 48.01], [8.00, 47.92]] },
+
+    // ---- Poland-Lithuania, Prussia's eastern lands, Russia
+    { "to": "plc", "countries": ["pl", "lt", "by", "lv"] },
+    { "to": "pr", "provinces": ["PL-ZP", "PL-LB", "PL-DS", "PL-OP", "PL-SL", "RU-KGD"] },
+    { "to": "plc", "nearest": [[19.9, 50.0]] },
+    { "to": "pr", "nearest": [[17.44, 54.80], [21.83, 54.00], [21.47, 55.44]] },
+    { "to": "ru", "countries": ["ru", "ee"] },
+    { "to": "ru", "nearest": [[25.40, 57.80], [24.92, 57.57], [25.96, 57.35], [26.86, 57.30], [24.47, 57.01], [25.25, 56.77]] },
+    { "to": "ru", "nearest": [[28.38, 61.25], [28.98, 62.23], [29.60, 62.00]] },
+    { "to": "plc", "countries": ["ua"] },
+    { "to": "ru", "provinces": ["UA-74", "UA-53", "UA-59", "UA-63", "UA-09", "UA-14", "UA-12", "UA-35"] },
+    { "to": "ru", "nearest": [30.52, 50.45] },
+    { "to": "hab", "provinces": ["UA-21"] },
+    { "to": "crm", "provinces": ["UA-43", "UA-65", "UA-48", "UA-51", "UA-23", "RU-KDA", "RU-AD", "RU-STA"] },
+    { "to": null, "provinces": ["RU-KC", "RU-KB", "RU-SE", "RU-IN", "RU-CE"] },
+    { "to": "per", "provinces": ["RU-DA"] },
+    { "to": "ru", "countries": ["kz"], "provinces": ["KZ-ZAP", "KZ-ATY"] },
+
+    // ---- the Ottoman Empire and its vassals; the Habsburg frontier in Hungary and Croatia
+    { "to": "ott", "countries": ["tr", "gr", "bg", "al", "mk", "xk", "me", "ba", "yu", "ro", "md", "cy", "sy", "lb", "il", "ps", "jo", "iq", "eg", "ly", "tn", "dz"] },
+    { "to": "ott", "provinces": ["UA-77"] },
+    { "to": "ott", "nearest": [33.62, 35.29] },
+    { "to": "hab", "provinces": ["RO-SM", "RO-MM", "RO-BN", "RO-SJ", "RO-BH", "RO-CJ", "RO-MS", "RO-HR", "RO-AR", "RO-AB", "RO-CV", "RO-SB", "RO-BV", "RO-TM", "RO-HD", "RO-CS"] },
+    { "to": "hab", "provinces": ["RS-05", "RS-03", "RS-01", "RS-06", "RS-07", "RS-02", "RS-04"] },
+    { "to": "hab", "countries": ["hr"] },
+    { "to": "ven", "provinces": ["HR-13", "HR-17", "HR-15", "HR-18"] },
+    { "to": "ven", "nearest": [[19.9, 39.6], [20.55, 38.25], [20.85, 37.78]] },
+    { "to": "ott", "countries": ["sa"], "lon": [34.0, 42.5], "lat": [19.5, 30.0] },
+    { "to": "ott", "countries": ["ge"], "lon": [39.0, 43.5] },
+    { "to": "ott", "nearest": [39.45, 15.6] },
+
+    // ---- Persia, Central Asia, the Afghans
+    { "to": "per", "countries": ["ir", "az"] },
+    { "to": "per", "provinces": ["AM-"] },
+    { "to": "per", "countries": ["ge"], "lon": [43.5, 47.0] },
+    { "to": "dur", "countries": ["ir"], "lon": [57.5, 62.0], "lat": [34.5, 38.5] },
+    { "to": "dur", "countries": ["af", "pk"] },
+    { "to": "dur", "provinces": ["IN-JK"], "lon": [72.0, 76.2] },
+    { "to": "kaz", "countries": ["kz"], "not": { "provinces": ["KZ-ZAP", "KZ-ATY"] } },
+    { "to": "khi", "countries": ["uz"], "lon": [55.0, 61.6] },
+    { "to": "khi", "countries": ["tm"], "lat": [40.3, 43.0] },
+    { "to": "bkh", "countries": ["uz"], "lon": [61.6, 70.6] },
+    { "to": "bkh", "countries": ["tj"] },
+    { "to": "oma", "countries": ["om"] },
+
+    // ---- India
+    { "to": "mug", "provinces": ["IN-DL", "IN-HR", "IN-PB", "IN-CH", "IN-UP", "IN-RJ"] },
+    { "to": "mar", "provinces": ["IN-MH", "IN-GJ", "IN-MP", "IN-CT", "IN-OR", "IN-OD", "IN-DN", "IN-DD"] },
+    { "to": "hyd", "provinces": ["IN-TG", "IN-TS", "IN-AP"] },
+    { "to": "hyd", "provinces": ["IN-MH"], "lon": [74.6, 78.0], "lat": [17.8, 21.0] },
+    { "to": "fr", "provinces": ["IN-AP"], "lon": [80.4, 85.0], "lat": [15.8, 19.5] },
+    { "to": "car", "provinces": ["IN-TN"] },
+    { "to": "car", "provinces": ["IN-AP"], "lat": [12.0, 14.6] },
+    { "to": "mar", "provinces": ["IN-KA"], "lat": [15.4, 19.0] },
+    { "to": "mys", "provinces": ["IN-KA"], "lat": [11.0, 15.4] },
+    { "to": "trv", "nearest": [76.73, 9.73] },
+    { "to": "ben", "provinces": ["IN-WB", "IN-BR", "IN-JH"] },
+    { "to": "ben", "countries": ["bd"] },
+    { "to": "kan", "countries": ["lk"] },
+    { "to": "nl", "nearest": [[80.28, 9.17], [81.14, 8.17], [80.27, 6.84], [80.97, 6.55]] },
+    { "to": "gb", "nearest": [[80.27, 13.08], [72.85, 19.0], [88.36, 22.57]] },
+    { "to": "fr", "nearest": [[79.83, 11.93], [79.84, 10.95], [75.53, 11.7]] },
+    { "to": "pt", "nearest": [[74.0, 15.4], [72.85, 20.4], [70.98, 20.71]] },
+
+    // ---- East Asia
+    { "to": "qin", "countries": ["cn", "tw", "mn"] },
+    { "to": "qin", "provinces": ["RU-TY", "RU-AMU", "RU-PRI", "RU-YEV", "RU-SAK"] },
+    { "to": "qin", "provinces": ["RU-KHA"], "lat": [40.0, 55.0] },
+    { "to": "kor", "countries": ["nk", "rk"] },
+    { "to": "jap", "countries": ["ja"] },
+    { "to": "dvt", "countries": ["vn"] },
+    { "to": "sia", "countries": ["th"] },
+    { "to": "bma", "countries": ["mm"] },
+    { "to": "bma", "countries": ["th"], "lat": [17.7, 21.0] },
+    { "to": "es", "countries": ["ph"] },
+    { "to": null, "countries": ["ph"], "lat": [4.0, 8.2], "lon": [119.0, 125.2] },
+    { "to": "nl", "countries": ["id"], "lon": [105.0, 114.7], "lat": [-9.0, -5.8] },
+    { "to": "nl", "provinces": ["ID-MA", "ID-MU"] },
+    { "to": "nl", "nearest": [[119.42, -5.14], [123.6, -10.17], [100.35, -0.95], [102.25, 2.2]] },
+    { "to": "gb", "nearest": [102.27, -3.8] },
+    { "to": "pt", "countries": ["tl"] },
+
+    // ---- North America
+    { "to": "gb", "provinces": ["US-ME", "US-NH", "US-VT", "US-MA", "US-RI", "US-CT", "US-NY", "US-NJ", "US-PA", "US-DE", "US-MD", "US-DC", "US-VA", "US-WV", "US-NC", "US-SC", "US-GA"] },
+    { "to": "fr", "provinces": ["US-LA", "US-MS", "US-AL", "US-AR", "US-MO", "US-IL", "US-IN", "US-OH", "US-MI", "US-WI", "US-IA", "US-MN", "US-KY"] },
+    { "to": "fr", "nearest": [[-80.0, 40.44], [-80.08, 42.13]] },
+    { "to": "es", "provinces": ["US-TX", "US-NM", "US-FL"] },
+    { "to": "es", "provinces": ["US-AZ"], "lat": [30.0, 33.6] },
+    { "to": "fr", "provinces": ["CA-QC"], "lat": [44.0, 50.6] },
+    { "to": "fr", "provinces": ["CA-ON"], "lat": [41.0, 49.6] },
+    { "to": "fr", "provinces": ["CA-PE"] },
+    { "to": "gb", "provinces": ["CA-NS", "CA-NB"] },
+    { "to": "fr", "provinces": ["CA-NS"], "lon": [-61.6, -59.0], "lat": [45.5, 47.5] },
+    { "to": "gb", "provinces": ["CA-NL"], "lat": [46.0, 51.8], "lon": [-60.0, -52.0] },
+    { "to": "hbc", "provinces": ["CA-MB", "CA-SK"] },
+    { "to": "hbc", "provinces": ["CA-ON"], "lat": [49.6, 60.0] },
+    { "to": "hbc", "provinces": ["CA-QC"], "lat": [50.6, 60.0], "lon": [-80.0, -71.0] },
+    { "to": "hbc", "provinces": ["CA-AB"], "lat": [48.0, 56.0] },
+    { "to": "hbc", "provinces": ["CA-NU"], "lon": [-97.0, -86.0], "lat": [55.0, 65.0] },
+
+    // ---- New Spain, the Caribbean, South America
+    { "to": "es", "countries": ["mx", "gt", "bz", "sv", "hn", "ni", "cr", "pa", "cu", "pr", "do", "tt"] },
+    { "to": "gb", "countries": ["ni", "hn"], "lon": [-85.0, -82.0], "lat": [11.5, 16.5] },
+    { "to": "gb", "countries": ["jm", "bs", "bb", "ag"] },
+    { "to": "fr", "countries": ["ht", "lc", "gd"] },
+    { "to": "es", "countries": ["co", "ve", "ec", "pe", "bo", "cl", "ar", "py", "uy"] },
+    { "to": null, "countries": ["ar"], "lat": [-60.0, -40.0] },
+    { "to": null, "countries": ["cl"], "lat": [-60.0, -42.9] },
+    { "to": null, "countries": ["cl"], "lat": [-41.6, -37.6], "lon": [-73.0, -70.0] },
+    { "to": "pt", "countries": ["br"] },
+    { "to": "pt", "nearest": [-57.84, -34.47] },
+    { "to": "nl", "countries": ["sr", "gy"] },
+
+    // ---- Africa and the islands
+    { "to": "mor", "countries": ["ma"] },
+    { "to": "eth", "countries": ["et"], "lat": [8.0, 15.0], "lon": [34.0, 40.2] },
+    { "to": "eth", "countries": ["er"], "lat": [13.0, 15.9], "lon": [36.0, 39.2] },
+    { "to": "fr", "nearest": [[-16.5, 16.0], [-17.4, 14.7]] },
+    { "to": "fr", "countries": ["mu"] },
+    { "to": "gb", "countries": ["gm", "sh"] },
+    { "to": "gb", "nearest": [[-13.2, 8.45], [-1.25, 5.1]] },
+    { "to": "nl", "nearest": [-2.46, 5.8] },
+    { "to": "pt", "countries": ["gw", "cv"] },
+    { "to": "pt", "countries": ["ao"], "lon": [11.0, 15.6], "lat": [-13.5, -7.0] },
+    { "to": "pt", "countries": ["mz"], "lon": [34.5, 41.0] },
+    { "to": "nl", "countries": ["za"], "lon": [16.0, 21.5], "lat": [-35.0, -31.0] },
+    { "to": "oma", "nearest": [[39.2, -6.16], [39.67, -4.05], [39.5, -8.95]] }
+  ],
+
+  "armies": [
+    { "country": "pr", "near": [13.0, 51.9], "units": ["infantry", "infantry", "artillery"] },
+    { "country": "pr", "near": [16.9, 51.1], "units": ["infantry", "infantry", "artillery"] },
+    { "country": "pr", "near": [20.5, 54.7], "units": ["infantry", "artillery"] },
+    { "country": "hab", "near": [14.4, 50.1], "units": ["infantry", "infantry", "artillery"] },
+    { "country": "hab", "near": [17.2, 49.6], "units": ["infantry", "infantry", "artillery"] },
+    { "country": "sax", "near": [13.9, 50.95], "units": ["infantry", "artillery"] },
+    { "country": "fr", "near": [6.2, 49.1], "units": ["infantry", "infantry", "artillery"] },
+    { "country": "fr", "near": [-73.57, 45.5], "units": ["infantry", "artillery"] },
+    { "country": "fr", "near": [-80.0, 40.44], "units": ["infantry"] },
+    { "country": "fr", "near": [-60.0, 45.9], "units": ["infantry", "artillery"] },
+    { "country": "fr", "near": [79.83, 11.93], "units": ["infantry", "artillery"] },
+    { "country": "gb", "near": [-73.75, 42.65], "units": ["infantry", "artillery"] },
+    { "country": "gb", "near": [-77.4, 37.5], "units": ["infantry"] },
+    { "country": "gb", "near": [80.27, 13.08], "units": ["infantry", "artillery"] },
+    { "country": "gb", "near": [88.36, 22.57], "units": ["infantry"] },
+    { "country": "han", "near": [9.2, 52.6], "units": ["infantry", "artillery"] },
+    { "country": "ru", "near": [25.5, 57.4], "units": ["infantry", "infantry", "artillery"] },
+    { "country": "se", "near": [13.15, 54.25], "units": ["infantry", "artillery"] }
+  ]
+}

@@ -345,12 +345,34 @@ internal static partial class MapPipeline
                 changed = true;
             }
         }
+        // islands a scenario needs although they are small (regions.keepIslands: Barbados, Martinique, Minorca,
+        // Malta, ...): the group at each point (within 3 pixels) stays a region of its own
+        var keep = new HashSet<int>();
+        foreach (var k in rules["keepIslands"]?.AsArray() ?? new JsonArray())
+        {
+            var (kx, ky) = Project(k!["lon"]!.GetValue<double>(), k["lat"]!.GetValue<double>());
+            int found = -1; double bestD = double.MaxValue;
+            for (int dy = -3; dy <= 3; dy++)
+                for (int dx = -3; dx <= 3; dx++)
+                {
+                    int x = (int)kx + dx, y = (int)ky + dy;
+                    if (wrap) x = (x % width + width) % width;
+                    if (x < 0 || y < 0 || x >= width || y >= height || atomRaster[y * width + x] == 0) continue;
+                    if (dx * dx + dy * dy < bestD) { bestD = dx * dx + dy * dy; found = atomRaster[y * width + x] - 1; }
+                }
+            if (found < 0) { Console.WriteLine($"build-map: keepIslands: no land at {k["name"]}"); continue; }
+            keep.Add(found);
+        }
+        // a kept island may be several provinces (parishes) that merge with each other first: a group is
+        // kept while it holds one of the atoms found
+        bool Kept(int g) => keep.Any(a => { while (parent[a] != a) a = parent[a]; return a == g; });
         // what is still below minIslandKm2: an enclave joins the neighbour it shares the longest border
         // with (its own borders are lost), an island is left out
         var dropped = new bool[atoms];
         foreach (int g in Enumerable.Range(0, atoms).Where(g => alive[g] && gArea[g] < minIslandKm2).OrderBy(g => gArea[g]).ThenBy(g => g).ToList())
         {
             if (!alive[g] || gArea[g] >= minIslandKm2) continue;
+            if (!gBorder[g + 1].Keys.Any(o1 => o1 > 0 && alive[o1 - 1]) && Kept(g)) continue;
             int best = -1, bestLen = 0;
             foreach (var (o1, len) in gBorder[g + 1])
             {
@@ -421,7 +443,23 @@ internal static partial class MapPipeline
         // ---- 5. one landmass, one region: a region in several pieces (left behind by the era borders)
         // keeps its largest; a piece of minPartKm2 becomes a region of its own, a smaller piece joins the
         // land region it touches most, small islands stay with their coast
-        SeparatePieces(regionRaster, width, height, wrap, rowKm2, regions, rules["minPartKm2"]?.GetValue<double>() ?? 1500);
+        // (a kept island that is a piece of a bigger region becomes a region of its own: Minorca)
+        var keepPixels = new HashSet<int>();
+        foreach (var k in rules["keepIslands"]?.AsArray() ?? new JsonArray())
+        {
+            var (kx, ky) = Project(k!["lon"]!.GetValue<double>(), k["lat"]!.GetValue<double>());
+            int best = -1; double bestD = double.MaxValue;
+            for (int dy = -3; dy <= 3; dy++)
+                for (int dx = -3; dx <= 3; dx++)
+                {
+                    int x = (int)kx + dx, y = (int)ky + dy;
+                    if (wrap) x = (x % width + width) % width;
+                    if (x < 0 || y < 0 || x >= width || y >= height || regionRaster[y * width + x] == 0) continue;
+                    if (dx * dx + dy * dy < bestD) { bestD = dx * dx + dy * dy; best = y * width + x; }
+                }
+            if (best >= 0) keepPixels.Add(best);
+        }
+        SeparatePieces(regionRaster, width, height, wrap, rowKm2, regions, rules["minPartKm2"]?.GetValue<double>() ?? 1500, keepPixels);
         // far parts: island groups far from their region become regions of their own (tiny ones far away
         // are left out); a region may reach over the seam of a wrapping map (-180 and 180 are one meridian)
         var partRules = rules;
@@ -1292,21 +1330,23 @@ internal static partial class MapPipeline
     /// a smaller piece that touches other land joins the land region it shares the longest border with;
     /// a small island stays with its region (far ones are handled by SplitFarParts).
     /// </summary>
-    private static void SeparatePieces(int[] raster, int width, int height, bool wrap, double[] rowKm2, List<Region> regions, double minKm2)
+    private static void SeparatePieces(int[] raster, int width, int height, bool wrap, double[] rowKm2, List<Region> regions, double minKm2,
+                                       HashSet<int> keepPixels = null)
     {
         // a piece that joins a neighbour can leave another piece of that neighbour on its own: repeat
         // until every region is one landmass (or islands)
         int totalSplit = 0, totalJoined = 0;
         for (int pass = 0; pass < 8; pass++)
         {
-            var (split, joined) = SeparatePiecesOnce(raster, width, height, wrap, rowKm2, regions, minKm2);
+            var (split, joined) = SeparatePiecesOnce(raster, width, height, wrap, rowKm2, regions, minKm2, keepPixels ?? new HashSet<int>());
             totalSplit += split; totalJoined += joined;
             if (split + joined == 0) break;
         }
         Console.WriteLine($"build-map: regions in several pieces: {totalSplit} pieces became regions, {totalJoined} small pieces joined their neighbour");
     }
 
-    private static (int split, int joined) SeparatePiecesOnce(int[] raster, int width, int height, bool wrap, double[] rowKm2, List<Region> regions, double minKm2)
+    private static (int split, int joined) SeparatePiecesOnce(int[] raster, int width, int height, bool wrap, double[] rowKm2, List<Region> regions, double minKm2,
+                                                              HashSet<int> keepPixels)
     {
         int n = raster.Length;
         var label = new int[n];
@@ -1346,7 +1386,8 @@ internal static partial class MapPipeline
                         int o = raster[j];
                         if (o != 0 && o != piece.value && !regions[o - 1].sea) touch[o] = touch.GetValueOrDefault(o) + 1;
                     }
-                if (piece.km2 >= minKm2)
+                // a piece of minKm2, or an island the configuration keeps (keepIslands), is a region of its own
+                if (piece.km2 >= minKm2 || (touch.Count == 0 && piece.pixels.Any(keepPixels.Contains)))
                 {
                     var r = new Region
                     {

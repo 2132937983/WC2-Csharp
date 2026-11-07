@@ -148,10 +148,10 @@ public sealed class GUIAttackBox : GUIElement
         CArea startArea = g_Scene.GetArea(startAreaIdIn);
         CArea targetArea = g_Scene.GetArea(targetAreaIdIn);
 
-        string flagName = Sprintf("flag_%s.png", startArea.country.name);
+        string flagName = Sprintf("flag_%s.png", startArea.country.FlagKey);
         imageStartCountry.Init(g_GameRes.GetFlagImage(flagName));
 
-        flagName = Sprintf("flag_%s.png", targetArea.country.name);
+        flagName = Sprintf("flag_%s.png", targetArea.country.FlagKey);
         imageTargetCountry.Init(g_GameRes.GetFlagImage(flagName));
     }
 }

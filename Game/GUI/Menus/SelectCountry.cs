@@ -49,6 +49,7 @@ public static partial class BattleScenario
                     var item = new Belligerent();
                     item.name = country.hasName ? country.name : "";
                     item.id = country.id ?? "";
+                    item.flag = country.flag ?? "";
                     // common3 is the default commander so the selection screen always has a portrait
                     item.commander = country.hasCommander ? country.commander : "common3";
                     item.alliance = allianceNum;

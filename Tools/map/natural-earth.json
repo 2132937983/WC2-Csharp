@@ -61,7 +61,18 @@
   // (parts closer than islandClusterDegrees form a group) become regions of their own; small ones
   // farther than maxPartDistanceDegrees are left out.
   // minPartKm2: a region in several pieces keeps its largest; a piece this large becomes a region of its own
-  "regions": { "minIslandKm2": 1500, "minPartKm2": 1500, "islandSplitDegrees": 4, "islandClusterDegrees": 1.0, "maxPartDistanceDegrees": 25 },
+  "regions": { "minIslandKm2": 1500, "minPartKm2": 1500, "islandSplitDegrees": 4, "islandClusterDegrees": 1.0, "maxPartDistanceDegrees": 25,
+    // small islands that history needs (sugar islands, naval bases, ports of call): kept as provinces
+    // of their own although below minIslandKm2 (the island at the point, within 3 pixels)
+    "keepIslands": [
+      { "name": "Barbados", "lon": -59.55, "lat": 13.15 }, { "name": "Martinique", "lon": -61.0, "lat": 14.65 },
+      { "name": "Guadeloupe", "lon": -61.55, "lat": 16.2 }, { "name": "Antigua", "lon": -61.8, "lat": 17.07 },
+      { "name": "Grenada", "lon": -61.67, "lat": 12.12 }, { "name": "Saint Lucia", "lon": -60.98, "lat": 13.9 },
+      { "name": "Minorca", "lon": 4.1, "lat": 39.95 }, { "name": "Malta", "lon": 14.42, "lat": 35.9 },
+      { "name": "Saint Helena", "lon": -5.71, "lat": -15.95 },
+      { "name": "Madeira", "lon": -16.95, "lat": 32.75 }, { "name": "Sao Miguel (Azores)", "lon": -25.5, "lat": 37.78 },
+      { "name": "Santiago (Cape Verde)", "lon": -23.6, "lat": 15.05 }
+    ] },
 
   // Target region areas (km2): a country first, then the first zone containing the part, then the
   // default. Finest where the wars of the game are fought (Europe, East Asia), coarse in deserts, the

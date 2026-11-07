@@ -179,6 +179,8 @@ public sealed class Belligerent
     public string name = "";
     public string commander = "";
     public int alliance;
+    /// <summary>The scenario's flag key, empty for the art id's own flag.</summary>
+    public string flag = "";
 }
 
 /// <summary>Binary save game header (GameLoadSave.cpp). Field order matches the original struct.</summary>
@@ -517,6 +519,8 @@ public sealed class BattleScenarioCountryData
     public bool hasName;
     public string commander = "";
     public bool hasCommander;
+    /// <summary>Flag key of this scenario (flag_&lt;key&gt;.png); empty = the art id's own flag.</summary>
+    public string flag = "";
     public int ai = 1;
     /// <summary>Whether "ai" was given (the conquest country list treats a missing value as 0).</summary>
     public bool hasAi;

@@ -275,10 +275,10 @@
     { "to": "bg", "countries": ["gr"], "lat": [40.6, 42.0], "lon": [23.6, 27.0] },
     { "to": "hrv", "countries": ["hr", "ba"] },
     { "to": "srb", "countries": ["yu"], "not": { "provinces": ["RS-05", "RS-03", "RS-01", "RS-06"] } },
-    { "to": "it", "countries": ["it", "al", "me", "xk", "ly", "tn", "eg", "sd", "ss", "et", "er", "so", "dj", "sy", "lb", "il", "ps", "jo", "iq"] },
+    { "to": "it", "countries": ["it", "mt", "al", "me", "xk", "ly", "tn", "eg", "sd", "ss", "et", "er", "so", "dj", "sy", "lb", "il", "ps", "jo", "iq"] },
     { "to": "it", "countries": ["si"], "lon": [13.0, 15.0] },
     { "to": "it", "provinces": ["FR-06", "FR-73", "FR-74", "FR-2A", "FR-2B", "HR-13", "HR-17", "HR-08", "HR-18"] },
-    { "to": "it", "regions": [5769, 5770, 5771, 5772, 5773, 5774, 5775] },
+    { "to": "it", "nearest": [[43.4, 10.48], [48.43, 10.61], [47.22, 10.39], [45.87, 9.9], [44.59, 9.55], [48.02, 9.21], [46.75, 8.72]] },
     { "to": "gr", "countries": ["gr"], "not": { "lat": [40.6, 42.0], "lon": [23.6, 27.0] } },
     { "to": "es", "countries": ["es", "ma", "eh", "gq"] },
     { "to": "es", "countries": ["dz"], "lon": [-9.0, 0.3] },
@@ -305,13 +305,13 @@
 
     // ---- Atlantic Alliance
     { "to": "am", "countries": ["am", "pr", "cu", "do", "ht", "jm", "bs", "tt", "pa", "cr", "ni", "hn", "gt", "sv", "is", "gl", "gy", "sr"], "not": { "provinces": ["AM-"] } },
-    { "to": "gb", "countries": ["gb", "fo", "bz", "kw", "qa", "ae", "om", "ye", "cy", "mu", "sl", "gm", "gh", "zw", "bw", "ls", "sz", "fk", "gs"] },
-    { "to": "gb", "regions": [3817] },
+    { "to": "gb", "countries": ["gb", "fo", "bz", "kw", "qa", "ae", "om", "ye", "cy", "mu", "sl", "gm", "gh", "zw", "bw", "ls", "sz", "fk", "gs", "bb", "ag", "lc", "gd", "vc", "kn", "dm", "sh"] },
+    { "to": "gb", "nearest": [33.62, 35.29] },
     { "to": "ca", "countries": ["ca"] },
     { "to": "au", "countries": ["au", "nz", "vu", "fj", "ws"] },
     { "to": "au", "countries": ["pg"], "lat": [-12.0, -7.0] },
     { "to": "zaf", "countries": ["za", "na"] },
-    { "to": "pt", "countries": ["pt", "ao", "mz", "gw"] },
+    { "to": "pt", "countries": ["pt", "ao", "mz", "gw", "cv"] },
     { "to": "roc", "provinces": ["CN-SC", "CN-CQ", "CN-YN", "CN-GZ", "CN-SN", "CN-GS", "CN-QH", "CN-NX", "CN-XJ", "CN-GX"] },
     { "to": "mx", "countries": ["mx"] },
     { "to": "bra", "countries": ["br"] },
@@ -325,7 +325,7 @@
 
     // ---- Non-Aligned
     { "to": "in", "countries": ["in", "pk", "bd", "lk", "np", "bt"] },
-    { "to": "in", "regions": [3824] },
+    { "to": "in", "nearest": [77.1, 35.44] },
     { "to": "tr", "countries": ["tr"] },
     { "to": "se", "countries": ["se"] },
     { "to": "ch", "countries": ["ch", "li"] },
@@ -344,7 +344,7 @@
     { "to": "fer", "provinces": ["RU-ZAB", "RU-BU", "RU-SA", "RU-MAG", "RU-CHU"] },
     { "to": "fer", "provinces": ["RU-KHA"], "lat": [56.0, 90.0] },
     { "to": "ala", "countries": ["kz"] },
-    { "to": "ala", "regions": [2408] },
+    { "to": "ala", "nearest": [63.34, 46.03] },
     { "to": "bkh", "countries": ["uz", "tj", "tm", "kg"] }
   ],
 

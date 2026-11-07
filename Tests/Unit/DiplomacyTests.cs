@@ -152,4 +152,54 @@ public class DiplomacyTests
         }
         Diplomacy.Clear();
     }
+
+    private static string War1756 => Path.Combine(Support.Repo, "mods", "seven-years-war-1756");
+
+    private static JsonObject War1756Scenario() =>
+        JsonData.Parse(File.ReadAllText(Path.Combine(War1756, "data", "json", "scenarios", "conquest_11.json"))).AsObject();
+
+    [Theory]
+    // Britain and France are at war in the colonies from the start; Prussia strikes in round 3, Russia joins
+    // in 5, Sweden in 6, Spain in 12; the neutral powers stay at peace with everyone
+    [InlineData("gb", "fr", 1, false)]
+    [InlineData("pr", "hab", 2, true)]
+    [InlineData("pr", "sax", 3, false)]
+    [InlineData("gb", "ru", 4, true)]
+    [InlineData("pr", "ru", 5, false)]
+    [InlineData("pr", "se", 5, true)]
+    [InlineData("han", "se", 6, false)]
+    [InlineData("gb", "es", 11, true)]
+    [InlineData("gb", "es", 12, false)]
+    [InlineData("ott", "ru", 30, true)]
+    [InlineData("qin", "gb", 30, true)]
+    [InlineData("dkn", "se", 30, true)]
+    [InlineData("plc", "pr", 30, true)]
+    public void TheSevenYearsWarBreaksOutRoundByRound(string a, string b, int round, bool peace)
+    {
+        var c = Install(War1756Scenario());
+        Assert.Equal(peace, Diplomacy.AtPeace(c[a], c[b], round));
+        Diplomacy.Clear();
+    }
+
+    [Fact]
+    public void TheSevenYearsWarFliesItsOwnFlags()
+    {
+        var root = War1756Scenario();
+        var c = Install(root);
+        // the neutral powers need not fall; the enemy alliance must
+        Assert.True(Diplomacy.AtLastingPeace(c["ott"], c["gb"], 1));
+        Assert.False(Diplomacy.AtLastingPeace(c["fr"], c["gb"], 1));
+        // a country with the game's art and a flag of the period flies it under this scenario's own key, so the
+        // game's flag of that art stays everywhere else; every flag has its three pictures in the mod
+        var builtIn = CountryDefs.BuiltInJson()["countries"]!.AsObject();
+        foreach (var country in root.Arr("countries").Objects())
+        {
+            string art = country.Str("name"), key = country.Str("flag") ?? art;
+            if (country.Str("flag") is string flag) Assert.False(builtIn.ContainsKey(flag), flag + " would replace the game's flag");
+            else Assert.False(builtIn.ContainsKey(art), art + " has no flag of the period");
+            foreach (var picture in new[] { $"flag_{key}.png", $"button_{key}@2x.png", $"sflag_{key}@2x.png" })
+                Assert.True(File.Exists(Path.Combine(War1756, picture)), picture + " is missing");
+        }
+        Diplomacy.Clear();
+    }
 }

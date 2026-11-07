@@ -107,6 +107,7 @@ public sealed class GUISelCountry : GUIElement
                 country.Init(data.id, string.IsNullOrEmpty(data.name) ? data.id : data.name);
                 country.ai = data.ai != 0;
                 country.alliance = data.alliance;
+                country.flag = data.flag;
                 country.r = (byte)data.r;
                 country.g = (byte)data.g;
                 country.b = (byte)data.b;
@@ -321,7 +322,8 @@ public sealed class GUISelCountry : GUIElement
                 while (flagCount < displayComponentCount)
                 {
                     var imageInfo = new GUISelBattle.ImageInfo();
-                    imageInfo.image = new ecImage(CountryArt.SmallFlag(GUIElement.s_TextureRes, countryComponents.owner.id));
+                    imageInfo.image = new ecImage(CountryArt.SmallFlag(GUIElement.s_TextureRes,
+                        string.IsNullOrEmpty(countryComponents.owner.flag) ? countryComponents.owner.id : countryComponents.owner.flag));
                     imageInfo.scale = Layout.Tablet ? 2f : 4f;
                     flags.Add(imageInfo);
                     flagIds.Add(countryComponents.owner.id);
@@ -809,7 +811,7 @@ public sealed class GUISelCountry : GUIElement
                 }
                 if (country == null || country.alliance == (int)NEUTRAL) continue;
                 var imageInfo = new GUISelBattle.ImageInfo();
-                imageInfo.image = new ecImage(CountryArt.SmallFlag(s_TextureRes, countryItem.id));
+                imageInfo.image = new ecImage(CountryArt.SmallFlag(s_TextureRes, string.IsNullOrEmpty(country.flag) ? countryItem.id : country.flag));
                 imageInfo.scale = Layout.Tablet ? 2f : 4f;
                 imageFlag.Add(imageInfo);
                 actualMap.flagIds.Add(countryItem.id);

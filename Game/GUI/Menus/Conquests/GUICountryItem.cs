@@ -32,14 +32,15 @@ public sealed class GUICountryItem : GUIElement
     /// <param name="nameIn">country name, also used for the button picture name</param>
     /// <param name="idIn">internal country id</param>
     /// <param name="rectIn">initial area inside the list parent</param>
-    public void Init(string nameIn, string idIn, in GUIRect rectIn)
+    /// <param name="flagIn">the scenario's flag key (empty: the button of the name)</param>
+    public void Init(string nameIn, string idIn, in GUIRect rectIn, string flagIn = "")
     {
         rect = rectIn;
         name = nameIn ?? "";
         id = idIn ?? "";
 
-        // button_<name>.png of the menu atlas; a mod's new country brings its own (CountryArt)
-        imageButton = new ecImage(CountryArt.Button(s_TextureRes, name));
+        // button_<name>.png of the menu atlas; a mod's new country or a scenario's flag brings its own (CountryArt)
+        imageButton = new ecImage(CountryArt.Button(s_TextureRes, string.IsNullOrEmpty(flagIn) ? name : flagIn));
 
         var smallRankStar = new ecImage(s_TextureRes.GetImage("small_rankstar.png"));
         touched = false;

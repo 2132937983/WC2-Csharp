@@ -69,7 +69,7 @@ public sealed class GUIDefeated : GUIElement
             textureResFlag.LoadRes("flag.xml", false);
         else
             textureResFlag.LoadRes("flag_hd.xml", true);
-        string tmp_char = Sprintf("flag_%s.png", country_in.name);
+        string tmp_char = Sprintf("flag_%s.png", country_in.FlagKey);
         // without a dedicated flag the reference stays null and the render skips it
         // a mod's flag picture, the flag table, a new country's picture (CountryArt)
         if (CountryArt.BoxFlag(textureResFlag, tmp_char) is ecImageAttr flagAttr)

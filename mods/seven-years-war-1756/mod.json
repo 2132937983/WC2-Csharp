@@ -1,0 +1,9 @@
+{
+  "id": "seven-years-war-1756",
+  "name": "1756: The Seven Years' War",
+  "version": "1.0",
+  "author": "WC2.Tools build-scenario",
+  "description": "Conquest 11: the world on the eve of the Seven Years' War (spring 1756) on the world map: the Anglo-Prussian and Franco-Austrian alliances, the neutral powers, the colonies in America, India and Africa, flags of the period. Needs the world map (map-natural-earth, built in).",
+  "priority": 1,
+  "enabled": true
+}

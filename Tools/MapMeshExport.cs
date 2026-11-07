@@ -322,6 +322,8 @@ internal static class MapMeshExport
         }
         var result = new List<(int, int)>();
         for (int i = 0; i < pts.Count; i++) if (keep[i]) result.Add(pts[i]);
+        // a small island's outline would collapse to a line and the island vanish: keep it as it is
+        if (closed && result.Count < 4) return pts;
         return result;
     }
 

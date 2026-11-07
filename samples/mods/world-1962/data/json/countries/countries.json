@@ -1,5 +1,5 @@
 {
-  "about": "The countries this mod adds (merged into the game's list): each brings flag_<id>.png, button_<id>@2x.png and sflag_<id>@2x.png; units use the common art.",
+  "about": "The countries this mod adds (merged into the game's list): each brings its flag, its conquest list button and its small preview flag, pictures named by its id (MODDING.md, section 4); units use the common art.",
   "countries": {
     "brg": {},
     "ggv": {},

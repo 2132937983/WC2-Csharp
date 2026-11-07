@@ -92,13 +92,14 @@ mod (`mods/map-natural-earth`: conquest 10 "WORLD 1939" in the conquest list; th
 How mods work, and how to change the game package directly: `MODDING.md`. A total conversion needs no
 code: `WC2.Tools build-scenario` writes a conquest with new countries, factions and timed war and peace
 from a rules file; `samples/mods/world-1962` (an original alternate 1962, 66 countries, conquest 12) is the example,
-not loaded unless you copy it into a mods folder (MODDING.md, section 4).
+not loaded unless you copy it into a mods folder (MODDING.md, section 4). Conquest 11, the Seven Years'
+War of 1756 (`mods/seven-years-war-1756`), is built in.
 
 ## Android
 
 `Hosts/Android` compiles the engine, data and game sources with `MonoGame.Framework.Android`. The
 generated package ships inside the APK as `assets/pack/` and is read in place through its index; only
-when that fails is it extracted once. The world map mod is built in (conquest 10). Mods go to `Android/data/com.wc2remake.csharp/files/mods/`.
+when that fails is it extracted once. The world map and the Seven Years' War are built in (conquests 10 and 11). Mods go to `Android/data/com.wc2remake.csharp/files/mods/`.
 Requirements: the .NET Android workload, an Android SDK (platform 34+), JDK 17. The project points at
 `C:\Android` and `C:\Program Files\Java\jdk-17.0.2` when they exist; override with
 `-p:AndroidSdkDirectory=... -p:JavaSdkDirectory=...`.
@@ -200,11 +201,11 @@ dotnet run --project Hosts/Desktop
 
 AI 的各项数值也是数据（`data/json/ai/profiles.json`）：`classic` 与原版 AI 完全一致；`standard`（默认）会防守受到威胁的首都、港口、机场、城市和本土地区，并更积极地购买卡牌；`hard` 会对玩家施加更大的压力。
 
-除经典地图之外，`WC2.Tools build-map` 还能根据 Natural Earth 地理数据和 CShapes 历史边界生成一张世界底图（见 `MAP_PIPELINE.md`）：一张区域同时遵循 1910、1914、1936、1939、1945、1949 年和今天边界的地图，输出为数据包（`assets/data/maps/natural-earth`）和可游玩的模组（`mods/map-natural-earth`：征服列表中的征服 10 “WORLD 1939”；地图左右循环）。模组的工作方式以及如何直接修改游戏资源包，见 `MODDING.md`。全面改造无需编写代码：`WC2.Tools build-scenario` 可以根据规则文件生成一场带有新国家、阵营以及定时战争与和平的征服；`samples/mods/world-1962`（原创的 1962 年架空历史，66 个国家，征服 12）就是示例，只有复制到模组文件夹后才会加载（MODDING.md 第 4 节）。
+除经典地图之外，`WC2.Tools build-map` 还能根据 Natural Earth 地理数据和 CShapes 历史边界生成一张世界底图（见 `MAP_PIPELINE.md`）：一张区域同时遵循 1910、1914、1936、1939、1945、1949 年和今天边界的地图，输出为数据包（`assets/data/maps/natural-earth`）和可游玩的模组（`mods/map-natural-earth`：征服列表中的征服 10 “WORLD 1939”；地图左右循环）。模组的工作方式以及如何直接修改游戏资源包，见 `MODDING.md`。全面改造无需编写代码：`WC2.Tools build-scenario` 可以根据规则文件生成一场带有新国家、阵营以及定时战争与和平的征服；`samples/mods/world-1962`（原创的 1962 年架空历史，66 个国家，征服 12）就是示例，只有复制到模组文件夹后才会加载（MODDING.md 第 4 节）。征服 11，1756 年的七年战争（`mods/seven-years-war-1756`），是内置的。
 
 ## Android
 
-`Hosts/Android` 使用 `MonoGame.Framework.Android` 编译引擎、数据和游戏的源代码。生成的游戏资源包以 `assets/pack/` 的形式随 APK 一起发布，并通过其索引就地读取；只有在就地读取失败时才会将其解压一次。世界地图模组是内置模组（征服 10）。模组放在 `Android/data/com.wc2remake.csharp/files/mods/` 中。
+`Hosts/Android` 使用 `MonoGame.Framework.Android` 编译引擎、数据和游戏的源代码。生成的游戏资源包以 `assets/pack/` 的形式随 APK 一起发布，并通过其索引就地读取；只有在就地读取失败时才会将其解压一次。世界地图和七年战争是内置模组（征服 10 和 11）。模组放在 `Android/data/com.wc2remake.csharp/files/mods/` 中。
 环境要求：.NET Android 工作负载、Android SDK（platform 34+）、JDK 17。如果 `C:\Android` 和 `C:\Program Files\Java\jdk-17.0.2` 存在，项目默认指向它们；可通过 `-p:AndroidSdkDirectory=... -p:JavaSdkDirectory=...` 覆盖。
 
 ```powershell

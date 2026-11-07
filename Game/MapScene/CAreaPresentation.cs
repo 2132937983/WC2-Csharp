@@ -214,7 +214,7 @@ public sealed partial class CArea
 
         if (flag && info.constructionPos[1] <= info.armyPos[1])
         {
-            g_GameRes.RenderFlag(country.name, flagX, flagY);
+            g_GameRes.RenderFlag(country.FlagKey, flagX, flagY);
         }
 
         if (armyCount > 0)
@@ -247,7 +247,7 @@ public sealed partial class CArea
 
         if (flag && info.constructionPos[1] > info.armyPos[1])
         {
-            g_GameRes.RenderFlag(country.name, flagX, flagY);
+            g_GameRes.RenderFlag(country.FlagKey, flagX, flagY);
         }
         if (scaled) graphics.ClearLocalScale();
     }
@@ -264,7 +264,7 @@ public sealed partial class CArea
         var graphics = ecGraphics.Instance();
         float x = info.armyPos[0], y = info.armyPos[1];
         graphics.SetLocalScale(x, y, markerZoom * Math.Max(0.55f, unitScale) / cameraScale);
-        g_GameRes.RenderFlag(country.name, x, y);
+        g_GameRes.RenderFlag(country.FlagKey, x, y);
         graphics.ClearLocalScale();
     }
 }

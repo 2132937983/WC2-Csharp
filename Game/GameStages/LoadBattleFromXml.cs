@@ -256,6 +256,7 @@ public static partial class BattleScenario
             var country = new BattleScenarioCountryData { id = id };
             if (c.Str("name") is string name) { country.name = name; country.hasName = true; }
             if (c.Str("commander") is string commander) { country.commander = commander; country.hasCommander = true; }
+            if (c.Str("flag") is string flag) country.flag = flag;
             if (c.TryInt("ai", out int ai)) { country.ai = ai; country.hasAi = true; }
             // a country of a faction takes the faction's side; otherwise the original a/b/c/neutral
             int factionSide = outData.diplomacy.ReadCountry(id, c);
@@ -595,6 +596,7 @@ public sealed partial class CGameManager
             var country = new CCountry();
             // a missing name falls back to the id
             country.Init(countryData.id, countryData.hasName ? countryData.name : countryData.id);
+            country.flag = countryData.flag;
             country.alliance = countryData.alliance;
             country.defeatType = (DEFEAT_TYPE)countryData.defeated;
             country.taxRate = (float)countryData.taxFactor;

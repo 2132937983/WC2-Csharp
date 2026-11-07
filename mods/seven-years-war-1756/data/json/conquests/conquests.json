@@ -1,0 +1,12 @@
+{
+  "about": "The conquest of this mod (merged into the game's conquest list).",
+  "conquests": {
+    "conquest 11": {
+      "centerX": 905,
+      "centerY": 174,
+      "fogOfWar": false,
+      "leftRightWrap": true,
+      "flags": []
+    }
+  }
+}

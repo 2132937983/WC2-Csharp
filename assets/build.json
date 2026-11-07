@@ -18,9 +18,10 @@
 
   // Mods built into the package (folders relative to assets/): packaged under mods/<name>/ and mounted
   // by the game like any mod (--no-mods leaves them out; a mod folder with the same id replaces them).
-  // The generated world map (MAP_PIPELINE.md): conquest 10 in the conquest list. Remove the line to
+  // The generated world map (MAP_PIPELINE.md): conquest 10 in the conquest list; the Seven Years' War
+  // (mods/seven-years-war-1756, WC2.Tools build-scenario): conquest 11 on that map. Remove a line to
   // ship the game without it.
-  "builtInMods": [ "../mods/map-natural-earth" ],
+  "builtInMods": [ "../mods/map-natural-earth", "../mods/seven-years-war-1756" ],
 
   // Asset names the original data mentions although the original game never shipped them
   // (validate reports them but does not fail).

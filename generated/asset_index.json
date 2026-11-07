@@ -500,16 +500,16 @@
       "legacy": "map.ini"
     },
     "data/maps/natural-earth/map.json": {
-      "size": 131061
+      "size": 136229
     },
     "data/maps/natural-earth/preview.png": {
-      "size": 1049150
+      "size": 1049793
     },
     "data/maps/natural-earth/regions.json": {
-      "size": 2695794
+      "size": 2700743
     },
     "data/maps/natural-earth/regions.raster": {
-      "size": 467172
+      "size": 467510
     },
     "data/strings/cn/InfoPlist.strings": {
       "size": 263,
@@ -5958,10 +5958,10 @@
       "legacy": "victorybg_wto_iPad.webp"
     },
     "mods/map-natural-earth/adjion2.bin": {
-      "size": 648088
+      "size": 649312
     },
     "mods/map-natural-earth/area2.bin": {
-      "size": 396048
+      "size": 396796
     },
     "mods/map-natural-earth/areamark2.raw": {
       "size": 15525008
@@ -5970,16 +5970,16 @@
       "size": 12379
     },
     "mods/map-natural-earth/conquest_10.bin": {
-      "size": 9005
+      "size": 9022
     },
     "mods/map-natural-earth/conquest_10.xml": {
-      "size": 642166
+      "size": 644527
     },
     "mods/map-natural-earth/data/json/conquests/conquests.json": {
       "size": 300
     },
     "mods/map-natural-earth/data/json/maps/2/areas.json": {
-      "size": 367536
+      "size": 368190
     },
     "mods/map-natural-earth/data/json/text/cn/stringtable_cn.json": {
       "size": 8333,
@@ -6033,7 +6033,7 @@
       "size": 1258
     },
     "mods/map-natural-earth/map2.mesh": {
-      "size": 13322602
+      "size": 13892992
     },
     "mods/map-natural-earth/mod.json": {
       "size": 431
@@ -6048,13 +6048,13 @@
       "size": 101226
     },
     "mods/map-natural-earth/terrain2_10.webp": {
-      "size": 37274
+      "size": 38328
     },
     "mods/map-natural-earth/terrain2_11.webp": {
-      "size": 26188
+      "size": 26960
     },
     "mods/map-natural-earth/terrain2_12.webp": {
-      "size": 85754
+      "size": 85842
     },
     "mods/map-natural-earth/terrain2_13.webp": {
       "size": 97926
@@ -6072,10 +6072,10 @@
       "size": 5668
     },
     "mods/map-natural-earth/terrain2_18.webp": {
-      "size": 64016
+      "size": 64176
     },
     "mods/map-natural-earth/terrain2_19.webp": {
-      "size": 21252
+      "size": 21478
     },
     "mods/map-natural-earth/terrain2_2.webp": {
       "size": 106706
@@ -6136,6 +6136,606 @@
     },
     "mods/map-natural-earth/terrain2_9.webp": {
       "size": 62598
+    },
+    "mods/seven-years-war-1756/button_bad@2x.png": {
+      "size": 10630
+    },
+    "mods/seven-years-war-1756/button_bav@2x.png": {
+      "size": 16933
+    },
+    "mods/seven-years-war-1756/button_ben@2x.png": {
+      "size": 10174
+    },
+    "mods/seven-years-war-1756/button_bkh@2x.png": {
+      "size": 10859
+    },
+    "mods/seven-years-war-1756/button_bma@2x.png": {
+      "size": 10662
+    },
+    "mods/seven-years-war-1756/button_bru@2x.png": {
+      "size": 10830
+    },
+    "mods/seven-years-war-1756/button_c11_dkn@2x.png": {
+      "size": 10169
+    },
+    "mods/seven-years-war-1756/button_c11_es@2x.png": {
+      "size": 13742
+    },
+    "mods/seven-years-war-1756/button_c11_fr@2x.png": {
+      "size": 15951
+    },
+    "mods/seven-years-war-1756/button_c11_gb@2x.png": {
+      "size": 12112
+    },
+    "mods/seven-years-war-1756/button_c11_hab@2x.png": {
+      "size": 11618
+    },
+    "mods/seven-years-war-1756/button_c11_jap@2x.png": {
+      "size": 10043
+    },
+    "mods/seven-years-war-1756/button_c11_mug@2x.png": {
+      "size": 11670
+    },
+    "mods/seven-years-war-1756/button_c11_nl@2x.png": {
+      "size": 9067
+    },
+    "mods/seven-years-war-1756/button_c11_ott@2x.png": {
+      "size": 10192
+    },
+    "mods/seven-years-war-1756/button_c11_plc@2x.png": {
+      "size": 13901
+    },
+    "mods/seven-years-war-1756/button_c11_pr@2x.png": {
+      "size": 13044
+    },
+    "mods/seven-years-war-1756/button_c11_pt@2x.png": {
+      "size": 11082
+    },
+    "mods/seven-years-war-1756/button_c11_qin@2x.png": {
+      "size": 13374
+    },
+    "mods/seven-years-war-1756/button_c11_ru@2x.png": {
+      "size": 9105
+    },
+    "mods/seven-years-war-1756/button_c11_se@2x.png": {
+      "size": 9282
+    },
+    "mods/seven-years-war-1756/button_c11_sui@2x.png": {
+      "size": 8981
+    },
+    "mods/seven-years-war-1756/button_car@2x.png": {
+      "size": 9600
+    },
+    "mods/seven-years-war-1756/button_col@2x.png": {
+      "size": 9295
+    },
+    "mods/seven-years-war-1756/button_conquest11@2x.png": {
+      "size": 13063
+    },
+    "mods/seven-years-war-1756/button_crm@2x.png": {
+      "size": 9931
+    },
+    "mods/seven-years-war-1756/button_dur@2x.png": {
+      "size": 9794
+    },
+    "mods/seven-years-war-1756/button_dvt@2x.png": {
+      "size": 9351
+    },
+    "mods/seven-years-war-1756/button_eth@2x.png": {
+      "size": 8857
+    },
+    "mods/seven-years-war-1756/button_gen@2x.png": {
+      "size": 9663
+    },
+    "mods/seven-years-war-1756/button_han@2x.png": {
+      "size": 11020
+    },
+    "mods/seven-years-war-1756/button_hbc@2x.png": {
+      "size": 12182
+    },
+    "mods/seven-years-war-1756/button_hes@2x.png": {
+      "size": 11461
+    },
+    "mods/seven-years-war-1756/button_hyd@2x.png": {
+      "size": 10402
+    },
+    "mods/seven-years-war-1756/button_kan@2x.png": {
+      "size": 10294
+    },
+    "mods/seven-years-war-1756/button_kaz@2x.png": {
+      "size": 10831
+    },
+    "mods/seven-years-war-1756/button_khi@2x.png": {
+      "size": 9739
+    },
+    "mods/seven-years-war-1756/button_kor@2x.png": {
+      "size": 10367
+    },
+    "mods/seven-years-war-1756/button_lie@2x.png": {
+      "size": 9067
+    },
+    "mods/seven-years-war-1756/button_mai@2x.png": {
+      "size": 11465
+    },
+    "mods/seven-years-war-1756/button_mal@2x.png": {
+      "size": 10906
+    },
+    "mods/seven-years-war-1756/button_mar@2x.png": {
+      "size": 9824
+    },
+    "mods/seven-years-war-1756/button_mec@2x.png": {
+      "size": 10105
+    },
+    "mods/seven-years-war-1756/button_mod@2x.png": {
+      "size": 11973
+    },
+    "mods/seven-years-war-1756/button_mor@2x.png": {
+      "size": 8703
+    },
+    "mods/seven-years-war-1756/button_mys@2x.png": {
+      "size": 11629
+    },
+    "mods/seven-years-war-1756/button_nap@2x.png": {
+      "size": 11484
+    },
+    "mods/seven-years-war-1756/button_oma@2x.png": {
+      "size": 8687
+    },
+    "mods/seven-years-war-1756/button_pal@2x.png": {
+      "size": 10214
+    },
+    "mods/seven-years-war-1756/button_pap@2x.png": {
+      "size": 10871
+    },
+    "mods/seven-years-war-1756/button_par@2x.png": {
+      "size": 12457
+    },
+    "mods/seven-years-war-1756/button_per@2x.png": {
+      "size": 12573
+    },
+    "mods/seven-years-war-1756/button_sar@2x.png": {
+      "size": 9563
+    },
+    "mods/seven-years-war-1756/button_sax@2x.png": {
+      "size": 10950
+    },
+    "mods/seven-years-war-1756/button_sia@2x.png": {
+      "size": 8687
+    },
+    "mods/seven-years-war-1756/button_tri@2x.png": {
+      "size": 9663
+    },
+    "mods/seven-years-war-1756/button_trv@2x.png": {
+      "size": 10299
+    },
+    "mods/seven-years-war-1756/button_ven@2x.png": {
+      "size": 11259
+    },
+    "mods/seven-years-war-1756/button_wbg@2x.png": {
+      "size": 10268
+    },
+    "mods/seven-years-war-1756/button_wur@2x.png": {
+      "size": 11886
+    },
+    "mods/seven-years-war-1756/conquest_11.bin": {
+      "size": 9022
+    },
+    "mods/seven-years-war-1756/data/json/conquests/conquests.json": {
+      "size": 258
+    },
+    "mods/seven-years-war-1756/data/json/countries/countries.json": {
+      "size": 940
+    },
+    "mods/seven-years-war-1756/data/json/scenarios/conquest_11.json": {
+      "size": 243425
+    },
+    "mods/seven-years-war-1756/data/json/text/cn/stringtable_cn.json": {
+      "size": 23265,
+      "lang": "cn"
+    },
+    "mods/seven-years-war-1756/data/json/text/cn/stringtable_cn_iPad.json": {
+      "size": 23265,
+      "lang": "cn"
+    },
+    "mods/seven-years-war-1756/data/json/text/en/stringtable_en.json": {
+      "size": 24751,
+      "lang": "en"
+    },
+    "mods/seven-years-war-1756/data/json/text/en/stringtable_en_iPad.json": {
+      "size": 24751,
+      "lang": "en"
+    },
+    "mods/seven-years-war-1756/data/json/text/ja/stringtable_ja.json": {
+      "size": 24751,
+      "lang": "ja"
+    },
+    "mods/seven-years-war-1756/data/json/text/ja/stringtable_ja_iPad.json": {
+      "size": 24751,
+      "lang": "ja"
+    },
+    "mods/seven-years-war-1756/data/json/text/kr/stringtable_kr.json": {
+      "size": 24751,
+      "lang": "kr"
+    },
+    "mods/seven-years-war-1756/data/json/text/kr/stringtable_kr_iPad.json": {
+      "size": 24751,
+      "lang": "kr"
+    },
+    "mods/seven-years-war-1756/data/json/text/ru/stringtable_ru.json": {
+      "size": 24751,
+      "lang": "ru"
+    },
+    "mods/seven-years-war-1756/data/json/text/ru/stringtable_ru_iPad.json": {
+      "size": 24751,
+      "lang": "ru"
+    },
+    "mods/seven-years-war-1756/data/json/text/tw/stringtable_tw.json": {
+      "size": 24751,
+      "lang": "tw"
+    },
+    "mods/seven-years-war-1756/data/json/text/tw/stringtable_tw_iPad.json": {
+      "size": 24751,
+      "lang": "tw"
+    },
+    "mods/seven-years-war-1756/flag_bad.png": {
+      "size": 1812
+    },
+    "mods/seven-years-war-1756/flag_bav.png": {
+      "size": 5994
+    },
+    "mods/seven-years-war-1756/flag_ben.png": {
+      "size": 2315
+    },
+    "mods/seven-years-war-1756/flag_bkh.png": {
+      "size": 2342
+    },
+    "mods/seven-years-war-1756/flag_bma.png": {
+      "size": 2187
+    },
+    "mods/seven-years-war-1756/flag_bru.png": {
+      "size": 2637
+    },
+    "mods/seven-years-war-1756/flag_c11_dkn.png": {
+      "size": 1311
+    },
+    "mods/seven-years-war-1756/flag_c11_es.png": {
+      "size": 4917
+    },
+    "mods/seven-years-war-1756/flag_c11_fr.png": {
+      "size": 3134
+    },
+    "mods/seven-years-war-1756/flag_c11_gb.png": {
+      "size": 3385
+    },
+    "mods/seven-years-war-1756/flag_c11_hab.png": {
+      "size": 3430
+    },
+    "mods/seven-years-war-1756/flag_c11_jap.png": {
+      "size": 1760
+    },
+    "mods/seven-years-war-1756/flag_c11_mug.png": {
+      "size": 4065
+    },
+    "mods/seven-years-war-1756/flag_c11_nl.png": {
+      "size": 381
+    },
+    "mods/seven-years-war-1756/flag_c11_ott.png": {
+      "size": 2255
+    },
+    "mods/seven-years-war-1756/flag_c11_plc.png": {
+      "size": 5422
+    },
+    "mods/seven-years-war-1756/flag_c11_pr.png": {
+      "size": 4006
+    },
+    "mods/seven-years-war-1756/flag_c11_pt.png": {
+      "size": 2487
+    },
+    "mods/seven-years-war-1756/flag_c11_qin.png": {
+      "size": 2941
+    },
+    "mods/seven-years-war-1756/flag_c11_ru.png": {
+      "size": 380
+    },
+    "mods/seven-years-war-1756/flag_c11_se.png": {
+      "size": 496
+    },
+    "mods/seven-years-war-1756/flag_c11_sui.png": {
+      "size": 535
+    },
+    "mods/seven-years-war-1756/flag_car.png": {
+      "size": 1730
+    },
+    "mods/seven-years-war-1756/flag_col.png": {
+      "size": 448
+    },
+    "mods/seven-years-war-1756/flag_crm.png": {
+      "size": 1059
+    },
+    "mods/seven-years-war-1756/flag_dur.png": {
+      "size": 2249
+    },
+    "mods/seven-years-war-1756/flag_dvt.png": {
+      "size": 419
+    },
+    "mods/seven-years-war-1756/flag_eth.png": {
+      "size": 384
+    },
+    "mods/seven-years-war-1756/flag_gen.png": {
+      "size": 472
+    },
+    "mods/seven-years-war-1756/flag_han.png": {
+      "size": 2696
+    },
+    "mods/seven-years-war-1756/flag_hbc.png": {
+      "size": 3662
+    },
+    "mods/seven-years-war-1756/flag_hes.png": {
+      "size": 2704
+    },
+    "mods/seven-years-war-1756/flag_hyd.png": {
+      "size": 1840
+    },
+    "mods/seven-years-war-1756/flag_kan.png": {
+      "size": 2577
+    },
+    "mods/seven-years-war-1756/flag_kaz.png": {
+      "size": 2012
+    },
+    "mods/seven-years-war-1756/flag_khi.png": {
+      "size": 1822
+    },
+    "mods/seven-years-war-1756/flag_kor.png": {
+      "size": 1955
+    },
+    "mods/seven-years-war-1756/flag_lie.png": {
+      "size": 729
+    },
+    "mods/seven-years-war-1756/flag_mai.png": {
+      "size": 2794
+    },
+    "mods/seven-years-war-1756/flag_mal.png": {
+      "size": 2548
+    },
+    "mods/seven-years-war-1756/flag_mar.png": {
+      "size": 1011
+    },
+    "mods/seven-years-war-1756/flag_mec.png": {
+      "size": 1654
+    },
+    "mods/seven-years-war-1756/flag_mod.png": {
+      "size": 3265
+    },
+    "mods/seven-years-war-1756/flag_mor.png": {
+      "size": 365
+    },
+    "mods/seven-years-war-1756/flag_mys.png": {
+      "size": 3401
+    },
+    "mods/seven-years-war-1756/flag_nap.png": {
+      "size": 2501
+    },
+    "mods/seven-years-war-1756/flag_oma.png": {
+      "size": 365
+    },
+    "mods/seven-years-war-1756/flag_pal.png": {
+      "size": 2722
+    },
+    "mods/seven-years-war-1756/flag_pap.png": {
+      "size": 2935
+    },
+    "mods/seven-years-war-1756/flag_par.png": {
+      "size": 2353
+    },
+    "mods/seven-years-war-1756/flag_per.png": {
+      "size": 4250
+    },
+    "mods/seven-years-war-1756/flag_sar.png": {
+      "size": 471
+    },
+    "mods/seven-years-war-1756/flag_sax.png": {
+      "size": 2446
+    },
+    "mods/seven-years-war-1756/flag_sia.png": {
+      "size": 365
+    },
+    "mods/seven-years-war-1756/flag_tri.png": {
+      "size": 472
+    },
+    "mods/seven-years-war-1756/flag_trv.png": {
+      "size": 1918
+    },
+    "mods/seven-years-war-1756/flag_ven.png": {
+      "size": 3404
+    },
+    "mods/seven-years-war-1756/flag_wbg.png": {
+      "size": 1188
+    },
+    "mods/seven-years-war-1756/flag_wur.png": {
+      "size": 2273
+    },
+    "mods/seven-years-war-1756/mod.json": {
+      "size": 474
+    },
+    "mods/seven-years-war-1756/sflag_bad@2x.png": {
+      "size": 814
+    },
+    "mods/seven-years-war-1756/sflag_bav@2x.png": {
+      "size": 2660
+    },
+    "mods/seven-years-war-1756/sflag_ben@2x.png": {
+      "size": 812
+    },
+    "mods/seven-years-war-1756/sflag_bkh@2x.png": {
+      "size": 775
+    },
+    "mods/seven-years-war-1756/sflag_bma@2x.png": {
+      "size": 766
+    },
+    "mods/seven-years-war-1756/sflag_bru@2x.png": {
+      "size": 966
+    },
+    "mods/seven-years-war-1756/sflag_c11_dkn@2x.png": {
+      "size": 630
+    },
+    "mods/seven-years-war-1756/sflag_c11_es@2x.png": {
+      "size": 1877
+    },
+    "mods/seven-years-war-1756/sflag_c11_fr@2x.png": {
+      "size": 1669
+    },
+    "mods/seven-years-war-1756/sflag_c11_gb@2x.png": {
+      "size": 1180
+    },
+    "mods/seven-years-war-1756/sflag_c11_hab@2x.png": {
+      "size": 1319
+    },
+    "mods/seven-years-war-1756/sflag_c11_jap@2x.png": {
+      "size": 718
+    },
+    "mods/seven-years-war-1756/sflag_c11_mug@2x.png": {
+      "size": 1423
+    },
+    "mods/seven-years-war-1756/sflag_c11_nl@2x.png": {
+      "size": 244
+    },
+    "mods/seven-years-war-1756/sflag_c11_ott@2x.png": {
+      "size": 778
+    },
+    "mods/seven-years-war-1756/sflag_c11_plc@2x.png": {
+      "size": 1642
+    },
+    "mods/seven-years-war-1756/sflag_c11_pr@2x.png": {
+      "size": 1343
+    },
+    "mods/seven-years-war-1756/sflag_c11_pt@2x.png": {
+      "size": 874
+    },
+    "mods/seven-years-war-1756/sflag_c11_qin@2x.png": {
+      "size": 1154
+    },
+    "mods/seven-years-war-1756/sflag_c11_ru@2x.png": {
+      "size": 243
+    },
+    "mods/seven-years-war-1756/sflag_c11_se@2x.png": {
+      "size": 283
+    },
+    "mods/seven-years-war-1756/sflag_c11_sui@2x.png": {
+      "size": 349
+    },
+    "mods/seven-years-war-1756/sflag_car@2x.png": {
+      "size": 643
+    },
+    "mods/seven-years-war-1756/sflag_col@2x.png": {
+      "size": 259
+    },
+    "mods/seven-years-war-1756/sflag_crm@2x.png": {
+      "size": 447
+    },
+    "mods/seven-years-war-1756/sflag_dur@2x.png": {
+      "size": 689
+    },
+    "mods/seven-years-war-1756/sflag_dvt@2x.png": {
+      "size": 255
+    },
+    "mods/seven-years-war-1756/sflag_eth@2x.png": {
+      "size": 244
+    },
+    "mods/seven-years-war-1756/sflag_gen@2x.png": {
+      "size": 292
+    },
+    "mods/seven-years-war-1756/sflag_han@2x.png": {
+      "size": 948
+    },
+    "mods/seven-years-war-1756/sflag_hbc@2x.png": {
+      "size": 1268
+    },
+    "mods/seven-years-war-1756/sflag_hes@2x.png": {
+      "size": 987
+    },
+    "mods/seven-years-war-1756/sflag_hyd@2x.png": {
+      "size": 660
+    },
+    "mods/seven-years-war-1756/sflag_kan@2x.png": {
+      "size": 890
+    },
+    "mods/seven-years-war-1756/sflag_kaz@2x.png": {
+      "size": 626
+    },
+    "mods/seven-years-war-1756/sflag_khi@2x.png": {
+      "size": 612
+    },
+    "mods/seven-years-war-1756/sflag_kor@2x.png": {
+      "size": 714
+    },
+    "mods/seven-years-war-1756/sflag_lie@2x.png": {
+      "size": 353
+    },
+    "mods/seven-years-war-1756/sflag_mai@2x.png": {
+      "size": 973
+    },
+    "mods/seven-years-war-1756/sflag_mal@2x.png": {
+      "size": 948
+    },
+    "mods/seven-years-war-1756/sflag_mar@2x.png": {
+      "size": 484
+    },
+    "mods/seven-years-war-1756/sflag_mec@2x.png": {
+      "size": 640
+    },
+    "mods/seven-years-war-1756/sflag_mod@2x.png": {
+      "size": 1056
+    },
+    "mods/seven-years-war-1756/sflag_mor@2x.png": {
+      "size": 202
+    },
+    "mods/seven-years-war-1756/sflag_mys@2x.png": {
+      "size": 1181
+    },
+    "mods/seven-years-war-1756/sflag_nap@2x.png": {
+      "size": 869
+    },
+    "mods/seven-years-war-1756/sflag_oma@2x.png": {
+      "size": 200
+    },
+    "mods/seven-years-war-1756/sflag_pal@2x.png": {
+      "size": 908
+    },
+    "mods/seven-years-war-1756/sflag_pap@2x.png": {
+      "size": 1045
+    },
+    "mods/seven-years-war-1756/sflag_par@2x.png": {
+      "size": 959
+    },
+    "mods/seven-years-war-1756/sflag_per@2x.png": {
+      "size": 1448
+    },
+    "mods/seven-years-war-1756/sflag_sar@2x.png": {
+      "size": 332
+    },
+    "mods/seven-years-war-1756/sflag_sax@2x.png": {
+      "size": 1050
+    },
+    "mods/seven-years-war-1756/sflag_sia@2x.png": {
+      "size": 200
+    },
+    "mods/seven-years-war-1756/sflag_tri@2x.png": {
+      "size": 292
+    },
+    "mods/seven-years-war-1756/sflag_trv@2x.png": {
+      "size": 736
+    },
+    "mods/seven-years-war-1756/sflag_ven@2x.png": {
+      "size": 1215
+    },
+    "mods/seven-years-war-1756/sflag_wbg@2x.png": {
+      "size": 477
+    },
+    "mods/seven-years-war-1756/sflag_wur@2x.png": {
+      "size": 1065
+    },
+    "mods/seven-years-war-1756/source/seven-years-war-1756.json": {
+      "size": 59647
     },
     "scripts/tutorial/tutorails_script-512h.xml": {
       "size": 4184,

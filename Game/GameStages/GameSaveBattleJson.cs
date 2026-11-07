@@ -17,6 +17,7 @@ public sealed partial class CGameManager
         {
             CCountry c = GetCountryByIndex(i);
             var o = new JsonObject { ["id"] = c.id, ["name"] = c.name };
+            if (!string.IsNullOrEmpty(c.flag)) o["flag"] = c.flag;
             if (!string.IsNullOrEmpty(c.GetCommanderName())) o["commander"] = c.GetCommanderName();
             o["ai"] = c.ai ? 1 : 0;
             // a faction member names its faction, the others the a/b/c/n side

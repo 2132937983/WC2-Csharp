@@ -1,0 +1,8 @@
+# the Seven Years' War: 59 countries, 9 factions, 5 timed relations; in round 6 Prussia, Russia and Sweden are
+# at war, Spain and the neutral powers are not: borders moved in the wars, none between countries at peace
+W56D_start countries>=55
+W56D_start factions>=9
+W56D_start relations>=5
+W56D_start peacePairs>=300
+W56D_round6 takenInPeace<=0
+W56D_round6 changedHands>=1

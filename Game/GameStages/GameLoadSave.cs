@@ -160,13 +160,16 @@ public sealed partial class CGameManager
             g_Scene.camera.SetPos(Header.xCamera, Header.yCamera, false);
             g_Scene.camera.scale = Header.scaleCamera;
 
-            // factions and relations are scenario data: read them again from the saved game's scenario
+            // factions, relations and flags are scenario data: read them again from the saved game's scenario
             // (the announcements of the current round were already shown before the save)
             var scenario = new BattleScenarioData();
             if (!string.IsNullOrEmpty(Header.battleFileName) &&
                 BattleScenario.LoadBattleScenarioData(Header.battleFileName, scenario))
             {
                 Diplomacy.Set(scenario.diplomacy, currentTurnNumMinusOne + 1);
+                // so are the scenario's own flags
+                foreach (BattleScenarioCountryData data in scenario.countries)
+                    if (FindCountry(data.id) is CCountry saved) saved.flag = data.flag;
             }
         }
         pEcFile.Close();
