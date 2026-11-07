@@ -137,6 +137,12 @@ Get-ChildItem (Join-Path $PSScriptRoot '*.txt') | Where-Object { $_.BaseName -li
                     if ($null -eq $value -or [int]$value -lt [int]$Matches[2]) { $problems += "expect: $($f[0]) $($Matches[1]) is $value, expected at least $($Matches[2])" }
                     continue
                 }
+                # "DUMP FIELD<=N": at most (the diplomacy command's peace violations: 0)
+                if ($f.Count -eq 2 -and $f[1] -match '^(\w+)<=(\d+)$') {
+                    $value = $state.($Matches[1])
+                    if ($null -eq $value -or [int]$value -gt [int]$Matches[2]) { $problems += "expect: $($f[0]) $($Matches[1]) is $value, expected at most $($Matches[2])" }
+                    continue
+                }
                 $area = $state.areas | Where-Object { $_.id -eq [int]$f[1] } | Select-Object -First 1
                 if (-not $area) { $problems += "expect: area $($f[1]) not in $($f[0])"; continue }
                 if ($f[2] -eq 'owner' -and $area.owner -ne $f[3]) { $problems += "expect: $($f[0]) area $($f[1]) owner is $($area.owner), expected $($f[3])" }

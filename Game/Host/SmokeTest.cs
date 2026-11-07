@@ -176,6 +176,36 @@ public static class SmokeTest
                 Log($"Smoke: count {name}: {transports} transports and {ships} ships at sea, {harbours} harbours, {embark} land units with a transport");
                 break;
             }
+            case "diplomacy":
+            {
+                // diplomacy NAME: factions and relations as JSON. The first call notes every area's owner;
+                // later calls count the areas that changed hands since, and those now held by a country at
+                // peace with the one that held them (a peace that was broken: must stay 0)
+                var countries = g_GameManager.allCountry;
+                if (s_baselineOwners == null)
+                {
+                    s_baselineOwners = new CCountry[g_Scene.areaList.Count];
+                    for (int i = 0; i < s_baselineOwners.Length; i++) s_baselineOwners[i] = g_Scene.areaList[i]?.country;
+                }
+                int changed = 0, takenInPeace = 0, peacePairs = 0;
+                for (int i = 0; i < s_baselineOwners.Length && i < g_Scene.areaList.Count; i++)
+                {
+                    CCountry before = s_baselineOwners[i], now = g_Scene.areaList[i]?.country;
+                    if (before == null || now == null || before == now) continue;
+                    changed++;
+                    if (Diplomacy.AtPeace(before, now)) takenInPeace++;
+                }
+                for (int i = 0; i < countries.Count; i++)
+                    for (int j = i + 1; j < countries.Count; j++)
+                        if (Diplomacy.AtPeace(countries[i], countries[j])) peacePairs++;
+                int sides = countries.Select(x => x.alliance).Distinct().Count();
+                string name = (c.args.Length > 0 ? c.args[0] : "diplomacy") + ".json";
+                File.WriteAllText(Path.Combine(OutputDirectory ?? ".", name),
+                    $"{{ \"round\": {g_GameManager.currentTurnNumMinusOne + 1}, \"countries\": {countries.Count}, \"factions\": {Diplomacy.Current.factions.Count}, \"sides\": {sides}, " +
+                    $"\"relations\": {Diplomacy.Current.relations.Count}, \"peacePairs\": {peacePairs}, \"changedHands\": {changed}, \"takenInPeace\": {takenInPeace} }}\n");
+                Log($"Smoke: diplomacy {name}: round {g_GameManager.currentTurnNumMinusOne + 1}, {countries.Count} countries on {sides} sides, {peacePairs} pairs at peace, {changed} areas changed hands, {takenInPeace} of them between countries at peace");
+                break;
+            }
             case "camera":
             {
                 // camera X Y [SCALE]: puts the map camera on a scene position (the zoom limits still apply);
@@ -241,6 +271,9 @@ public static class SmokeTest
 
     /// <summary>Folder for "dump" output; the host sets it to the screenshot folder.</summary>
     public static string OutputDirectory;
+
+    /// <summary>Area owners noted by the first "diplomacy" command.</summary>
+    private static CCountry[] s_baselineOwners;
 
     /// <summary>Set by the host; takes a file name without directory.</summary>
     public static Action<string> ScreenshotRequest;

@@ -542,6 +542,15 @@ public sealed partial class CGameState
             g_GameManager.GetCurDialogueString(out string dialogue_string);
             ShowDialogue(dialogue_string, dialogue_cur.commander, dialogue_cur.left);
             g_GameManager.NextDialogue();
+            return;
+        }
+        // then the relations that begin or end this round (scenario relations with "announce");
+        // closing the dialogue calls this again for the next one
+        while (Diplomacy.NextAnnouncement() is (string text, string commander))
+        {
+            if (CObjectDef.Instance().GetGeneralPhoto(commander) == null) continue;
+            ShowDialogue(text, commander, true);
+            return;
         }
     }
 

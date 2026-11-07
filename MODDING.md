@@ -204,12 +204,82 @@ built in, enabled). To turn it off: set `"enabled": false` in its `mod.json` and
 mod with the id `map-natural-earth` and `"enabled": false` into a mods folder (a folder mod replaces the
 built-in one with the same id).
 
+## 4. A total conversion: build-scenario
+
+A conquest with its own countries, factions and wars needs no code. `samples/mods/world-1962` is a complete
+example: an original alternate 1962 on the world map, 65 countries, ten factions and relations that change
+with the rounds. It is a sample, not part of the game: nothing under `samples/` is packaged or loaded
+unless you ask for it.
+
+**Playing the sample**
+
+* Windows: copy `samples/mods/world-1962` into `%LOCALAPPDATA%\WC2CSharp\mods\` (or into `mods\` next to
+  `WC2.exe`), or start a development build with `dotnet run --project Hosts/Desktop -- --mods samples/mods`.
+* Android: copy the folder to `Android/data/com.wc2remake.csharp/files/mods/world-1962/`.
+* Then **Conquest**, the 11th entry, *1962 DIVIDED WORLD*. It needs the world map (`map-natural-earth`, built
+  in). To switch it off, delete the folder or set `"enabled": false` in its `mod.json`.
+
+**What the mod contains** (all generated, about 1 MB)
+
+| File | What |
+|---|---|
+| `data/json/scenarios/conquest_11.json` | the scenario: factions, relations, countries, every area's owner, cities, units |
+| `conquest_11.bin` | the area switch file (every area takes part) |
+| `data/json/conquests/conquests.json` | the conquest list entry (camera, `fogOfWar`, `leftRightWrap`) |
+| `data/json/countries/countries.json` | the ids of the new countries |
+| `flag_<id>.png`, `button_<id>@2x.png`, `sflag_<id>@2x.png` | each new country's flag, list button and small preview flag |
+| `button_conquest11@2x.png` | the conquest list button |
+| `data/json/text/<lang>/stringtable_<lang>.json` (and `_iPad`) | names, intros, faction names, announcements (English and Chinese; English in the other languages) |
+| `source/world-1962.json` | the rules everything above is built from |
+
+**Building it**: `dotnet run --project Tools -- build-scenario --config samples/mods/world-1962/source/world-1962.json`
+writes the mod next to its `source/` folder (`--out DIR` writes elsewhere). Change the rules, build again,
+restart the game.
+
+**The rules file** (JSON; comments and trailing commas allowed)
+
+* `mod` (the `mod.json` fields), `conquest` (the number; 11 is the first free one), `map` (`id`, the map
+  pack and its area table), `texts` (`name`, `age`, `intro`), `camera` and `button` (lon, lat),
+  `fogOfWar`, `leftRightWrap`, `economy`: money = (`moneyBase` + `moneyPerTax` x taxes) x the country's
+  `economy`, industry likewise with `industryBase` and `industryPerTax`. Every text is per language
+  (`{"en": ..., "cn": ...}`); English stands in for a missing language.
+* `defaults`: what a country does not say itself: `commander`, `techLevel`, `taxFactor`, `fleets`, `units`
+  per kind of area (`capital`, `largeCity`, `city`, `port`), `intro`, `victory`.
+* `factions`: `id`, `name`, `color` (unit bases), `leader`, `tags`.
+* `relations`: as in the scenario (`DATA_SCHEMA.md`, "Factions and relations"); the `announce` texts become
+  string table keys.
+* `countries`, in turn order: `id`; `art` uses the game's own flag and units of an existing country (`de`,
+  `ja`, `tw`, ...), otherwise `flag` draws one: a design `{"bands": [colours], "vertical": false, "weights":
+  [...], "overlays": [...]}` with overlays `rect`, `cross`, `saltire`, `disc`, `ring`, `star`, `triangle`,
+  `crescent`, `diamond`, `checker`, `border`, or a PNG next to the rules. Then `faction` (or `alliance`),
+  `tags`, `name`, `intro`, `victory`, `color`, `commander`, `techLevel`, `capital` (lon, lat: the nearest
+  owned capital area gets a fort and the capital garrison), `garrison` (extra infantry in capitals and
+  large cities), `fleets` (destroyers along the coast), `economy`.
+* `owners`: rules in order, a later rule winning. A region matches when every condition holds:
+  `countries` (today's country code), `provinces` (ISO 3166-2 codes; `"AM-"` takes all of a country),
+  `era` (`{"1939": ["gw:255"]}`: the unit holding it in that era of the map pack), `lon` and `lat`
+  (`[min, max]`), `near` (`[lon, lat, km]`), `regions` (ids) and `not` (a rule that must not match).
+  `"to": null` leaves regions to nobody.
+* `armies`: extra units on the owned area nearest a point (fronts).
+
+**New countries without the tool**: an id the game does not know needs (1) an entry in
+`data/json/countries/countries.json` and (2) one picture, `flag_<id>.png`: the plain flag, any size wider
+than tall (150 x 102 has the original's proportions). The game puts it on a pole on the map, scales it for
+the boxes, and shows it in the conquest list unless the mod also has `button_<id>@2x.png` (151 x 105) and
+`sflag_<id>@2x.png` (66 x 43). Such a country's units use the common art and its AI badge is a common one;
+in the scenario its `name` (the art id) is that id.
+
+Everything here is data, so a mod can name countries, draw borders and bring pictures as its author wants.
+Use pictures you may use: the sample draws its flags from simple designs (national flags and new ones).
+
 ## Limits
 
 * Map geometry and scenario area masks are binary; new maps come from `WC2.Tools build-map`.
 * New area types (`data/json/terrain/terrain.json`) are fully data driven; new installation or building
   kinds are not (their behaviour is code), but their numbers are data.
-* New countries need flags and commanders; the game knows 31 countries (`data/json/countries/countries.json`).
+* New countries need only an id and a flag picture (section 4); their units use the common art and their AI
+  badge is a common one. Factions beyond the original three sides and timed war and peace are scenario data
+  (`DATA_SCHEMA.md`, "Factions and relations"); there is no diplomacy screen to change them during a game.
 * There is no in-game mod list yet; mods are switched with `enabled` in `mod.json`.
 
 ---
@@ -409,10 +479,72 @@ dotnet run --project Hosts/Desktop -- --verify-data --mods <folder that contains
 `mod.json` 中设置 `"enabled": false` 并重新构建；或者在模组文件夹中放一个 id 为 `map-natural-earth`、
 `"enabled": false` 的文件夹模组（文件夹模组会替换同 id 的内置模组）。
 
+## 4. 全面改造：build-scenario
+
+一场拥有自己的国家、阵营和战争的征服无需编写代码。`samples/mods/world-1962` 是一个完整的示例：世界地图上
+一个原创的 1962 年架空历史，65 个国家、10 个阵营，以及随回合变化的外交关系。它只是示例，不属于游戏本身：
+`samples/` 下的任何内容都不会被打包或加载，除非你主动要求。
+
+**游玩示例**
+
+* Windows：把 `samples/mods/world-1962` 复制到 `%LOCALAPPDATA%\WC2CSharp\mods\`（或 `WC2.exe` 旁边的
+  `mods\`），或者用 `dotnet run --project Hosts/Desktop -- --mods samples/mods` 启动开发版。
+* Android：把该文件夹复制到 `Android/data/com.wc2remake.csharp/files/mods/world-1962/`。
+* 然后进入 **征服**，第 11 项 *1962 DIVIDED WORLD*。它需要世界地图（`map-natural-earth`，内置）。要关闭它，
+  删除该文件夹，或在其 `mod.json` 中设置 `"enabled": false`。
+
+**模组包含的内容**（全部自动生成，约 1 MB）
+
+| 文件 | 内容 |
+|---|---|
+| `data/json/scenarios/conquest_11.json` | 剧本：阵营、外交关系、国家、每个地区的归属、城市、部队 |
+| `conquest_11.bin` | 地区开关文件（所有地区都参与） |
+| `data/json/conquests/conquests.json` | 征服列表条目（镜头、`fogOfWar`、`leftRightWrap`） |
+| `data/json/countries/countries.json` | 新国家的 id |
+| `flag_<id>.png`、`button_<id>@2x.png`、`sflag_<id>@2x.png` | 每个新国家的国旗、列表按钮和预览小旗 |
+| `button_conquest11@2x.png` | 征服列表按钮 |
+| `data/json/text/<语言>/stringtable_<语言>.json`（及 `_iPad`） | 国名、简介、阵营名、公告（英文和中文；其他语言使用英文） |
+| `source/world-1962.json` | 以上所有内容据以生成的规则 |
+
+**构建**：`dotnet run --project Tools -- build-scenario --config samples/mods/world-1962/source/world-1962.json`
+会把模组写到 `source/` 文件夹旁边（`--out DIR` 写到别处）。修改规则、重新构建、重启游戏即可。
+
+**规则文件**（JSON；允许注释和末尾逗号）
+
+* `mod`（`mod.json` 的字段）、`conquest`（编号；11 是第一个空闲编号）、`map`（`id`、地图包及其地区表）、
+  `texts`（`name`、`age`、`intro`）、`camera` 和 `button`（经度、纬度）、`fogOfWar`、`leftRightWrap`、
+  `economy`：金钱 =（`moneyBase` + `moneyPerTax` x 税收）x 该国的 `economy`，工业同理使用 `industryBase`
+  和 `industryPerTax`。所有文本都按语言给出（`{"en": ..., "cn": ...}`）；缺少的语言使用英文。
+* `defaults`：国家自己没有指定的内容：`commander`、`techLevel`、`taxFactor`、`fleets`、按地区类型
+  （`capital`、`largeCity`、`city`、`port`）给出的 `units`、`intro`、`victory`。
+* `factions`：`id`、`name`、`color`（单位底座颜色）、`leader`、`tags`。
+* `relations`：与剧本中相同（`DATA_SCHEMA.md`，“阵营与外交关系”）；`announce` 文本会变成字符串表的键。
+* `countries`，按回合顺序：`id`；`art` 使用游戏中某个已有国家自己的国旗和单位（`de`、`ja`、`tw` ……），
+  否则由 `flag` 绘制国旗：一个设计 `{"bands": [颜色], "vertical": false, "weights": [...], "overlays": [...]}`，
+  叠加图形有 `rect`、`cross`、`saltire`、`disc`、`ring`、`star`、`triangle`、`crescent`、`diamond`、
+  `checker`、`border`，或者规则文件旁边的一张 PNG。然后是 `faction`（或 `alliance`）、`tags`、`name`、
+  `intro`、`victory`、`color`、`commander`、`techLevel`、`capital`（经度、纬度：最近的己方首都地区获得要塞
+  和首都守军）、`garrison`（首都和大城市额外的步兵）、`fleets`（沿海的驱逐舰）、`economy`。
+* `owners`：按顺序排列的规则，后面的规则优先。当所有条件都满足时，一个区域与规则匹配：`countries`（今天的
+  国家代码）、`provinces`（ISO 3166-2 代码；`"AM-"` 表示整个国家）、`era`（`{"1939": ["gw:255"]}`：地图包
+  在该时代中拥有它的政治单元）、`lon` 和 `lat`（`[最小, 最大]`）、`near`（`[经度, 纬度, 公里]`）、`regions`
+  （id）以及 `not`（一条不能匹配的规则）。`"to": null` 让区域不属于任何国家。
+* `armies`：在离某点最近的己方地区放置额外部队（前线）。
+
+**不用工具添加新国家**：游戏不认识的 id 需要（1）在 `data/json/countries/countries.json` 中登记，以及（2）一张
+图片 `flag_<id>.png`：普通的国旗，任意尺寸、宽大于高（150 x 102 与原版比例相同）。游戏会把它挂到地图上的旗杆
+上，为各种对话框缩放它，并在征服列表中显示它，除非模组还提供了 `button_<id>@2x.png`（151 x 105）和
+`sflag_<id>@2x.png`（66 x 43）。这样的国家的部队使用通用美术，其 AI 徽章也是通用徽章；在剧本中它的 `name`
+（美术 id）就是这个 id。
+
+这里的一切都是数据，所以模组可以按作者的意愿命名国家、划定边界、提供图片。请使用你有权使用的图片：本示例的
+国旗是由简单的设计绘制的（各国国旗以及新设计的旗帜）。
+
 ## 限制
 
 * 地图几何数据和剧本的地区掩码是二进制的；新地图由 `WC2.Tools build-map` 生成。
 * 新的地区类型（`data/json/terrain/terrain.json`）完全由数据驱动；新的设施或建筑种类则不是（其行为在代码
   中），但它们的数值是数据。
-* 新国家需要国旗和将领；游戏目前认识 31 个国家（`data/json/countries/countries.json`）。
+* 新国家只需要一个 id 和一张国旗图片（第 4 节）；它们的部队使用通用美术，AI 徽章也是通用徽章。超出原版三方的
+  阵营以及定时的战争与和平都是剧本数据（`DATA_SCHEMA.md`，“阵营与外交关系”）；游戏中没有可以改变它们的外交界面。
 * 游戏内还没有模组列表；通过 `mod.json` 中的 `enabled` 开关模组。

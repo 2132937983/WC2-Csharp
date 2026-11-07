@@ -38,8 +38,8 @@ public sealed class GUICountryItem : GUIElement
         name = nameIn ?? "";
         id = idIn ?? "";
 
-        string buttonImageName = Sprintf("button_%s.png", name);
-        imageButton = new ecImage(s_TextureRes.GetImage(buttonImageName));
+        // button_<name>.png of the menu atlas; a mod's new country brings its own (CountryArt)
+        imageButton = new ecImage(CountryArt.Button(s_TextureRes, name));
 
         var smallRankStar = new ecImage(s_TextureRes.GetImage("small_rankstar.png"));
         touched = false;

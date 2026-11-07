@@ -561,6 +561,8 @@ public sealed class BattleScenarioData
     public List<BattleScenarioCountryData> countries = new();
     public List<BattleScenarioAreaData> areas = new();
     public List<DialogueDef> dialogues = new();
+    /// <summary>Factions, country tags and relations (scenario JSON; empty for the original scenarios).</summary>
+    public ScenarioDiplomacy diplomacy = new();
 
     public void Clear()
     {
@@ -570,6 +572,7 @@ public sealed class BattleScenarioData
         countries.Clear();
         areas.Clear();
         dialogues.Clear();
+        diplomacy = new ScenarioDiplomacy();
     }
 }
 

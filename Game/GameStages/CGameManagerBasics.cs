@@ -127,6 +127,7 @@ public sealed partial class CGameManager
         allCountry.Clear();
         belligerentCountry.Clear();
         dialogueList.Clear();
+        Diplomacy.Clear();
     }
 
     /// <summary>Current dialogue from currentDialogueIndex.</summary>

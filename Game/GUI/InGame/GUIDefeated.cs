@@ -73,6 +73,8 @@ public sealed class GUIDefeated : GUIElement
         // without a dedicated flag the reference stays null and the render skips it
         if (textureResFlag.GetImage(tmp_char) != null)
             imageFlag = new ecImage(textureResFlag.GetImage(tmp_char));
+        else if (CountryArt.UiFlag(tmp_char) is ecImageAttr modFlag)
+            imageFlag = new ecImage(modFlag);   // a mod's new country
         else
             imageFlag = null;
         defeatedCountry = country_in;

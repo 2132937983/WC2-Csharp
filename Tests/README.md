@@ -50,6 +50,7 @@ Coordinates are logical screen units (568 x 320 phone layout; scripts named `ipa
 | `wheel DELTA` | mouse wheel |
 | `camera X Y [SCALE]` | put the map camera on a scene position (the zoom limit and the wrap still apply) and log where it ended up |
 | `count NAME` | write `NAME.json` next to the dumps: land units at sea (transport ships), ships at sea, harbours, land units with a transport (checked by `.expect` lines `NAME FIELD>=N`) |
+| `diplomacy NAME` | write `NAME.json`: countries, factions, sides, relations, pairs at peace; the first call notes every area's owner, later ones count the areas that changed hands and those now held by a country at peace with the one that held them (`.expect`: `NAME takenInPeace<=0`; `FIELD<=N` and `FIELD>=N` both work) |
 | `autoplay ROUNDS` | play N rounds without input: ends the human turn (the AI hosting option plays it), fast-forwards AI turns and closes boxes; stops early when the battle ends |
 | `settle` | close boxes and finish AI moves until the human side can act (ends no turn) |
 | `dump NAME` | write the rule state as `NAME.json` next to the screenshots |
@@ -83,6 +84,7 @@ against the dumps (the AI tests).
 | `ai_defends_marseille_classic`, `ai_defends_marseille_standard` | the test mod `mods/ai-marseille` (an Italian stack next to a weakly held Marseille): the standard AI reinforces and holds Marseille (`.expect`), the classic AI loses it |
 | `ai_standard_autoplay` | conquest 1 played by the standard AI for 16 rounds |
 | `world_menu`, `world_autoplay` | the generated world map, WORLD 1939 (`mods/map-natural-earth`, MAP_PIPELINE.md, 7 389 provinces drawn as a mesh): through the conquest menu (list, preview, game); as France with the seam at the Bering Strait, fully zoomed out (no black bars) and fully zoomed out at the seam (Asia left of America, no empty water), fully zoomed in (units fitted to the provinces), the flag markers, four rounds of the standard AI and the naval count (`world_autoplay.expect`: harbours, transports and ships at sea) |
+| `world1962_autoplay` | the sample total conversion `samples/mods/world-1962` (`--mods samples/mods`): 65 countries on ten faction sides, new countries' flags on the map (Dijon), the successor states and East Asia; four rounds of the standard AI: borders move in the wars, none between countries at peace (`.expect`) |
 
 ## Unit tests (`Unit/`, `dotnet test Tests`)
 
@@ -95,6 +97,7 @@ against the dumps (the AI tests).
 | `MapPackTests.cs` | the world base map (consistency, wrapping, the units of every era, historical borders splitting provinces, coverage up to the polar islands and over the date line, capitals of today and of earlier eras, Marseille); the pipeline and the classic export on a synthetic world with a historical border, a harbour and transports; the mesh covers every region exactly and the game reads it; ships pass the straits and canals, the lakes are inland seas; every province one landmass, the date line seamless; Memel and South Tyrol by era |
 | `CameraTests.cs` | zooming out stops when the map fills the screen; a wrapping map scrolls past its edges and the camera takes the short way over the seam |
 | `BuiltInModTests.cs` | mods built into the package mount and merge like folder mods, a folder mod replaces one with the same id, the world map is built in |
+| `DiplomacyTests.cs` | factions are sides of their own; relations by selector, round and order (the last that holds decides); lasting peace; no relations = the original rules; the wars and truces of the 1962 sample, every new country registered with its pictures |
 
 ---
 
@@ -134,6 +137,7 @@ against the dumps (the AI tests).
 | `wheel DELTA` | 鼠标滚轮 |
 | `camera X Y [SCALE]` | 把地图镜头放到某个场景坐标（缩放限制和左右循环仍然生效），并在日志中记录最终位置 |
 | `count NAME` | 在转储文件旁写出 `NAME.json`：海上的陆军（运输船）、海上的舰船、港口数、带运输船的陆军数（由 `.expect` 中形如 `NAME FIELD>=N` 的行检查） |
+| `diplomacy NAME` | 写出 `NAME.json`：国家数、阵营数、阵营方数、外交关系数、处于和平的国家对数；第一次调用记下每个地区的归属，之后的调用统计易手的地区，以及其中现在由与原主处于和平状态的国家占有的地区（`.expect`：`NAME takenInPeace<=0`；`FIELD<=N` 和 `FIELD>=N` 都可用） |
 | `autoplay ROUNDS` | 在没有输入的情况下进行 N 个回合：结束人类玩家的回合（由 AI 托管选项代为进行），快进 AI 回合并关闭对话框；战斗结束时提前停止 |
 | `settle` | 关闭对话框并完成 AI 的行动，直到人类一方可以操作为止（不结束任何回合） |
 | `dump NAME` | 将规则状态写为 `NAME.json`，与截图放在一起 |
@@ -164,6 +168,7 @@ against the dumps (the AI tests).
 | `ai_defends_marseille_classic`、`ai_defends_marseille_standard` | 测试模组 `mods/ai-marseille`（一支意大利部队堆叠在防守薄弱的马赛旁边）：standard AI 会增援并守住马赛（`.expect`），classic AI 则会丢掉马赛 |
 | `ai_standard_autoplay` | 征服 1，由 standard AI 进行 16 个回合 |
 | `world_menu`、`world_autoplay` | 生成的世界地图 WORLD 1939（`mods/map-natural-earth`，MAP_PIPELINE.md，以网格绘制的 7 389 个省份）：通过征服菜单进入（列表、预览、游戏）；以法国开局，查看白令海峡处的接缝、最大缩小（没有黑边）以及在接缝处最大缩小（亚洲在美洲左侧，没有空白海面）、最大放大（部队缩放到省份内）、旗帜标记、standard AI 进行四个回合，以及海军统计（`world_autoplay.expect`：港口、海上的运输船和舰船） |
+| `world1962_autoplay` | 全面改造示例 `samples/mods/world-1962`（`--mods samples/mods`）：分属十个阵营的 65 个国家，新国家在地图上的国旗（第戎），苏联继承国和东亚；standard AI 进行四个回合：战争中边界变化，处于和平的国家之间没有任何地区易手（`.expect`） |
 
 ## 单元测试（`Unit/`，`dotnet test Tests`）
 
@@ -176,3 +181,4 @@ against the dumps (the AI tests).
 | `MapPackTests.cs` | 世界底图（一致性、左右循环、各时代的单元、历史边界拆分省份、覆盖到北极群岛并跨越日期变更线、今天和早期时代的首都、马赛）；在一个带历史边界、港口和运输船的合成世界上测试生成流程和经典地图导出；网格精确覆盖每个区域，并且游戏能读取它；舰船能通过海峡和运河，湖泊是内海；每个省份都是一块完整的陆地，日期变更线处无缝；梅梅尔和南蒂罗尔的各时代归属 |
 | `CameraTests.cs` | 缩小到地图填满屏幕时停止；循环地图可以越过边缘滚动，镜头跨越接缝走近路 |
 | `BuiltInModTests.cs` | 内置于游戏资源包中的模组与文件夹模组一样挂载和合并；文件夹模组会替换 id 相同的内置模组；世界地图是内置的 |
+| `DiplomacyTests.cs` | 每个阵营都是独立的一方；外交关系按选择器、回合和顺序生效（最后一条有效的关系起决定作用）；永久和平；没有外交关系时即原版规则；1962 示例中的战争与停战，每个新国家都已登记并带有图片 |

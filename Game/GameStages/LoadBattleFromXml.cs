@@ -246,6 +246,8 @@ public static partial class BattleScenario
         if (root.TryInt("map", out int map)) outData.mapId = map;
         string enabled = root.Str("areasEnable");
         if (enabled != null) outData.areasEnable = enabled;
+        // factions and relations beyond the original three sides (DATA_SCHEMA.md#scenarios)
+        outData.diplomacy = ScenarioDiplomacy.Read(root);
 
         foreach (var c in root.Arr("countries").Objects())
         {
@@ -255,7 +257,9 @@ public static partial class BattleScenario
             if (c.Str("name") is string name) { country.name = name; country.hasName = true; }
             if (c.Str("commander") is string commander) { country.commander = commander; country.hasCommander = true; }
             if (c.TryInt("ai", out int ai)) { country.ai = ai; country.hasAi = true; }
-            country.alliance = ParseAlliance(c.Str("alliance"));
+            // a country of a faction takes the faction's side; otherwise the original a/b/c/neutral
+            int factionSide = outData.diplomacy.ReadCountry(id, c);
+            country.alliance = factionSide > 0 ? factionSide : ParseAlliance(c.Str("alliance"));
             country.defeated = ParseDefeat(c.Str("defeated"));
             if (c.TryInt("r", out int r)) country.r = r;
             if (c.TryInt("g", out int g)) country.g = g;
@@ -584,6 +588,7 @@ public sealed partial class CGameManager
         }
         ApplySceneOptions();
         g_Scene.Init(areasEnable, mapId);
+        Diplomacy.Set(data.diplomacy);
 
         foreach (BattleScenarioCountryData countryData in data.countries)
         {

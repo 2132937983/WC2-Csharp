@@ -321,8 +321,7 @@ public sealed class GUISelCountry : GUIElement
                 while (flagCount < displayComponentCount)
                 {
                     var imageInfo = new GUISelBattle.ImageInfo();
-                    string imageName = "sflag_" + countryComponents.owner.id + ".png";
-                    imageInfo.image = new ecImage(GUIElement.s_TextureRes.GetImage(imageName));
+                    imageInfo.image = new ecImage(CountryArt.SmallFlag(GUIElement.s_TextureRes, countryComponents.owner.id));
                     imageInfo.scale = Layout.Tablet ? 2f : 4f;
                     flags.Add(imageInfo);
                     flagIds.Add(countryComponents.owner.id);
@@ -809,9 +808,8 @@ public sealed class GUISelCountry : GUIElement
                     }
                 }
                 if (country == null || country.alliance == (int)NEUTRAL) continue;
-                string imageName = "sflag_" + countryItem.id + ".png";
                 var imageInfo = new GUISelBattle.ImageInfo();
-                imageInfo.image = new ecImage(s_TextureRes.GetImage(imageName));
+                imageInfo.image = new ecImage(CountryArt.SmallFlag(s_TextureRes, countryItem.id));
                 imageInfo.scale = Layout.Tablet ? 2f : 4f;
                 imageFlag.Add(imageInfo);
                 actualMap.flagIds.Add(countryItem.id);
@@ -836,10 +834,8 @@ public sealed class GUISelCountry : GUIElement
                 ActualConquestMap actualMapInner = pActualConquestMap;
                 // the real map shows one flag per country to avoid overlapping enclave flags
                 // the original concatenates the string piecewise: sflag_ + definition name + .png
-                string imageName = "sflag_" + flagDef.name + ".png";
-
                 var imageInfo = new GUISelBattle.ImageInfo();
-                imageInfo.image = new ecImage(s_TextureRes.GetImage(imageName));
+                imageInfo.image = new ecImage(CountryArt.SmallFlag(s_TextureRes, flagDef.name));
                 imageInfo.x = flagDef.x;
                 imageInfo.y = flagDef.y;
                 imageInfo.rot = flagDef.rot;

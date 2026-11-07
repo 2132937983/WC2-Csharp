@@ -269,6 +269,11 @@ public sealed partial class CCountry
             {
                 return false;
             }
+            // no strike or landing on a country at peace (scenario relations)
+            if (Diplomacy.AtPeace(this, area.country))
+            {
+                return false;
+            }
             if ((card_ID >= (int)AIR_STRIKE_CARD && card_ID <= (int)BOMBER_CARD) ||
                 (card_ID == (int)NUCLEAR_BOMB_CARD))
             {

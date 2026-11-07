@@ -115,8 +115,9 @@ public sealed partial class CArea
         for (int i = 0; i < adjacentNum; ++i)
         {
             CArea area = g_Scene.GetAdjacentArea(id, i);
-            // an adjacent area without owner breaks the encirclement
+            // an adjacent area without owner breaks the encirclement, so does a country at peace
             if (area.country == null) return false;
+            if (Diplomacy.AtPeace(area.country, country)) return false;
             // a capital / large city only counts when it has units (terrain: encirclementNeedsGarrison)
             if (Terrain.Area(area.info.areaType).encirclementNeedsGarrison)
             {

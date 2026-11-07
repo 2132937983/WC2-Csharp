@@ -1,0 +1,39 @@
+#! --mods $TESTS/../samples/mods --ai standard
+# the sample total conversion samples/mods/world-1962 (WC2.Tools build-scenario, MODDING.md "A total
+# conversion"): 65 countries, ten factions with their own colours, relations that change with the rounds,
+# new countries with their flags drawn from designs. As the Greater Germanic Reich; the AI plays the rest.
+wait 4.5
+startconquest conquest_11.xml de
+wait 8
+# close the round box (the map, not the clipboard, is what the photos show)
+settle
+wait 2
+diplomacy W62D_start
+shot W62_start
+# Western Europe: the Reich, the Burgundian State, the French State (map flags of new countries: their
+# picture on an atlas pole)
+camera 19000 3200 0.6
+wait 0.5
+shot W62_europe
+# close up on Dijon: the Burgundian State's units under its own flag (a new country: its picture on an atlas pole)
+camera 18504 3468 1.4
+wait 0.5
+shot W62_burgundy
+# beyond the Volga: the Soviet remnant, the Orenburg Host, the Siberian Republic, Alash
+camera 25500 2800 0.3
+wait 0.5
+shot W62_east
+# East Asia: Japan, Manchukuo, the Nanjing government, the Republic of China
+camera 30000 4400 0.3
+wait 0.5
+shot W62_asia
+# four rounds: wars on the fronts (the successor states, China), peace between the blocs
+autoplay 4
+wait 1
+settle
+wait 2
+diplomacy W62D_round5
+camera 19000 3200 0.6
+wait 0.5
+shot W62_round5
+exit

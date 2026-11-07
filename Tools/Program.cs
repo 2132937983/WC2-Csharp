@@ -8,6 +8,9 @@ using WC2.Tools;
 //   build-map --config FILE --source DIR --out DIR
 //       Builds a map pack (regions, adjacency, ownership, cities, ports, airfields) from Natural
 //       Earth GeoJSON (MAP_PIPELINE.md).
+//   build-scenario --config FILE [--out DIR] [--root DIR]
+//       Writes a conquest mod (scenario, factions, relations, texts, flags, buttons) from a rules
+//       file over a map pack (MODDING.md, "A total conversion").
 //   compare-image --golden REF.png --actual SHOT.png [--max-percent P] [--diff OUT.png] [--record]
 //       Screenshot regression: compares a screenshot with its reference (see ImageCompare).
 //   validate --pack DIR [--source DIR]
@@ -35,6 +38,9 @@ namespace WC2.Tools
                     case "build-map":
                         Require(opts, "config"); Require(opts, "source"); Require(opts, "out");
                         return MapPipeline.Run(opts);
+                    case "build-scenario":
+                        Require(opts, "config");
+                        return ScenarioBuilder.Run(opts);
                     case "compare-image":
                         Require(opts, "golden"); Require(opts, "actual");
                         return ImageCompare.Run(opts);
@@ -71,6 +77,7 @@ namespace WC2.Tools
             Console.WriteLine("usage: WC2.Tools build-pack --assets DIR --out DIR [--index-copy FILE] [--force]");
             Console.WriteLine("       WC2.Tools validate --pack DIR [--source DIR]");
             Console.WriteLine("       WC2.Tools build-map --config Tools/map/natural-earth.json --source DIR --out DIR [--preview-width 2048]");
+            Console.WriteLine("       WC2.Tools build-scenario --config samples/mods/world-1962/source/world-1962.json [--out DIR] [--root DIR]");
             Console.WriteLine("       WC2.Tools compare-image --golden REF.png --actual SHOT.png [--max-percent 1.0] [--pixel-tolerance 40] [--diff OUT.png] [--record [--width 320]]");
         }
     }

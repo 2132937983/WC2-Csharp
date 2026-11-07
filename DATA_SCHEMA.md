@@ -312,6 +312,35 @@ that name. The game itself ships no JSON scenarios.
   (default 1) and `cards` (tactic card bits).
 * `dialogues`: commander dialogue `index` shown at `atRound`, portrait on the left or right.
 
+### Factions and relations
+
+A JSON scenario may have more sides than the original three, and war and peace between them:
+
+```json
+"factions": [ {"id": "pact", "name": "faction pact", "color": [96, 104, 118], "leader": "de", "tags": ["bloc"]} ],
+"relations": [ {"between": ["pact", "atlantic"], "state": "peace", "from": 1, "until": 15,
+                "announce": {"end": "text key", "commander": "Patton"}} ],
+"countries": [ {"id": "de", "faction": "pact", "tags": ["major"], ...} ]
+```
+
+* `factions`: each one is a side of its own (alliance number 5, 6, ... in saves; 1-3 are `a`/`b`/`c`, 4 is
+  neutral); its members are allies like the countries of an original side. `color` tints their unit bases
+  (otherwise the alliance colour table), `name` is a string key, `tags` go to every member.
+* A country's `faction` takes the place of its `alliance`. Its `tags` are free words the relations can name.
+* `relations`: different sides are at war, as in the original, unless a relation says otherwise. `between`
+  names two groups: `*` (everyone), `tag:<tag>`, `faction:<id>`, `country:<id>`, or a bare id (the faction
+  of that id, else the country). `state` `war` or `peace`, from round `from` (default 1) until round
+  `until` (exclusive; missing or 0: for good). For a pair of countries the last relation that holds in the
+  current round decides.
+* Countries at peace cannot attack each other (with units or cards) or enter each other's areas, the AI
+  does not count them as enemies, they do not encircle each other, and a country at lasting peace with the
+  player (no relation turns them to war later) is not needed for victory. `announce`: when a relation
+  begins (`start`, from round 2) or ends (`end`), the commander's portrait says that text at the start of
+  the player's round.
+* A save keeps every country's side; factions and relations are read again from the scenario when the game
+  is loaded. The pause box export writes them back.
+* Without factions and relations nothing changes: the original scenarios play exactly as before.
+
 ## tutorial scripts
 
 The original XML (`scripts/tutorial/tutorails_script*.xml`, listed in the scenario index). A mod may
@@ -364,6 +393,7 @@ File names are original names or package paths; a mod can point a role at its ow
 the unit atlas) and flag (`flag_<id>.png`) the game looks up; `others` is the fallback art.
 `commanderMedal` countries have an AI commander badge (`medal_<id>.png`), the others use the common
 badges. Scenarios refer to these ids, with a digit for several countries of one nation (`de1`, `de2`).
+A mod adds a country by adding its id; its flag comes from `flag_<id>.png` (MODDING.md, section 4).
 
 ## ai
 
@@ -648,6 +678,31 @@ AI 的征召顺序按国家分别依价格、然后工业、然后科技排列�
 * `areas`：`construction` 为 `city`/`industry`/`airport`，配合 `level`（≤ 0 表示没有）；`installation` 为 `fort`/`entrenchment`/`antiaircraft`/`radar`；`units` 包含 `type`（`units.json` 中的一个类型）、`level`（默认 1）和 `cards`（战术卡牌位标志）。
 * `dialogues`：在第 `atRound` 回合显示的将领对话 `index`，肖像位于左侧或右侧。
 
+### 阵营与外交关系
+
+JSON 剧本可以拥有比原版三方更多的阵营，并定义它们之间的战争与和平：
+
+```json
+"factions": [ {"id": "pact", "name": "faction pact", "color": [96, 104, 118], "leader": "de", "tags": ["bloc"]} ],
+"relations": [ {"between": ["pact", "atlantic"], "state": "peace", "from": 1, "until": 15,
+                "announce": {"end": "text key", "commander": "Patton"}} ],
+"countries": [ {"id": "de", "faction": "pact", "tags": ["major"], ...} ]
+```
+
+* `factions`：每个阵营都是独立的一方（存档中的同盟编号为 5、6……；1-3 是 `a`/`b`/`c`，4 是中立）；其成员互为
+  盟友，就像原版同一方的国家一样。`color` 为其单位底座着色（否则使用同盟颜色表），`name` 是字符串键，`tags`
+  会赋予每个成员。
+* 国家的 `faction` 取代其 `alliance`。它的 `tags` 是外交关系可以引用的任意词语。
+* `relations`：与原版一样，不同的阵营之间处于战争状态，除非某条关系另有规定。`between` 指定两个群体：`*`
+  （所有国家）、`tag:<标签>`、`faction:<id>`、`country:<id>`，或者一个单独的 id（有该 id 的阵营时指阵营，
+  否则指国家）。`state` 为 `war` 或 `peace`，从第 `from` 回合（默认 1）起，直到第 `until` 回合（不含；缺省或
+  0 表示永久）。对一对国家来说，当前回合有效的最后一条关系起决定作用。
+* 处于和平状态的国家不能互相攻击（无论用部队还是卡牌），也不能进入对方的地区；AI 不把它们当作敌人；它们不会
+  互相包围；与玩家处于永久和平（之后没有任何关系会让双方开战）的国家不需要被消灭也能获胜。`announce`：当一条
+  关系开始（`start`，从第 2 回合起）或结束（`end`）时，将领的肖像会在玩家回合开始时说出这段文本。
+* 存档保留每个国家所属的一方；读档时会从剧本重新读取阵营和外交关系。暂停菜单的导出会把它们写回。
+* 没有阵营和外交关系时一切照旧：原版剧本的玩法与以前完全相同。
+
 ## 教程脚本
 
 原版 XML（`scripts/tutorial/tutorails_script*.xml`，列在剧本索引中）。模组可以以 `data/json/scenarios/tutorial/<name>.json` 的形式提供 JSON 版本：`{"commands": [{"cmd": "show text", "id": 1}, ...]}`。命令有：`sel area`、`unsel area`、`moveto area`（`id` = 地区）、`finger at`、`finger to`（`x`、`y`）、`hide finger`、`show text`（`id` → 文本 `tutorails <id>`）、`draw rect`、`clear rect`（`x`、`y`、`w`、`h`）、`wait`（等待一次点击）、`show image`、`hide image`、`exit`。游戏根据屏幕宽度选择脚本（`tutorails_script`、`-512h`、`-534h`、`-568h`、`-640h`、`_iPad`）。
@@ -677,7 +732,7 @@ AI 的征召顺序按国家分别依价格、然后工业、然后科技排列�
 
 ## 国家（countries）
 
-`data/json/countries/countries.json`：`{"countries": {"gb": {"commanderMedal": true}, "ca": {}, ...}, "commonMedals": ["common_1", "common_2", "common_3"]}`。这些是游戏据以查找单位美术（单位图集中的 `<unit>_<id>.png`）和旗帜（`flag_<id>.png`）的 id；`others` 是后备美术。`commanderMedal` 国家拥有 AI 将领徽章（`medal_<id>.png`），其他国家使用通用徽章。剧本引用这些 id，同一国家在剧本中出现多个时会附加一位数字（`de1`、`de2`）。
+`data/json/countries/countries.json`：`{"countries": {"gb": {"commanderMedal": true}, "ca": {}, ...}, "commonMedals": ["common_1", "common_2", "common_3"]}`。这些是游戏据以查找单位美术（单位图集中的 `<unit>_<id>.png`）和旗帜（`flag_<id>.png`）的 id；`others` 是后备美术。`commanderMedal` 国家拥有 AI 将领徽章（`medal_<id>.png`），其他国家使用通用徽章。剧本引用这些 id，同一国家在剧本中出现多个时会附加一位数字（`de1`、`de2`）。模组通过添加 id 来新增国家；其国旗来自 `flag_<id>.png`（MODDING.md 第 4 节）。
 
 ## AI（ai）
 

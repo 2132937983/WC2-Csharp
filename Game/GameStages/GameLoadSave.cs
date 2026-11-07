@@ -159,6 +159,15 @@ public sealed partial class CGameManager
             isPause = Header.isPause;
             g_Scene.camera.SetPos(Header.xCamera, Header.yCamera, false);
             g_Scene.camera.scale = Header.scaleCamera;
+
+            // factions and relations are scenario data: read them again from the saved game's scenario
+            // (the announcements of the current round were already shown before the save)
+            var scenario = new BattleScenarioData();
+            if (!string.IsNullOrEmpty(Header.battleFileName) &&
+                BattleScenario.LoadBattleScenarioData(Header.battleFileName, scenario))
+            {
+                Diplomacy.Set(scenario.diplomacy, currentTurnNumMinusOne + 1);
+            }
         }
         pEcFile.Close();
     }

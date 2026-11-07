@@ -157,8 +157,10 @@ public sealed partial class CGameManager
         {
             if (!country_here.IsConquested())
             {
+                // a country at lasting peace with the player (scenario relations) need not fall
                 if (country_here.alliance != (int)NEUTRAL &&
-                    country_here.alliance != player_country.alliance)
+                    country_here.alliance != player_country.alliance &&
+                    !Diplomacy.AtLastingPeace(country_here, player_country))
                 {
                     return false;
                 }

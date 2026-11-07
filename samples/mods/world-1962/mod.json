@@ -1,0 +1,9 @@
+{
+  "id": "world-1962",
+  "name": "1962: Divided World",
+  "version": "1.0",
+  "author": "WC2.Tools build-scenario",
+  "description": "Conquest 11: an original alternate 1962 on the world map, 65 countries in four blocs and six Russian successor states, with timed wars and peace. Needs the world map (map-natural-earth, built in). Sample of MODDING.md, 'A total conversion'.",
+  "priority": 1,
+  "enabled": true
+}

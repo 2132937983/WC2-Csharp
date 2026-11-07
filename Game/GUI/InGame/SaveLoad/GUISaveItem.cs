@@ -61,7 +61,7 @@ public sealed class GUISaveItem : GUIRadioButton
         if (countryName != null)
         {
             text = Sprintf("flag_%s.png", countryName);
-            ecImageAttr flagAttr = s_TextureRes.GetImage(text);
+            ecImageAttr flagAttr = s_TextureRes.GetImage(text) ?? CountryArt.UiFlag(text);
             if (flagAttr != null)
                 imageFlag = new ecImage(flagAttr);
         }

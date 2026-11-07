@@ -169,6 +169,9 @@ public sealed partial class CActionAssist
         if (getAlliance(ArmyAreaID, TargetAreaID, (int)ALLY))
             return false;
         CArea ArmyArea = g_Scene.GetArea(ArmyAreaID);
+        // nor countries at peace (scenario relations)
+        if (Diplomacy.AtPeace(ArmyArea.country, g_Scene.GetArea(TargetAreaID).country))
+            return false;
         // invalid index, for start and target alike
         if (ArmyArea.armyCount <= ArmyIndex)
             return false;
@@ -199,6 +202,9 @@ public sealed partial class CActionAssist
         CArea targetArea = g_Scene.GetArea(TargetAreaID);
         // foreign area with units
         if (armyArea.country != targetArea.country && targetArea.armyCount != 0)
+            return false;
+        // the areas of a country at peace stay closed (scenario relations)
+        if (Diplomacy.AtPeace(armyArea.country, targetArea.country))
             return false;
         if (armyArea.country.ai && getAlliance(ArmyAreaID, TargetAreaID, (int)ALLY)
             && !getAlliance(ArmyAreaID, TargetAreaID, (int)SELF) && !targetArea.info.sea)
@@ -564,6 +570,13 @@ public sealed partial class CActionAssist
         CCountry area2Country = area2.country;
         int area1Alley = (area1Country == null) ? (int)NO_BELONGING : area1Country.alliance;
         int area2Alley = (area2Country == null) ? (int)NO_BELONGING : area2Country.alliance;
+
+        // countries at peace (scenario relations) are neither enemies nor land to take
+        if (((ALLIANCE_TYPE)allianceType == ENEMY || (ALLIANCE_TYPE)allianceType == NOT_ALLY) &&
+            Diplomacy.AtPeace(area1Country, area2Country))
+        {
+            return false;
+        }
 
         switch ((ALLIANCE_TYPE)allianceType)
         {

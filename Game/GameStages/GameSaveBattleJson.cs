@@ -19,7 +19,11 @@ public sealed partial class CGameManager
             var o = new JsonObject { ["id"] = c.id, ["name"] = c.name };
             if (!string.IsNullOrEmpty(c.GetCommanderName())) o["commander"] = c.GetCommanderName();
             o["ai"] = c.ai ? 1 : 0;
-            o["alliance"] = c.alliance switch { 1 => "a", 2 => "b", 3 => "c", _ => "n" };
+            // a faction member names its faction, the others the a/b/c/n side
+            if (Diplomacy.FactionOf(c) is string faction) o["faction"] = faction;
+            else o["alliance"] = Diplomacy.AllianceText(c);
+            if (Diplomacy.Current.countryTags.TryGetValue(c.id, out var tags))
+                o["tags"] = new JsonArray(tags.Select(t => (JsonNode)t).ToArray());
             o["defeated"] = c.defeatType switch { DEFEAT_TYPE.ARMY => "army", DEFEAT_TYPE.CORE => "core", _ => "land" };
             o["money"] = c.money;
             o["industry"] = c.industry;
@@ -79,6 +83,30 @@ public sealed partial class CGameManager
             ["map"] = mapId,
         };
         if (!string.IsNullOrEmpty(areasEnable)) root["areasEnable"] = areasEnable;
+        var diplomacy = Diplomacy.Current;
+        if (diplomacy.factions.Count > 0)
+        {
+            root["factions"] = new JsonArray(diplomacy.factions.Select(f =>
+            {
+                var o = new JsonObject { ["id"] = f.id, ["name"] = f.name };
+                if (f.color is uint c) o["color"] = new JsonArray((int)(c & 0xff), (int)((c >> 8) & 0xff), (int)((c >> 16) & 0xff));
+                if (f.leader != "") o["leader"] = f.leader;
+                if (f.tags.Count > 0) o["tags"] = new JsonArray(f.tags.Select(t => (JsonNode)t).ToArray());
+                return (JsonNode)o;
+            }).ToArray());
+        }
+        if (diplomacy.relations.Count > 0)
+        {
+            root["relations"] = new JsonArray(diplomacy.relations.Select(r =>
+            {
+                var o = new JsonObject { ["between"] = new JsonArray(r.a, r.b), ["state"] = r.peace ? "peace" : "war" };
+                if (r.from > 1) o["from"] = r.from;
+                if (r.until > 0) o["until"] = r.until;
+                if (r.announceStart != "" || r.announceEnd != "")
+                    o["announce"] = new JsonObject { ["start"] = r.announceStart, ["end"] = r.announceEnd, ["commander"] = r.commander };
+                return (JsonNode)o;
+            }).ToArray());
+        }
         root["countries"] = countries;
         root["areas"] = areas;
         if (dialogues.Count > 0) root["dialogues"] = dialogues;

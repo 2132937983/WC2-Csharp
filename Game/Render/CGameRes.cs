@@ -100,6 +100,7 @@ public sealed class CGameRes
         imageHeavytank.Clear();
         imageCountryMedal.Clear();
         imageFlag.Clear();
+        modMapFlags.Clear();
         armyRenderCache.Clear();
     }
 
@@ -390,7 +391,7 @@ public sealed class CGameRes
         foreach (string country_name in country_list)
         {
             // Flags load independently of the unit art; a country without unit art may still own a flag.
-            imageFlag[country_name] = textureResArmy.GetImageByFormat("flag_%s.png", country_name);
+            LoadFlagImage(country_name);
         }
 
         imageCarrier = textureResArmy.GetImageByFormat("transportship.png");
@@ -552,6 +553,8 @@ public sealed class CGameRes
     /// </summary>
     public static uint GetAllianceColor(int alliance)
     {
+        // a scenario faction may bring its own colour
+        if (Diplomacy.SideColor(alliance) is uint factionColor) return factionColor;
         if (colors_argb.Count == 0)
         {
             // The cache is flattened as 13 bright + 13 dark colours; alliance numbers start at 1.
@@ -719,6 +722,7 @@ public sealed class CGameRes
         // The old per-type maps may still be referenced elsewhere, so clear them in the original order.
         killAllEcImages(imageFlag);
         imageFlag.Clear();
+        modMapFlags.Clear();
 
         killAllEcImages(imageSoldier);
         imageSoldier.Clear();
@@ -930,7 +934,26 @@ public sealed class CGameRes
     /// <summary>Image attribute from the flag table, for callers needing the raw texture attribute.</summary>
     public ecImageAttr GetFlagImage(string name)
     {
-        return textureResFlag.GetImage(name);
+        // the flags table first; a mod's new country brings a picture of its own (CountryArt)
+        return textureResFlag.GetImage(name) ?? CountryArt.UiFlag(name);
+    }
+
+    /// <summary>Map flags of countries without an atlas flag, built from a mod's picture (CountryArt).</summary>
+    private readonly Dictionary<string, CountryArt.MapFlag> modMapFlags = new();
+
+    /// <summary>
+    /// Loads the map flag of a country: the army atlas flag, else one built from the mod's
+    /// <c>flag_&lt;id&gt;.png</c> on the pole of an atlas flag.
+    /// </summary>
+    private void LoadFlagImage(string countryName)
+    {
+        ecImage atlasFlag = textureResArmy.GetImageByFormat("flag_%s.png", countryName);
+        imageFlag[countryName] = atlasFlag;
+        if (atlasFlag != null) return;
+        ecImageAttr donor = textureResArmy.GetImage("flag_de.png")
+                            ?? CountryDefs.ids.Select(id => textureResArmy.GetImage($"flag_{id}.png")).FirstOrDefault(a => a != null);
+        if (CountryArt.MapFlag.Create(countryName, donor) is CountryArt.MapFlag built)
+            modMapFlags[countryName] = built;
     }
 
     /// <summary>Renders a country flag; silently skips countries without a loaded flag.</summary>
@@ -939,5 +962,7 @@ public sealed class CGameRes
         string key = countryName ?? "";
         if (imageFlag.TryGetValue(key, out ecImage flag) && flag != null)
             flag.Render(x, y);
+        else if (modMapFlags.TryGetValue(key, out CountryArt.MapFlag built))
+            built.Render(x, y);
     }
 }
