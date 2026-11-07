@@ -274,9 +274,20 @@ public static class ecGame
         graphics.RenderEnd();
     }
 
+    /// <summary>Touches that began outside the logical screen; their moves and ends are dropped too.</summary>
+    private static readonly HashSet<int> s_rejectedTouches = new();
+
+    /// <summary>
+    /// A finger down outside the logical screen (letterbox bars, the notch margin) is ignored with its
+    /// whole gesture: the original never received such touches, and the controls it hid by moving them
+    /// off the screen are there (see <see cref="GUIElement.CheckInRect(float, float)"/>). A gesture that
+    /// began on the screen keeps receiving its moves and end when the finger slides off it.
+    /// </summary>
     public static void ecTouchBegin(float x, float y, int index)
     {
         if (!s_initialized) return;
+        if (!GUIElement.IsOnScreen(x, y)) { s_rejectedTouches.Add(index); return; }
+        s_rejectedTouches.Remove(index);
         ecMultipleTouch.Instance().TouchBegan(index, x, y);
         var evt = Event.Touch(Event.Info.TouchInfo.BEGIN, x, y, index);
         if (!GUIManager.Instance().PostEvent(evt))
@@ -286,6 +297,7 @@ public static class ecGame
     public static void ecTouchMove(float x, float y, int index)
     {
         if (!s_initialized) return;
+        if (s_rejectedTouches.Contains(index)) return;
         ecMultipleTouch.Instance().TouchMoved(index, x, y);
         var evt = Event.Touch(Event.Info.TouchInfo.MOVE, x, y, index);
         if (!GUIManager.Instance().PostEvent(evt))
@@ -295,11 +307,40 @@ public static class ecGame
     public static void ecTouchEnd(float x, float y, int index)
     {
         if (!s_initialized) return;
+        if (s_rejectedTouches.Remove(index)) return;
         var evt = Event.Touch(Event.Info.TouchInfo.END, x, y, index);
         bool consumed = GUIManager.Instance().PostEvent(evt);
         if (!consumed) CStateManager.Instance().TouchEnd(x, y, index);
         ecMultipleTouch.Instance().TouchEnded(index, x, y);
     }
+
+    /// <summary>
+    /// Port addition: the system took the touch away (Android ACTION_CANCEL, e.g. a system gesture or
+    /// the app losing focus). Buttons held by the finger are released without firing, lists and
+    /// sliders get their normal end at the last position, and the state ends its drag without a tap.
+    /// </summary>
+    public static void ecTouchCancel(int index)
+    {
+        if (!s_initialized) return;
+        if (s_rejectedTouches.Remove(index)) return;
+        var touch = ecMultipleTouch.Instance().Find(index);
+        if (touch == null) return;
+        float x = touch.x, y = touch.y;
+        ReleaseButtons(GUIManager.Instance(), index);
+        var evt = Event.Touch(Event.Info.TouchInfo.END, x, y, index);
+        if (!GUIManager.Instance().PostEvent(evt))
+            CStateManager.Instance().TouchCancel(x, y, index);
+        ecMultipleTouch.Instance().TouchEnded(index, x, y);
+    }
+
+    private static void ReleaseButtons(GUIElement element, int index)
+    {
+        if (element is GUIButton button && button.bPressedDown && button.pressDownIndex == index) button.ResetPress();
+        for (var c = element.firstChild; c != null; c = c.nextSibling) ReleaseButtons(c, index);
+    }
+
+    /// <summary>Number of back actions (key, gesture, script) so far; the test scripts check it.</summary>
+    public static int BackCount;
 
     /// <summary>Returns true when the back key was handled by the game (original ecBackPressed).</summary>
     public static bool ecBackPressed()
@@ -316,6 +357,7 @@ public static class ecGame
     public static void CallNativeExit()
     {
         if (!s_initialized) return;
+        BackCount++;
         if (ecBackPressed()) return;
         if (CStateManager.Instance().GetStatePtr(EState.MENU) is CMenuState menu) menu.ShowExit();
     }

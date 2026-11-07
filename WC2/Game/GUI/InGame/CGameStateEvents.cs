@@ -740,6 +740,25 @@ public sealed partial class CGameState
         }
     }
 
+    /// <summary>
+    /// A map touch taken away by the system (port addition, see CBaseState.TouchCancel): the finger
+    /// is forgotten and the drag stops without inertia; unlike TouchEnd it never selects an area.
+    /// </summary>
+    public override void TouchCancel(float x, float y, int index)
+    {
+        if (index == secondTouchIndex)
+        {
+            secondTouch = false;
+            secondTouchIndex = 0;
+        }
+        if (index == firstTouchIndex)
+        {
+            firstTouch = false;
+            firstTouchIndex = 0;
+            touchInertia.Stop();
+        }
+    }
+
     /// <summary>Clears the map selection and hides the tax and stacked army panels that depend on it.</summary>
     public void UnselectArea()
     {

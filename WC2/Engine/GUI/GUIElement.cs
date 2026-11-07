@@ -204,13 +204,34 @@ public class GUIElement
         return r;
     }
 
+    /// <summary>
+    /// Hit test: the point is inside the element's absolute rectangle and on the logical screen.
+    /// The original hides several controls by moving them off the screen (just past an edge or far
+    /// away). Where the window is wider or taller than the layout (letterbox bars, other aspect
+    /// ratios, the notch margin) that area is part of the window, so the part of a control outside
+    /// the screen never counts as hit; it is not drawn there either (<see cref="ecGraphics.screenClip"/>).
+    /// </summary>
     public bool CheckInRect(float x, float y)
     {
         GetAbsRect(out var r);
-        return r.Contains(x, y);
+        return r.Contains(x, y) && IsOnScreen(x, y);
     }
 
-    public bool CheckInRect(float x, float y, in GUIRect rectIn) => rectIn.Contains(x, y);
+    public bool CheckInRect(float x, float y, in GUIRect rectIn) => rectIn.Contains(x, y) && IsOnScreen(x, y);
+
+    /// <summary>True when the logical point lies on the logical screen (0..screenW, 0..screenH).</summary>
+    public static bool IsOnScreen(float x, float y) => ecGraphics.Instance().IsOnScreen(x, y);
+
+    /// <summary>
+    /// True when a touch at (x, y) can reach this element: it and every ancestor are shown and
+    /// active, it is enabled, and the point passes <see cref="CheckInRect(float, float)"/>.
+    /// </summary>
+    public bool AcceptsInputAt(float x, float y)
+    {
+        for (var p = this; p != null; p = p.parent)
+            if ((p.flags & (ACTIVE | SHOWN)) != (ACTIVE | SHOWN)) return false;
+        return IsEnabled && CheckInRect(x, y);
+    }
 
     /// <summary>
     /// Toggles the ACTIVE bit: an invisible element does not draw itself and blocks events,

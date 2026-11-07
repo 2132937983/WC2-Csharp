@@ -16,6 +16,11 @@ public abstract class CBaseState : IEventReceiver
     public virtual void TouchBegin(float x, float y, int index) { }
     public virtual void TouchMove(float x, float y, int index) { }
     public virtual void TouchEnd(float x, float y, int index) { }
+    /// <summary>
+    /// The system took the touch away (Android ACTION_CANCEL, the app losing focus): end any drag
+    /// without treating it as a tap. Port addition; by default the same as <see cref="TouchEnd"/>.
+    /// </summary>
+    public virtual void TouchCancel(float x, float y, int index) => TouchEnd(x, y, index);
     public virtual bool BackPressed() => false;
     public virtual void KeyDown(int key) { }
     public virtual void ScrollWheel(float x, float delta, float y) { }
@@ -101,6 +106,7 @@ public sealed class CStateManager
     public void TouchBegin(float x, float y, int index) => currentState?.TouchBegin(x, y, index);
     public void TouchMove(float x, float y, int index) => currentState?.TouchMove(x, y, index);
     public void TouchEnd(float x, float y, int index) => currentState?.TouchEnd(x, y, index);
+    public void TouchCancel(float x, float y, int index) => currentState?.TouchCancel(x, y, index);
     public bool BackPressed() => currentState?.BackPressed() ?? false;
     public void KeyDown(int key) => currentState?.KeyDown(key);
     public void ScrollWheel(float x, float delta, float y) => currentState?.ScrollWheel(x, delta, y);

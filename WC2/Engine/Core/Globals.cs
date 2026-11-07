@@ -152,8 +152,12 @@ public static class Globals
     public static string LogFile;
     private static readonly object s_logLock = new object();
 
+    /// <summary>Called with every logged line (the test scripts check for expected lines).</summary>
+    public static Action<string> LogListener;
+
     public static void Log(string message)
     {
+        LogListener?.Invoke(message);
         try { Console.WriteLine(message); } catch { }
         System.Diagnostics.Debug.WriteLine(message);
         if (!string.IsNullOrEmpty(LogFile))

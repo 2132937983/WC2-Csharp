@@ -21,6 +21,9 @@ public static class DebugTools
             case "--test-audio":
                 TestAudio(args.Length > 1 ? args[1] : null);
                 return true;
+            case "--test-input":
+                InputSelfTest.Run();
+                return true;
             default:
                 return false;
         }

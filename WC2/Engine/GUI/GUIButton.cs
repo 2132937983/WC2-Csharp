@@ -33,6 +33,13 @@ public class GUIButton : GUIElement
     /// <summary>Hook used to play the button click (set by the game layer).</summary>
     public static Action PlayClickSound;
 
+    /// <summary>
+    /// Test probe (script command <c>hittest</c>): while set, a completed press does not fire the
+    /// button; it is reported through <see cref="Probed"/> instead, so probing changes nothing.
+    /// </summary>
+    public static bool ProbeMode;
+    public static event Action<GUIButton> Probed;
+
     public GUIButton() { }
 
     public void Init(string notPressedImageName, string pressedImageName, in GUIRect rectIn, ecUniFont font)
@@ -163,6 +170,7 @@ public class GUIButton : GUIElement
                 {
                     bPressedDown = false;
                     iPressedDown = 0;
+                    if (ProbeMode) { Probed?.Invoke(this); return true; }
                     if (soundBtn) PlayClickSound?.Invoke();
                     OnClicked();
                 }

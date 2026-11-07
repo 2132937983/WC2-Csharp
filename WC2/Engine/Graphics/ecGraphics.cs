@@ -96,24 +96,77 @@ public sealed class ecGraphics
     public float offsetY;
 
     /// <summary>
-    /// Updates the physical window size, keeping the logical layout. The logical screen is
-    /// scaled uniformly and centered, so a window with another aspect ratio gets black bars
-    /// instead of a distorted picture.
+    /// Unsafe border of the window in pixels (left, top, right, bottom): the display cutout (notch)
+    /// on Android, reported by the host. The logical screen never overlaps it.
     /// </summary>
-    public void Resize(int screenWidth, int screenHeight)
+    public readonly int[] safeInsets = new int[4];
+
+    /// <summary>
+    /// Window pixels covered by the logical screen. Drawing is clipped to it, so whatever the original
+    /// placed off the screen (controls waiting to slide in or hidden by moving them away, map edges)
+    /// stays invisible in the letterbox bars, exactly as it cannot be touched there.
+    /// </summary>
+    public Rectangle screenClip;
+    private static readonly RasterizerState s_clipToScreen = new() { CullMode = CullMode.None, ScissorTestEnable = true };
+
+    /// <summary>Updates the window size and keeps the current safe insets.</summary>
+    public void Resize(int screenWidth, int screenHeight) =>
+        Resize(screenWidth, screenHeight, safeInsets[0], safeInsets[1], safeInsets[2], safeInsets[3]);
+
+    /// <summary>
+    /// Updates the physical window size and its unsafe border, keeping the logical layout. The
+    /// logical screen is scaled uniformly and centered on the whole window, so a window with another
+    /// aspect ratio gets black bars instead of a distorted picture. The unsafe border is made
+    /// symmetric (the larger of left/right and of top/bottom) before fitting: the picture stays
+    /// centered on the physical screen, never covers the notch, and does not jump when the phone is
+    /// turned around (the notch changes sides).
+    /// </summary>
+    public void Resize(int screenWidth, int screenHeight, int insetLeft, int insetTop, int insetRight, int insetBottom)
     {
         layoutW = Math.Max(1, screenWidth);
         layoutH = Math.Max(1, screenHeight);
-        float sx = screenW > 0 ? (float)layoutW / screenW : 1f;
-        float sy = screenH > 0 ? (float)layoutH / screenH : 1f;
+        safeInsets[0] = Math.Max(0, insetLeft);
+        safeInsets[1] = Math.Max(0, insetTop);
+        safeInsets[2] = Math.Max(0, insetRight);
+        safeInsets[3] = Math.Max(0, insetBottom);
+        // a symmetric safe area, so that centering on the window keeps the picture inside it
+        int insetX = Math.Min(Math.Max(safeInsets[0], safeInsets[2]), (layoutW - 1) / 2);
+        int insetY = Math.Min(Math.Max(safeInsets[1], safeInsets[3]), (layoutH - 1) / 2);
+        float availableW = layoutW - 2 * insetX;
+        float availableH = layoutH - 2 * insetY;
+        float sx = screenW > 0 ? availableW / screenW : 1f;
+        float sy = screenH > 0 ? availableH / screenH : 1f;
         float scale = MathF.Min(sx, sy);
         layoutToScreenMultiplier[0] = scale;
         layoutToScreenMultiplier[1] = scale;
-        offsetX = MathF.Floor((layoutW - screenW * scale) * 0.5f);
-        offsetY = MathF.Floor((layoutH - screenH * scale) * 0.5f);
+        float drawW = screenW * scale, drawH = screenH * scale;
+        // whole pixels, rounded so that the two bars differ by at most one pixel (flooring left up to
+        // two with a fractional picture size); still never inside the whole-pixel cutout margin
+        offsetX = MathF.Round((layoutW - drawW) * 0.5f, MidpointRounding.AwayFromZero);
+        offsetY = MathF.Round((layoutH - drawH) * 0.5f, MidpointRounding.AwayFromZero);
+        screenClip = new Rectangle((int)offsetX, (int)offsetY,
+            Math.Min(layoutW - (int)offsetX, (int)MathF.Ceiling(drawW)),
+            Math.Min(layoutH - (int)offsetY, (int)MathF.Ceiling(drawH)));
         projection = Matrix.CreateOrthographicOffCenter(0, layoutW, layoutH, 0, -1f, 1f);
         matricesDirty = true;
     }
+
+    /// <summary>Window pixel to logical coordinates (the inverse of the drawing transform).</summary>
+    public void WindowToLogical(float px, float py, out float x, out float y)
+    {
+        x = (px - offsetX) / Math.Max(0.0001f, layoutToScreenMultiplier[0]);
+        y = (py - offsetY) / Math.Max(0.0001f, layoutToScreenMultiplier[1]);
+    }
+
+    /// <summary>Logical coordinates to window pixels.</summary>
+    public void LogicalToWindow(float x, float y, out float px, out float py)
+    {
+        px = x * layoutToScreenMultiplier[0] + offsetX;
+        py = y * layoutToScreenMultiplier[1] + offsetY;
+    }
+
+    /// <summary>True when the logical point lies on the logical screen, the only part of the window that shows the game.</summary>
+    public bool IsOnScreen(float x, float y) => x >= 0f && y >= 0f && x < screenW && y < screenH;
 
     public void Shutdown()
     {
@@ -208,7 +261,8 @@ public sealed class ecGraphics
         effect.Texture = currentTexture ?? whiteTexture;
         device.BlendState = CurrentBlendState();
         device.SamplerStates[0] = sampler;
-        device.RasterizerState = RasterizerState.CullNone;
+        device.RasterizerState = s_clipToScreen;
+        device.ScissorRectangle = screenClip;
         device.DepthStencilState = DepthStencilState.None;
         foreach (var pass in effect.CurrentTechnique.Passes)
         {

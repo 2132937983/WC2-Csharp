@@ -1,0 +1,61 @@
+#! --density 2
+# Touch screen input through the touch router at window pixels, as Android delivers it: 1136x640 window,
+# 568x320 layout (scale 2), 2 px per dp: edge strips 48 px, touch slop 16 px, back after 96 px inward.
+# Android's system back gesture is turned off along the side edges; this edge swipe replaces it, and
+# drags, taps and holds that start at an edge still reach the game.
+wait 4.5
+# main menu: a left-edge swipe is back -> the exit box; back closes it
+mark
+swipe 6 300 400 300 0.3
+wait 0.8
+expectlog Edge swipe: back
+expectback 1
+shot E1_exit_box
+back
+wait 1
+expectback 2
+# a short swipe from the edge is abandoned
+swipe 6 300 70 300 0.3
+wait 0.8
+expectback 2
+# into a conquest with taps at window pixels (logical x 2); the start button lies in the right edge strip
+tap 1020 304
+wait 2.5
+tap 340 130
+wait 5
+tap 1104 604
+wait 6
+tap 674 544
+wait 2
+# a drag that starts at the left edge and runs along it moves the map
+camera mark
+swipe 10 500 14 140 0.6
+wait 1.2
+camera moved
+expectback 2
+# a drag in the middle moves the map
+camera mark
+swipe 700 300 520 380 0.4
+wait 1.2
+camera moved
+# a left-edge swipe is back -> the pause box; the map stays where it is
+camera mark
+mark
+swipe 4 320 500 330 0.3
+wait 1
+expectlog Edge swipe: back
+expectback 3
+camera still
+shot E2_pause
+# the same from the right edge: back again closes the pause box
+swipe 1132 320 700 320 0.3
+wait 1
+expectback 4
+shot E3_after
+# the card button lies in the left edge strip: a tap there still works (handed over at release)
+mark
+tap 30 600
+wait 1.5
+expectlog Button clicked
+shot E4_cards
+exit

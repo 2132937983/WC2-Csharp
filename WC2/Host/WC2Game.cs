@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -5,12 +6,39 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace WC2;
 
+public enum HostTouchKind { Down, Move, Up, Cancel }
+
+/// <summary>A raw touch from the platform: pointer id and window (back buffer) pixels.</summary>
+public readonly record struct HostTouch(int Id, HostTouchKind Kind, float X, float Y);
+
 /// <summary>
-/// MonoGame host. Maps the window and mouse onto the original touch/orientation API and
+/// MonoGame host. Maps the window, touches and mouse onto the original touch/orientation API and
 /// drives ecGameInit / ecGameUpdate / ecGameRender.
+///
+/// Display: the back buffer always covers the whole window (on Android MonoGame would letterbox it
+/// to the preferred size and shift the viewport and the touches by that amount; the viewport offset
+/// is lost after a GL context loss, which moved the picture to the left). The game centres the
+/// logical screen itself (<see cref="ecGraphics.Resize(int, int, int, int, int, int)"/>), keeping
+/// clear of the display cutout the host reports, and touches use the same transform.
 /// </summary>
 public sealed class WC2Game : Game
 {
+    /// <summary>
+    /// Set by a host that feeds its own touches into <see cref="HostTouches"/> (Android, from the UI
+    /// thread); TouchPanel, the mouse and the keyboard are not polled then.
+    /// </summary>
+    public static volatile bool HostDeliversTouches;
+    public static readonly ConcurrentQueue<HostTouch> HostTouches = new();
+    /// <summary>
+    /// Unsafe window border in pixels {left, top, right, bottom} (the display cutout), published by the
+    /// host as a new array whenever it changes; applied at the start of the next frame.
+    /// </summary>
+    public static volatile int[] HostSafeInsets = new int[4];
+    private static int s_pendingBack;
+
+    /// <summary>Back key or gesture from another thread (Android UI thread); handled on the game thread.</summary>
+    public static void RequestBack() => Interlocked.Increment(ref s_pendingBack);
+
     private readonly GraphicsDeviceManager graphics;
     private readonly int logicalW;
     private readonly int logicalH;
@@ -61,7 +89,6 @@ public sealed class WC2Game : Game
         IsFixedTimeStep = false;
         Window.AllowUserResizing = true;
         Window.Title = "World Conqueror 2 (C# port)";
-        Window.ClientSizeChanged += OnClientSizeChanged;
         OnExitRequested = () => Exit();
         OnFullScreenChanged = full =>
         {
@@ -69,12 +96,51 @@ public sealed class WC2Game : Game
         };
     }
 
-    private void OnClientSizeChanged(object sender, EventArgs e)
+    private static readonly int[] s_noInsets = new int[4];
+
+    /// <summary>
+    /// Keeps the renderer on the whole back buffer, once per update and per draw (window resized,
+    /// Android view resized when the bars hide or the notch area is granted, GL context recreated,
+    /// cutout insets changed). It is the only place the window size reaches the game.
+    /// </summary>
+    private void SyncDisplay()
     {
-        if (!initialized) return;
-        var bounds = Window.ClientBounds;
-        if (bounds.Width <= 0 || bounds.Height <= 0) return;
-        ecGraphics.Instance().Resize(bounds.Width, bounds.Height);
+        if (OperatingSystem.IsAndroid()) KeepBackBufferOnWholeView();
+        var pp = GraphicsDevice.PresentationParameters;
+        int bw = pp.BackBufferWidth, bh = pp.BackBufferHeight;
+        if (bw <= 0 || bh <= 0) return;
+        // MonoGame's GraphicsDevice.Initialize (after a lost GL context) and its Android letterbox
+        // move the viewport; the game's transform assumes it starts at the window corner
+        var vp = GraphicsDevice.Viewport;
+        if (vp.X != 0 || vp.Y != 0 || vp.Width != bw || vp.Height != bh)
+            GraphicsDevice.Viewport = new Viewport(0, 0, bw, bh);
+        var gfx = ecGraphics.Instance();
+        var insets = HostSafeInsets ?? s_noInsets;
+        if (bw == gfx.layoutW && bh == gfx.layoutH && insets[0] == gfx.safeInsets[0] && insets[1] == gfx.safeInsets[1]
+            && insets[2] == gfx.safeInsets[2] && insets[3] == gfx.safeInsets[3])
+            return;
+        gfx.Resize(bw, bh, insets[0], insets[1], insets[2], insets[3]);
+        Log($"Display: window {bw}x{bh}, cutout insets {insets[0]},{insets[1]},{insets[2]},{insets[3]}; " +
+            $"logical {gfx.screenW}x{gfx.screenH} drawn at {gfx.screenClip.X},{gfx.screenClip.Y} size {gfx.screenClip.Width}x{gfx.screenClip.Height} (scale {gfx.layoutToScreenMultiplier[0]:0.###})");
+    }
+
+    /// <summary>
+    /// Android: MonoGame fits the back buffer into the view with the preferred aspect ratio, centres it
+    /// with a viewport offset and subtracts that offset from the touches. Keeping the preferred size
+    /// equal to the view (DisplayMode is the view size there) removes that second letterbox.
+    /// </summary>
+    private void KeepBackBufferOnWholeView()
+    {
+        var mode = GraphicsDevice.DisplayMode;
+        int vw = mode.Width, vh = mode.Height;
+        if (vw <= 0 || vh <= 0) return;
+        var pp = GraphicsDevice.PresentationParameters;
+        if (graphics.PreferredBackBufferWidth == vw && graphics.PreferredBackBufferHeight == vh &&
+            pp.BackBufferWidth == vw && pp.BackBufferHeight == vh && Window.ClientBounds.X == 0 && Window.ClientBounds.Y == 0)
+            return;
+        graphics.PreferredBackBufferWidth = vw;
+        graphics.PreferredBackBufferHeight = vh;
+        graphics.ApplyChanges();
     }
 
     protected override void Initialize()
@@ -84,7 +150,11 @@ public sealed class WC2Game : Game
         gfx.Attach(GraphicsDevice);
         try
         {
-            ecGame.ecGameInit(logicalW, logicalH, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            var pp = GraphicsDevice.PresentationParameters;
+            int bw = pp.BackBufferWidth > 0 ? pp.BackBufferWidth : graphics.PreferredBackBufferWidth;
+            int bh = pp.BackBufferHeight > 0 ? pp.BackBufferHeight : graphics.PreferredBackBufferHeight;
+            ecGame.ecGameInit(logicalW, logicalH, 0, bw, bh);
+            SyncDisplay();
         }
         catch (Exception ex)
         {
@@ -102,11 +172,14 @@ public sealed class WC2Game : Game
         previousScrollValue = previousMouse.ScrollWheelValue;
     }
 
+    /// <summary>Mouse position (window client units) to logical coordinates, via back buffer pixels.</summary>
     private void ToLogical(int px, int py, out float x, out float y)
     {
-        var gfx = ecGraphics.Instance();
-        x = (px - gfx.offsetX) / Math.Max(0.0001f, gfx.layoutToScreenMultiplier[0]);
-        y = (py - gfx.offsetY) / Math.Max(0.0001f, gfx.layoutToScreenMultiplier[1]);
+        var bounds = Window.ClientBounds;
+        var pp = GraphicsDevice.PresentationParameters;
+        float sx = bounds.Width > 0 ? (float)pp.BackBufferWidth / bounds.Width : 1f;
+        float sy = bounds.Height > 0 ? (float)pp.BackBufferHeight / bounds.Height : 1f;
+        ecGraphics.Instance().WindowToLogical(px * sx, py * sy, out x, out y);
     }
 
     protected override void Update(GameTime gameTime)
@@ -130,7 +203,15 @@ public sealed class WC2Game : Game
         elapsed += dt;
         try
         {
-            if (IsActive) PollInput();
+            SyncDisplay();
+            var router = TouchRouter.Instance();
+            router.Update(elapsed);
+            // back from the Android UI thread (key, system gesture): run it here, never concurrently with the game
+            for (int pending = Interlocked.Exchange(ref s_pendingBack, 0); pending > 0; pending--)
+                ecGame.CallNativeExit();
+            if (HostDeliversTouches) DrainHostTouches(router);
+            else if (IsActive) PollInput();
+            else if (router.ActiveCount > 0) router.CancelAll(); // focus lost with a finger down
             SmokeTest.Step(elapsed, dt);
             ecGame.ecGameUpdate(dt);
         }
@@ -141,11 +222,24 @@ public sealed class WC2Game : Game
         base.Update(gameTime);
     }
 
-    private readonly Dictionary<int, int> touchIds = new();
-    private int nextTouchIndex = 1;
+    /// <summary>Android: touches queued by the activity, in order, through the router.</summary>
+    private static void DrainHostTouches(TouchRouter router)
+    {
+        while (HostTouches.TryDequeue(out var t))
+        {
+            switch (t.Kind)
+            {
+                case HostTouchKind.Down: router.Begin(t.Id, t.X, t.Y); break;
+                case HostTouchKind.Move: router.Move(t.Id, t.X, t.Y); break;
+                case HostTouchKind.Up: router.End(t.Id, t.X, t.Y); break;
+                default: router.Cancel(t.Id); break;
+            }
+        }
+    }
+
     private bool touchPanelConnected;
 
-    /// <summary>Real touch screens (Android) feed the touch API; the mouse path stays for desktop.</summary>
+    /// <summary>Desktop touch screens: MonoGame's TouchPanel (back buffer pixels) through the router.</summary>
     private bool PollTouchPanel()
     {
         TouchCollection touches;
@@ -153,27 +247,15 @@ public sealed class WC2Game : Game
         catch { return false; }
         if (touches.Count == 0 && !touchPanelConnected) return false;
         touchPanelConnected = touchPanelConnected || touches.Count > 0;
+        var router = TouchRouter.Instance();
         foreach (var t in touches)
         {
-            ToLogical((int)t.Position.X, (int)t.Position.Y, out float lx, out float ly);
             switch (t.State)
             {
-                case TouchLocationState.Pressed:
-                    if (!touchIds.ContainsKey(t.Id))
-                    {
-                        int index = nextTouchIndex++;
-                        if (nextTouchIndex > 1000) nextTouchIndex = 1;
-                        touchIds[t.Id] = index;
-                        ecGame.ecTouchBegin(lx, ly, index);
-                    }
-                    break;
-                case TouchLocationState.Moved:
-                    if (touchIds.TryGetValue(t.Id, out int moveIndex)) ecGame.ecTouchMove(lx, ly, moveIndex);
-                    break;
+                case TouchLocationState.Pressed: router.Begin(t.Id, t.Position.X, t.Position.Y); break;
+                case TouchLocationState.Moved: router.Move(t.Id, t.Position.X, t.Position.Y); break;
                 case TouchLocationState.Released:
-                case TouchLocationState.Invalid:
-                    if (touchIds.Remove(t.Id, out int endIndex)) ecGame.ecTouchEnd(lx, ly, endIndex);
-                    break;
+                case TouchLocationState.Invalid: router.End(t.Id, t.Position.X, t.Position.Y); break;
             }
         }
         return true;
@@ -184,7 +266,7 @@ public sealed class WC2Game : Game
         if (PollTouchPanel()) { previousKeyboard = Keyboard.GetState(); return; }
         var mouse = Mouse.GetState();
         var keyboard = Keyboard.GetState();
-        bool inside = GraphicsDevice.Viewport.Bounds.Contains(mouse.Position);
+        bool inside = Window.ClientBounds.Width <= 0 || new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height).Contains(mouse.Position);
         ToLogical(mouse.X, mouse.Y, out float lx, out float ly);
 
         // left button = first finger
@@ -255,7 +337,9 @@ public sealed class WC2Game : Game
     {
         try
         {
+            SyncDisplay();
             ecGame.ecGameRender();
+            LayoutProbe.AfterRender(GraphicsDevice);
         }
         catch (Exception ex)
         {

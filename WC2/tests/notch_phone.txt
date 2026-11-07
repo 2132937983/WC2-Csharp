@@ -1,0 +1,34 @@
+#! --width 1200 --height 540 --density 1.3125 --insets 60,0,0,0
+# A 20:9 phone at half size with a 60 px notch on the left (the activity reports the cutout insets):
+# the layout is chosen from the part clear of the notch and the picture stays centred on the phone.
+# Turning the phone around moves the notch to the right; a notch wider than the bars shrinks the
+# picture, still centred and clear of it.
+wait 4.5
+layout notch_left
+bars notch_left
+shot N1_notch_left
+insets 0 0 60 0
+layout notch_right
+insets 0 0 0 0
+layout no_notch
+insets 100 0 0 0
+layout wide_notch
+bars wide_notch
+shot N2_wide_notch
+ghost on
+bars wide_notch_ghosts
+hittest wide_notch_ghosts
+ghost off
+insets 60 0 0 0
+layout notch_left_again
+# a swipe that starts over the notch is back: the exit box, then back closes it
+mark
+swipe 4 270 300 270 0.3
+wait 0.8
+expectlog Edge swipe: back
+expectback 1
+shot N3_exit_box
+back
+wait 1
+expectback 2
+exit

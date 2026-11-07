@@ -1,0 +1,22 @@
+#! --width 800 --height 800
+# Tablet layout letterboxed above and below (800x800 window: 1024x768 at 0.78125, 100 px bars): the gold
+# panel waits above the screen until it slides in. See hit_test_wide.txt.
+wait 4.5
+layout menu
+hittest menu
+ghost on
+bars menu_ghosts
+hittest menu_ghosts
+ghost off
+click 910 465
+wait 1.5
+hittest tutorial_start
+wait 6.5
+hittest tutorial
+bars tutorial
+shot T1_tutorial
+click 512 384
+wait 2
+hittest tutorial2
+shot T2_tutorial
+exit

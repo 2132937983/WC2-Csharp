@@ -200,6 +200,43 @@ reasonable guess would be, so do not "fix" them:
 * Back key: `ecBackPressed` = GUI BACK event, then `CStateManager.BackPressed`; `CallNativeExit` shows the
   MENU state's exit box when that returned false, whatever the current state. Desktop Esc/Backspace and the
   `back` script command go through `CallNativeExit`.
+
+## Display and touch input (port additions)
+
+* **One transform.** The back buffer always covers the whole window. `ecGraphics.Resize(w, h, insets)`
+  scales the logical screen uniformly into the window minus the display cutout (made symmetric: the larger
+  of left/right and of top/bottom) and centres it on the window, offsets rounded so the two bars differ by
+  at most a pixel. Drawing (`Flush`) and touches (`ecGraphics.WindowToLogical`) use the same numbers;
+  `WC2Game.SyncDisplay` applies window size and cutout changes at the start of every update and draw, and
+  is the only place the window size reaches the game.
+* **MonoGame on Android** letterboxes the back buffer to the preferred size itself (viewport offset, touches
+  shifted by it), and `GraphicsDevice.Initialize` after a lost GL context resets the viewport to x = 0
+  without that offset: the picture moved left and touches no longer matched. The host keeps the preferred
+  size equal to the view (`KeepBackBufferOnWholeView`) and re-asserts the full viewport every frame.
+* **Off the screen means invisible and untouchable.** The original hides controls by moving them past an
+  edge (campaign series buttons at x = screen width, the in-game buttons and gold panel before they slide
+  in). Drawing is scissored to the logical screen (`ecGraphics.screenClip`); `GUIElement.CheckInRect` only
+  counts points on the logical screen; `ecGame.ecTouchBegin` drops a gesture that begins off it (its moves
+  and end too). A gesture that began on the screen keeps its moves and end when the finger slides off.
+* **Touch router** (`Game/Input/TouchRouter.cs`). Hosts feed raw touches in window pixels with the
+  platform's pointer ids; every gesture gets a fresh game index (100..999; the mouse and scripts use 1
+  and 2). Android's system back gesture is turned off along the side edges (it cancelled drags that started
+  there, and `KEYCODE_BACK` from it never reached the game, see below); the router recognizes the edge swipe
+  instead: a first finger down within 24 dp of a side edge (or the system gesture zone, if wider) is held;
+  moving inward past the 8 dp slop makes it a swipe, released 48 dp or more inward it is back; a tap, a drag
+  along or out of the edge, a finger held 0.35 s or a second finger hands it to the game from its start
+  point. Distances are dp (`Density` = window pixels per dp); the game's own thresholds stay in logical units.
+* **Cancel.** `ecGame.ecTouchCancel` (Android `ACTION_CANCEL`): buttons held by the finger are released
+  without firing, the GUI gets its END at the last position, the state gets `TouchCancel` (`CGameState`
+  ends the drag without inertia and without selecting an area).
+* **Android activity.** Layout bucket from the real full screen minus the cutout; cutout insets published on
+  every insets change (`WC2Game.HostSafeInsets`); touches taken in `DispatchTouchEvent` and queued for the
+  game thread (`WC2Game.HostTouches`); `KEYCODE_BACK`/Escape taken in `DispatchKeyEvent` (MonoGame's view
+  consumed it in `OnKeyDown`, so `OnBackPressed` never ran) plus an `OnBackInvokedCallback` for predictive
+  back; back runs on the game thread (`WC2Game.RequestBack`), never on the UI thread.
+* **Checks.** `--test-input` (layouts and the router, no window), scripts `hit_test*`, `ipad_hit_test`,
+  `notch_phone`, `edge_swipe` (commands `layout`, `bars`, `hittest`, `ghost`, `tap`, `swipe`, `insets`,
+  `expectback`, `camera`; desktop options `--density`, `--insets`).
 * `CLogoState`: white screen, centred logo, volumes applied, 2.1 s, `FadeOut(-1)`, 1 s, menu. The UI
   atlases and `settings.cfg` that the original loaded there are loaded in `ecGameInit`
   (`LoadGlobalGuiAtlases`, same names and hd flags as `CLogoState::OnEnter`).

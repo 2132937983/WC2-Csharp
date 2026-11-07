@@ -1,0 +1,39 @@
+#! --width 1200 --height 540 --density 1.3125
+# A 20:9 phone at half size (2400x1080 at 2.625 px/dp): the 640x320 layout at scale 1.6875 with 60 px
+# bars left and right. Nothing placed off the screen may show in the bars (bars, with white ghost
+# buttons straddling every edge) or react to a touch there (hittest, and taps in the bars at window
+# pixels through the touch router, as Android delivers them).
+wait 4.5
+layout menu
+ghost on
+bars menu_ghosts
+hittest menu_ghosts
+ghost off
+click 582 116
+wait 2.5
+hittest campaign_series
+bars campaign_series
+shot W1_series
+mark
+# the right bar, where the series buttons that are not shown wait (x = screen width), and the left bar
+tap 1170 150
+tap 1150 250
+tap 1185 80
+tap 40 150
+tap 20 250
+wait 0.5
+expectnolog Button clicked
+click 208 144
+wait 5
+hittest battle_list
+click 624 302
+wait 7
+hittest battle_intro
+bars battle_intro
+shot W2_intro
+click 320 290
+wait 2
+hittest ingame
+layout ingame
+shot W3_ingame
+exit
