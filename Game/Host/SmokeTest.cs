@@ -151,6 +151,15 @@ public static class SmokeTest
             case "wheel":
                 ecGame.ecScrollWheel(0f, F(c.args[0]), 0f);
                 break;
+            case "camera":
+            {
+                // camera X Y [SCALE]: puts the map camera on a scene position (the zoom limits still apply);
+                // logs where it ended up, so a test can check the limits (the seam of a wrapping map, the zoom)
+                var camera = g_Scene.camera;
+                camera.SetPosAndScale(F(c.args[0]), F(c.args[1]), c.args.Length > 2 ? (float)F(c.args[2]) : camera.scale);
+                Log(FormattableString.Invariant($"Smoke: camera at {camera.centerPos[0]:0},{camera.centerPos[1]:0} scale {camera.scale:0.###} (min {camera.MinScale():0.###}, wrap {camera.wrapX})"));
+                break;
+            }
             case "shot":
                 RequestScreenshot(c.args.Length > 0 ? c.args[0] : "shot");
                 // the screenshot is taken by the next Draw: give it a frame before continuing

@@ -1,8 +1,9 @@
-# Downloads the Natural Earth source data (public domain, naturalearthdata.com; GeoJSON from the
-# nvkelso/natural-earth-vector repository) and builds the map pack assets/data/maps/natural-earth and
-# the playable map mod mods/map-natural-earth (map 2 with the conquest conquest_world.xml).
+# Downloads the source data (Natural Earth, public domain, naturalearthdata.com, GeoJSON from the
+# nvkelso/natural-earth-vector repository; CShapes 2.0 historical borders, icr.ethz.ch/data/cshapes)
+# and builds the map pack assets/data/maps/natural-earth and the playable map mod
+# mods/map-natural-earth (map 2 with the conquest conquest_10.xml, WORLD 1939).
 # Usage: .\Tools\map\build-natural-earth.ps1 [-Source DIR] [-SkipDownload]
-# The downloads (about 50 MB) go to Tools\map\source (not in git). See MAP_PIPELINE.md.
+# The downloads (about 75 MB) go to Tools\map\source (not in git). See MAP_PIPELINE.md.
 param([string]$Source = "", [switch]$SkipDownload)
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
@@ -17,6 +18,13 @@ if (-not $SkipDownload) {
         if (Test-Path $target) { Write-Host "have $f"; continue }
         Write-Host "downloading $f"
         Invoke-WebRequest -Uri "$base/$f" -OutFile $target -UseBasicParsing
+    }
+    # historical borders 1886-2019: CShapes 2.0 (ETH Zurich, CC BY-NC-SA 4.0), about 26 MB
+    $cshapes = Join-Path $Source 'CShapes-2.0.geojson'
+    if (Test-Path $cshapes) { Write-Host "have CShapes-2.0.geojson" }
+    else {
+        Write-Host "downloading CShapes-2.0.geojson"
+        Invoke-WebRequest -Uri 'https://icr.ethz.ch/data/cshapes/CShapes-2.0.geojson' -OutFile $cshapes -UseBasicParsing
     }
 }
 

@@ -126,6 +126,45 @@
     "config": {
       "type": "object",
       "description": "The build-map configuration the pack was made with."
+    },
+    "wrap": {
+      "type": "boolean",
+      "description": "The map spans the whole width and wraps left-right."
+    },
+    "eras": {
+      "type": "object",
+      "description": "The eras of the base map: their source and units (owners in regions.json).",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "source",
+          "units"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "units": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "capital": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

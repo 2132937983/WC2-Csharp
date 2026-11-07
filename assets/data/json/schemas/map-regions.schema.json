@@ -122,6 +122,13 @@
               "type": "integer",
               "minimum": 0
             }
+          },
+          "owners": {
+            "type": "object",
+            "description": "Era -> the unit holding the region then (map.json eras).",
+            "additionalProperties": {
+              "type": "string"
+            }
           }
         }
       }

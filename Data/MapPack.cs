@@ -20,6 +20,8 @@ public sealed class MapRegion
     public int pixelX, pixelY;
     public long areaKm2;
     public int[] neighbours = Array.Empty<int>();
+    /// <summary>Era (map.json eras) -> the unit holding the region then ("gw:300", "ne:AUT"); empty on a pack without eras.</summary>
+    public Dictionary<string, string> owners = new();
     public override string ToString() => $"{id} {name} ({(sea ? "sea" : country + ", " + type)})";
 }
 
@@ -35,6 +37,10 @@ public sealed class MapPack
     public string id = "", name = "";
     public double west, east, north, south, pixelsPerDegree;
     public int width, height;
+    /// <summary>The map spans the whole width and wraps left-right.</summary>
+    public bool wrap;
+    /// <summary>The eras of a base map (map.json eras): era -> unit key -> unit name.</summary>
+    public readonly Dictionary<string, Dictionary<string, string>> eras = new();
     public readonly List<MapRegion> regions = new();
     private ushort[] raster;
 
@@ -50,6 +56,10 @@ public sealed class MapPack
         var b = map.Obj("bounds");
         pack.west = b.Double("west", -180); pack.east = b.Double("east", 180);
         pack.north = b.Double("north", 90); pack.south = b.Double("south", -90);
+        pack.wrap = map.Bool("wrap", false);
+        foreach (var (era, node) in map.Obj("eras") ?? new JsonObject())
+            pack.eras[era] = (node?["units"] as JsonObject ?? new JsonObject())
+                .ToDictionary(kv => kv.Key, kv => (kv.Value as JsonObject)?.Str("name", kv.Key) ?? kv.Key);
         var r = map.Obj("raster");
         pack.width = r.Int("width", 0); pack.height = r.Int("height", 0);
         pack.pixelsPerDegree = r.Double("pixelsPerDegree", pack.width / Math.Max(1e-9, pack.east - pack.west));
@@ -77,6 +87,7 @@ public sealed class MapPack
                 pixelY = pixel != null && pixel.Count > 1 ? pixel[1]!.GetValue<int>() : 0,
                 areaKm2 = (long)o.Double("areaKm2", 0),
                 neighbours = (o.Arr("neighbours") ?? new JsonArray()).Select(n => n!.GetValue<int>()).ToArray(),
+                owners = (o.Obj("owners") ?? new JsonObject()).ToDictionary(kv => kv.Key, kv => kv.Value!.GetValue<string>()),
             });
         }
         pack.raster = ReadRaster(AssetSystem.ReadAllBytes(Folder(id) + r.Str("file", "regions.raster")), pack.width, pack.height);
@@ -105,7 +116,8 @@ public sealed class MapPack
     public MapRegion RegionAt(double lon, double lat)
     {
         if (raster == null) return null;
-        int x = (int)((lon - west) * pixelsPerDegree), y = (int)((north - lat) * pixelsPerDegree);
+        int x = (int)Math.Floor((lon - west) * pixelsPerDegree), y = (int)((north - lat) * pixelsPerDegree);
+        if (wrap) x = ((x % width) + width) % width;
         if (x < 0 || y < 0 || x >= width || y >= height) return null;
         int v = raster[y * width + x];
         return v > 0 && v <= regions.Count ? regions[v - 1] : null;
@@ -143,8 +155,12 @@ public sealed class MapPack
             if (!r.sea && r.neighbours.Length == 0) problems.Add($"land region {r.id} ({r.name}) touches nothing");
             if (r.port != null && !r.coastal) problems.Add($"region {r.id} ({r.name}) has a port but no coast");
         }
-        foreach (var g in regions.Where(r => !r.sea).GroupBy(r => r.country))
-            if (g.Count(r => r.type == "capital") > 1) problems.Add($"country {g.Key} has {g.Count(r => r.type == "capital")} capitals");
+        // a base map of several eras: every land region knows its unit in every era (capitals of every era
+        // are capital areas, so a country may have several)
+        foreach (var r in regions.Where(r => !r.sea))
+            foreach (var era in eras.Keys)
+                if (!r.owners.TryGetValue(era, out var unit) || unit.Length == 0 || !eras[era].ContainsKey(unit))
+                    problems.Add($"land region {r.id} ({r.name}) has no known unit in {era}");
         return problems;
     }
 }

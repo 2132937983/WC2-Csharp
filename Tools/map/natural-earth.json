@@ -1,16 +1,58 @@
 {
-  // WC2.Tools build-map configuration for the Natural Earth world map (MAP_PIPELINE.md).
+  // WC2.Tools build-map configuration for the world base map (MAP_PIPELINE.md).
   "id": "natural-earth",
-  "name": "World (Natural Earth)",
+  "name": "World (1910-2018)",
 
-  // Coverage: north to southern Greenland (Cape Farewell 59.8 N), south to southern Madagascar
-  // (25.6 S) and northern Australia; west to Alaska, east to the date line.
-  "bounds": { "west": -170, "east": 180, "north": 62, "south": -26 },
-  "raster": { "width": 4096 },
+  // Coverage: the whole width (the map wraps left-right), north to the Russian polar islands
+  // (Franz Josef Land 81.9 N) and all of northern Europe, south to southern Madagascar (25.6 S) and
+  // northern Australia.
+  "bounds": { "west": -180, "east": 180, "north": 82, "south": -26 },
+  "wrap": true,
+  // 12.5 pixels per degree; the map mod doubles it (9000 x 2700 map units, a multiple of 1000 wide
+  // so the wrap is seamless)
+  "raster": { "width": 4500 },
 
-  // Provinces (Natural Earth admin-1) merge within their country until a region has minAreaKm2 and
-  // a country has at most maxPerCountry regions. Islands smaller than minIslandKm2 are left out.
-  "regions": { "minAreaKm2": 40000, "maxPerCountry": 30, "minIslandKm2": 2500 },
+  // The eras of the base map. Every era's borders are kept as region borders, so a scenario of any
+  // of these years only assigns owners (MAP_PIPELINE.md, "One map for every era").
+  "eras": {
+    "1910": { "date": "1910-01-01" },
+    "1914": { "date": "1914-07-01" },
+    "1936": { "date": "1936-01-01" },
+    "1939": { "date": "1939-09-01" },
+    "1945": { "date": "1945-09-02" },
+    "1949": { "date": "1949-12-31" },
+    "2018": { "source": "naturalearth" }
+  },
+  // Historical borders: CShapes 2.0 (states and colonies with dates). Fragments of another unit than
+  // a province's main one smaller than minFragmentKm2 or nowhere minFragmentWidthPixels thick are two
+  // sources tracing one border apart and join their neighbour. fallback: the unit (CShapes gwcode) of
+  // Natural Earth countries CShapes leaves out.
+  "historicalBorders": {
+    "file": "CShapes-2.0.geojson",
+    "minFragmentKm2": 4000,
+    "minFragmentWidthPixels": 3,
+    "fallback": { "GRL": "390", "SJM": "385", "HKG": "200", "KWT": "200" }
+  },
+  // The CShapes units that are the game's countries at home: their capitals of every era become
+  // capital areas (Saint Petersburg, Nanking, Bonn, ...).
+  "homeUnits": {
+    "am": ["2"], "gb": ["200"], "fr": ["220"], "de": ["255", "260"], "it": ["325"], "ja": ["740"], "ru": ["365"],
+    "ca": ["20"], "au": ["900"], "mx": ["70"], "pl": ["290"], "hu": ["310", "300"], "ro": ["360"], "bg": ["355"],
+    "yu": ["345"], "gr": ["350"], "fl": ["375"], "se": ["380"], "no": ["385"], "dk": ["390"], "nl": ["210"],
+    "be": ["211"], "ch": ["225"], "pt": ["235"], "es": ["230"], "tr": ["640"], "tw": ["713"], "cn": ["710"],
+    "in": ["750"], "nk": ["731"], "rk": ["732"]
+  },
+
+  // Provinces (Natural Earth admin-1) split along every era's borders, then merge again with
+  // neighbours of the same borders in every era until a region has minAreaKm2 and a country has at
+  // most maxPerCountry regions. Parts below minIslandKm2: enclaves join a neighbour, islands are left
+  // out. Island groups farther than islandSplitDegrees from their region's main body (parts closer than
+  // islandClusterDegrees form a group) become regions of their own; small ones farther than
+  // maxPartDistanceDegrees are left out.
+  "regions": {
+    "minAreaKm2": 40000, "maxPerCountry": 30, "minIslandKm2": 2500,
+    "islandSplitDegrees": 6, "islandClusterDegrees": 1.5, "maxPartDistanceDegrees": 25
+  },
 
   // Finer regions where the game's wars are fought (game ids): Europe and its neighbours.
   "regionOverrides": {
@@ -18,64 +60,113 @@
     "it": { "minAreaKm2": 18000 }, "es": { "minAreaKm2": 25000 }, "pl": { "minAreaKm2": 20000 },
     "nl": { "minAreaKm2": 10000 }, "be": { "minAreaKm2": 10000 }, "ch": { "minAreaKm2": 10000 },
     "ro": { "minAreaKm2": 20000 }, "hu": { "minAreaKm2": 15000 }, "gr": { "minAreaKm2": 15000 },
-    "tr": { "minAreaKm2": 30000 }, "ru": { "maxPerCountry": 45 }, "ja": { "minAreaKm2": 20000 }
+    "tr": { "minAreaKm2": 30000 }, "ru": { "maxPerCountry": 60 }, "ja": { "minAreaKm2": 20000 }
   },
 
-  // Sea zones: a grid of cellDegrees, each cell split into its connected water parts; parts smaller
-  // than minSeaPixels join a neighbouring zone.
-  "sea": { "cellDegrees": 8, "minSeaPixels": 600 },
+  // Sea zones of irregular shape: seeds coastRadiusDegrees apart along the coasts, farther apart the
+  // more open the water (radius + growth x distance from the coast, at most oceanRadiusDegrees), grown
+  // through the water and relaxed relaxIterations times; zones below minSeaPixels join a neighbour.
+  "sea": { "coastRadiusDegrees": 1.8, "oceanRadiusDegrees": 14, "growth": 0.9, "relaxIterations": 2, "minSeaPixels": 300 },
   "minBorderPixels": 2,
+  // Waterways the raster closes (a few kilometres wide): the sea zones at the two points become neighbours.
+  "straits": [
+    { "name": "Bosporus", "points": [29.3, 41.35, 28.9, 40.85] },
+    { "name": "Dardanelles", "points": [27.0, 40.55, 26.0, 40.0] },
+    { "name": "Gibraltar", "points": [-6.2, 35.9, -5.0, 36.1] },
+    { "name": "Suez Canal", "points": [32.4, 31.4, 32.6, 29.7] },
+    { "name": "Panama Canal", "points": [-79.9, 9.5, -79.5, 8.7] },
+    { "name": "Kiel Canal", "points": [8.6, 54.0, 10.3, 54.5] },
+    { "name": "Oresund", "points": [12.2, 56.3, 12.9, 55.3] },
+    { "name": "Kerch", "points": [36.6, 45.6, 36.6, 44.9] },
+    { "name": "Bab-el-Mandeb", "points": [43.0, 13.0, 43.8, 12.4] }
+  ],
 
   // Populated places with POP_MAX >= minPopulation make a region a city (>= largeCityPopulation:
   // large city); a country's capital (ADM0CAP) makes its region the capital.
   "cities": { "minPopulation": 1000000, "largeCityPopulation": 5000000 },
   "ports": { "maxScalerank": 5 },
   "airfields": { "types": ["major", "major and military"], "maxScalerank": 4 },
+  // the era the pack's preview is coloured by; with --preview-dir every era is drawn, plus these close-ups
+  "previewEra": "1939",
+  "previewCrops": [
+    { "name": "europe", "west": -12, "east": 45, "north": 72, "south": 34 },
+    { "name": "east-asia", "west": 95, "east": 150, "north": 55, "south": 15 }
+  ],
 
-  // --classic-out: the map in the scene's own formats as map 2, written as a mod with a conquest
-  // (MAP_PIPELINE.md). players: the countries of the scenario (the rest of the land starts unowned).
+  // --classic-out: the map in the scene's own formats as map 2, written as a mod with its conquests
+  // (MAP_PIPELINE.md).
   "classicExport": {
-    "mapId": 2, "scale": 2, "scenario": "conquest_10.xml",
-    // the entry in the conquest list (conquest 10 follows the game's nine)
-    "conquest": {
-      "number": 10, "title": "WORLD (NATURAL EARTH)", "centerLon": 10, "centerLat": 48,
-      "intro": "The world in today's borders, drawn from Natural Earth. {country} starts with its capital and its great cities; the rest of the land is unclaimed.",
-      "victory": "Take the capitals of your enemies."
-    },
-    "modId": "map-natural-earth", "modName": "World map (Natural Earth)",
-    "players": {
-      "de": { "alliance": "a", "commander": "Guderian", "color": [71, 87, 99] },
-      "it": { "alliance": "a", "commander": "Graziani", "color": [80, 20, 200] },
-      "ja": { "alliance": "a", "commander": "Yamamoto", "color": [255, 128, 0] },
-      "hu": { "alliance": "a", "color": [128, 64, 90] },
-      "ro": { "alliance": "a", "color": [149, 55, 53] },
-      "bg": { "alliance": "a", "color": [0, 0, 128] },
-      "fl": { "alliance": "a", "color": [146, 205, 220] },
-      "gb": { "alliance": "b", "commander": "Montgomery", "color": [255, 255, 0] },
-      "fr": { "alliance": "b", "commander": "de Gaulle", "color": [0, 170, 170] },
-      "am": { "alliance": "b", "commander": "Patton", "color": [64, 199, 64] },
-      "ca": { "alliance": "b", "color": [0, 162, 232] },
-      "au": { "alliance": "b", "color": [0, 49, 146] },
-      "pl": { "alliance": "b", "color": [255, 128, 64] },
-      "nl": { "alliance": "b", "color": [255, 192, 0] },
-      "be": { "alliance": "b", "color": [148, 138, 84] },
-      "no": { "alliance": "b", "color": [255, 0, 128] },
-      "dk": { "alliance": "b", "color": [141, 180, 226] },
-      "gr": { "alliance": "b", "color": [83, 141, 213] },
-      "yu": { "alliance": "b", "color": [218, 150, 148] },
-      "in": { "alliance": "b", "color": [0, 102, 0] },
-      "mx": { "alliance": "b", "color": [64, 30, 169] },
-      "tw": { "alliance": "b", "commander": "Zhang", "color": [0, 50, 200] },
-      "rk": { "alliance": "b", "color": [128, 45, 34] },
-      "ru": { "alliance": "c", "commander": "Rokossovsky", "color": [255, 0, 0] },
-      "cn": { "alliance": "c", "commander": "Peng", "color": [255, 90, 90] },
-      "nk": { "alliance": "c", "color": [255, 153, 153] },
-      "es": { "alliance": "n", "color": [255, 0, 128] },
-      "pt": { "alliance": "n", "color": [127, 127, 127] },
-      "se": { "alliance": "n", "color": [0, 0, 204] },
-      "ch": { "alliance": "n", "color": [141, 180, 0] },
-      "tr": { "alliance": "n", "color": [0, 128, 192] }
-    }
+    "mapId": 2, "scale": 2,
+    "modId": "map-natural-earth", "modName": "World map 1910-2018 (Natural Earth, CShapes)",
+    "scenarios": [
+      {
+        // conquest 10 follows the game's nine
+        "number": 10, "file": "conquest_10.xml", "era": "1939", "title": "WORLD 1939",
+        "centerLon": 12, "centerLat": 50,
+        "fogOfWar": false, "leftRightWrap": true,
+        "intro": "1 September 1939: Germany invades Poland. {country} begins in the borders of that day, with its colonies, dominions and occupied lands.",
+        "victory": "Take the capitals of your enemies.",
+        "names": {
+          "gb": "British Empire", "ru": "Soviet Union", "am": "United States", "de": "German Reich", "it": "Kingdom of Italy",
+          "ja": "Empire of Japan", "tw": "Republic of China", "yu": "Yugoslavia", "fr": "France"
+        },
+        // CShapes units (gwcode) of the era -> the game's country; every other unit starts unclaimed
+        "owners": {
+          "am": ["2", "3", "4", "6", "840"],
+          "gb": ["200", "21", "31", "51", "52", "53", "80", "110", "338", "352", "420", "451", "452", "462", "472", "475", "500", "501",
+                 "510", "511", "521", "551", "552", "553", "560", "565", "570", "571", "572", "590", "625", "645", "651", "663", "665",
+                 "681", "6812", "694", "696", "698", "750", "775", "780", "781", "821", "822", "823", "824", "827", "835", "920", "940", "950"],
+          "fr": ["220", "120", "1201", "65", "66", "432", "433", "434", "435", "436", "437", "438", "461", "471", "481", "482", "483",
+                 "484", "522", "580", "585", "600", "615", "616", "652", "660", "811", "812", "815", "930", "960"],
+          "nl": ["210", "115", "850"],
+          "be": ["211", "490", "515"],
+          "pt": ["235", "402", "404", "540", "541", "860"],
+          "es": ["230", "411", "602", "610"],
+          "it": ["325", "339", "530", "531", "5200", "620"],
+          "de": ["255", "305", "315"],
+          "ja": ["740", "730", "713", "7351"],
+          "ru": ["365", "712"],
+          "tw": ["710"],
+          "ca": ["20"], "mx": ["70"], "au": ["900", "911", "912"], "pl": ["290"], "hu": ["310"], "ro": ["360"], "bg": ["355"],
+          "yu": ["345"], "gr": ["350"], "fl": ["375"], "se": ["380"], "no": ["385"], "dk": ["390", "395"], "ch": ["225"], "tr": ["640"]
+        },
+        // provinces held by another country than their unit's: Manchukuo and the occupied north and
+        // east of China
+        "provinceOwners": {
+          "ja": ["CN-HL", "CN-JL", "CN-LN", "CN-BJ", "CN-TJ", "CN-HE", "CN-SD", "CN-JS", "CN-SH", "CN-SX", "CN-HI"]
+        },
+        // alliances as in the game's 1939 conquest: a Axis, b Allies, c Comintern, n neutral (passive)
+        "players": {
+          "de": { "alliance": "a", "commander": "Guderian", "color": [71, 87, 99], "garrison": 1 },
+          "it": { "alliance": "a", "commander": "Graziani", "color": [80, 20, 200] },
+          "ja": { "alliance": "a", "commander": "Yamamoto", "color": [255, 128, 0], "garrison": 1 },
+          "hu": { "alliance": "a", "color": [128, 64, 90] },
+          "ro": { "alliance": "a", "color": [149, 55, 53] },
+          "bg": { "alliance": "a", "color": [0, 0, 128] },
+          "fl": { "alliance": "a", "color": [146, 205, 220] },
+          "es": { "alliance": "a", "color": [255, 0, 128] },
+          "gb": { "alliance": "b", "commander": "Montgomery", "color": [255, 255, 0], "garrison": 1 },
+          "fr": { "alliance": "b", "commander": "de Gaulle", "color": [0, 170, 170], "garrison": 1 },
+          "am": { "alliance": "b", "commander": "Patton", "color": [64, 199, 64] },
+          "pl": { "alliance": "b", "color": [255, 128, 64] },
+          "ca": { "alliance": "b", "color": [0, 162, 232] },
+          "au": { "alliance": "b", "color": [0, 49, 146] },
+          "nl": { "alliance": "b", "color": [255, 192, 0] },
+          "be": { "alliance": "b", "color": [148, 138, 84] },
+          "no": { "alliance": "b", "color": [255, 0, 128] },
+          "dk": { "alliance": "b", "color": [141, 180, 226] },
+          "gr": { "alliance": "b", "color": [83, 141, 213] },
+          "yu": { "alliance": "b", "color": [218, 150, 148] },
+          "mx": { "alliance": "b", "color": [64, 30, 169] },
+          "tw": { "alliance": "b", "commander": "Zhang", "color": [0, 50, 200] },
+          "ru": { "alliance": "c", "commander": "Zhukov", "color": [255, 0, 0], "garrison": 1 },
+          "pt": { "alliance": "n", "color": [127, 127, 127] },
+          "se": { "alliance": "n", "color": [0, 0, 204] },
+          "ch": { "alliance": "n", "color": [141, 180, 0] },
+          "tr": { "alliance": "n", "color": [0, 128, 192] }
+        }
+      }
+    ]
   },
 
   // Natural Earth ADM0_A3 -> the game's country ids (data/json/countries/countries.json); every other

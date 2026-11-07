@@ -1,11 +1,21 @@
 #! --mods $TESTS/../mods --ai standard
-# conquest on the generated world map (mods/map-natural-earth, built from Natural Earth by WC2.Tools build-map,
-# MAP_PIPELINE.md) as France, the standard AI on every side; the classic map is not involved
+# conquest on the generated world map (mods/map-natural-earth, built from Natural Earth and CShapes by WC2.Tools
+# build-map, MAP_PIPELINE.md): WORLD 1939 as France, the standard AI on every side; the classic map is not involved
 wait 4.5
 startconquest conquest_10.xml fr
 wait 8
 shot WM1_start
 hittest world_map
+texstats world
+# the map wraps (leftRightWrap): at the left edge (the Bering Strait) Chukotka shows from the right end
+camera 250 450 1
+wait 0.5
+shot WM3_seam
+# zoomed out as far as it goes: the map fills the screen height, no black bars above or below
+camera 4500 1350 0.01
+wait 0.5
+shot WM4_zoomed_out
+camera 4900 650 1
 autoplay 4
 dump WR05
 shot WM2_round5

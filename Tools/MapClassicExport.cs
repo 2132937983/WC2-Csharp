@@ -10,15 +10,16 @@ namespace WC2.Tools;
 /// <list type="bullet">
 /// <item><c>area&lt;id&gt;.bin</c>: per region the zone image position and size, the army, building and
 /// installation anchors, land or sea (map units = raster pixels x <c>scale</c>);</item>
-/// <item><c>adjion&lt;id&gt;.bin</c>: up to 16 neighbours per region (the longest borders);</item>
+/// <item><c>adjion&lt;id&gt;.bin</c>: up to 16 neighbours per region (the longest borders, straits and the
+/// seam of a wrapping map included);</item>
 /// <item><c>areamark&lt;id&gt;.raw</c>: the region under every 8x8 block of map units (touch picking);</item>
-/// <item><c>data/json/maps/&lt;id&gt;/areas.json</c>: area types and taxes;</item>
-/// <item><c>map&lt;id&gt;_&lt;n&gt;.png</c>: the background in 500 unit tiles (land, sea, region, country and
-/// coast lines) and <c>m&lt;id&gt;_zone&lt;n&gt;_1.png/.xml</c>: atlases of the region masks the game tints
-/// with the owner's colour;</item>
+/// <item><c>data/json/maps/&lt;id&gt;/areas.json</c>: area types and taxes of every area, sea zones included;</item>
+/// <item><c>map&lt;id&gt;_&lt;n&gt;.png</c>: the background in 500 unit tiles (land, sea, coasts, region and sea
+/// zone borders; no country borders, the map serves every era) and <c>m&lt;id&gt;_zone&lt;n&gt;_1.png/.xml</c>:
+/// atlases of the region masks the game tints with the owner's colour;</item>
 /// <item><c>generated/texture_formats.json</c>: tiles uploaded as RGB565, masks as Alpha8;</item>
-/// <item>a conquest scenario (<c>scenario</c>) with the countries of <c>players</c>, their regions and
-/// starting armies; the rest of the land starts unowned.</item>
+/// <item>one conquest per entry of <c>scenarios</c>: the scenario XML (owners, cities, armies, fleets),
+/// its conquest list entry (fogOfWar, leftRightWrap), button and menu texts.</item>
 /// </list>
 /// </summary>
 internal static partial class MapPipeline
@@ -30,11 +31,11 @@ internal static partial class MapPipeline
     {
         const int W = 320, H = 109;
         using var bmp = new SKBitmap(W, H, SKColorType.Rgba8888, SKAlphaType.Premul);
-        // 1 button pixel = step raster pixels (6 map units) around the centre
+        // 1 button pixel = step raster pixels around the centre
         for (int y = 0; y < H; y++)
             for (int x = 0; x < W; x++)
             {
-                int rx = Math.Clamp(cx + (x - W / 2) * step, 0, width - 1), ry = Math.Clamp(cy + (y - H / 2) * step, 0, height - 1);
+                int rx = ((cx + (x - W / 2) * step) % width + width) % width, ry = Math.Clamp(cy + (y - H / 2) * step, 0, height - 1);
                 int v = raster[ry * width + rx];
                 bool sea = v == 0 || regions[v - 1].sea;
                 int right = raster[ry * width + Math.Min(width - 1, rx + step)];
@@ -60,12 +61,15 @@ internal static partial class MapPipeline
 
     /// <param name="scale">map units per pixel of <paramref name="raster"/> (1: the raster is drawn at map resolution)</param>
     private static void ExportClassic(string outDir, JsonObject config, List<Region> regions, int[] raster, int width, int height,
-                                      Dictionary<string, string> countryNames, int scale)
+                                      int scale, List<ScenarioSpec> scenarios, bool wrap)
     {
         var cfg = config["classicExport"]!.AsObject();
         int mapId = cfg["mapId"]!.GetValue<int>();
         int S = scale;
         int mapW = width * S, mapH = height * S;
+        // a wrapping map repeats every mapW units: tiles (500), the area mark (8) and the scene's
+        // width rounding (100) must all end exactly at the edge
+        if (wrap && mapW % 1000 != 0) throw new ToolException($"a wrapping map needs a width in map units divisible by 1000 (is {mapW})");
         Directory.CreateDirectory(outDir);
         int n = regions.Count;
 
@@ -99,6 +103,8 @@ internal static partial class MapPipeline
             if (v == 0) continue;
             if (dist[i] > best[v - 1]) { best[v - 1] = dist[i]; anchor[v - 1] = (i % width, i / width); }
         }
+        var missing = Enumerable.Range(0, n).Where(r => minX[r] == int.MaxValue).ToList();
+        if (missing.Count > 0) throw new ToolException($"regions without pixels at map resolution: {string.Join(", ", missing.Take(10))}");
 
         // ---- area<id>.bin
         using (var w = new BinaryWriter(File.Create(Path.Combine(outDir, $"area{mapId}.bin"))))
@@ -146,10 +152,12 @@ internal static partial class MapPipeline
                 }
         }
 
-        // ---- area types and taxes
+        // ---- area types and taxes: every area, sea zones included (type normal, no tax), like the
+        // original's table; an area missing here would load as land
         var areas = new JsonObject();
-        foreach (var r in regions.Where(r => !r.sea))
+        foreach (var r in regions)
         {
+            if (r.sea) { areas[r.id.ToString()] = new JsonObject { ["type"] = "normal", ["tax"] = 0 }; continue; }
             // about the classic map's range: 3 to 30 per area
             int tax = 3 + (int)Math.Min(8, r.areaKm2 / 50000) + (r.city != null ? (int)Math.Min(10, r.cityPopulation / 1000000) : 0) + (r.type == "capital" ? 10 : 0);
             areas[r.id.ToString()] = new JsonObject { ["type"] = r.type, ["tax"] = tax };
@@ -165,9 +173,9 @@ internal static partial class MapPipeline
 
         // ---- background tiles (500 map units each, 6 units margin, 1 texel per unit)
         int tilesX = (mapW + 499) / 500, tilesY = (mapH + 499) / 500;
-        var countryOf = regions.Select(r => r.sea ? "" : r.country).ToArray();
         int RegionAtUnit(int u, int v)
         {
+            if (wrap) u = ((u % mapW) + mapW) % mapW;
             int x = u / S, y = v / S;
             if (u < 0 || v < 0 || x >= width || y >= height) return 0;
             return raster[y * width + x];
@@ -184,27 +192,29 @@ internal static partial class MapPipeline
                         int id = RegionAtUnit(u, v);
                         bool sea = id == 0 || regions[id - 1].sea;
                         int right = RegionAtUnit(u + 1, v), down = RegionAtUnit(u, v + 1);
+                        int wu = wrap ? ((u % mapW) + mapW) % mapW : u;
                         SKColor c;
                         if (sea)
                         {
-                            int shade = (int)(8 * Math.Sin(u * 0.013) * Math.Cos(v * 0.011));
+                            int shade = (int)(8 * Math.Sin(wu * Math.PI * 2 / Math.Max(1, mapW) * 18) * Math.Cos(v * 0.011));
                             c = new SKColor((byte)(58 + shade), (byte)(98 + shade), (byte)(138 + shade));
                         }
                         else
                         {
-                            int grain = ((u * 7349 + v * 9157) >> 3) % 9;
+                            int grain = ((wu * 7349 + v * 9157) >> 3) % 9;
                             c = new SKColor((byte)(200 + grain), (byte)(184 + grain), (byte)(146 + grain));
                         }
-                        // lines: coast, country border, region border
-                        int[] others = { right, down };
-                        foreach (int o in others)
+                        // lines: coast, region border, sea zone border (faint)
+                        foreach (int o in new[] { right, down })
                         {
                             if (o == id) continue;
                             bool oSea = o == 0 || regions[o - 1].sea;
-                            if (sea && oSea) continue;
-                            if (sea != oSea) c = new SKColor(40, 46, 52);
-                            else if (countryOf[id - 1] != countryOf[o - 1]) c = new SKColor(70, 58, 44);
-                            else c = new SKColor(150, 132, 100);
+                            if (sea && oSea)
+                            {
+                                if (id != 0 && o != 0) c = new SKColor(76, 116, 154);
+                                continue;
+                            }
+                            c = sea != oSea ? new SKColor(40, 46, 52) : new SKColor(120, 104, 80);
                         }
                         tile.SetPixel(p, q, c);
                     }
@@ -223,7 +233,7 @@ internal static partial class MapPipeline
         foreach (int r in order)
         {
             int w = (maxX[r] - minX[r] + 1) * S + 2, h = (maxY[r] - minY[r] + 1) * S + 2;
-            if (w > Page || h > Page) throw new ToolException($"region {r} is larger than an atlas page");
+            if (w > Page || h > Page) throw new ToolException($"region {r} ({regions[r].name}) is larger than an atlas page: x {minX[r]}-{maxX[r]}, y {minY[r]}-{maxY[r]} of {width}x{height}");
             if (cx + w > Page) { cx = 0; cy += shelf; shelf = 0; }
             if (cy + h > Page) { pageIndex++; cx = 0; cy = 0; shelf = 0; }
             placed.Add((pageIndex, cx + 1, cy + 1, r));
@@ -263,101 +273,120 @@ internal static partial class MapPipeline
             ["textures"] = formats,
         }.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
 
-        // ---- the conquest scenario
-        var players = cfg["players"]!.AsObject();
-        string scenario = cfg["scenario"]!.GetValue<string>();
-        var xml = new System.Text.StringBuilder();
-        // the areas-enable file (count, then one byte per area): every area takes part; the conquest
-        // preview of the menu needs it
-        string enableFile = Path.ChangeExtension(scenario, ".bin");
-        using (var enable = new BinaryWriter(File.Create(Path.Combine(outDir, enableFile))))
+        // ---- the conquests
+        var b = config["bounds"]!.AsObject();
+        double west = b["west"]!.GetValue<double>(), east = b["east"]!.GetValue<double>(), north = b["north"]!.GetValue<double>();
+        double unitsPerDeg = mapW / (east - west);
+        var conquestEntries = new JsonObject();
+        var strings = new JsonObject();
+        var summary = new List<string>();
+        foreach (var spec in scenarios)
         {
-            enable.Write(n);
-            for (int r = 0; r < n; r++) enable.Write((byte)1);
-        }
-        xml.Append($"<battle map=\"{mapId}\" areasenable=\"{enableFile}\">\n    <list name=\"country\">\n");
-        var present = new HashSet<string>(regions.Where(r => !r.sea).Select(r => r.country));
-        var active = players.Where(kv => present.Contains(kv.Key)).ToList();
-        foreach (var (id, node) in active)
-        {
-            var o = node!.AsObject();
-            int owned = regions.Count(r => !r.sea && r.country == id);
-            int[] rgb = o["color"]!.AsArray().Select(c => c!.GetValue<int>()).ToArray();
-            xml.Append($"        <country id=\"{id}\" name=\"{id}\" commander=\"{o["commander"]?.GetValue<string>() ?? "common1"}\" ai=\"1\" defeated=\"land\" " +
-                       $"taxfactor=\"1.200000\" money=\"{200 + 5 * owned}\" industry=\"{100 + 3 * owned}\" techlevel=\"3\" alliance=\"{o["alliance"]!.GetValue<string>()}\" " +
-                       $"r=\"{rgb[0]}\" g=\"{rgb[1]}\" b=\"{rgb[2]}\" a=\"90\" />\n");
-        }
-        xml.Append("    </list>\n    <list name=\"area\">\n");
-        var activeIds = active.Select(kv => kv.Key).ToHashSet();
-        foreach (var r in regions.Where(r => !r.sea && activeIds.Contains(r.country)))
-        {
-            string construction = r.type == "capital" || r.type == "large city" ? "city" : r.airfield ? "airport" : "none";
-            int level = construction == "none" ? 0 : r.type == "capital" ? 2 : 1;
-            var units = new List<string>();
-            if (r.type == "capital") units.AddRange(new[] { "infantry", "infantry", "tank" });
-            else if (r.type == "large city") units.AddRange(new[] { "infantry", "artillery" });
-            else if (r.type == "normal city" || r.type == "port") units.Add("infantry");
-            xml.Append($"        <area id=\"{r.id}\" construction=\"{construction}\" level=\"{level}\" installation=\"{(r.type == "capital" ? "fort" : "none")}\" country=\"{r.country}\"");
-            if (units.Count == 0) { xml.Append(" />\n"); continue; }
-            xml.Append(">\n");
-            foreach (var u in units) xml.Append($"            <army type=\"{u}\" level=\"1\" cards=\"0\" />\n");
-            xml.Append("        </area>\n");
-        }
-        // fleets: a destroyer in the sea zone along each port (the longest shared border), at most
-        // three per country; a sea area lists the fleet's country like the classic scenarios do
-        var usedSeas = new HashSet<int>();
-        foreach (var g in regions.Where(r => !r.sea && r.port && activeIds.Contains(r.country)).GroupBy(r => r.country))
-        {
-            int fleets = 0;
-            foreach (var r in g.OrderByDescending(r => r.type == "capital").ThenByDescending(r => r.cityPopulation).ThenBy(r => r.id))
+            var s = spec.config;
+            string scenario = s["file"]!.GetValue<string>();
+            int number = s["number"]!.GetValue<int>();
+            var players = s["players"]!.AsObject();
+            var owner = spec.owners;
+            // the areas-enable file (count, then one byte per area): every area takes part; the conquest
+            // preview of the menu needs it
+            string enableFile = Path.ChangeExtension(scenario, ".bin");
+            using (var enable = new BinaryWriter(File.Create(Path.Combine(outDir, enableFile))))
             {
-                if (fleets >= 3) break;
-                int sea = r.border.Where(kv => regions[kv.Key].sea && !usedSeas.Contains(kv.Key))
-                                  .OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).Select(kv => kv.Key).DefaultIfEmpty(-1).First();
-                if (sea < 0) continue;
-                usedSeas.Add(sea);
-                fleets++;
-                xml.Append($"        <area id=\"{sea}\" construction=\"none\" level=\"0\" installation=\"none\" country=\"{r.country}\">\n");
-                xml.Append("            <army type=\"destroyer\" level=\"1\" cards=\"0\" />\n");
+                enable.Write(n);
+                for (int r = 0; r < n; r++) enable.Write((byte)1);
+            }
+            var xml = new System.Text.StringBuilder();
+            xml.Append($"<battle map=\"{mapId}\" areasenable=\"{enableFile}\">\n    <list name=\"country\">\n");
+            var present = owner.Where(o => o != null).ToHashSet();
+            var active = players.Where(kv => present.Contains(kv.Key)).ToList();
+            foreach (var (id, node) in active)
+            {
+                var o = node!.AsObject();
+                int owned = owner.Count(x => x == id);
+                int[] rgb = o["color"]!.AsArray().Select(c => c!.GetValue<int>()).ToArray();
+                int money = o["money"]?.GetValue<int>() ?? 200 + 5 * owned, industry = o["industry"]?.GetValue<int>() ?? 100 + 3 * owned;
+                xml.Append($"        <country id=\"{id}\" name=\"{id}\" commander=\"{o["commander"]?.GetValue<string>() ?? "common1"}\" ai=\"1\" defeated=\"land\" " +
+                           $"taxfactor=\"1.200000\" money=\"{money}\" industry=\"{industry}\" techlevel=\"{o["techlevel"]?.GetValue<int>() ?? 3}\" alliance=\"{o["alliance"]!.GetValue<string>()}\" " +
+                           $"r=\"{rgb[0]}\" g=\"{rgb[1]}\" b=\"{rgb[2]}\" a=\"90\" />\n");
+            }
+            xml.Append("    </list>\n    <list name=\"area\">\n");
+            var activeIds = active.Select(kv => kv.Key).ToHashSet();
+            // stronger garrisons for the great powers (players' "garrison": extra infantry in capitals and large cities)
+            int Garrison(string id) => players[id]?["garrison"]?.GetValue<int>() ?? 0;
+            foreach (var r in regions.Where(r => !r.sea && owner[r.id] != null && activeIds.Contains(owner[r.id])))
+            {
+                string id = owner[r.id];
+                string construction = r.type == "capital" || r.type == "large city" ? "city" : r.airfield ? "airport" : "none";
+                int level = construction == "none" ? 0 : r.type == "capital" ? 2 : 1;
+                var unitList = new List<string>();
+                if (r.type == "capital") unitList.AddRange(new[] { "infantry", "infantry", "tank" });
+                else if (r.type == "large city") unitList.AddRange(new[] { "infantry", "artillery" });
+                else if (r.type == "normal city" || r.type == "port") unitList.Add("infantry");
+                if (r.type == "capital" || r.type == "large city")
+                    for (int k = 0; k < Garrison(id) && unitList.Count < 4; k++) unitList.Add("infantry");
+                xml.Append($"        <area id=\"{r.id}\" construction=\"{construction}\" level=\"{level}\" installation=\"{(r.type == "capital" ? "fort" : "none")}\" country=\"{id}\"");
+                if (unitList.Count == 0) { xml.Append(" />\n"); continue; }
+                xml.Append(">\n");
+                foreach (var u in unitList) xml.Append($"            <army type=\"{u}\" level=\"1\" cards=\"0\" />\n");
                 xml.Append("        </area>\n");
             }
-        }
-        xml.Append("    </list>\n    <list name=\"dialogue\">\n    </list>\n</battle>\n");
-        File.WriteAllText(Path.Combine(outDir, scenario), xml.ToString());
-
-        // ---- the conquest menu entry: conquests.json (merged into the game's) and the menu texts
-        if (cfg["conquest"] is JsonObject menu)
-        {
-            int number = menu["number"]!.GetValue<int>();
-            var (lon, lat) = (menu["centerLon"]!.GetValue<double>(), menu["centerLat"]!.GetValue<double>());
-            double cxUnits = (lon - config["bounds"]!["west"]!.GetValue<double>()) * (width / (config["bounds"]!["east"]!.GetValue<double>() - config["bounds"]!["west"]!.GetValue<double>())) * S;
-            double cyUnits = (config["bounds"]!["north"]!.GetValue<double>() - lat) * (width / (config["bounds"]!["east"]!.GetValue<double>() - config["bounds"]!["west"]!.GetValue<double>())) * S;
-            string conquestsDir = Path.Combine(outDir, "data", "json", "conquests");
-            Directory.CreateDirectory(conquestsDir);
-            // the preview scales centerX by map width / 1715 and centerY by map height / 750
-            File.WriteAllText(Path.Combine(conquestsDir, "conquests.json"), new JsonObject
+            // fleets: a destroyer in the sea zone along each port (the longest shared border), up to the
+            // player's "fleets" (default 3); a sea area lists the fleet's country like the classic scenarios do
+            var usedSeas = new HashSet<int>();
+            int fleetCount = 0;
+            foreach (var g in regions.Where(r => !r.sea && r.port && owner[r.id] != null && activeIds.Contains(owner[r.id])).GroupBy(r => owner[r.id]).OrderBy(g => g.Key, StringComparer.Ordinal))
             {
-                ["about"] = "Adds the generated world conquest to the conquest list (merged into the game's conquests.json).",
-                ["conquests"] = new JsonObject
+                int fleets = 0, maxFleets = players[g.Key]?["fleets"]?.GetValue<int>() ?? 3;
+                foreach (var r in g.OrderByDescending(r => r.type == "capital").ThenByDescending(r => r.cityPopulation).ThenBy(r => r.id))
                 {
-                    [$"conquest {number}"] = new JsonObject
-                    {
-                        ["centerX"] = (int)Math.Round(cxUnits / mapW * 1715),
-                        ["centerY"] = (int)Math.Round(cyUnits / mapH * 750),
-                        ["flags"] = new JsonArray(),
-                    },
-                },
-            }.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
+                    if (fleets >= maxFleets) break;
+                    int sea = r.border.Where(kv => regions[kv.Key].sea && !usedSeas.Contains(kv.Key))
+                                      .OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).Select(kv => kv.Key).DefaultIfEmpty(-1).First();
+                    if (sea < 0) continue;
+                    usedSeas.Add(sea);
+                    fleets++; fleetCount++;
+                    xml.Append($"        <area id=\"{sea}\" construction=\"none\" level=\"0\" installation=\"none\" country=\"{g.Key}\">\n");
+                    xml.Append("            <army type=\"destroyer\" level=\"1\" cards=\"0\" />\n");
+                    xml.Append("        </area>\n");
+                }
+            }
+            xml.Append("    </list>\n    <list name=\"dialogue\">\n    </list>\n</battle>\n");
+            File.WriteAllText(Path.Combine(outDir, scenario), xml.ToString());
+
+            // the conquest list entry (merged into the game's conquests.json) and the menu texts
+            double lon = s["centerLon"]!.GetValue<double>(), lat = s["centerLat"]!.GetValue<double>();
+            double cxUnits = (lon - west) * unitsPerDeg, cyUnits = (north - lat) * unitsPerDeg;
+            // the preview scales centerX by map width / 1715 and centerY by map height / 750
+            conquestEntries[$"conquest {number}"] = new JsonObject
+            {
+                ["centerX"] = (int)Math.Round(cxUnits / mapW * 1715),
+                ["centerY"] = (int)Math.Round(cyUnits / mapH * 750),
+                ["fogOfWar"] = s["fogOfWar"]?.GetValue<bool>() ?? false,
+                ["leftRightWrap"] = s["leftRightWrap"]?.GetValue<bool>() ?? false,
+                ["flags"] = new JsonArray(),
+            };
+            string title = s["title"]!.GetValue<string>();
             WriteConquestButton(Path.Combine(outDir, $"button_conquest{number}@2x.png"), raster, width, height, regions,
-                                menu["title"]!.GetValue<string>(), (int)(cxUnits / S), (int)(cyUnits / S), 6 / S);
-            var strings = new JsonObject { [$"conquest name {number}"] = menu["title"]!.GetValue<string>() };
+                                title, (int)(cxUnits / S), (int)(cyUnits / S), Math.Max(1, 6 / S));
+            strings[$"conquest name {number}"] = title;
             foreach (var (id, _) in active)
             {
-                string name = (countryNames.GetValueOrDefault(id) ?? id).ToUpperInvariant();
-                strings[$"conquest country name {number} {id}"] = name;
-                strings[$"conquest country intro {number} {id}"] = menu["intro"]!.GetValue<string>().Replace("{country}", countryNames.GetValueOrDefault(id) ?? id);
-                strings[$"conquest country victory {number} {id}"] = menu["victory"]!.GetValue<string>();
+                string name = spec.names.GetValueOrDefault(id) ?? id;
+                strings[$"conquest country name {number} {id}"] = name.ToUpperInvariant();
+                strings[$"conquest country intro {number} {id}"] = s["intro"]!.GetValue<string>().Replace("{country}", name);
+                strings[$"conquest country victory {number} {id}"] = s["victory"]!.GetValue<string>();
             }
+            summary.Add($"{scenario}: {active.Count} countries, {owner.Count(o => o != null && activeIds.Contains(o))} areas owned, {fleetCount} fleets");
+        }
+        if (scenarios.Count > 0)
+        {
+            string conquestsDir = Path.Combine(outDir, "data", "json", "conquests");
+            Directory.CreateDirectory(conquestsDir);
+            File.WriteAllText(Path.Combine(conquestsDir, "conquests.json"), new JsonObject
+            {
+                ["about"] = "Adds the conquests of the generated map to the conquest list (merged into the game's conquests.json).",
+                ["conquests"] = conquestEntries,
+            }.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
             foreach (var lang in new[] { "cn", "en", "ja", "kr", "ru", "tw" })
                 foreach (var table in new[] { $"stringtable_{lang}", $"stringtable_{lang}_iPad" })
                 {
@@ -365,7 +394,7 @@ internal static partial class MapPipeline
                     Directory.CreateDirectory(dir);
                     File.WriteAllText(Path.Combine(dir, table + ".json"), new JsonObject
                     {
-                        ["about"] = "Menu texts of the generated world conquest (English for every language; merged into the game's table).",
+                        ["about"] = "Menu texts of the generated conquests (English for every language; merged into the game's table).",
                         ["strings"] = strings.DeepClone(),
                     }.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }) + "\n");
                 }
@@ -375,14 +404,15 @@ internal static partial class MapPipeline
         {
             ["id"] = cfg["modId"]!.GetValue<string>(),
             ["name"] = cfg["modName"]!.GetValue<string>(),
-            ["version"] = "1.0",
+            ["version"] = "2.0",
             ["author"] = "WC2.Tools build-map",
-            ["description"] = $"The {config["name"]!.GetValue<string>()} map as map {mapId} with the conquest {scenario}: generated from Natural Earth (MAP_PIPELINE.md). " +
-                              "The classic map and every campaign are untouched; remove or disable the mod to revert.",
+            ["description"] = $"The {config["name"]!.GetValue<string>()} map as map {mapId} with the conquests " +
+                              string.Join(", ", scenarios.Select(s => s.config["file"]!.GetValue<string>())) +
+                              ": generated from Natural Earth and CShapes 2.0 (MAP_PIPELINE.md). The classic map and every campaign are untouched; remove or disable the mod to revert.",
             ["priority"] = 0,
             ["enabled"] = true,
         }.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
-        Console.WriteLine($"build-map: classic export (map {mapId}, {mapW}x{mapH} units): {n} areas, {tilesX * tilesY} tiles, {pages} zone atlas pages, " +
-                          $"{active.Count} countries in {scenario} -> {outDir}");
+        Console.WriteLine($"build-map: classic export (map {mapId}, {mapW}x{mapH} units{(wrap ? ", wraps" : "")}): {n} areas, {tilesX * tilesY} tiles, {pages} zone atlas pages; " +
+                          string.Join("; ", summary) + $" -> {outDir}");
     }
 }

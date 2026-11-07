@@ -6,23 +6,26 @@ using SkiaSharp;
 namespace WC2.Tools;
 
 /// <summary>
-/// build-map: a playable region map from Natural Earth GeoJSON (MAP_PIPELINE.md).
+/// build-map: one playable base map for every era, from GeoJSON (MAP_PIPELINE.md).
 /// <list type="number">
-/// <item>Admin-1 provinces inside the configured bounds are rasterized (equirectangular, one colour
-/// per province, no antialiasing). The raster gives every province its area, centroid, coastline and
-/// neighbours without polygon clipping.</item>
-/// <item>Provinces merge within their country (smallest into its smallest neighbour) until every
-/// region has <c>minAreaKm2</c> and a country has at most <c>maxPerCountry</c> regions; islands below
-/// <c>minIslandKm2</c> are dropped.</item>
-/// <item>Water becomes sea zones: a grid of <c>cellDegrees</c>, each cell split into its connected
-/// water parts; parts below <c>minSeaPixels</c> join a neighbouring zone.</item>
-/// <item>Adjacency: regions whose pixels touch (4-neighbourhood) along at least <c>minBorderPixels</c>.</item>
-/// <item>Ownership from the country (ADM0_A3 mapped to the game's country ids), capitals from the
-/// populated places marked as country capitals, cities by population, ports and airfields from the
-/// point datasets.</item>
+/// <item>Natural Earth admin-1 provinces are rasterized (equirectangular, no antialiasing): every
+/// pixel knows its province.</item>
+/// <item>Every era of <c>eras</c> is rasterized too: a CShapes 2.0 date (the states and colonies of that
+/// day) or Natural Earth's countries (today). Gaps along the coasts take the province's unit, small or
+/// thin fragments (two sources disagreeing by a few kilometres) join their neighbour.</item>
+/// <item>A pixel's signature is its unit in every era (plus the occupation zones of the scenarios); the
+/// provinces split along every era's borders and merge again only with neighbours of the same
+/// signature, until regions reach the configured size. So the base map holds the borders of all eras,
+/// and a scenario of any era only assigns owners.</item>
+/// <item>Far island groups become regions of their own (or are dropped when tiny); a wrapping map
+/// splits regions at the seam.</item>
+/// <item>Water becomes sea zones of irregular shape: seeds spaced by the distance from the coast (small
+/// zones along the coasts, large ones in the open ocean), grown through the water and relaxed.</item>
+/// <item>Adjacency (across the seam on a wrapping map, plus configured straits), capitals of every era,
+/// cities, ports and airfields.</item>
 /// </list>
 /// Output (the map pack): map.json, regions.json, regions.raster (the region of every pixel, uint16,
-/// deflate), preview.png.
+/// deflate), preview.png; with --classic-out the playable map mod (MapClassicExport.cs).
 /// </summary>
 internal static partial class MapPipeline
 {
@@ -31,8 +34,8 @@ internal static partial class MapPipeline
         public int index;
         public string name = "", iso = "", country = "", adm0 = "", admin = "";
         public long pixels;
-        public double areaKm2, sumX, sumY;
-        public int region = -1;
+        public double areaKm2;
+        public int occupation;   // index into the occupation keys (0: none)
     }
 
     private sealed class Region
@@ -50,6 +53,25 @@ internal static partial class MapPipeline
         public long cityPopulation;
         public string capitalOf;
         public string portName, airfieldName;
+        public int signature = -1;
+        public string[] owners = Array.Empty<string>();   // per era: the unit holding the region
+        public string occupation = "";                     // scenario occupation key ("" none)
+    }
+
+    /// <summary>One era of the base map: CShapes on a date, or Natural Earth (today).</summary>
+    private sealed class Era
+    {
+        public string key = "";
+        public bool naturalEarth;
+        public (int y, int m, int d) date;
+        public int[] unit = Array.Empty<int>();   // per pixel: unit index + 1 (0 = none)
+    }
+
+    /// <summary>A political unit: a CShapes state or colony ("gw:290") or a Natural Earth country ("ne:POL").</summary>
+    private sealed class Unit
+    {
+        public string key = "";
+        public readonly Dictionary<string, (string name, string capital, double lon, double lat)> eras = new();
     }
 
     public static int Run(Dictionary<string, string> opts)
@@ -59,16 +81,16 @@ internal static partial class MapPipeline
         var config = JsonNode.Parse(File.ReadAllText(configPath), null, new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true })!.AsObject();
         var b = config["bounds"]!.AsObject();
         double west = b["west"]!.GetValue<double>(), east = b["east"]!.GetValue<double>(), north = b["north"]!.GetValue<double>(), south = b["south"]!.GetValue<double>();
+        bool wrap = config["wrap"]?.GetValue<bool>() ?? false;
+        if (wrap && Math.Abs(east - west - 360) > 1e-6) throw new ToolException("a wrapping map spans 360 degrees (west -180, east 180)");
         int width = config["raster"]?["width"]?.GetValue<int>() ?? 4096;
         double pxPerDeg = width / (east - west);
         int height = (int)Math.Round((north - south) * pxPerDeg);
+        int n = width * height;
         var rules = config["regions"]!.AsObject();
         double minAreaKm2 = rules["minAreaKm2"]!.GetValue<double>();
         int maxPerCountry = rules["maxPerCountry"]!.GetValue<int>();
         double minIslandKm2 = rules["minIslandKm2"]!.GetValue<double>();
-        var seaRules = config["sea"]!.AsObject();
-        double cellDegrees = seaRules["cellDegrees"]!.GetValue<double>();
-        int minSeaPixels = seaRules["minSeaPixels"]!.GetValue<int>();
         int minBorder = config["minBorderPixels"]?.GetValue<int>() ?? 2;
         // per-country sizing (game id -> { minAreaKm2, maxPerCountry }), e.g. a finer Europe
         var overrides = config["regionOverrides"]?.AsObject() ?? new JsonObject();
@@ -78,183 +100,261 @@ internal static partial class MapPipeline
 
         (double x, double y) Project(double lon, double lat) => ((lon - west) * pxPerDeg, (north - lat) * pxPerDeg);
         (double lon, double lat) Unproject(double x, double y) => (west + x / pxPerDeg, north - y / pxPerDeg);
-        double KmPerPixel2(double y)
+        var rowKm2 = new double[height];
+        for (int y = 0; y < height; y++)
         {
-            double lat = north - y / pxPerDeg;
-            return (111.32 * Math.Cos(lat * Math.PI / 180) / pxPerDeg) * (110.57 / pxPerDeg);
+            double lat = north - (y + 0.5) / pxPerDeg;
+            rowKm2[y] = (111.32 * Math.Cos(lat * Math.PI / 180) / pxPerDeg) * (110.57 / pxPerDeg);
         }
+        var scenarios = config["classicExport"]?["scenarios"]?.AsArray().Select(s => s!.AsObject()).ToList() ?? new();
 
         // ---- 1. rasterize the provinces
         var provinces = new List<Province>();
-        using var bitmap = new SKBitmap(new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul));
-        using (var canvas = new SKCanvas(bitmap))
+        // occupation zones of the scenarios (game id per province): their borders are kept like an era's
+        var occupationKeys = new List<string> { "" };
+        var occupationIndex = new Dictionary<string, int> { [""] = 0 };
+        string OccupationOf(string adm0, string iso, string name)
         {
-            canvas.Clear(new SKColor(0, 0, 0, 0));
-            using var paint = new SKPaint { IsAntialias = false, Style = SKPaintStyle.Fill, BlendMode = SKBlendMode.Src };
-            using var doc = JsonDocument.Parse(File.OpenRead(Path.Combine(source, "ne_10m_admin_1_states_provinces.geojson")));
-            foreach (var f in doc.RootElement.GetProperty("features").EnumerateArray())
-            {
-                var geometry = f.GetProperty("geometry");
-                if (geometry.ValueKind != JsonValueKind.Object) continue;
-                using var path = new SKPath { FillType = SKPathFillType.EvenOdd };
-                bool inside = false;
-                foreach (var ring in Rings(geometry))
-                {
-                    bool first = true;
-                    foreach (var (lon, lat) in ring)
+            var parts = new List<string>();
+            for (int s = 0; s < scenarios.Count; s++)
+                foreach (var (owner, list) in scenarios[s]["provinceOwners"]?.AsObject() ?? new JsonObject())
+                    foreach (var p in list!.AsArray())
                     {
-                        if (lon >= west && lon <= east && lat >= south && lat <= north) inside = true;
-                        var (x, y) = Project(lon, lat);
-                        if (first) { path.MoveTo((float)x, (float)y); first = false; }
-                        else path.LineTo((float)x, (float)y);
+                        string key = p!.GetValue<string>();
+                        if (key == iso || key == name || key == adm0 + "/" + name || key == adm0) parts.Add($"{s}:{owner}");
                     }
-                    path.Close();
-                }
-                if (!inside) continue;
-                var p = f.GetProperty("properties");
-                var province = new Province
-                {
-                    index = provinces.Count,
-                    name = Str(p, "name"),
-                    iso = Str(p, "iso_3166_2"),
-                    adm0 = Str(p, "adm0_a3"),
-                    admin = Str(p, "admin"),
-                };
-                province.country = countryIds.TryGetValue(province.adm0, out var id) ? id : Str(p, "iso_a2").ToLowerInvariant();
-                if (province.country.Length == 0 || province.country == "-99") province.country = province.adm0.ToLowerInvariant();
-                provinces.Add(province);
-                int code = provinces.Count;   // 1-based
-                paint.Color = new SKColor((byte)(code & 0xFF), (byte)((code >> 8) & 0xFF), (byte)((code >> 16) & 0xFF), 255);
-                canvas.DrawPath(path, paint);
-            }
+            return string.Join("|", parts);
         }
-        var raster = new int[width * height];   // province index + 1 (0 = water)
-        var pixels = bitmap.GetPixelSpan();
-        for (int i = 0; i < raster.Length; i++)
+        using var admin1 = JsonDocument.Parse(File.OpenRead(Path.Combine(source, "ne_10m_admin_1_states_provinces.geojson")));
+        var raster = Rasterize(admin1.RootElement.GetProperty("features"), west, east, north, south, pxPerDeg, width, height, p =>
         {
-            byte a = pixels[i * 4 + 3];
-            raster[i] = a == 0 ? 0 : pixels[i * 4] | (pixels[i * 4 + 1] << 8) | (pixels[i * 4 + 2] << 16);
-        }
-        for (int y = 0; y < height; y++)
-        {
-            double km2 = KmPerPixel2(y + 0.5);
-            for (int x = 0; x < width; x++)
+            var province = new Province
             {
-                int v = raster[y * width + x];
-                if (v <= 0 || v > provinces.Count) { raster[y * width + x] = 0; continue; }
-                var pr = provinces[v - 1];
-                pr.pixels++; pr.areaKm2 += km2; pr.sumX += x; pr.sumY += y;
-            }
+                index = provinces.Count,
+                name = Str(p, "name"),
+                iso = Str(p, "iso_3166_2"),
+                adm0 = Str(p, "adm0_a3"),
+                admin = Str(p, "admin"),
+            };
+            province.country = countryIds.TryGetValue(province.adm0, out var id) ? id : Str(p, "iso_a2").ToLowerInvariant();
+            if (province.country.Length == 0 || province.country == "-99") province.country = province.adm0.ToLowerInvariant();
+            string occupation = OccupationOf(province.adm0, province.iso, province.name);
+            if (!occupationIndex.TryGetValue(occupation, out int oi)) { oi = occupationKeys.Count; occupationKeys.Add(occupation); occupationIndex[occupation] = oi; }
+            province.occupation = oi;
+            provinces.Add(province);
+            return provinces.Count;   // 1-based
+        });
+        for (int i = 0; i < n; i++)
+        {
+            int v = raster[i];
+            if (v <= 0 || v > provinces.Count) { raster[i] = 0; continue; }
+            provinces[v - 1].pixels++;
+            provinces[v - 1].areaKm2 += rowKm2[i / width];
         }
         Console.WriteLine($"build-map: {provinces.Count(p => p.pixels > 0)} provinces rasterized at {width}x{height}");
 
-        // ---- 2. merge provinces into regions within their country
-        var provinceBorder = Adjacency(raster, width, height, provinces.Count + 1);
-        var parent = Enumerable.Range(0, provinces.Count).ToArray();
-        int Find(int i) { while (parent[i] != i) i = parent[i] = parent[parent[i]]; return i; }
-        var groupArea = provinces.Select(p => p.areaKm2).ToArray();
-        bool merged = true;
-        while (merged)
+        // ---- 2. the eras: one unit per land pixel and era
+        var units = new List<Unit>();
+        var unitIndex = new Dictionary<string, int>();
+        int UnitOf(string key)
         {
-            merged = false;
-            // per country: groups below the minimum, or the smallest group while a country has too many
-            var groups = provinces.Where(p => p.pixels > 0).GroupBy(p => Find(p.index)).ToList();
-            var perCountry = groups.GroupBy(g => provinces[g.Key].country).ToDictionary(g => g.Key, g => g.Count());
-            foreach (var g in groups.OrderBy(g => groupArea[g.Key]))
+            if (!unitIndex.TryGetValue(key, out int u)) { u = units.Count; units.Add(new Unit { key = key }); unitIndex[key] = u; }
+            return u;
+        }
+        var eras = new List<Era>();
+        var hist = config["historicalBorders"]?.AsObject();
+        JsonDocument cshapes = null;
+        foreach (var (key, node) in config["eras"]?.AsObject() ?? new JsonObject())
+        {
+            var era = new Era { key = key };
+            if (node!["source"]?.GetValue<string>() == "naturalearth")
             {
-                int root = Find(g.Key);
-                if (root != g.Key) continue;
-                string country = provinces[root].country;
-                bool small = groupArea[root] < MinArea(country);
-                bool tooMany = perCountry[country] > MaxRegions(country);
-                if (!small && !tooMany) continue;
-                // the smallest touching group of the same country
-                int best = -1; double bestArea = double.MaxValue;
-                foreach (var member in provinces.Where(p => p.pixels > 0 && Find(p.index) == root))
-                    foreach (var (other, len) in provinceBorder[member.index + 1])
+                era.naturalEarth = true;
+                era.unit = new int[n];
+                for (int i = 0; i < n; i++)
+                    if (raster[i] > 0)
                     {
-                        if (other <= 0 || len < minBorder) continue;
-                        int o = Find(other - 1);
-                        if (o == root || provinces[o].country != country) continue;
-                        if (groupArea[o] < bestArea) { bestArea = groupArea[o]; best = o; }
+                        var p = provinces[raster[i] - 1];
+                        int u = UnitOf("ne:" + p.adm0);
+                        units[u].eras.TryAdd(key, (p.admin, "", double.NaN, double.NaN));
+                        era.unit[i] = u + 1;
                     }
-                if (best < 0) continue;   // an island of its own
-                parent[root] = best;
-                groupArea[best] += groupArea[root];
-                perCountry[country]--;
-                merged = true;
             }
+            else
+            {
+                var d = node["date"]!.GetValue<string>().Split('-').Select(int.Parse).ToArray();
+                era.date = (d[0], d[1], d[2]);
+                cshapes ??= JsonDocument.Parse(File.OpenRead(Path.Combine(source, hist!["file"]!.GetValue<string>())));
+                era.unit = Rasterize(cshapes.RootElement.GetProperty("features"), west, east, north, south, pxPerDeg, width, height, p =>
+                {
+                    var start = ((int)Long(p, "gwsyear"), (int)Long(p, "gwsmonth"), (int)Long(p, "gwsday"));
+                    var end = ((int)Long(p, "gweyear"), (int)Long(p, "gwemonth"), (int)Long(p, "gweday"));
+                    if (start.CompareTo(era.date) > 0 || end.CompareTo(era.date) < 0) return 0;
+                    int u = UnitOf("gw:" + Long(p, "gwcode"));
+                    units[u].eras[era.key] = (Str(p, "cntry_name"), Str(p, "capname"), Dbl(p, "caplong"), Dbl(p, "caplat"));
+                    return u + 1;
+                });
+                var fallback = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                foreach (var (adm0, gw) in hist!["fallback"]?.AsObject() ?? new JsonObject())
+                {
+                    int u = UnitOf("gw:" + gw!.GetValue<string>());
+                    fallback[adm0] = u + 1;
+                }
+                int moved = FillAndClean(era.unit, raster, provinces, width, height, rowKm2, fallback,
+                                         hist["minFragmentKm2"]?.GetValue<double>() ?? 4000, hist["minFragmentWidthPixels"]?.GetValue<int>() ?? 3);
+                Console.WriteLine($"build-map: era {key}: {era.unit.Where(v => v > 0).Distinct().Count()} units, {moved} pixels of small fragments joined their neighbours");
+            }
+            eras.Add(era);
+        }
+        cshapes?.Dispose();
+        foreach (var u in units)
+            foreach (var e in eras.Where(e => !u.eras.ContainsKey(e.key)))
+                u.eras[e.key] = (u.key, "", double.NaN, double.NaN);
+
+        // ---- 3. signatures (the unit of every era + the occupation zone) and atoms (province x signature)
+        var pairIds = new Dictionary<(int, int), int>();
+        var pairs = new List<(int prev, int unit)> { (0, 0) };
+        int Pair(int a, int u)
+        {
+            if (!pairIds.TryGetValue((a, u), out int id)) { id = pairs.Count; pairs.Add((a, u)); pairIds[(a, u)] = id; }
+            return id;
+        }
+        var atomIds = new Dictionary<(int province, int sig), int>();
+        var atomProvince = new List<int>();
+        var atomSig = new List<int>();
+        var atomArea = new List<double>();
+        var atomRaster = new int[n];   // atom id + 1
+        for (int i = 0; i < n; i++)
+        {
+            int pv = raster[i];
+            if (pv == 0) continue;
+            int s = Pair(0, -provinces[pv - 1].occupation);
+            foreach (var era in eras) s = Pair(s, era.unit[i]);
+            if (!atomIds.TryGetValue((pv - 1, s), out int atom))
+            {
+                atom = atomProvince.Count;
+                atomIds[(pv - 1, s)] = atom;
+                atomProvince.Add(pv - 1); atomSig.Add(s); atomArea.Add(0);
+            }
+            atomArea[atom] += rowKm2[i / width];
+            atomRaster[i] = atom + 1;
+        }
+        // signature -> units per era (walk the pair chain back)
+        int[] SigUnits(int sig)
+        {
+            var list = new int[eras.Count];
+            for (int e = eras.Count - 1; e >= 0; e--) { list[e] = pairs[sig].unit; sig = pairs[sig].prev; }
+            return list;
+        }
+        int SigOccupation(int sig)
+        {
+            for (int e = 0; e < eras.Count; e++) sig = pairs[sig].prev;
+            return -pairs[sig].unit;
+        }
+        Console.WriteLine($"build-map: {atomProvince.Count} province parts in {atomSig.Distinct().Count()} era signatures");
+
+        // ---- 4. merge the parts into regions: only neighbours of the same signature (every era's border
+        // stays), smallest first, until regions have minAreaKm2 and countries at most maxPerCountry regions
+        int atoms = atomProvince.Count;
+        var gBorder = Adjacency(atomRaster, width, height, atoms, false);   // index atom + 1
+        var parent = Enumerable.Range(0, atoms).ToArray();
+        var alive = Enumerable.Repeat(true, atoms).ToArray();
+        var gArea = atomArea.ToArray();
+        string GCountry(int g) => provinces[atomProvince[g]].country;
+        var perCountry = Enumerable.Range(0, atoms).GroupBy(GCountry).ToDictionary(g => g.Key, g => g.Count());
+        void Merge(int a, int into)
+        {
+            parent[a] = into; gArea[into] += gArea[a]; alive[a] = false;
+            foreach (var (o1, len) in gBorder[a + 1])
+            {
+                int o = o1 - 1;
+                if (o == into || o < 0) continue;
+                gBorder[into + 1][o + 1] = gBorder[into + 1].GetValueOrDefault(o + 1) + len;
+                gBorder[o + 1].Remove(a + 1);
+                gBorder[o + 1][into + 1] = gBorder[o + 1].GetValueOrDefault(into + 1) + len;
+            }
+            gBorder[into + 1].Remove(a + 1);
+            gBorder[a + 1].Clear();
+        }
+        bool changed = true;
+        while (changed)
+        {
+            changed = false;
+            foreach (int g in Enumerable.Range(0, atoms).Where(g => alive[g]).OrderBy(g => gArea[g]).ThenBy(g => g).ToList())
+            {
+                if (!alive[g]) continue;
+                string c = GCountry(g);
+                bool small = gArea[g] < MinArea(c), tooMany = perCountry[c] > MaxRegions(c);
+                if (!small && !tooMany) continue;
+                int best = -1; double bestArea = double.MaxValue;
+                foreach (var (o1, len) in gBorder[g + 1])
+                {
+                    int o = o1 - 1;
+                    if (o < 0 || len < minBorder || !alive[o] || atomSig[o] != atomSig[g]) continue;
+                    if (gArea[o] < bestArea || (gArea[o] == bestArea && o < best)) { bestArea = gArea[o]; best = o; }
+                }
+                if (best < 0) continue;
+                Merge(g, best);
+                perCountry[c]--;
+                changed = true;
+            }
+        }
+        // what is still below minIslandKm2: an enclave joins the neighbour it shares the longest border
+        // with (its own borders are lost), an island is left out
+        var dropped = new bool[atoms];
+        foreach (int g in Enumerable.Range(0, atoms).Where(g => alive[g] && gArea[g] < minIslandKm2).OrderBy(g => gArea[g]).ThenBy(g => g).ToList())
+        {
+            if (!alive[g] || gArea[g] >= minIslandKm2) continue;
+            int best = -1, bestLen = 0;
+            foreach (var (o1, len) in gBorder[g + 1])
+            {
+                int o = o1 - 1;
+                if (o >= 0 && alive[o] && (len > bestLen || (len == bestLen && o < best))) { bestLen = len; best = o; }
+            }
+            if (best >= 0) Merge(g, best);
+            else { alive[g] = false; dropped[g] = true; }
+        }
+        int Find(int i) { while (parent[i] != i) i = parent[i] = parent[parent[i]]; return i; }
+
+        // ---- regions from the groups
+        var regions = new List<Region>();
+        var groupRegion = new Dictionary<int, int>();
+        var members = Enumerable.Range(0, atoms).Where(a => !dropped[Find(a)]).GroupBy(Find).OrderBy(g => g.Key);
+        foreach (var g in members)
+        {
+            var biggestAtom = g.OrderByDescending(a => atomArea[a]).First();
+            var biggest = provinces[atomProvince[biggestAtom]];
+            var r = new Region { id = regions.Count, country = biggest.country, name = biggest.name, signature = atomSig[g.Key] };
+            foreach (var p in g.Select(a => provinces[atomProvince[a]]).Distinct().OrderByDescending(p => p.areaKm2))
+                r.provinces.Add(p.iso.Length > 0 ? p.iso : p.name);
+            var su = SigUnits(r.signature);
+            r.owners = su.Select(u => u > 0 ? units[u - 1].key : "").ToArray();
+            r.occupation = occupationKeys[SigOccupation(r.signature)];
+            groupRegion[g.Key] = r.id;
+            regions.Add(r);
+        }
+        var regionRaster = new int[n];   // region id + 1
+        for (int i = 0; i < n; i++)
+        {
+            int a = atomRaster[i];
+            if (a == 0) continue;
+            int root = Find(a - 1);
+            regionRaster[i] = groupRegion.TryGetValue(root, out int rid) ? rid + 1 : 0;
         }
 
-        // ---- regions: land groups (islands below the minimum are dropped), then sea zones
-        var regions = new List<Region>();
-        var groupRegion = new Dictionary<int, Region>();
-        foreach (var g in provinces.Where(p => p.pixels > 0).GroupBy(p => Find(p.index)).OrderBy(g => g.Key))
-        {
-            double area = g.Sum(p => p.areaKm2);
-            if (area < minIslandKm2) continue;
-            var biggest = g.OrderByDescending(p => p.areaKm2).First();
-            var r = new Region { id = regions.Count, country = biggest.country, name = biggest.name };
-            foreach (var p in g) { r.provinces.Add(p.iso.Length > 0 ? p.iso : p.name); p.region = r.id; }
-            regions.Add(r);
-            groupRegion[g.Key] = r;
-        }
-        var regionRaster = new int[raster.Length];   // region id + 1
-        for (int i = 0; i < raster.Length; i++)
-        {
-            int v = raster[i];
-            regionRaster[i] = v > 0 && provinces[v - 1].region >= 0 ? provinces[v - 1].region + 1 : 0;
-        }
-        // parts of a land region far from its main body (islands across the date line, e.g. the
-        // Aleutians at the other edge of the map) are left out: a region stays one place on the map
-        double maxSpan = rules["maxPartDistanceDegrees"]?.GetValue<double>() ?? 25;
-        DropFarParts(regionRaster, width, height, regions.Count, maxSpan * pxPerDeg);
-        int landRegions = regions.Count;
-        int cellPx = Math.Max(4, (int)Math.Round(cellDegrees * pxPerDeg));
-        var seaLabel = new int[raster.Length];
-        var stack = new Stack<int>();
-        for (int cy = 0; cy < height; cy += cellPx)
-            for (int cx = 0; cx < width; cx += cellPx)
-            {
-                int x1 = Math.Min(width, cx + cellPx), y1 = Math.Min(height, cy + cellPx);
-                for (int y = cy; y < y1; y++)
-                    for (int x = cx; x < x1; x++)
-                    {
-                        int i0 = y * width + x;
-                        if (regionRaster[i0] != 0 || seaLabel[i0] != 0) continue;
-                        // flood fill the connected water inside this cell
-                        var part = new List<int>();
-                        int label = -(regions.Count + 1);
-                        stack.Push(i0); seaLabel[i0] = label;
-                        while (stack.Count > 0)
-                        {
-                            int i = stack.Pop(); part.Add(i);
-                            int px = i % width, py = i / width;
-                            foreach (int n in new[] { px > cx ? i - 1 : -1, px + 1 < x1 ? i + 1 : -1, py > cy ? i - width : -1, py + 1 < y1 ? i + width : -1 })
-                                if (n >= 0 && regionRaster[n] == 0 && seaLabel[n] == 0) { seaLabel[n] = label; stack.Push(n); }
-                        }
-                        var r = new Region { id = regions.Count, sea = true, name = $"sea {cx / cellPx}-{cy / cellPx}" };
-                        regions.Add(r);
-                        foreach (int i in part) regionRaster[i] = r.id + 1;
-                    }
-            }
-        // small water parts (lakes in a cell corner, slivers) join the neighbour they share the longest border with
-        var seaBorder = Adjacency(regionRaster, width, height, regions.Count + 1);
-        var seaPixels = new long[regions.Count + 1];
-        foreach (int v in regionRaster) seaPixels[v]++;
-        var redirect = Enumerable.Range(0, regions.Count + 1).ToArray();
-        foreach (var r in regions.Where(r => r.sea).OrderBy(r => seaPixels[r.id + 1]))
-        {
-            if (seaPixels[r.id + 1] >= minSeaPixels) continue;
-            var target = seaBorder[r.id + 1].Where(kv => kv.Key > 0 && regions[kv.Key - 1].sea && redirect[kv.Key] == kv.Key && kv.Key != r.id + 1)
-                                            .OrderByDescending(kv => kv.Value).Select(kv => kv.Key).FirstOrDefault();
-            if (target == 0) target = 0;   // an isolated lake: dropped
-            redirect[r.id + 1] = target;
-            if (target > 0) seaPixels[target] += seaPixels[r.id + 1];
-        }
-        int Resolve(int v) { while (redirect[v] != v) v = redirect[v]; return v; }
-        for (int i = 0; i < regionRaster.Length; i++) regionRaster[i] = Resolve(regionRaster[i]);
-        // renumber: land first, then the surviving sea zones
+        // ---- 5. far parts: island groups far from their region become regions of their own (tiny ones
+        // far away are left out); a wrapping map splits the regions that reach over the seam
+        var partRules = rules;
+        SplitFarParts(regionRaster, width, height, wrap, rowKm2, regions,
+                      (partRules["islandSplitDegrees"]?.GetValue<double>() ?? 6) * pxPerDeg,
+                      (partRules["islandClusterDegrees"]?.GetValue<double>() ?? 1.5) * pxPerDeg,
+                      (partRules["maxPartDistanceDegrees"]?.GetValue<double>() ?? 25) * pxPerDeg,
+                      minIslandKm2);
+        if (wrap) SplitAtSeam(regionRaster, width, height, regions);
+
+        // ---- 6. sea zones of irregular shape
+        BuildSeaZones(regionRaster, width, height, pxPerDeg, config["sea"]!.AsObject(), regions);
+        // renumber: land first, then the sea zones that kept pixels
         var used = new bool[regions.Count + 1];
         foreach (int v in regionRaster) used[v] = true;
         var final = new List<Region>();
@@ -266,29 +366,23 @@ internal static partial class MapPipeline
             r.id = final.Count;
             final.Add(r);
         }
-        for (int i = 0; i < regionRaster.Length; i++) regionRaster[i] = newId[regionRaster[i]];
-        var regionsBeforeRenumbering = regions;   // Province.region indexes this list
+        for (int i = 0; i < n; i++) regionRaster[i] = newId[regionRaster[i]];
         regions = final;
         foreach (var r in regions) { r.pixels = 0; r.areaKm2 = 0; r.sumX = 0; r.sumY = 0; }
-        for (int y = 0; y < height; y++)
+        for (int i = 0; i < n; i++)
         {
-            double km2 = KmPerPixel2(y + 0.5);
-            for (int x = 0; x < width; x++)
-            {
-                int v = regionRaster[y * width + x];
-                if (v == 0) continue;
-                var r = regions[v - 1];
-                r.pixels++; r.areaKm2 += km2; r.sumX += x; r.sumY += y;
-            }
+            int v = regionRaster[i];
+            if (v == 0) continue;
+            var r = regions[v - 1];
+            r.pixels++; r.areaKm2 += rowKm2[i / width]; r.sumX += i % width; r.sumY += i / width;
         }
-        var border = Adjacency(regionRaster, width, height, regions.Count + 1);
+
+        // ---- 7. adjacency (over the seam on a wrapping map) and the straits the raster closes
+        var border = Adjacency(regionRaster, width, height, regions.Count, wrap);
         foreach (var r in regions)
             foreach (var (other, len) in border[r.id + 1])
                 if (other > 0 && other != r.id + 1 && len >= minBorder) r.border[other - 1] = len;
-        foreach (var r in regions.Where(r => !r.sea)) r.coastal = r.border.Keys.Any(o => regions[o].sea);
-
-        // ---- 3. features: capitals, cities, ports, airfields
-        int RegionAt(double lon, double lat, bool landOnly, int searchPx = 3)
+        int RegionAt(double lon, double lat, Func<Region, bool> accept, int searchPx = 3)
         {
             var (fx, fy) = Project(lon, lat);
             int x0 = (int)fx, y0 = (int)fy;
@@ -297,24 +391,39 @@ internal static partial class MapPipeline
                     for (int dx = -rad; dx <= rad; dx++)
                     {
                         int x = x0 + dx, y = y0 + dy;
+                        if (wrap) x = ((x % width) + width) % width;
                         if (x < 0 || y < 0 || x >= width || y >= height) continue;
                         int v = regionRaster[y * width + x];
-                        if (v > 0 && (!landOnly || !regions[v - 1].sea)) return v - 1;
+                        if (v > 0 && accept(regions[v - 1])) return v - 1;
                     }
             return -1;
         }
+        int straits = 0;
+        foreach (var s in config["straits"]?.AsArray() ?? new JsonArray())
+        {
+            var p = s!["points"]!.AsArray().Select(v => v!.GetValue<double>()).ToArray();
+            int a = RegionAt(p[0], p[1], r => r.sea, 12), c = RegionAt(p[2], p[3], r => r.sea, 12);
+            if (a < 0 || c < 0) { Console.WriteLine($"build-map: strait {s["name"]}: no sea zone at one of its points"); continue; }
+            if (a == c) continue;   // open in the raster already
+            regions[a].border[c] = Math.Max(regions[a].border.GetValueOrDefault(c), minBorder);
+            regions[c].border[a] = Math.Max(regions[c].border.GetValueOrDefault(a), minBorder);
+            straits++;
+        }
+        foreach (var r in regions.Where(r => !r.sea)) r.coastal = r.border.Keys.Any(o => regions[o].sea);
+
+        // ---- 8. features: capitals of today and of every era, cities, ports, airfields
         var cityRules = config["cities"]!.AsObject();
         long largeCity = cityRules["largeCityPopulation"]!.GetValue<long>(), minCity = cityRules["minPopulation"]!.GetValue<long>();
         var places = Points(Path.Combine(source, "ne_50m_populated_places.geojson")).ToList();
-        // one capital per country: the most populous place marked as a country capital (Bolivia, Cote
-        // d'Ivoire and others list two)
+        // one capital per country today: the most populous place marked as a country capital (Bolivia,
+        // Cote d'Ivoire and others list two)
         var capitals = places.Where(f => Long(f.props, "ADM0CAP") == 1 && InBounds(f.lon, f.lat))
             .GroupBy(f => countryIds.TryGetValue(Str(f.props, "ADM0_A3"), out var cid) ? cid : Str(f.props, "ISO_A2").ToLowerInvariant())
             .ToDictionary(g => g.Key, g => g.OrderByDescending(f => Long(f.props, "POP_MAX")).First());
         foreach (var f in places)
         {
             if (!InBounds(f.lon, f.lat)) continue;
-            int r = RegionAt(f.lon, f.lat, true);
+            int r = RegionAt(f.lon, f.lat, r => !r.sea);
             if (r < 0) continue;
             var reg = regions[r];
             long pop = Long(f.props, "POP_MAX");
@@ -331,11 +440,27 @@ internal static partial class MapPipeline
                 if (reg.type != "capital") reg.type = pop >= largeCity ? "large city" : "normal city";
             }
         }
+        // the capitals the game's countries had in the other eras (Saint Petersburg, Nanking, Bonn, ...)
+        var homeUnits = new Dictionary<string, string>();
+        foreach (var (gameId, gwList) in config["homeUnits"]?.AsObject() ?? new JsonObject())
+            foreach (var gw in gwList!.AsArray()) homeUnits["gw:" + gw!.GetValue<string>()] = gameId;
+        int eraCapitals = 0;
+        foreach (var u in units.Where(u => homeUnits.ContainsKey(u.key)))
+            foreach (var (eraKey, info) in u.eras)
+            {
+                if (double.IsNaN(info.lon) || !InBounds(info.lon, info.lat)) continue;
+                int r = RegionAt(info.lon, info.lat, r => !r.sea, 4);
+                if (r < 0 || regions[r].type == "capital") continue;
+                regions[r].type = "capital";
+                regions[r].capitalOf = homeUnits[u.key];
+                regions[r].city ??= info.capital;
+                eraCapitals++;
+            }
         int maxPortRank = config["ports"]?["maxScalerank"]?.GetValue<int>() ?? 10;
         foreach (var f in Points(Path.Combine(source, "ne_10m_ports.geojson")))
         {
             if (!InBounds(f.lon, f.lat) || Long(f.props, "scalerank") > maxPortRank) continue;
-            int r = RegionAt(f.lon, f.lat, true, 6);
+            int r = RegionAt(f.lon, f.lat, r => !r.sea, 6);
             if (r < 0 || !regions[r].coastal) continue;
             regions[r].port = true;
             regions[r].portName ??= Str(f.props, "name");
@@ -347,14 +472,14 @@ internal static partial class MapPipeline
         foreach (var f in Points(Path.Combine(source, "ne_10m_airports.geojson")))
         {
             if (!InBounds(f.lon, f.lat) || !airTypes.Contains(Str(f.props, "type")) || Long(f.props, "scalerank") > maxAirRank) continue;
-            int r = RegionAt(f.lon, f.lat, true);
+            int r = RegionAt(f.lon, f.lat, r => !r.sea);
             if (r < 0) continue;
             regions[r].airfield = true;
             regions[r].airfieldName ??= Str(f.props, "name");
         }
         foreach (var r in regions.Where(r => !r.sea && r.city != null && r.type != "normal")) r.name = r.city;
 
-        // ---- 4. write the pack
+        // ---- 9. write the pack
         Directory.CreateDirectory(outDir);
         var list = new JsonArray();
         foreach (var r in regions)
@@ -375,6 +500,12 @@ internal static partial class MapPipeline
                 if (r.airfield) o["airfield"] = r.airfieldName != null ? JsonValue.Create(r.airfieldName) : JsonValue.Create(true);
                 if (r.coastal) o["coastal"] = true;
                 o["provinces"] = new JsonArray(r.provinces.Select(p => (JsonNode)p).ToArray());
+                if (eras.Count > 0)
+                {
+                    var owners = new JsonObject();
+                    for (int e = 0; e < eras.Count; e++) owners[eras[e].key] = r.owners[e];
+                    o["owners"] = owners;
+                }
             }
             o["center"] = new JsonArray(Math.Round(lon, 2), Math.Round(lat, 2));
             o["pixel"] = new JsonArray((int)(r.sumX / Math.Max(1, r.pixels)), (int)(r.sumY / Math.Max(1, r.pixels)));
@@ -386,111 +517,195 @@ internal static partial class MapPipeline
             .ToDictionary(g => g.Key, g => new JsonObject
             {
                 ["regions"] = g.Count(),
-                ["capital"] = g.FirstOrDefault(r => r.capitalOf != null)?.id is int c ? JsonValue.Create(c) : null,
+                ["capital"] = g.FirstOrDefault(r => r.capitalOf == g.Key)?.id is int c ? JsonValue.Create(c) : null,
             });
         var json = new JsonSerializerOptions { WriteIndented = false, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
         var regionsDoc = new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "Regions of the map pack (generated by WC2.Tools build-map from Natural Earth, MAP_PIPELINE.md): id, name, " +
-                        "country (game id) and type (capital, port, large city, normal city, normal) of land regions, sea zones, " +
-                        "city, port and airfield names, centre (lon, lat), pixel (in regions.raster), area and neighbours.",
+            ["about"] = "Regions of the map pack (generated by WC2.Tools build-map, MAP_PIPELINE.md): id, name, country (game id " +
+                        "today) and type (capital, port, large city, normal city, normal) of land regions, sea zones, city, port and " +
+                        "airfield names, the unit holding the region in every era (owners: map.json eras), centre (lon, lat), pixel " +
+                        "(in regions.raster), area and neighbours.",
             ["regions"] = list,
         };
         File.WriteAllText(Path.Combine(outDir, "regions.json"), FormatRegions(regionsDoc));
+        var erasDoc = new JsonObject();
+        foreach (var e in eras)
+        {
+            var present = regions.Where(r => !r.sea).Select(r => r.owners[eras.IndexOf(e)]).Where(k => k.Length > 0).ToHashSet();
+            var unitsDoc = new JsonObject();
+            foreach (var u in units.Where(u => present.Contains(u.key)).OrderBy(u => u.key, StringComparer.Ordinal))
+            {
+                var info = u.eras[e.key];
+                var uo = new JsonObject { ["name"] = info.name };
+                if (!string.IsNullOrEmpty(info.capital)) uo["capital"] = info.capital;
+                unitsDoc[u.key] = uo;
+            }
+            erasDoc[e.key] = new JsonObject
+            {
+                ["source"] = e.naturalEarth ? "Natural Earth admin-0 (today)" : $"CShapes 2.0 on {e.date.y:D4}-{e.date.m:D2}-{e.date.d:D2}",
+                ["units"] = unitsDoc,
+            };
+        }
         var mapDoc = new JsonObject
         {
             ["format"] = 1,
             ["id"] = config["id"]!.GetValue<string>(),
             ["name"] = config["name"]!.GetValue<string>(),
-            ["about"] = "A map pack generated by WC2.Tools build-map (MAP_PIPELINE.md). Source: Natural Earth (public domain), naturalearthdata.com.",
+            ["about"] = "A map pack generated by WC2.Tools build-map (MAP_PIPELINE.md). Sources: Natural Earth (public domain, " +
+                        "naturalearthdata.com); historical borders: CShapes 2.0 (Schvitz, Ruegger, Girardin, Cederman, Weidmann, " +
+                        "Gleditsch; CC BY-NC-SA 4.0, icr.ethz.ch/data/cshapes).",
             ["projection"] = "equirectangular",
+            ["wrap"] = wrap,
             ["bounds"] = new JsonObject { ["west"] = west, ["east"] = east, ["north"] = north, ["south"] = south },
             ["raster"] = new JsonObject { ["file"] = "regions.raster", ["width"] = width, ["height"] = height, ["pixelsPerDegree"] = Math.Round(pxPerDeg, 4) },
             ["landRegions"] = regions.Count(r => !r.sea),
             ["seaZones"] = regions.Count(r => r.sea),
             ["countries"] = new JsonObject(countries.Select(kv => KeyValuePair.Create(kv.Key, (JsonNode)kv.Value))),
+            ["eras"] = erasDoc,
             // the build configuration (without the classic export, which describes the separate map mod)
             ["config"] = WithoutKey(config, "classicExport"),
         };
         File.WriteAllText(Path.Combine(outDir, "map.json"), mapDoc.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = json.Encoder }) + "\n");
         WriteRaster(Path.Combine(outDir, "regions.raster"), regionRaster, width, height);
-        WritePreview(Path.Combine(outDir, "preview.png"), regionRaster, width, height, regions, opts.GetValueOrDefault("preview-width", "2048"));
+        string previewEra = config["previewEra"]?.GetValue<string>();
+        int previewIndex = previewEra != null ? eras.FindIndex(e => e.key == previewEra) : -1;
+        WritePreview(Path.Combine(outDir, "preview.png"), regionRaster, width, height, regions,
+                     opts.GetValueOrDefault("preview-width", "2048"), r => previewIndex >= 0 ? r.owners[previewIndex] : r.country);
+        if (opts.TryGetValue("preview-dir", out var previewDir))
+        {
+            Directory.CreateDirectory(previewDir);
+            for (int e = 0; e < eras.Count; e++)
+            {
+                int ei = e;
+                WritePreview(Path.Combine(previewDir, $"era-{eras[e].key}.png"), regionRaster, width, height, regions, "4096", r => r.owners[ei]);
+                // close-ups at full raster resolution (zoomed 2x) for checking borders
+                foreach (var crop in config["previewCrops"]?.AsArray() ?? new JsonArray())
+                {
+                    var (cx0, cy0) = Project(crop!["west"]!.GetValue<double>(), crop["north"]!.GetValue<double>());
+                    var (cx1, cy1) = Project(crop["east"]!.GetValue<double>(), crop["south"]!.GetValue<double>());
+                    WriteCrop(Path.Combine(previewDir, $"{crop["name"]}-{eras[e].key}.png"), regionRaster, width, height, regions, r => r.owners[ei],
+                              (int)cx0, (int)cy0, (int)(cx1 - cx0), (int)(cy1 - cy0), 2);
+                }
+            }
+        }
+
+        // ---- 10. the playable map mod
         if (opts.TryGetValue("classic-out", out var classicOut) && config["classicExport"] != null)
         {
             // the map in the scene's units is drawn from the provinces again at that resolution (one
-            // pixel per map unit), so coasts and borders are twice as fine as the region raster
+            // pixel per map unit), so coasts and province borders are finer than the region raster
             int S = config["classicExport"]!["scale"]?.GetValue<int>() ?? 2;
             int hiW = width * S, hiH = height * S;
-            var hiProvince = RasterizeProvinces(Path.Combine(source, "ne_10m_admin_1_states_provinces.geojson"), west, east, north, south, pxPerDeg * S, hiW, hiH);
-            var kept = new HashSet<Region>(regions);
+            var hiProvince = Rasterize(admin1.RootElement.GetProperty("features"), west, east, north, south, pxPerDeg * S, hiW, hiH, _ => 1, true);
+            // the regions every province ended up in
+            var provinceRegions = new List<int>[provinces.Count + 1];
+            for (int i = 0; i < n; i++)
+            {
+                int v = regionRaster[i], p = raster[i];
+                if (v == 0 || p == 0 || regions[v - 1].sea) continue;
+                var l = provinceRegions[p] ??= new List<int>(2);
+                if (!l.Contains(v)) l.Add(v);
+            }
             var hi = new int[hiW * hiH];
             for (int y = 0; y < hiH; y++)
                 for (int x = 0; x < hiW; x++)
                 {
                     int lx = x / S, ly = y / S, lo = regionRaster[ly * width + lx];
-                    int land = 0, p = hiProvince[y * hiW + x];
-                    if (p > 0 && p <= provinces.Count && provinces[p - 1].region >= 0)
+                    int p = hiProvince[y * hiW + x];
+                    var candidates = p > 0 && p <= provinces.Count ? provinceRegions[p] : null;
+                    int value = 0;
+                    if (candidates != null)
                     {
-                        var reg = regionsBeforeRenumbering[provinces[p - 1].region];
-                        if (kept.Contains(reg)) land = reg.id + 1;
+                        // land here: the region of this province under the pixel, or next to it
+                        if (candidates.Contains(lo)) value = lo;
+                        else value = Near(regionRaster, width, height, lx, ly, false, v => candidates.Contains(v));
                     }
-                    int value;
-                    // a land pixel counts where its region is near in the region raster (dropped islands
-                    // and far parts stay water); water takes the nearest sea zone
-                    if (land > 0 && NearValue(regionRaster, width, height, lx, ly, v => v == land)) value = land;
-                    else if (lo > 0 && regions[lo - 1].sea) value = lo;
-                    else
+                    if (value == 0)
                     {
-                        int sea = 0;
-                        for (int dy = -1; dy <= 1 && sea == 0; dy++)
-                            for (int dx = -1; dx <= 1 && sea == 0; dx++)
-                            {
-                                int nx = lx + dx, ny = ly + dy;
-                                if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
-                                int v = regionRaster[ny * width + nx];
-                                if (v > 0 && regions[v - 1].sea) sea = v;
-                            }
-                        value = land == 0 && sea > 0 ? sea : lo;
+                        // water here (or a left out island): the sea zone under the pixel or next to it
+                        if (lo > 0 && regions[lo - 1].sea) value = lo;
+                        // (never from the other side of the seam: a region stays on one side)
+                        else value = Near(regionRaster, width, height, lx, ly, false, v => v > 0 && regions[v - 1].sea);
+                        if (value == 0) value = lo;
                     }
                     hi[y * hiW + x] = value;
                 }
-            ExportClassic(classicOut, config, regions, hi, hiW, hiH,
-                provinces.GroupBy(p => p.country).ToDictionary(g => g.Key, g => g.First().admin), 1);
+            var scenarioSpecs = new List<ScenarioSpec>();
+            foreach (var s in scenarios)
+            {
+                string eraKey = s["era"]!.GetValue<string>();
+                int e = eras.FindIndex(x => x.key == eraKey);
+                if (e < 0) throw new ToolException($"scenario {s["file"]}: no era {eraKey}");
+                var unitOwner = new Dictionary<string, string>();
+                foreach (var (gameId, unitList) in s["owners"]?.AsObject() ?? new JsonObject())
+                    foreach (var gw in unitList!.AsArray())
+                    {
+                        string k = gw!.GetValue<string>();
+                        unitOwner[k.Contains(':') ? k : "gw:" + k] = gameId;
+                    }
+                string prefix = scenarios.IndexOf(s) + ":";
+                var owner = regions.Select(r =>
+                {
+                    if (r.sea) return null;
+                    string occupied = r.occupation.Split('|').FirstOrDefault(o => o.StartsWith(prefix, StringComparison.Ordinal));
+                    if (occupied != null) return occupied[prefix.Length..];
+                    string unit = r.owners[e];
+                    if (unitOwner.TryGetValue(unit, out var id)) return id;
+                    // today's map: the countries table maps Natural Earth countries to game ids
+                    if (unit.StartsWith("ne:", StringComparison.Ordinal) && countryIds.TryGetValue(unit[3..], out var neId)) return neId;
+                    return null;
+                }).ToArray();
+                var names = new Dictionary<string, string>();
+                foreach (var (id, name) in s["names"]?.AsObject() ?? new JsonObject()) names[id] = name!.GetValue<string>();
+                foreach (var p in provinces) names.TryAdd(p.country, p.admin);
+                scenarioSpecs.Add(new ScenarioSpec(s, owner, names));
+            }
+            ExportClassic(classicOut, config, regions, hi, hiW, hiH, 1, scenarioSpecs, wrap);
         }
         Console.WriteLine($"build-map: {regions.Count(r => !r.sea)} land regions in {countries.Count} countries, {regions.Count(r => r.sea)} sea zones, " +
-                          $"{regions.Count(r => r.type == "capital")} capitals, {regions.Count(r => r.port)} ports, {regions.Count(r => r.airfield)} airfields, " +
-                          $"{sw.ElapsedMilliseconds} ms -> {outDir}");
+                          $"{regions.Count(r => r.type == "capital")} capitals ({eraCapitals} of earlier eras), {regions.Count(r => r.port)} ports, " +
+                          $"{regions.Count(r => r.airfield)} airfields, {straits} straits, {sw.ElapsedMilliseconds} ms -> {outDir}");
         return 0;
 
         bool InBounds(double lon, double lat) => lon >= west && lon <= east && lat >= south && lat <= north;
     }
 
-    private static bool NearValue(int[] raster, int width, int height, int x, int y, Func<int, bool> match)
+    /// <summary>A scenario of the map mod: its configuration, the owner (game id or null) of every region and the country names.</summary>
+    private sealed record ScenarioSpec(JsonObject config, string[] owners, Dictionary<string, string> names);
+
+    /// <summary>A value next to (x, y) in the raster (3 x 3) that matches, 0 when none does.</summary>
+    private static int Near(int[] raster, int width, int height, int x, int y, bool wrap, Func<int, bool> match)
     {
         for (int dy = -1; dy <= 1; dy++)
             for (int dx = -1; dx <= 1; dx++)
             {
                 int nx = x + dx, ny = y + dy;
-                if (nx >= 0 && ny >= 0 && nx < width && ny < height && match(raster[ny * width + nx])) return true;
+                if (wrap) nx = (nx + width) % width;
+                if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+                int v = raster[ny * width + nx];
+                if (v != 0 && match(v)) return v;
             }
-        return false;
+        return 0;
     }
 
     /// <summary>
-    /// The provinces inside the bounds drawn into a raster (province index + 1, in the order the main
-    /// pass numbers them: the features with a point inside the bounds).
+    /// Draws GeoJSON features into a raster of codes (no antialiasing, later features over earlier
+    /// ones). <paramref name="codeOf"/> gives the code of a feature inside the bounds (0: skip it).
+    /// With <paramref name="counter"/> the codes are 1, 2, 3, ... in the order of the features inside
+    /// the bounds (the same numbering a first pass with a counting codeOf gives).
     /// </summary>
-    private static int[] RasterizeProvinces(string file, double west, double east, double north, double south, double pxPerDeg, int width, int height)
+    private static int[] Rasterize(JsonElement features, double west, double east, double north, double south, double pxPerDeg,
+                                   int width, int height, Func<JsonElement, int> codeOf, bool counter = false)
     {
         using var bitmap = new SKBitmap(new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul));
+        int count = 0;
         using (var canvas = new SKCanvas(bitmap))
         {
             canvas.Clear(new SKColor(0, 0, 0, 0));
             using var paint = new SKPaint { IsAntialias = false, Style = SKPaintStyle.Fill, BlendMode = SKBlendMode.Src };
-            using var doc = JsonDocument.Parse(File.OpenRead(file));
-            int code = 0;
-            foreach (var f in doc.RootElement.GetProperty("features").EnumerateArray())
+            foreach (var f in features.EnumerateArray())
             {
                 var geometry = f.GetProperty("geometry");
                 if (geometry.ValueKind != JsonValueKind.Object) continue;
@@ -509,7 +724,8 @@ internal static partial class MapPipeline
                     path.Close();
                 }
                 if (!inside) continue;
-                code++;
+                int code = counter ? ++count : codeOf(f.GetProperty("properties"));
+                if (code <= 0) continue;
                 paint.Color = new SKColor((byte)(code & 0xFF), (byte)((code >> 8) & 0xFF), (byte)((code >> 16) & 0xFF), 255);
                 canvas.DrawPath(path, paint);
             }
@@ -521,18 +737,135 @@ internal static partial class MapPipeline
         return raster;
     }
 
-    private static JsonObject WithoutKey(JsonObject o, string key)
+    /// <summary>
+    /// One era's units on the land: water is cleared; land without a unit takes the configured unit of
+    /// its Natural Earth country, else the province's main unit, else the nearest unit. Then, inside
+    /// every province, a fragment of another unit than the province's main one that is smaller than
+    /// minKm2 or nowhere minWidth pixels thick (two sources tracing the same border a few kilometres
+    /// apart) takes the unit of the fragment it shares the longest border with. Returns the pixels moved.
+    /// </summary>
+    private static int FillAndClean(int[] unit, int[] province, List<Province> provinces, int width, int height, double[] rowKm2,
+                                    Dictionary<string, int> fallback, double minKm2, int minWidth)
     {
-        var copy = (JsonObject)o.DeepClone();
-        copy.Remove(key);
-        return copy;
+        int n = unit.Length;
+        int Dominant(int[] u, out int[] dom)
+        {
+            var counts = new Dictionary<int, double>[provinces.Count + 1];
+            for (int i = 0; i < n; i++)
+            {
+                int p = province[i];
+                if (p == 0 || u[i] == 0) continue;
+                var c = counts[p] ??= new Dictionary<int, double>();
+                c[u[i]] = c.GetValueOrDefault(u[i]) + rowKm2[i / width];
+            }
+            dom = new int[provinces.Count + 1];
+            for (int p = 1; p <= provinces.Count; p++)
+                if (counts[p] != null) dom[p] = counts[p].OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).First().Key;
+            return 0;
+        }
+        for (int i = 0; i < n; i++) if (province[i] == 0) unit[i] = 0;
+        Dominant(unit, out var dominant);
+        for (int i = 0; i < n; i++)
+        {
+            int p = province[i];
+            if (p == 0 || unit[i] != 0) continue;
+            if (fallback.TryGetValue(provinces[p - 1].adm0, out int f)) unit[i] = f;
+            else if (dominant[p] != 0) unit[i] = dominant[p];
+        }
+        // the rest: the nearest unit (breadth first through land and water)
+        var near = (int[])unit.Clone();
+        var queue = new Queue<int>();
+        for (int i = 0; i < n; i++) if (near[i] != 0) queue.Enqueue(i);
+        while (queue.Count > 0)
+        {
+            int i = queue.Dequeue(), x = i % width, y = i / width;
+            foreach (int j in new[] { x > 0 ? i - 1 : -1, x < width - 1 ? i + 1 : -1, y > 0 ? i - width : -1, y < height - 1 ? i + width : -1 })
+                if (j >= 0 && near[j] == 0) { near[j] = near[i]; queue.Enqueue(j); }
+        }
+        for (int i = 0; i < n; i++) if (province[i] != 0 && unit[i] == 0) unit[i] = near[i];
+        Dominant(unit, out dominant);
+
+        // fragments: connected pixels of one province and one unit
+        var comp = new int[n];
+        var compProvince = new List<int> { 0 }; var compUnit = new List<int> { 0 }; var compKm2 = new List<double> { 0 };
+        var stack = new Stack<int>();
+        for (int i0 = 0; i0 < n; i0++)
+        {
+            if (province[i0] == 0 || comp[i0] != 0) continue;
+            int id = compProvince.Count, p = province[i0], u = unit[i0];
+            compProvince.Add(p); compUnit.Add(u); compKm2.Add(0);
+            comp[i0] = id; stack.Push(i0);
+            double km2 = 0;
+            while (stack.Count > 0)
+            {
+                int i = stack.Pop(), x = i % width, y = i / width;
+                km2 += rowKm2[y];
+                foreach (int j in new[] { x > 0 ? i - 1 : -1, x < width - 1 ? i + 1 : -1, y > 0 ? i - width : -1, y < height - 1 ? i + width : -1 })
+                    if (j >= 0 && comp[j] == 0 && province[j] == p && unit[j] == u) { comp[j] = id; stack.Push(j); }
+            }
+            compKm2[id] = km2;
+        }
+        // thickness: distance from the fragment's edge
+        var dist = new int[n];
+        var q = new Queue<int>();
+        for (int i = 0; i < n; i++)
+        {
+            if (comp[i] == 0) continue;
+            int x = i % width, y = i / width;
+            bool edge = x == 0 || y == 0 || x == width - 1 || y == height - 1 ||
+                        comp[i - 1] != comp[i] || comp[i + 1] != comp[i] || comp[i - width] != comp[i] || comp[i + width] != comp[i];
+            if (edge) { dist[i] = 1; q.Enqueue(i); }
+        }
+        var compThickness = new int[compProvince.Count];
+        while (q.Count > 0)
+        {
+            int i = q.Dequeue(), x = i % width, y = i / width;
+            if (dist[i] > compThickness[comp[i]]) compThickness[comp[i]] = dist[i];
+            foreach (int j in new[] { x > 0 ? i - 1 : -1, x < width - 1 ? i + 1 : -1, y > 0 ? i - width : -1, y < height - 1 ? i + width : -1 })
+                if (j >= 0 && comp[j] == comp[i] && dist[j] == 0) { dist[j] = dist[i] + 1; q.Enqueue(j); }
+        }
+        var small = new bool[compProvince.Count];
+        for (int c = 1; c < compProvince.Count; c++)
+            small[c] = compUnit[c] != dominant[compProvince[c]] && (compKm2[c] < minKm2 || compThickness[c] < minWidth);
+        // the neighbour fragment in the same province with the longest shared border
+        var shared = new Dictionary<int, Dictionary<int, int>>();
+        void Count(int a, int b)
+        {
+            if (a == b || a == 0 || b == 0 || !small[a] || compProvince[a] != compProvince[b] || small[b]) return;
+            var d = shared.TryGetValue(a, out var x) ? x : shared[a] = new Dictionary<int, int>();
+            d[b] = d.GetValueOrDefault(b) + 1;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            int x = i % width;
+            if (x + 1 < width) { Count(comp[i], comp[i + 1]); Count(comp[i + 1], comp[i]); }
+            if (i + width < n) { Count(comp[i], comp[i + width]); Count(comp[i + width], comp[i]); }
+        }
+        var target = new int[compProvince.Count];
+        for (int c = 1; c < compProvince.Count; c++)
+            if (small[c])
+                target[c] = shared.TryGetValue(c, out var d) && d.Count > 0
+                    ? compUnit[d.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).First().Key]
+                    : dominant[compProvince[c]];
+        int moved = 0;
+        for (int i = 0; i < n; i++)
+        {
+            int c = comp[i];
+            if (c != 0 && small[c] && target[c] != 0 && target[c] != unit[i]) { unit[i] = target[c]; moved++; }
+        }
+        return moved;
     }
 
-    /// <summary>Clears the connected parts of each value whose centre is farther than maxDistance pixels from the value's largest part.</summary>
-    private static void DropFarParts(int[] raster, int width, int height, int count, double maxDistance)
+    /// <summary>
+    /// Parts of a land region far from its main body: groups of islands (parts closer than clusterPx to
+    /// each other) farther than splitPx become regions of their own when they have minKm2, and are left
+    /// out when they are smaller and farther than dropPx. Horizontal distances wrap on a wrapping map.
+    /// </summary>
+    private static void SplitFarParts(int[] raster, int width, int height, bool wrap, double[] rowKm2, List<Region> regions,
+                                      double splitPx, double clusterPx, double dropPx, double minKm2)
     {
         var label = new int[raster.Length];
-        var parts = new List<(int value, List<int> pixels)>();
+        var parts = new List<(int value, List<int> pixels, double cx, double cy, double km2, int minX, int maxX, int minY, int maxY)>();
         var stack = new Stack<int>();
         for (int i = 0; i < raster.Length; i++)
         {
@@ -540,31 +873,301 @@ internal static partial class MapPipeline
             int v = raster[i];
             var pixels = new List<int>();
             label[i] = parts.Count + 1; stack.Push(i);
+            double sx = 0, sy = 0, km2 = 0; int x0 = int.MaxValue, x1 = 0, y0 = int.MaxValue, y1 = 0;
             while (stack.Count > 0)
             {
                 int j = stack.Pop(); pixels.Add(j);
                 int x = j % width, y = j / width;
+                sx += x; sy += y; km2 += rowKm2[y];
+                x0 = Math.Min(x0, x); x1 = Math.Max(x1, x); y0 = Math.Min(y0, y); y1 = Math.Max(y1, y);
                 foreach (int k in new[] { x > 0 ? j - 1 : -1, x < width - 1 ? j + 1 : -1, y > 0 ? j - width : -1, y < height - 1 ? j + width : -1 })
                     if (k >= 0 && raster[k] == v && label[k] == 0) { label[k] = parts.Count + 1; stack.Push(k); }
             }
-            parts.Add((v, pixels));
+            parts.Add((v, pixels, sx / pixels.Count, sy / pixels.Count, km2, x0, x1, y0, y1));
         }
-        foreach (var group in parts.GroupBy(p => p.value))
+        double Dx(double a, double b)
         {
-            var main = group.OrderByDescending(p => p.pixels.Count).First();
-            double mx = main.pixels.Average(j => j % width), my = main.pixels.Average(j => j / width);
-            foreach (var part in group)
+            double d = Math.Abs(a - b);
+            return wrap ? Math.Min(d, width - d) : d;
+        }
+        double Gap((int value, List<int> pixels, double cx, double cy, double km2, int minX, int maxX, int minY, int maxY) a,
+                   (int value, List<int> pixels, double cx, double cy, double km2, int minX, int maxX, int minY, int maxY) b)
+        {
+            // gap between the boxes (0 when they overlap)
+            double gx = Math.Max(0, Dx((a.minX + a.maxX) * 0.5, (b.minX + b.maxX) * 0.5) - (a.maxX - a.minX + b.maxX - b.minX) * 0.5);
+            double gy = Math.Max(0, Math.Max(a.minY, b.minY) - Math.Min(a.maxY, b.maxY));
+            return Math.Sqrt(gx * gx + gy * gy);
+        }
+        int split = 0, droppedParts = 0;
+        foreach (var group in parts.GroupBy(p => p.value).ToList())
+        {
+            var main = group.OrderByDescending(p => p.km2).First();
+            var far = group.Where(p => !ReferenceEquals(p.pixels, main.pixels) &&
+                                       Math.Sqrt(Dx(p.cx, main.cx) * Dx(p.cx, main.cx) + (p.cy - main.cy) * (p.cy - main.cy)) > splitPx).ToList();
+            if (far.Count == 0) continue;
+            // clusters of far parts (single linkage)
+            var cluster = Enumerable.Range(0, far.Count).ToArray();
+            int Root(int i) { while (cluster[i] != i) i = cluster[i] = cluster[cluster[i]]; return i; }
+            for (int a = 0; a < far.Count; a++)
+                for (int c = a + 1; c < far.Count; c++)
+                    if (Gap(far[a], far[c]) <= clusterPx) cluster[Root(a)] = Root(c);
+            var source = regions[group.Key - 1];
+            foreach (var cl in Enumerable.Range(0, far.Count).GroupBy(Root))
             {
-                if (ReferenceEquals(part.pixels, main.pixels)) continue;
-                double px = part.pixels.Average(j => j % width), py = part.pixels.Average(j => j / width);
-                if (Math.Sqrt((px - mx) * (px - mx) + (py - my) * (py - my)) > maxDistance)
-                    foreach (int j in part.pixels) raster[j] = 0;
+                var members = cl.Select(i => far[i]).ToList();
+                double km2 = members.Sum(p => p.km2);
+                double cx = members.Sum(p => p.cx * p.km2) / km2, cy = members.Sum(p => p.cy * p.km2) / km2;
+                double distance = Math.Sqrt(Dx(cx, main.cx) * Dx(cx, main.cx) + (cy - main.cy) * (cy - main.cy));
+                if (km2 >= minKm2)
+                {
+                    var r = new Region
+                    {
+                        id = regions.Count, country = source.country, name = source.name + " Islands",
+                        signature = source.signature, owners = source.owners, occupation = source.occupation,
+                    };
+                    r.provinces.AddRange(source.provinces);
+                    regions.Add(r);
+                    foreach (var p in members) foreach (int j in p.pixels) raster[j] = r.id + 1;
+                    split++;
+                }
+                else if (distance > dropPx)
+                {
+                    foreach (var p in members) foreach (int j in p.pixels) raster[j] = 0;
+                    droppedParts++;
+                }
             }
+        }
+        Console.WriteLine($"build-map: {split} island groups became regions, {droppedParts} far groups left out");
+    }
+
+    /// <summary>A wrapping map: a land region with pixels near both edges is split into its left and right half.</summary>
+    private static void SplitAtSeam(int[] raster, int width, int height, List<Region> regions)
+    {
+        int count = regions.Count;
+        var minX = Enumerable.Repeat(int.MaxValue, count + 1).ToArray();
+        var maxX = new int[count + 1];
+        for (int i = 0; i < raster.Length; i++)
+        {
+            int v = raster[i];
+            if (v == 0) continue;
+            int x = i % width;
+            if (x < minX[v]) minX[v] = x;
+            if (x > maxX[v]) maxX[v] = x;
+        }
+        var right = new int[count + 1];
+        for (int v = 1; v <= count; v++)
+        {
+            if (minX[v] >= width / 4 || maxX[v] < width * 3 / 4) continue;
+            var source = regions[v - 1];
+            var r = new Region
+            {
+                id = regions.Count, country = source.country, name = source.name, signature = source.signature,
+                owners = source.owners, occupation = source.occupation,
+            };
+            r.provinces.AddRange(source.provinces);
+            regions.Add(r);
+            right[v] = r.id + 1;
+        }
+        for (int i = 0; i < raster.Length; i++)
+        {
+            int v = raster[i];
+            if (v != 0 && v <= count && right[v] != 0 && i % width >= width / 2) raster[i] = right[v];
         }
     }
 
-    /// <summary>For every value of the raster: the touching values and the border length in pixels (4-neighbourhood).</summary>
-    private static Dictionary<int, int>[] Adjacency(int[] raster, int width, int height, int count)
+    /// <summary>
+    /// Sea zones on the water of the raster (value 0): seeds spaced by the distance from the coast (the
+    /// radius grows from coastRadiusDegrees by growth per degree of open water up to oceanRadiusDegrees),
+    /// zones grown from the seeds through the water (chamfer distance, so a zone never crosses land),
+    /// relaxed relaxIterations times (each seed moves to its zone's middle); water bodies no seed
+    /// reaches get one when they have minSeaPixels; zones below minSeaPixels join the neighbour zone
+    /// they share the longest border with. The seam of a wrapping map is a zone border.
+    /// </summary>
+    private static void BuildSeaZones(int[] raster, int width, int height, double pxPerDeg, JsonObject cfg, List<Region> regions)
+    {
+        int n = raster.Length;
+        double rCoast = (cfg["coastRadiusDegrees"]?.GetValue<double>() ?? 1.4) * pxPerDeg;
+        double rOcean = (cfg["oceanRadiusDegrees"]?.GetValue<double>() ?? 9) * pxPerDeg;
+        double growth = cfg["growth"]?.GetValue<double>() ?? 0.6;
+        int iterations = cfg["relaxIterations"]?.GetValue<int>() ?? 2;
+        int minSeaPixels = cfg["minSeaPixels"]?.GetValue<int>() ?? 300;
+        var water = new bool[n];
+        for (int i = 0; i < n; i++) water[i] = raster[i] == 0;
+
+        // distance from the coast (chamfer 3-4, in pixels x 3)
+        var coast = new int[n];
+        const int Inf = int.MaxValue / 4;
+        for (int i = 0; i < n; i++) coast[i] = water[i] ? Inf : 0;
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
+            {
+                int i = y * width + x;
+                if (coast[i] == 0) continue;
+                int d = coast[i];
+                if (x > 0) d = Math.Min(d, coast[i - 1] + 3);
+                if (y > 0) d = Math.Min(d, coast[i - width] + 3);
+                if (x > 0 && y > 0) d = Math.Min(d, coast[i - width - 1] + 4);
+                if (x + 1 < width && y > 0) d = Math.Min(d, coast[i - width + 1] + 4);
+                coast[i] = d;
+            }
+        for (int y = height - 1; y >= 0; y--)
+            for (int x = width - 1; x >= 0; x--)
+            {
+                int i = y * width + x;
+                if (coast[i] == 0) continue;
+                int d = coast[i];
+                if (x + 1 < width) d = Math.Min(d, coast[i + 1] + 3);
+                if (y + 1 < height) d = Math.Min(d, coast[i + width] + 3);
+                if (x + 1 < width && y + 1 < height) d = Math.Min(d, coast[i + width + 1] + 4);
+                if (x > 0 && y + 1 < height) d = Math.Min(d, coast[i + width - 1] + 4);
+                coast[i] = d;
+            }
+        double Radius(int i) => Math.Min(rOcean, rCoast + growth * Math.Min(coast[i], Inf / 2) / 3.0);
+
+        // seeds: candidates on a jittered grid, coast first, each kept when no seed lies within its radius
+        static uint Hash(uint v) { v ^= v >> 16; v *= 0x7feb352d; v ^= v >> 15; v *= 0x846ca68b; v ^= v >> 16; return v; }
+        int step = Math.Max(2, (int)(rCoast / 3));
+        var candidates = new List<int>();
+        for (int y = step / 2; y < height; y += step)
+            for (int x = step / 2; x < width; x += step)
+            {
+                uint h = Hash((uint)(y * width + x));
+                int jx = Math.Clamp(x + (int)(h % (uint)step) - step / 2, 0, width - 1);
+                int jy = Math.Clamp(y + (int)((h >> 8) % (uint)step) - step / 2, 0, height - 1);
+                int i = jy * width + jx;
+                if (water[i]) candidates.Add(i);
+            }
+        candidates = candidates.OrderBy(i => (int)(Radius(i) / rCoast)).ThenBy(i => Hash((uint)i * 2654435761u)).ToList();
+        int cell = Math.Max(1, (int)rCoast);
+        int gw = width / cell + 1, gh = height / cell + 1;
+        var grid = new List<int>[gw * gh];
+        var seeds = new List<int>();
+        foreach (int i in candidates)
+        {
+            int x = i % width, y = i / width;
+            double r = Radius(i);
+            int cx = x / cell, cy = y / cell, rc = (int)Math.Ceiling(r / cell);
+            bool free = true;
+            for (int gy = Math.Max(0, cy - rc); gy <= Math.Min(gh - 1, cy + rc) && free; gy++)
+                for (int gx = Math.Max(0, cx - rc); gx <= Math.Min(gw - 1, cx + rc) && free; gx++)
+                    foreach (int s in grid[gy * gw + gx] ?? (IEnumerable<int>)Array.Empty<int>())
+                    {
+                        int dx = s % width - x, dy = s / width - y;
+                        if (dx * dx + dy * dy < r * r) { free = false; break; }
+                    }
+            if (!free) continue;
+            seeds.Add(i);
+            (grid[cy * gw + cx] ??= new List<int>()).Add(i);
+        }
+
+        // grow the zones through the water (chamfer 5-7), then relax
+        var zone = new int[n];
+        void Grow()
+        {
+            Array.Clear(zone);
+            var cost = new int[n];
+            Array.Fill(cost, int.MaxValue);
+            var pq = new PriorityQueue<int, long>();
+            for (int s = 0; s < seeds.Count; s++) { zone[seeds[s]] = s + 1; cost[seeds[s]] = 0; pq.Enqueue(seeds[s], s); }
+            while (pq.TryDequeue(out int i, out long prio))
+            {
+                int c = (int)(prio >> 20);
+                if (c > cost[i]) continue;
+                int x = i % width, y = i / width;
+                for (int dy = -1; dy <= 1; dy++)
+                    for (int dx = -1; dx <= 1; dx++)
+                    {
+                        if (dx == 0 && dy == 0) continue;
+                        int nx = x + dx, ny = y + dy;
+                        if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+                        int j = ny * width + nx;
+                        if (!water[j]) continue;
+                        int nc = c + (dx != 0 && dy != 0 ? 7 : 5);
+                        if (nc >= cost[j]) continue;
+                        cost[j] = nc; zone[j] = zone[i];
+                        pq.Enqueue(j, ((long)nc << 20) | (uint)(zone[i] & 0xFFFFF));
+                    }
+            }
+        }
+        // seeds' priority carries the seed index in its low bits so equal costs resolve the same way every run
+        for (int it = 0; it <= iterations; it++)
+        {
+            Grow();
+            // water no seed reached (lakes, enclosed seas): a seed in each part that is large enough
+            var label = new int[n];
+            var st = new Stack<int>();
+            bool added = false;
+            for (int i0 = 0; i0 < n; i0++)
+            {
+                if (!water[i0] || zone[i0] != 0 || label[i0] != 0) continue;
+                var part = new List<int>();
+                label[i0] = 1; st.Push(i0);
+                while (st.Count > 0)
+                {
+                    int i = st.Pop(); part.Add(i);
+                    int x = i % width, y = i / width;
+                    foreach (int j in new[] { x > 0 ? i - 1 : -1, x < width - 1 ? i + 1 : -1, y > 0 ? i - width : -1, y < height - 1 ? i + width : -1 })
+                        if (j >= 0 && water[j] && zone[j] == 0 && label[j] == 0) { label[j] = 1; st.Push(j); }
+                }
+                if (part.Count < minSeaPixels) continue;
+                double mx = part.Average(i => i % width), my = part.Average(i => i / width);
+                seeds.Add(part.OrderBy(i => (i % width - mx) * (i % width - mx) + (i / width - my) * (i / width - my)).ThenBy(i => i).First());
+                added = true;
+            }
+            if (added) Grow();
+            if (it == iterations) break;
+            // relax: every seed to the zone pixel nearest the zone's centre
+            var sx = new double[seeds.Count + 1]; var sy = new double[seeds.Count + 1]; var cnt = new long[seeds.Count + 1];
+            for (int i = 0; i < n; i++) { int z = zone[i]; if (z == 0) continue; sx[z] += i % width; sy[z] += i / width; cnt[z]++; }
+            var best = new int[seeds.Count + 1]; var bestD = new double[seeds.Count + 1];
+            Array.Fill(bestD, double.MaxValue);
+            for (int i = 0; i < n; i++)
+            {
+                int z = zone[i]; if (z == 0) continue;
+                double dx = i % width - sx[z] / cnt[z], dy = i / width - sy[z] / cnt[z], d = dx * dx + dy * dy;
+                if (d < bestD[z]) { bestD[z] = d; best[z] = i; }
+            }
+            for (int s = 0; s < seeds.Count; s++) if (cnt[s + 1] > 0) seeds[s] = best[s + 1];
+        }
+
+        // regions for the zones; small zones join their longest neighbour
+        int first = regions.Count;
+        var size = new long[seeds.Count + 1];
+        for (int i = 0; i < n; i++) size[zone[i]]++;
+        var zoneBorder = Adjacency(zone, width, height, seeds.Count, false);
+        var redirect = Enumerable.Range(0, seeds.Count + 1).ToArray();
+        int Resolve(int v) { while (redirect[v] != v) v = redirect[v]; return v; }
+        foreach (int z in Enumerable.Range(1, seeds.Count).OrderBy(z => size[z]).ThenBy(z => z))
+        {
+            if (size[Resolve(z)] >= minSeaPixels || Resolve(z) != z) continue;
+            int target = zoneBorder[z].Where(kv => kv.Key > 0 && Resolve(kv.Key) != z)
+                                      .OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).Select(kv => Resolve(kv.Key)).FirstOrDefault();
+            redirect[z] = target;
+            if (target > 0) size[target] += size[z];
+        }
+        var regionOf = new int[seeds.Count + 1];
+        for (int z = 1; z <= seeds.Count; z++)
+        {
+            if (Resolve(z) != z || size[z] == 0) continue;
+            var r = new Region { id = regions.Count, sea = true, name = $"sea {z}" };
+            regions.Add(r);
+            regionOf[z] = r.id + 1;
+        }
+        for (int i = 0; i < n; i++)
+            if (water[i] && zone[i] != 0) raster[i] = regionOf[Resolve(zone[i])];
+        Console.WriteLine($"build-map: {regions.Count - first} sea zones from {seeds.Count} seeds");
+    }
+
+    private static JsonObject WithoutKey(JsonObject o, string key)
+    {
+        var copy = (JsonObject)o.DeepClone();
+        copy.Remove(key);
+        return copy;
+    }
+
+    /// <summary>For every value of the raster: the touching values and the border length in pixels
+    /// (4-neighbourhood; with <paramref name="wrap"/> the last column touches the first).</summary>
+    private static Dictionary<int, int>[] Adjacency(int[] raster, int width, int height, int count, bool wrap)
     {
         var result = new Dictionary<int, int>[count + 1];
         for (int i = 0; i < result.Length; i++) result[i] = new Dictionary<int, int>();
@@ -579,6 +1182,7 @@ internal static partial class MapPipeline
             {
                 int i = y * width + x, v = raster[i];
                 if (x + 1 < width) Add(v, raster[i + 1]);
+                else if (wrap) Add(v, raster[y * width]);
                 if (y + 1 < height) Add(v, raster[i + width]);
             }
         return result;
@@ -614,6 +1218,9 @@ internal static partial class MapPipeline
     private static long Long(JsonElement o, string key) =>
         o.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.Number ? (long)v.GetDouble() : 0;
 
+    private static double Dbl(JsonElement o, string key) =>
+        o.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDouble() : double.NaN;
+
     /// <summary>One region per line (the file stays reviewable and diffable).</summary>
     private static string FormatRegions(JsonObject doc)
     {
@@ -648,7 +1255,46 @@ internal static partial class MapPipeline
         deflate.Write(bytes, 0, bytes.Length);
     }
 
-    private static void WritePreview(string path, int[] raster, int width, int height, List<Region> regions, string previewWidth)
+    /// <summary>A part of the raster at full resolution, zoomed, coloured like the preview, region borders dark.</summary>
+    private static void WriteCrop(string path, int[] raster, int width, int height, List<Region> regions, Func<Region, string> colourKey,
+                                  int x0, int y0, int w, int h, int zoom)
+    {
+        using var bmp = new SKBitmap(w * zoom, h * zoom);
+        var cache = new Dictionary<string, SKColor>();
+        SKColor Colour(int v)
+        {
+            if (v == 0) return new SKColor(20, 30, 40);
+            var r = regions[v - 1];
+            if (r.sea) return new SKColor(70, 110, 150);
+            string key = colourKey(r) ?? "";
+            if (!cache.TryGetValue(key, out var c))
+            {
+                uint fnv = 2166136261;
+                foreach (char ch in key) fnv = (fnv ^ ch) * 16777619;
+                int hsh = (int)(fnv & 0x7FFFFFFF);
+                c = SKColor.FromHsl(hsh % 360, 45 + hsh / 360 % 30, 45 + hsh / 10800 % 20);
+                cache[key] = c;
+            }
+            return c;
+        }
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+            {
+                int gx = ((x0 + x) % width + width) % width, gy = Math.Clamp(y0 + y, 0, height - 1);
+                int v = raster[gy * width + gx];
+                var c = Colour(v);
+                int right = raster[gy * width + (gx + 1) % width], down = gy + 1 < height ? raster[(gy + 1) * width + gx] : v;
+                if (right != v || down != v) c = new SKColor((byte)(c.Red * 0.5), (byte)(c.Green * 0.5), (byte)(c.Blue * 0.5));
+                for (int dy = 0; dy < zoom; dy++)
+                    for (int dx = 0; dx < zoom; dx++) bmp.SetPixel(x * zoom + dx, y * zoom + dy, c);
+            }
+        using var data = bmp.Encode(SKEncodedImageFormat.Png, 100);
+        using var file = File.Create(path);
+        data.SaveTo(file);
+    }
+
+    /// <summary>The map coloured by <paramref name="colourKey"/> (a country or an era's unit), region borders darker.</summary>
+    private static void WritePreview(string path, int[] raster, int width, int height, List<Region> regions, string previewWidth, Func<Region, string> colourKey)
     {
         int pw = int.Parse(previewWidth), ph = (int)Math.Round(height * (double)pw / width);
         using var full = new SKBitmap(width, height);
@@ -656,14 +1302,15 @@ internal static partial class MapPipeline
         SKColor Colour(Region r)
         {
             if (r.sea) return new SKColor(70, 110, 150);
-            if (!countryColour.TryGetValue(r.country, out var c))
+            string key = colourKey(r) ?? "";
+            if (!countryColour.TryGetValue(key, out var c))
             {
                 // a stable hash (string.GetHashCode differs per process): the preview is reproducible
                 uint fnv = 2166136261;
-                foreach (char ch in r.country) fnv = (fnv ^ ch) * 16777619;
+                foreach (char ch in key) fnv = (fnv ^ ch) * 16777619;
                 int h = (int)(fnv & 0x7FFFFFFF);
                 c = SKColor.FromHsl(h % 360, 45 + h / 360 % 30, 45 + h / 10800 % 20);
-                countryColour[r.country] = c;
+                countryColour[key] = c;
             }
             return c;
         }
