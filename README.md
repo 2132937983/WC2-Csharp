@@ -85,9 +85,11 @@ The AI's numbers are data (`data/json/ai/profiles.json`): `classic` is the origi
 `standard` (the default) defends threatened capitals, ports, airfields, cities and home areas and buys
 cards more readily, `hard` pushes harder against the player.
 
-Next to the classic map, `WC2.Tools build-map` generates maps from Natural Earth geography
-(`MAP_PIPELINE.md`): a data pack (`assets/data/maps/natural-earth`) and a playable world conquest as a
-mod (`mods/map-natural-earth`: conquest 10 "WORLD (NATURAL EARTH)" in the conquest list).
+Next to the classic map, `WC2.Tools build-map` generates a world base map from Natural Earth geography
+and CShapes historical borders (`MAP_PIPELINE.md`): one map whose regions follow the borders of 1910,
+1914, 1936, 1939, 1945, 1949 and today, as a data pack (`assets/data/maps/natural-earth`) and a playable
+mod (`mods/map-natural-earth`: conquest 10 "WORLD 1939" in the conquest list; the map wraps left-right).
+How mods work, and how to change the game package directly: `MODDING.md`.
 
 ## Android
 
@@ -195,7 +197,7 @@ dotnet run --project Hosts/Desktop
 
 AI 的各项数值也是数据（`data/json/ai/profiles.json`）：`classic` 与原版 AI 完全一致；`standard`（默认）会防守受到威胁的首都、港口、机场、城市和本土地区，并更积极地购买卡牌；`hard` 会对玩家施加更大的压力。
 
-除经典地图之外，`WC2.Tools build-map` 还能根据 Natural Earth 地理数据生成地图（见 `MAP_PIPELINE.md`）：生成一个数据包（`assets/data/maps/natural-earth`），以及一个以模组形式提供、可游玩的世界征服（`mods/map-natural-earth`：征服列表中的征服 10 “WORLD (NATURAL EARTH)”）。
+除经典地图之外，`WC2.Tools build-map` 还能根据 Natural Earth 地理数据和 CShapes 历史边界生成一张世界底图（见 `MAP_PIPELINE.md`）：一张区域同时遵循 1910、1914、1936、1939、1945、1949 年和今天边界的地图，输出为数据包（`assets/data/maps/natural-earth`）和可游玩的模组（`mods/map-natural-earth`：征服列表中的征服 10 “WORLD 1939”；地图左右循环）。模组的工作方式以及如何直接修改游戏资源包，见 `MODDING.md`。
 
 ## Android
 

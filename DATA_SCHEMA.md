@@ -183,7 +183,17 @@ levels: attack, defence, healing, max strength bonus (as for units), `coolDown` 
 `ageX`, `ageY`, `victory` and `greatVictory` (turn limits, default 15 and 10), `flags` and `arrows`
 (lists of `{name, x, y, rot, scale}`, `rot` in degrees).
 
-`data/json/conquests/conquests.json`: `{"conquests": {"<key>": {"centerX", "centerY", "flags": [...]}}}`.
+`data/json/conquests/conquests.json`: `{"conquests": {"<key>": {"centerX", "centerY", "flags": [...]}}}`, and two
+options of the conquest's map:
+
+* `fogOfWar` (default `false`): armies are hidden in the areas the player's alliance neither holds nor
+  touches (only the drawing; the AI is not affected);
+* `leftRightWrap` (default `false`): the map repeats horizontally: the camera scrolls past the left and
+  right edge, and moves, arrows, airstrike ranges and distances take the short way over the seam. The
+  map must span its whole width (the world map: `mods/map-natural-earth`, MAP_PIPELINE.md).
+
+Both are read when the game starts or loads the conquest. The world map's conquest 10 (WORLD 1939) has
+`"fogOfWar": false, "leftRightWrap": true`.
 
 ## terrain
 
@@ -536,7 +546,12 @@ AI 的征召顺序按国家分别依价格、然后工业、然后科技排列�
 
 `data/json/campaigns/campaigns.json`：`{"battles": {"<key>": {...}}}`，包含 `age`（标签文本）、`centerX`、`centerY`、`ageX`、`ageY`、`victory` 和 `greatVictory`（回合限制，默认分别为 15 和 10）、`flags` 和 `arrows`（由 `{name, x, y, rot, scale}` 组成的列表，`rot` 以度为单位）。
 
-`data/json/conquests/conquests.json`：`{"conquests": {"<key>": {"centerX", "centerY", "flags": [...]}}}`。
+`data/json/conquests/conquests.json`：`{"conquests": {"<key>": {"centerX", "centerY", "flags": [...]}}}`，以及该征服地图的两个选项：
+
+* `fogOfWar`（默认 `false`）：玩家所在同盟既未占领也不相邻的地区中的部队会被隐藏（只影响绘制；AI 不受影响）；
+* `leftRightWrap`（默认 `false`）：地图在水平方向上循环：镜头可以越过左右边缘，移动、箭头、空袭范围和距离都走跨越接缝的近路。地图必须覆盖整个宽度（世界地图：`mods/map-natural-earth`，见 MAP_PIPELINE.md）。
+
+两者在游戏开始或读取该征服时读取。世界地图的征服 10（WORLD 1939）设置为 `"fogOfWar": false, "leftRightWrap": true`。
 
 ## 地形（terrain）
 

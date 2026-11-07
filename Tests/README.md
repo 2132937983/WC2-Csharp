@@ -47,12 +47,13 @@ Coordinates are logical screen units (568 x 320 phone layout; scripts named `ipa
 | `drag X1 Y1 X2 Y2 [S]` | press, move in steps, release |
 | `back` | the Android back key (`CallNativeExit`: a panel or state that handles it closes, otherwise the exit box appears) |
 | `wheel DELTA` | mouse wheel |
+| `camera X Y [SCALE]` | put the map camera on a scene position (the zoom limit and the wrap still apply) and log where it ended up |
 | `autoplay ROUNDS` | play N rounds without input: ends the human turn (the AI hosting option plays it), fast-forwards AI turns and closes boxes; stops early when the battle ends |
 | `settle` | close boxes and finish AI moves until the human side can act (ends no turn) |
 | `dump NAME` | write the rule state as `NAME.json` next to the screenshots |
 | `hittest LABEL` | every button off the screen is touched there (at a window pixel in the letterbox bars when the window has them, and at a synthetic point) through the input entry and straight through the GUI tree; every hidden button must refuse input. Buttons do not fire while probing; each one that would have fires a `hittest failed` log line |
 | `dumpafter COUNTRY NAME` | write the rule state as `NAME.json` the moment COUNTRY's turn ends (its own decisions, before the next country acts; AI tests) |
-| `startconquest FILE COUNTRY` | start a conquest with any scenario file as COUNTRY (the generated world map: `conquest_10.xml`) |
+| `startconquest FILE COUNTRY` | start a conquest with any scenario file as COUNTRY (`conquest_N.xml` plays conquest N with its conquests.json options; the world map: `conquest_10.xml`) |
 | `texstats LABEL` | log the live texture memory and the last frame's draw calls; lines whose labels differ only by a trailing number must report the same memory (resources are released when screens close) |
 | `shot NAME` | screenshot |
 | `log TEXT` | write to the log |
@@ -79,7 +80,7 @@ against the dumps (the AI tests).
 | `resource_cycle` | menu -> conquest -> menu twice: the same texture memory on every visit |
 | `ai_defends_marseille_classic`, `ai_defends_marseille_standard` | the test mod `mods/ai-marseille` (an Italian stack next to a weakly held Marseille): the standard AI reinforces and holds Marseille (`.expect`), the classic AI loses it |
 | `ai_standard_autoplay` | conquest 1 played by the standard AI for 16 rounds |
-| `world_menu`, `world_autoplay` | the generated world map (`mods/map-natural-earth`, MAP_PIPELINE.md): through the conquest menu (list, preview, game), and played by the standard AI for four rounds |
+| `world_menu`, `world_autoplay` | the generated world map, WORLD 1939 (`mods/map-natural-earth`, MAP_PIPELINE.md): through the conquest menu (list, preview, game); as France with the seam at the Bering Strait, fully zoomed out (no black bars), and four rounds of the standard AI |
 
 ## Unit tests (`Unit/`, `dotnet test Tests`)
 
@@ -89,7 +90,8 @@ against the dumps (the AI tests).
 | `HitTestTests.cs` | points off the screen never hit; only the visible part of an edge control hits; hidden and disabled controls refuse input |
 | `NoPurchaseTests.cs` | no purchase code, billing permission, purchase types or buy button |
 | `AiProfileTests.cs` | classic equals the original numbers; inheritance; the command line override |
-| `MapPackTests.cs` | the Natural Earth pack (consistency, coverage, capitals, Marseille); the pipeline and the classic export on a synthetic world |
+| `MapPackTests.cs` | the world base map (consistency, wrapping, the units of every era, historical borders splitting provinces, coverage up to the polar islands and over the date line, capitals of today and of earlier eras, Marseille); the pipeline and the classic export on a synthetic world with a historical border |
+| `CameraTests.cs` | zooming out stops when the map fills the screen; a wrapping map scrolls past its edges and the camera takes the short way over the seam |
 | `BuiltInModTests.cs` | mods built into the package mount and merge like folder mods, a folder mod replaces one with the same id, the world map is built in |
 
 ---
@@ -127,12 +129,13 @@ against the dumps (the AI tests).
 | `drag X1 Y1 X2 Y2 [S]` | 按下，分步移动，松开 |
 | `back` | Android 返回键（`CallNativeExit`：能处理它的面板或状态会关闭，否则会弹出退出对话框） |
 | `wheel DELTA` | 鼠标滚轮 |
+| `camera X Y [SCALE]` | 把地图镜头放到某个场景坐标（缩放限制和左右循环仍然生效），并在日志中记录最终位置 |
 | `autoplay ROUNDS` | 在没有输入的情况下进行 N 个回合：结束人类玩家的回合（由 AI 托管选项代为进行），快进 AI 回合并关闭对话框；战斗结束时提前停止 |
 | `settle` | 关闭对话框并完成 AI 的行动，直到人类一方可以操作为止（不结束任何回合） |
 | `dump NAME` | 将规则状态写为 `NAME.json`，与截图放在一起 |
 | `hittest LABEL` | 每个位于屏幕外的按钮都会在其所在位置被触摸（如果窗口有黑边，则在黑边内的某个窗口像素处触摸；此外还会在一个合成点处触摸），分别经由输入入口和直接通过 GUI 树进行；每个隐藏的按钮都必须拒绝输入。探测期间按钮不会真正触发；每个本应触发的按钮都会改为输出一行 `hittest failed` 日志 |
 | `dumpafter COUNTRY NAME` | 在 COUNTRY 的回合结束的那一刻将规则状态写为 `NAME.json`（即它自己的决策结果，在下一个国家行动之前；用于 AI 测试） |
-| `startconquest FILE COUNTRY` | 以任意剧本文件、作为 COUNTRY 开始一局征服（生成的世界地图：`conquest_10.xml`） |
+| `startconquest FILE COUNTRY` | 以任意剧本文件、作为 COUNTRY 开始一局征服（`conquest_N.xml` 按征服 N 及其 conquests.json 中的选项进行；世界地图：`conquest_10.xml`） |
 | `texstats LABEL` | 在日志中记录当前的纹理内存占用和上一帧的绘制调用数；标签仅在末尾数字上有所不同的各行必须报告相同的内存（界面关闭时资源会被释放） |
 | `shot NAME` | 截图 |
 | `log TEXT` | 写入日志 |
@@ -156,7 +159,7 @@ against the dumps (the AI tests).
 | `resource_cycle` | 菜单 -> 征服 -> 菜单，重复两次：每次进入时纹理内存都相同 |
 | `ai_defends_marseille_classic`、`ai_defends_marseille_standard` | 测试模组 `mods/ai-marseille`（一支意大利部队堆叠在防守薄弱的马赛旁边）：standard AI 会增援并守住马赛（`.expect`），classic AI 则会丢掉马赛 |
 | `ai_standard_autoplay` | 征服 1，由 standard AI 进行 16 个回合 |
-| `world_menu`、`world_autoplay` | 生成的世界地图（`mods/map-natural-earth`，MAP_PIPELINE.md）：通过征服菜单进入（列表、预览、游戏），以及由 standard AI 进行四个回合 |
+| `world_menu`、`world_autoplay` | 生成的世界地图 WORLD 1939（`mods/map-natural-earth`，MAP_PIPELINE.md）：通过征服菜单进入（列表、预览、游戏）；以法国开局，查看白令海峡处的接缝、最大缩小（没有黑边），以及由 standard AI 进行四个回合 |
 
 ## 单元测试（`Unit/`，`dotnet test Tests`）
 
@@ -166,5 +169,6 @@ against the dumps (the AI tests).
 | `HitTestTests.cs` | 屏幕外的点永远不会命中；边缘控件只有可见部分能被命中；隐藏和禁用的控件拒绝输入 |
 | `NoPurchaseTests.cs` | 不存在购买代码、计费权限、购买类型或购买按钮 |
 | `AiProfileTests.cs` | classic 与原版数值完全相同；继承；命令行覆盖 |
-| `MapPackTests.cs` | Natural Earth 数据包（一致性、覆盖范围、首都、马赛）；在一个合成的世界上测试管线和经典地图导出 |
+| `MapPackTests.cs` | 世界底图（一致性、左右循环、各时代的单元、历史边界拆分省份、覆盖到北极群岛并跨越日期变更线、今天和早期时代的首都、马赛）；在一个带历史边界的合成世界上测试生成流程和经典地图导出 |
+| `CameraTests.cs` | 缩小到地图填满屏幕时停止；循环地图可以越过边缘滚动，镜头跨越接缝走近路 |
 | `BuiltInModTests.cs` | 内置于游戏资源包中的模组与文件夹模组一样挂载和合并；文件夹模组会替换 id 相同的内置模组；世界地图是内置的 |
