@@ -35,6 +35,7 @@ msbuild.wrn
 /WC2/obj/
 /WC2.Android/bin/
 /WC2.Android/obj/
+/Tests/
 
 # ==================== .NET / VS 用户与缓存文件 ====================
 .vs/
