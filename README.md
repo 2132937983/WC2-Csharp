@@ -1,5 +1,9 @@
 # World Conqueror 2 — C# port
 
+**Language / 语言:** [English](#english) | [中文](#chinese)
+
+<a id="english"></a>
+
 A C# / MonoGame port of the C++ remake in `Reference/WC2-C` (which itself ran on the original
 Android `libeasytech` binary). Everything, including the engine layer the binary used to provide
 (renderer, GUI toolkit, bitmap fonts, atlases, particle effects, state machine), is now managed code.
@@ -133,3 +137,90 @@ map; the AI tests check what the improved AI defends. About four minutes. Detail
   8 kHz, which NLayer mis-frames).
 * Text in Japanese, Traditional Chinese and Korean misses glyphs: neither the remake's Kai/Hei fonts
   nor the original bitmap fonts cover those texts (the original drew them with the Android system font).
+
+---
+
+<a id="chinese"></a>
+
+# 世界征服者2 — C# 移植版
+
+本项目是 `Reference/WC2-C` 中 C++ 重制版的 C# / MonoGame 移植（该重制版本身运行在原版 Android `libeasytech` 二进制库之上）。所有代码，包括原先由该二进制库提供的引擎层（渲染器、GUI 工具包、位图字体、图集、粒子特效、状态机），现在都已是托管代码。
+
+分支：`original` 是忠实还原的版本，作为参考保持冻结；`newEngine` 承载 `NEW_ENGINE_PLAN.md` 中描述的现代化改造（按用途组织的资源树、带 schema 的 JSON 游戏数据、模组（mod）、相互独立的引擎/数据/游戏/宿主程序项目、确定性测试）。目标平台为 Windows 和 Android。
+
+```
+WC2.slnx                 solution with all projects
+assets/                  everything the game reads, by purpose: audio/, image/, data/ (json/ authored
+                         data and schemas, xml/ original data), scripts/; originals unchanged (ASSET_LAYOUT.md)
+mods/                    mods mounted by development builds (MODDING.md): example-balance (disabled),
+                         map-natural-earth (the generated world map with a conquest, MAP_PIPELINE.md)
+generated/               asset_index.json, kept current by every build (original name -> path)
+Engine/                  WC2.Engine: the engine library (no reference to data, game or hosts)
+Data/                    WC2.Data: data definitions (paths, schemas mapping, terrain, rules, layouts, audio, countries)
+Game/                    WC2.Game: rules, AI, scene, screens, data readers, the shared MonoGame host
+Hosts/Desktop/           WC2.Desktop: the Windows program (options, window, debug tools)   →  dotnet run
+Hosts/Android/           WC2.Android: the APK (activity, life cycle, APK asset access)     →  dotnet build -c Release
+Tools/                   WC2.Tools: build-pack (asset tree → runtime package, runs with every build),
+                         validate (asset checker), compare-image (screenshot references), build-map
+                         (Natural Earth → map pack and playable map mod)
+Tests/                   WC2.Tests (unit tests) and the scripted regression suite (run-tests.ps1, goldens)
+Reference/WC2-C/         original C++ remake (read only, not in git)
+Reference/decompiled/    Hex-Rays pseudo-C of the original libeasytech.so (not in git)
+```
+
+## 在桌面上运行
+
+```powershell
+dotnet run --project Hosts/Desktop
+```
+
+选项：`--width 1280 --height 720`（窗口大小；逻辑布局与原版一样随宽高比变化：480/534/568/640 x 320，宽高比低于 4:3 时为 1024 x 768，见 `data/json/layout/profiles.json`）、`--ipad`（4:3 窗口）、`--lang zh_CN|English|ja|kr|ru|zh_TW`、`--assets PATH`（游戏资源包、`assets/` 资源树、存放原版文件的扁平文件夹，或者一个 `.zip`/`.apk`）、`--mods DIR`、`--no-mods`、`--all-mods`、`--docs DIR`（存档和设置）、`--log FILE`、`--texture-stats`、`--ai classic|standard|hard`（AI 配置；新游戏使用 `standard`）、`--scenario FILE --country ID`（立即以该剧本开始一局征服模式，例如对生成的世界地图使用 `--scenario conquest_10.xml --country fr`）。
+测试选项：`--seed N --fixed-step`（可回放的运行）、`--exit-after SEC --screenshot FILE`、`--script FILE`（脚本化输入，见 `Tests/README.md`）。
+工具：`--verify-data [--mods DIR]`、`--convert-data`、`--test-audio`、`--test-xml`、`--test-fonts`、`--decode-pkm`。
+
+操作：鼠标左键 = 手指，鼠标滚轮 = 缩放，按住鼠标右键拖动 = 第二根手指（双指缩放），`Esc`/`Backspace` = Android 返回键，`F11` = 全屏。
+
+存档、设置和模组位于 `%LOCALAPPDATA%\WC2CSharp`（模组放在 `mods\` 中）。
+
+## 项目
+
+* `Engine` — easytech 引擎 API 的重新实现（`ecGraphics`、`ecImage`、`ecTextureRes`、`ecUniFont`/`ecText`、`GUIElement`/`GUIManager`/各种控件、`CStateManager`、`CCSoundBox`、`ecEffect`、基于 System.Xml 的 `TiXml` 外观层、ETC1/PKM 解码器、SkiaSharp 图像加载），另外还包括 `IO/AssetSystem`（资源层）、`IO/ModManager`、`IO/JsonData`（JSON 合并）和 `IO/JsonSchema`（校验）。它不引用任何游戏代码；这种分层由编译器强制保证。
+* `Data` — 以数据形式存在的定义：`DataPaths`（文件路径及每个文件对应的 schema）、`TerrainDefs`、`GameRules`、`LayoutProfiles`、`AudioDefs`、`CountryDefs`、各枚举类型、`DataCompare`。
+* `Game` — 移植过来的游戏代码，每个原版模块对应一个文件夹（`BasicElements`、`MapScene`、`Render`、`Fights`、`AI`、`GameStages`、`GUI/Menus`、`GUI/InGame`……）。规则部分的类名、方法名和字段名有意与 C++ 保持一致（见 `PORTING_GUIDE.md`）。`Game/Data` 存放需要用到游戏类型的读取器（剧本索引、战争勋章、XML→JSON 迁移）；`Game/Host` 存放桌面端与 Android 共用的 MonoGame 宿主程序和测试脚本驱动器。
+* `Hosts/Desktop`、`Hosts/Android` — 只负责输入、输出、窗口和生命周期。
+
+## 游戏数据与模组
+
+游戏的各种定义均为 JSON，每个文件都有各自的 schema（见 `DATA_SCHEMA.md`）：单位、卡牌、将领、地形、战争勋章、规则、战役、征服、国家、音频、布局配置、文本、选项界面布局、按地区划分的地图表以及 AI 配置。剧本和教程脚本仍保留原版 XML 格式，由一个自动生成的索引列出。每个文件在加载时都会根据其 schema 进行校验。模组是一些文件夹，它们可以向数据中添加文件，或将单个条目合并进数据（见 `MODDING.md`，示例在 `mods/example-balance`）。
+
+AI 的各项数值也是数据（`data/json/ai/profiles.json`）：`classic` 与原版 AI 完全一致；`standard`（默认）会防守受到威胁的首都、港口、机场、城市和本土地区，并更积极地购买卡牌；`hard` 会对玩家施加更大的压力。
+
+除经典地图之外，`WC2.Tools build-map` 还能根据 Natural Earth 地理数据生成地图（见 `MAP_PIPELINE.md`）：生成一个数据包（`assets/data/maps/natural-earth`），以及一个以模组形式提供、可游玩的世界征服（`mods/map-natural-earth`：征服列表中的征服 10 “WORLD (NATURAL EARTH)”）。
+
+## Android
+
+`Hosts/Android` 使用 `MonoGame.Framework.Android` 编译引擎、数据和游戏的源代码。生成的游戏资源包以 `assets/pack/` 的形式随 APK 一起发布，并通过其索引就地读取；只有在就地读取失败时才会将其解压一次。世界地图模组是内置模组（征服 10）。模组放在 `Android/data/com.wc2remake.csharp/files/mods/` 中。
+环境要求：.NET Android 工作负载、Android SDK（platform 34+）、JDK 17。如果 `C:\Android` 和 `C:\Program Files\Java\jdk-17.0.2` 存在，项目默认指向它们；可通过 `-p:AndroidSdkDirectory=... -p:JavaSdkDirectory=...` 覆盖。
+
+```powershell
+.\Hosts\Android\build-apk.ps1   # builds Release, copies WC2-android-arm64.apk to the repository root
+# or: dotnet build Hosts/Android -c Release   (APK: Hosts\Android\bin\Release\net9.0-android\*-Signed.apk)
+```
+
+Activity 仿照原版的 `Wc2Activity`：根据屏幕宽高比选择布局档位，在生命周期中调用 `nativePause` / `nativeResume`，返回键经由 `CallNativeExit` 处理，沉浸式全屏窗口，原版的启动器图标和本地化的应用名称。在 GPU 支持的情况下，地图贴图块以 ETC 纹理的形式上传。包名为 `com.wc2remake.csharp`，仅支持 arm64-v8a，使用调试签名。以上这些都还没有在真机上运行过；桌面版可以直接从 APK 运行（`--assets <apk>`），APK 的内容就是以这种方式检查的。真机检查清单见 `DIFFERENCES_THREE_WAY.md` 第 5 节。
+
+## 测试
+
+```powershell
+dotnet build Hosts/Desktop
+.\Tests\run-tests.ps1
+```
+
+以上命令会运行单元测试（`Tests/WC2.Tests.csproj`）、音频自检、数据校验（schema 校验，以及将每个 JSON 文件与原版 XML 或内置表进行比对）、资源检查器，并以确定性模式（固定随机种子、固定时间步长、全新的文档文件夹）运行每个测试脚本：游戏状态转储与 `Tests/golden` 中的基准（golden）逐字节比较，截图与参考图像比较，点击测试（hit test）脚本则检查在手机、平板以及带黑边（letterbox）的窗口中，隐藏的控件和位于屏幕外的控件都会拒绝触摸。有几个测试脚本让 AI 完整地打完整局游戏（`autoplay`），分别在经典地图和生成的地图上进行；AI 测试检查改进后的 AI 会防守哪些地方。耗时约四分钟。详见 `Tests/README.md`。
+
+## 状态 / 已知缺失
+
+* 未移植（与 C++ 重制版相同）：战斗动画（重制版也从未启动它）、多人游戏、服务/推广面板、地图编辑器。应用内购买已被移除。教程*已经*移植（从二进制库移植而来；重制版中的教程运行的是原版代码）。
+* 游戏逻辑已对照反编译的原版进行了审查；重制版中无意造成的偏差已被修正，有意为之的重新设计则予以保留。`DIFFERENCES_THREE_WAY.md` 是原版、C++ 重制版与 C# 版的三方对照表。
+* 音乐使用 MP3Sharp 从原版 MP3 文件解码（这些音轨是 8 kHz 的 MPEG 2.5 Layer III，NLayer 会对其错误分帧）。
+* 日文、繁体中文和韩文文本存在缺字：无论是重制版的楷体（Kai）/黑体（Hei）字体，还是原版的位图字体，都不能覆盖这些文本（原版使用 Android 系统字体来绘制它们）。

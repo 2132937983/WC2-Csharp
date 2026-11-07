@@ -1,5 +1,9 @@
 # Game data and its schemas
 
+**Language / 语言:** [English](#english) | [中文](#chinese)
+
+<a id="english"></a>
+
 The game's definitions are JSON. The files live in `assets/data/json/` (the authored source, in git)
 and end up in the runtime package at the same path. The original XML files stay untouched in
 `assets/data/xml/` and are still packaged; the game reads the JSON, except for the **scenarios and
@@ -374,3 +378,289 @@ strips a threatened capital, weighs whole enemy stacks and buys cards more readi
 stronger push against the player. Tests: `Tests/ai_defends_marseille_standard` (France reinforces
 Marseille and still holds it after Italy's first assault; the classic AI loses it there),
 `ai_standard_autoplay`, and the unit tests in `Tests/Unit/AiProfileTests.cs`.
+
+---
+
+<a id="chinese"></a>
+
+# 游戏数据及其模式（schema）
+
+游戏的定义数据都是 JSON。这些文件位于 `assets/data/json/`（人工编写的源数据，纳入 git），并以相同路径进入运行时游戏资源包。原版 XML 文件原封不动地保留在 `assets/data/xml/` 中，并且仍会被打包；游戏读取的是 JSON，但**剧本和教程脚本例外，它们仍使用原版 XML 文件**：由一个索引 JSON 为它们命名并给出摘要。
+
+特殊行为仍保留在代码中，通过类型、特性（trait）或动作 id 来选择（地区类型的 `capital` 或 `port` 特性、设施 id、卡牌类型）；这些规则用到的每个数值都在数据中。
+
+## 模式（schema）与检查
+
+每个数据文件在 `assets/data/json/schemas/` 中都有一个 JSON Schema（draft 2020-12）：
+
+| 模式（schema） | 文件 |
+|---|---|
+| `units.schema.json` | `units/units.json` |
+| `cards.schema.json` | `cards/cards.json` |
+| `commanders.schema.json`, `portraits.schema.json` | `commanders/commanders.json`, `commanders/portraits.json` |
+| `campaigns.schema.json`, `conquests.schema.json` | `campaigns/campaigns.json`, `conquests/conquests.json` |
+| `terrain.schema.json` | `terrain/terrain.json` |
+| `medals.schema.json`, `rules.schema.json` | `rules/medals.json`, `rules/rules.json` |
+| `countries.schema.json` | `countries/countries.json` |
+| `audio.schema.json` | `audio/audio.json` |
+| `layout-profiles.schema.json`, `options-layout.schema.json` | `layout/profiles.json`, `layout/options.json` |
+| `map-areas.schema.json` | `maps/<id>/areas.json` |
+| `scenario-index.schema.json` | `scenarios/index.json` |
+| `text.schema.json` | `text/<code>/*.json` |
+| `ai.schema.json` | `ai/profiles.json` |
+
+* **加载时**（`JsonData.LoadMerged`，`Engine/IO/JsonSchema.cs`），合并后的文件（游戏数据加上模组（mod））会按其模式进行检查。发现的问题会连同其 JSON 路径一起记录到日志中（`data/json/cards/cards.json: $.countries.others.Tank.price: -5 is below the minimum 0`）。如果只有模组的版本无效，则丢弃模组对该文件的修改，改用游戏自身的数据。
+* `dotnet run --project Hosts/Desktop -- --verify-data`（属于 `Tests/run-tests.ps1` 的一部分）会按模式检查每个数据文件，然后将每种类型加载两次——一次从原版 XML（或内置表）加载，一次从 JSON 加载——并逐字段比较得到的定义。因此对 JSON 的有意修改会在这里显现出来；加上 `--mods <folder>` 时，它会准确列出某个模组改动了什么。
+* `dotnet run --project Hosts/Desktop -- --convert-data` 从原版文件重新生成 JSON（内容没有变化的文件保持不动）。
+
+记录（record）拒绝未知字段（`additionalProperties: false`），因此拼错的字段名会报错；注册表（以名称为键的对象）接受任意键。
+
+## 约定
+
+* 允许使用注释（`//`、`/* */`）和尾随逗号。
+* 数字也可以写成字符串，反之亦然；值的解析方式与原版 XML 属性完全相同（整数字段接受 `"12"`、`12` 和 `12.0`）。
+* 注册表是以名称或 id 为键的对象（`"units": {"tank": {...}}`），绝不是数组，这样模组可以只修改其中一个条目。有序列表（剧本中的国家、教程命令）是数组。
+* 每个文件都有 `"format": 1` 和一段 `"about"` 文本；游戏会忽略这两者。
+* 模组会合并进这些文件：对象逐键合并，数组和值整体替换，`null` 删除一个键，`"$replace": true` 替换整个对象。参见 `MODDING.md`。
+
+| 文件 | 取代 | 内容 |
+|---|---|---|
+| `data/json/units/units.json` | `armydef.xml` | 单位类型、各国属性、战斗规则、单位等级 |
+| `data/json/cards/cards.json` | `carddef.xml` | 各国的卡牌 |
+| `data/json/commanders/commanders.json` | `commanderdef.xml` | 将领、将领等级 |
+| `data/json/commanders/portraits.json` | `generalphotos.xml` | 将领肖像 |
+| `data/json/campaigns/campaigns.json` | `battlelist.xml` | 选择地图上的战役关卡 |
+| `data/json/conquests/conquests.json` | `conquestlist.xml` | 选择地图上的征服 |
+| `data/json/terrain/terrain.json` | 代码中的常量 | 地区类型、建筑、设施 |
+| `data/json/rules/medals.json` | 代码中的常量 | 战争勋章的效果 |
+| `data/json/rules/rules.json` | 代码中的常量 | 全局数值：战斗骰子、经济上限 |
+| `data/json/layout/options.json` | `guioptions.xml` | 选项页面布局 |
+| `data/json/layout/profiles.json` | 代码中的常量 | 屏幕布局（按宽高比分档） |
+| `data/json/audio/audio.json` | 代码中的文件名 | 什么情况下播放哪个声音 |
+| `data/json/countries/countries.json` | 代码中的列表 | 拥有自己的单位美术、旗帜、徽章的国家 |
+| `data/json/ai/profiles.json` | AI 代码中的常量 | AI 配置：classic（原版）、standard、hard |
+| `data/json/maps/<id>/areas.json` | `areatax<id>.xml` | 每个地区的地区类型和基础税收 |
+| `data/json/scenarios/index.json` | （新增） | 剧本 XML 文件和教程脚本的索引 |
+| `data/json/text/<code>/stringtable_<code>[_iPad].json` | `stringtable_*.xml` | 文本 |
+| `data/json/text/<code>/Localizable.json` | `<lang>.lproj/Localizable.strings` | 语言设置 |
+
+以下内容没有转换，因为它们是资源格式而不是游戏数据：纹理图集（与其图像放在一起的 `*.xml`）、位图字体（`.fnt`）、粒子效果（`effect_*.xml`）、地图几何数据（`area<id>.bin`、`adjion<id>.bin`、`areamark<id>.raw`）以及剧本的地区掩码（`*.bin`，由 `areasEnable` 引用）。
+
+---
+
+## 单位（units）
+
+`data/json/units/units.json`
+
+```json
+{
+  "legacyCombatDefaults": false,
+  "weaponArmorRules": { "1": { "2": "150%", "3": 0.8 } },
+  "unitTypes": {
+    "infantry": { "id": 0, "image": "soldier" },
+    "carrier":  { "id": 10, "image": "transportship", "countryIndependent": true }
+  },
+  "countries": {
+    "others": {
+      "tank": { "unitType": 2, "strength": 110, "movement": 2, "minAttack": 2, "maxAttack": 9, "armorType": 2,
+                "combat": { "traits": ["cross-entrenchment"],
+                            "attack": { "mode": 0, "engagement": 0, "range": { "shape": "graph", "min": 0, "max": 100 } },
+                            "result": { "movementRestoreOnKill": 1 } } }
+    },
+    "cn": { "infantry": { ... } }
+  },
+  "levels": [ { "attack": 0, "defence": 0, "turnRecovery": 0, "instantRecovery": 0, "maxHpPercent": 0, "expToNext": 90 }, ... ]
+}
+```
+
+* `legacyCombatDefaults`：为 true 时，没有显式战斗数据的单位会使用重制版第一个版本中硬编码的规则。随附的数据将其设为 false；所有内容都是显式给出的。
+* `weaponArmorRules`：武器类型（1..32）→ 护甲类型（1..255）→ 伤害倍率（`"150%"`、`1.5`、`"inf"`）。拥有多种武器类型的单位使用其中最高的倍率。
+* `unitTypes`：名称 → 稳定的 `id`、图集图像基础名（`image`；除非设置了 `countryIndependent`，否则会追加国家后缀）。在剧本中使用但未在此列出的名称会获得一个从 1000 开始的动态 id。
+* `countries`：国家 id → 单位类型 → 定义。对于某一类型没有自己条目的国家，一律使用 `others`。
+
+单位定义字段：
+
+| 字段 | 含义 |
+|---|---|
+| `strength`, `movement`, `minAttack`, `maxAttack` | 基础属性（缺省为 0） |
+| `unitType` | 战斗类别：0 不可选择，1 步兵，2 装甲，3 炮兵，4 海军（0..255） |
+| `navy` | 在海上绘制为舰船 / 运输船；与战斗类别无关 |
+| `weaponType` | 武器类型列表（`"1,3"`、`"1 3"`、`"1|3"`） |
+| `armorType` | 护甲类型 0..255 |
+| `image`, `countryIndependent` | 针对该国家覆盖单位类型的图像设置 |
+| `combat` | 战斗规则，见下文 |
+
+`combat`：
+
+| 字段 | 含义 |
+|---|---|
+| `traits` | 由以下各项组成的列表：`cross-entrenchment`（攻击堑壕时保留移动力）、`secondary-attack`、`recv_fort_second_counter`（会受到要塞的第二次反击）、`cannot-occupy` |
+| `canOccupy` | `cannot-occupy` 的易读形式；优先于该特性 |
+| `aiNoCounterBonus` | 目标无法反击时的 AI 目标评分（默认 300） |
+| `attack` | `mode` 0 近战 / 1 投射、骚扰 / 2 空袭（或 `direct`、`projectile`、`airstrike`、`infiltration`）；空袭使用的 `payload`：1 `airstrike`、2 `bomber`、3 `nuclear`；`attackCost` 特殊攻击的移动力消耗（`"inf"` 清空全部移动力）；`engagement` 0 近战 / 1 投射；`range`；`damage` |
+| `counter` | `inherit: "attack"` 复制攻击的设置；否则只读取 `range`（空袭类攻击者以近战方式反击）；`damage` |
+| `range` | `shape` 为 `graph`（1000 = 一个地区步长）或 `circle`（1000 = 地图距离 100）；`min`、`max`、`radius`（强制为圆形）、`maxInclusive`、`radiusSource: "country"`（使用所属国家的空袭半径） |
+| `damage` | 由 `{target: <unitType>, phase: "attack"|"counter"|..., rate: "130%"}` 组成的条件伤害倍率列表；位于 `attack`/`counter` 之下时，phase 默认取所在的那个阶段 |
+| `result` | `constructionLevelDegrade` 和 `constructionLevelChance`（降低目标建筑等级的概率，%）、`movementRestoreOnKill` |
+
+`levels`：五个单位等级（0..4）：攻击和防御加成、每回合恢复量、升级时的恢复量、最大兵力加成（%），以及升到下一级所需的经验（按最大兵力 / 100 缩放）。
+
+## 卡牌（cards）
+
+`data/json/cards/cards.json`：`{"countries": {"<country>": {"<card name>": {...}}}}`，其他所有国家使用 `others`。
+
+| 字段 | 含义 |
+|---|---|
+| `id` | 卡牌 id（0..28；28 是精锐步兵卡） |
+| `type` | `army`、`navy`、`airforce`、`development`、`strategy` |
+| `price`, `industry` | 金钱和工业的花费 |
+| `round` | 再次可用之前需要等待的回合数 |
+| `tech` | 所需的科技等级 |
+| `relatedArmyId` | 该卡牌征召的单位类型 id（默认：卡牌 id） |
+| `maxTimes` | 每局可使用的次数（0 = 无限制） |
+| `image`, `intro` | 卡牌图片（图集名称）和文本键 |
+
+AI 的征召顺序按国家分别依价格、然后工业、然后科技排列。
+
+## 将领（commanders）
+
+`data/json/commanders/commanders.json`：`{"commanders": {"<name>": {"country": "de", "rank": 9, "infantry": 2, "airforce": 1, "artillery": 1, "armour": 3, "navy": 0, "honour": 2}}, "levels": [...]}`
+
+六个勋章字段是该将领的战争勋章等级。`levels` 列出玩家将领的 15 个等级：攻击、防御、恢复、最大兵力加成（与单位相同）、`coolDown` 回合数以及 `medalsToNext`。
+
+## 肖像（portraits）
+
+`data/json/commanders/portraits.json`：`{"portraits": {"<general name>": {"file": "general_rommel.webp", "w": 113, "h": 137, "refx": 20}}}`
+
+## 战役与征服（campaigns 和 conquests）
+
+`data/json/campaigns/campaigns.json`：`{"battles": {"<key>": {...}}}`，包含 `age`（标签文本）、`centerX`、`centerY`、`ageX`、`ageY`、`victory` 和 `greatVictory`（回合限制，默认分别为 15 和 10）、`flags` 和 `arrows`（由 `{name, x, y, rot, scale}` 组成的列表，`rot` 以度为单位）。
+
+`data/json/conquests/conquests.json`：`{"conquests": {"<key>": {"centerX", "centerY", "flags": [...]}}}`。
+
+## 地形（terrain）
+
+`data/json/terrain/terrain.json`。游戏规则通过查询这些定义来做判断，而不是在代码中检测“capital”或“fort”；随附的数值精确再现原版游戏。
+
+`areaTypes`（键是 `data/json/maps/<id>/areas.json` 中使用的名称；用一个新名称加一个新 `id` 即可新增一种类型）：
+
+| 字段 | 含义 |
+|---|---|
+| `id` | 存档中保存的数字（0 普通，1 首都，2 港口，3 大城市，4 普通城市） |
+| `cityLevel`, `industryLevel` | 该地区在没有建筑时具有的等级；新建的城市 / 工业从比它高一级开始，受损的城市 / 工业在退回到该等级时消失 |
+| `healing` | 仍有剩余移动力的单位每回合恢复的兵力（每级再加 `healingPerLevel`） |
+| `navyHealingMultiplier` | 舰船的恢复系数（港口：2） |
+| `defence` | 位于此处的单位获得的额外防御（此值与设施的防御取较大者生效） |
+| `capital`, `port`, `keyArea` | 算作首都；可以征召舰船 / 绘制港口；计入 “core” 失败类型 |
+| `encirclementNeedsGarrison` | 该类型的敌方地区只有在其中有单位时才能闭合包围圈 |
+| `medalBonus` | 加到在此处发生的战斗的勋章掷骰上 |
+| `ai` | AI 目标值：`construction`、`airStrike`、`nuclear`、`airborne` |
+
+`constructions`（`city`、`industry`、`airport`）：`maxLevel`、`perLevel`（每级城市的税收、每级工业的工业产出）、`healingLevel`（该地区至少按此等级恢复；机场为 1）。
+
+`installations`（`fort`、`entrenchment`、`antiaircraft`、`radar`）：`defence`、`minCounterRange`（要塞：防守方的反击距离至少为一个地区）、`stopsAttackers`（堑壕：攻击方会失去移动力，除非具有 `cross-entrenchment`）、`secondCounter`（要塞）、`halvesRangedDamage`（雷达）、`airStrikeDamagePercent`（防空 30，雷达 50）、`protectsFromBombing`、`ai.airStrikePenalty`。
+
+`rules`：`healingPerLevel`（3）、`seaMaxMovement`（1），以及空袭目标和空降目标的 AI 等级权重。
+
+## 勋章（medals）
+
+`data/json/rules/medals.json`：六种战争勋章（`infantry`、`airforce`、`artillery`、`armour`、`navy`、`commerce`）的作用。效果的种类由代码实现，其数值则是数据；随附的数值精确再现原版。
+
+| 字段 | 含义 |
+|---|---|
+| `upgradeCost.base`, `upgradeCost.perLevel` | 提升一级战争勋章所需的勋章数：base + perLevel x 当前等级 |
+| `commerce.incomePercentPerLevel` | 每级商业勋章带来的额外税收和工业（10） |
+| `airforce.attackBonus`, `attackBonusFromLevel` | 空袭攻击加成及其开始生效的等级 |
+| `airforce.radius`, `radiusUpgraded`, `radiusUpgradedFromLevel` | 以地图单位计的空袭半径（300，从 2 级起为 400） |
+| `airforce.noCooldownFromLevel` | 从此等级起空军卡牌没有冷却（3） |
+| `draftBonuses` | 有序列表：当所属国家的 `medal` 达到 `level` 或以上时，用卡牌征召的单位获得 `upgrades` 次升级以及 `addTactics`（`assault`、`defence`、`carrier`）；`cards` 将其限定于指定的卡牌 id，`cardType` 限定于某一卡牌类型 |
+
+## 规则（rules）
+
+`data/json/rules/rules.json`：原先是常量的全局数值。`combat.diceThresholds`：兵力百分比；单位掷一个骰子，其兵力每高于一个阈值就再多掷一个（`[50, 25, 15, 5]`：高于 50 % 时掷五个骰子……不超过 5 % 时只掷一个）。`economy.moneyCap`、`economy.industryCap`：99999。
+
+## 地图地区表
+
+`data/json/maps/<id>/areas.json`：`{"areas": {"<area id>": {"type": "capital", "tax": 30}}}`。此处未列出的地区是税收为 100 的普通地区。几何数据（`area<id>.bin`、`adjion<id>.bin`、`areamark<id>.raw`）仍保持二进制格式。
+
+## 剧本（scenarios）
+
+剧本仍然是原版 XML 文件（`data/xml/scenarios/battle_*.xml`、`conquest_*.xml`、`tutorails.xml`；其地区掩码位于 `data/binary/scenarios/`）。`data/json/scenarios/index.json` 为每个剧本命名并给出摘要；`--convert-data` 从 XML 生成它，`--verify-data` 检查它是否仍与 XML 一致：
+
+```json
+{ "scenarios": {
+    "battle_axis1": { "file": "data/xml/scenarios/battle_axis1.xml", "mode": "campaign", "series": "axis",
+                      "level": 1, "map": 1, "areaMask": "data/binary/scenarios/battle_axis1.bin",
+                      "countries": [ {"id": "de1", "alliance": 1, "player": true}, {"id": "pl", "alliance": 3} ],
+                      "areas": 120, "dialogues": 4 } },
+  "tutorialScripts": { "tutorails_script-568h": { "file": "scripts/tutorial/tutorails_script-568h.xml" } } }
+```
+
+* `file`：游戏针对该剧本名称所读取的文件（战役和征服列表以剧本的原版文件名引用剧本，例如 `battle_axis1.xml`）。模组要新增一个剧本，需要把它的 XML 放在任意位置，在此处添加一个条目，并添加对应的战役或征服条目。
+* `mode`（`campaign` / `conquest` / `tutorial`）、`series` 和 `level` 取自名称；`map`、`countries`（回合顺序、同盟、玩家的国家）、`areas` 和 `dialogues`（数量）取自 XML。
+
+### 导出的战斗（可选的 JSON 剧本格式）
+
+暂停框中的 **保存**（Save）按钮会将正在进行的战斗以下面的 JSON 形式写入文档文件夹中的 `game.json`。将其作为 `data/json/scenarios/<name>.json` 放入模组后，游戏会读取它来代替同名的 XML。游戏本身不附带任何 JSON 剧本。
+
+```json
+{
+  "map": 1, "areasEnable": "battle_axis1.bin",
+  "countries": [ {"id": "de", "name": "de", "commander": "Guderian", "ai": 0, "alliance": "a", "defeated": "land",
+                  "money": 300, "industry": 200, "techLevel": 3, "taxFactor": 1.35, "r": 71, "g": 87, "b": 99, "a": 90} ],
+  "areas": [ {"id": 512, "country": "de", "construction": "city", "level": 2, "installation": "fort",
+              "units": [ {"type": "infantry", "level": 1, "cards": 0} ]} ],
+  "dialogues": [ {"commander": "Guderian", "index": 1, "atRound": 1, "left": true} ]
+}
+```
+
+* `countries` 按回合顺序排列。`alliance` 为 `a`、`b`、`c` 时表示各方阵营；其他任何值（`n`、`d`）表示中立。`defeated`：`land`（默认）、`army`、`core`。`ai` 默认为 1（在征服模式中，除玩家之外的每个国家本来就都是 AI）。颜色默认为 255，`techLevel` 默认为 1，`taxFactor` 默认为 1。
+* `areas`：`construction` 为 `city`/`industry`/`airport`，配合 `level`（≤ 0 表示没有）；`installation` 为 `fort`/`entrenchment`/`antiaircraft`/`radar`；`units` 包含 `type`（`units.json` 中的一个类型）、`level`（默认 1）和 `cards`（战术卡牌位标志）。
+* `dialogues`：在第 `atRound` 回合显示的将领对话 `index`，肖像位于左侧或右侧。
+
+## 教程脚本
+
+原版 XML（`scripts/tutorial/tutorails_script*.xml`，列在剧本索引中）。模组可以以 `data/json/scenarios/tutorial/<name>.json` 的形式提供 JSON 版本：`{"commands": [{"cmd": "show text", "id": 1}, ...]}`。命令有：`sel area`、`unsel area`、`moveto area`（`id` = 地区）、`finger at`、`finger to`（`x`、`y`）、`hide finger`、`show text`（`id` → 文本 `tutorails <id>`）、`draw rect`、`clear rect`（`x`、`y`、`w`、`h`）、`wait`（等待一次点击）、`show image`、`hide image`、`exit`。游戏根据屏幕宽度选择脚本（`tutorails_script`、`-512h`、`-534h`、`-568h`、`-640h`、`_iPad`）。
+
+## 文本与语言设置
+
+`data/json/text/<code>/stringtable_<code>.json`（手机）和 `stringtable_<code>_iPad.json`（平板）：`{"strings": {"<key>": "<text>"}}`。换行是真正的换行符（`\n`）。`Localizable.json` 保存语言设置：`language`（文件名中使用的代码）以及字符串表的名称。
+
+## 选项页面布局
+
+`data/json/layout/options.json`：`{"phone": [...], "tablet": [...]}`，按顺序每个控件一个条目，包含 `element`（`image`、`text`、`button`、`slider`、`checkbox`、`level`）以及该控件的属性（`item`、`id`、`x`、`y`、`w`、`h`、图像、`font`、`content`、`align`、`color`……）。手机坐标相对于运行时居中放置的 480 x 320 区域；平板坐标是 1024 x 768 下的绝对坐标。
+
+## 布局配置
+
+`data/json/layout/profiles.json`：`{"profiles": [{"id": "phone-568", "aspectAbove": 1.721875, "width": 568, "height": 320, "widthMode": 2, "artVariant": "phone-568-hd"}, ...]}`。按顺序逐个尝试；宽高比范围（屏幕宽度 / 高度，开区间边界 `aspectAbove`、`aspectBelow`）包含当前屏幕的第一个配置胜出。`width` x `height` 是 UI 进行布局时所用的逻辑屏幕，`widthMode` 是原版的模式（2 手机，3 平板），`artVariant` 是它优先使用的美术文件夹。内置配置就是原版的分档（640/568/534/480 x 320，以及宽高比低于 1.40625 时的 1024 x 768）。
+
+## 音频（audio）
+
+`data/json/audio/audio.json`：
+
+* `music`：`menu`、`battle`（每场战斗随机选择一首曲目）、`defeat`；每项都是一个文件列表。
+* `ui`：按用途划分的界面音效：`click`、`buy`、`commanderLevelUp`、`mainMenu`、`explosion`。
+* `effects`：按 id 划分的游戏内音效（`draft`、`move`、`occupy`、`cannon`、`rocket`、`fire`、`exp`、`strike`、`select`、`cancel`、`ship`、`celebrate`、`after_war`、`buff`、`build`、`card_interface`、`gas`、`lv_up`、`machine_gun`、`naval_gun`、`pop`、`supply`）。
+* `preload`：游戏启动时预先加载的声音。
+
+文件名可以是原版名称或游戏资源包中的路径；模组可以将某个用途指向它自己的文件。
+
+## 国家（countries）
+
+`data/json/countries/countries.json`：`{"countries": {"gb": {"commanderMedal": true}, "ca": {}, ...}, "commonMedals": ["common_1", "common_2", "common_3"]}`。这些是游戏据以查找单位美术（单位图集中的 `<unit>_<id>.png`）和旗帜（`flag_<id>.png`）的 id；`others` 是后备美术。`commanderMedal` 国家拥有 AI 将领徽章（`medal_<id>.png`），其他国家使用通用徽章。剧本引用这些 id，同一国家在剧本中出现多个时会附加一位数字（`de1`、`de2`）。
+
+## AI（ai）
+
+`data/json/ai/profiles.json`：`{"default": "standard", "profiles": {"classic": {...}, "standard": {"base": "classic", ...}, "hard": {"base": "standard", ...}}}`。AI 代码（`Game/AI`，沿用原版名称）依据这些数值做出决策；`classic` 保存原版游戏的数值，并精确再现其决策（回归测试基准（golden）以 `--ai classic` 运行）。一个配置指定一个 `base`，并且只列出它所修改的内容。`default` 是新游戏使用的配置；在桌面版上用 `--ai NAME` 可以覆盖它。
+
+每个单位的选择都是评分最高的行动（原地停留、移动到相邻地区、攻击、朝目标行军）；下列字段就是这些评分中所用的数值：
+
+* 地区价值：`taxWeight`、`industryWeight`、`areaTypeValue`（按地区类型 id：普通、首都、港口、大城市、普通城市）、`installationValue`（无、要塞、堑壕、防空、雷达）；
+* 停留：`stayNoEnemyDivisorPerUnit`、`stayThreatenedMultiplier`；
+* 移动：`moveEnemyBonus`、`moveNeutralBonus`、`landingBonus`、`movePlayerBonus`、`moveEmptyOwnAreaPercent`；
+* 攻击：`attackEnemyExtra`、`attackNeutralExtra`、`navyFortPenalty`、`navyShoreBonus`、`assaultBonus`、`targetDefencePenalty`、`commanderBonus`、`carrierTargetBonus`、`attackPlayerBonus`、`attackStackHpPercent`（防守方最前方单位身后那些单位的 hp 中，有多大百分比计入对此次攻击的不利评估；classic 为 0：只计最前方的单位）；
+* 行军：`pathStayIfAreaValueAbove`、`pathTechFactor`、`pathBase`、`pathStrongHp`、`pathStrongBonus`、`pathFullHealthBonus`、`pathNavyBonus`、`pathAssaultBonus`、`pathCommanderBonus`、`pathLevelBonus`；
+* 防守（在 classic 中全部为 0）：己方地区的防守权重是按其属性对应的 `defendCapital`、`defendPort`、`defendAirfield`、`defendCity` 和 `defendHome`（战斗开始时该国已拥有的地区）之和；其威胁值是周围敌方单位的 hp 除以该地区内己方单位的 hp，上限为 `threatCapPercent`。留在该地区可获得 权重 × 威胁 × `defendStayPercent` / 100，移入该地区可获得 权重 × 威胁 × `defendReinforcePercent` / 100，而将受威胁的己方首都中的最后一个单位撤出则要付出 `capitalLastUnitPenalty` 的代价；
+* 卡牌：`cardBands`（随机卡牌类别的区间，百分比）、`cardReservePercent`（一旦金钱或工业跌破本回合开始时数值的这一百分比，就不再购买卡牌）、`cardAlwaysBuyMultiple`、`cardRefusePercent`（金钱不超过价格 2 倍、不超过 3 倍、超过 3 倍时的拒绝购买概率）。
+
+`standard` 会坚守并增援受威胁的首都、港口、机场、城市和本土地区，从不抽空受威胁的首都，会权衡整个敌方单位堆叠，并且更愿意购买卡牌。`hard` 在此基础上加强了对玩家的进攻。测试：`Tests/ai_defends_marseille_standard`（法国增援马赛，并在意大利的第一次进攻之后仍守住该地；classic AI 在那里会丢失马赛）、`ai_standard_autoplay`，以及 `Tests/Unit/AiProfileTests.cs` 中的单元测试。

@@ -1,5 +1,9 @@
 # Tests
 
+**Language / 语言:** [English](#english) | [中文](#chinese)
+
+<a id="english"></a>
+
 `run-tests.ps1` (after `dotnet build Hosts/Desktop` in the repository root) runs, in this order:
 
 0. **unit**: `dotnet test Tests` — the in-process unit tests in `Unit/` (schema validator, every data
@@ -87,3 +91,80 @@ against the dumps (the AI tests).
 | `AiProfileTests.cs` | classic equals the original numbers; inheritance; the command line override |
 | `MapPackTests.cs` | the Natural Earth pack (consistency, coverage, capitals, Marseille); the pipeline and the classic export on a synthetic world |
 | `BuiltInModTests.cs` | mods built into the package mount and merge like folder mods, a folder mod replaces one with the same id, the world map is built in |
+
+---
+
+<a id="chinese"></a>
+
+# 测试
+
+`run-tests.ps1`（需先在仓库根目录执行 `dotnet build Hosts/Desktop`）按以下顺序运行：
+
+0. **unit**（单元测试）：`dotnet test Tests` — `Unit/` 中的进程内单元测试（schema 校验器、每个数据文件对照其 schema 的校验、无效模组数据的回退、资源层的解析顺序、原版名称、变体文件夹、布局档位、点击测试（hit test）规则、内购移除、AI 评估、地图管线）。
+1. **audio**（音频）：`--test-audio` 解码每个音乐文件，并加载每个音效。
+2. **data**（数据）：`--verify-data` 根据 schema 检查每个 JSON 数据文件，然后分别从 JSON 以及它所转换自的原版 XML（或内置表）加载每种类型，并逐字段比较这些定义。有意的数据改动会在这里显示出来；这是预期行为（在有人有意修改之前，游戏数据应与原版保持一致）。
+3. **assets**（资源）：`WC2.Tools validate` 检查构建出的游戏资源包：每个原版文件都能通过其旧名称访问到，每个索引条目都存在，数据中引用的每个资源都存在，整个资源树都已打包。
+4. **scripts**（测试脚本）：以确定性模式运行本文件夹中的每个 `*.txt`：`--seed 20261106 --fixed-step`，并且每个测试脚本使用一个全新的文档文件夹（`out/<script>/docs`）。每条 `dump NAME` 将规则状态（国家、地区、部队、将领）写成 JSON；运行器将其与 `golden/<script>/NAME.json` 逐字节比较。每条 `shot NAME` 与 `golden/<script>/NAME.jpg` 比较（`WC2.Tools compare-image`：缩放到参考图尺寸，某个像素的任一通道差值超过 40 即视为该像素已改变，改变的像素超过 1 % 时该截图判为失败；生成的 `NAME.diff.png` 会标出这些像素）。第一行为 `#! ARGS` 的测试脚本会在命令行中获得 ARGS（窗口大小）。
+
+```powershell
+.\Tests\run-tests.ps1                 # everything
+.\Tests\run-tests.ps1 -Filter conquest
+.\Tests\run-tests.ps1 -Record         # store this run's dumps as the new goldens
+.\Tests\run-tests.ps1 -RecordShots    # store this run's screenshots as the new references
+.\Tests\run-tests.ps1 -RealTime       # real clock, no goldens (the old smoke-test behaviour)
+```
+
+仅在有意修改规则时才录制新的基准（golden），仅在有意修改画面时才录制新的参考截图；并在提交说明中注明。截图和日志输出到 `out/`。
+
+## 测试脚本命令
+
+坐标使用逻辑屏幕单位（568 x 320 手机布局；名为 `ipad_*.txt` 的测试脚本以 `--ipad` 运行，使用 1024 x 768 平板布局）。时间以游戏内的秒为单位。
+
+| 命令 | 效果 |
+|---|---|
+| `wait S` | 等待 S 秒 |
+| `click X Y`、`press X Y`、`move X Y`、`release X Y` | 触摸输入 |
+| `drag X1 Y1 X2 Y2 [S]` | 按下，分步移动，松开 |
+| `back` | Android 返回键（`CallNativeExit`：能处理它的面板或状态会关闭，否则会弹出退出对话框） |
+| `wheel DELTA` | 鼠标滚轮 |
+| `autoplay ROUNDS` | 在没有输入的情况下进行 N 个回合：结束人类玩家的回合（由 AI 托管选项代为进行），快进 AI 回合并关闭对话框；战斗结束时提前停止 |
+| `settle` | 关闭对话框并完成 AI 的行动，直到人类一方可以操作为止（不结束任何回合） |
+| `dump NAME` | 将规则状态写为 `NAME.json`，与截图放在一起 |
+| `hittest LABEL` | 每个位于屏幕外的按钮都会在其所在位置被触摸（如果窗口有黑边，则在黑边内的某个窗口像素处触摸；此外还会在一个合成点处触摸），分别经由输入入口和直接通过 GUI 树进行；每个隐藏的按钮都必须拒绝输入。探测期间按钮不会真正触发；每个本应触发的按钮都会改为输出一行 `hittest failed` 日志 |
+| `dumpafter COUNTRY NAME` | 在 COUNTRY 的回合结束的那一刻将规则状态写为 `NAME.json`（即它自己的决策结果，在下一个国家行动之前；用于 AI 测试） |
+| `startconquest FILE COUNTRY` | 以任意剧本文件、作为 COUNTRY 开始一局征服（生成的世界地图：`conquest_10.xml`） |
+| `texstats LABEL` | 在日志中记录当前的纹理内存占用和上一帧的绘制调用数；标签仅在末尾数字上有所不同的各行必须报告相同的内存（界面关闭时资源会被释放） |
+| `shot NAME` | 截图 |
+| `log TEXT` | 写入日志 |
+| `exit` | 退出 |
+
+以 `#` 开头的行是注释。第一行为 `#! ARGS` 时会添加命令行选项（`$TESTS` 表示本文件夹）。除非 `#!` 行另有指定，测试脚本均以 `--no-mods --ai classic` 运行（基准（golden）是用原版 AI 录制的）。
+
+测试脚本 `X.txt` 可以附带一个 `X.expect`：其中的 `DUMP AREA owner COUNTRY` 或 `DUMP AREA units>=N` 行会与转储结果进行核对（用于 AI 测试）。
+
+## 各测试脚本的覆盖范围
+
+| 测试脚本 | 覆盖内容 |
+|---|---|
+| `campaign_autoplay` | 战役的第一场战斗，由 AI 一直打到结束 |
+| `conquest_autoplay` | 征服 1，由 AI 进行 16 个回合 |
+| `campaign_13_rounds`、`conquest_7_rounds`、`conquest_ai_turns` | 使用固定等待时间的回合流程 |
+| `attack_box`、`card_shop`、`commander_and_options`、`pause_options_save`、`save_and_load` | 各个界面和流程 |
+| `tutorial`、`ipad_tutorial` | 手机布局和平板布局下的教程 |
+| `campaign_start`、`conquest_start` | 启动两种模式 |
+| `hit_test`、`hit_test_wide`、`ipad_hit_test` | 隐藏的控件和屏幕外的控件拒绝触摸：手机布局；1600x600 窗口（640x320 布局，左右两侧有黑边）；1000x1000 窗口（平板布局，上下两侧有黑边）；`card_shop`、`commander_and_options`、`conquest_start`、`pause_options_save`、`tutorial` 也会探测各自的界面 |
+| `resource_cycle` | 菜单 -> 征服 -> 菜单，重复两次：每次进入时纹理内存都相同 |
+| `ai_defends_marseille_classic`、`ai_defends_marseille_standard` | 测试模组 `mods/ai-marseille`（一支意大利部队堆叠在防守薄弱的马赛旁边）：standard AI 会增援并守住马赛（`.expect`），classic AI 则会丢掉马赛 |
+| `ai_standard_autoplay` | 征服 1，由 standard AI 进行 16 个回合 |
+| `world_menu`、`world_autoplay` | 生成的世界地图（`mods/map-natural-earth`，MAP_PIPELINE.md）：通过征服菜单进入（列表、预览、游戏），以及由 standard AI 进行四个回合 |
+
+## 单元测试（`Unit/`，`dotnet test Tests`）
+
+| 文件 | 覆盖内容 |
+|---|---|
+| `SchemaAndDataTests.cs` | schema 校验器；每个数据文件对照其 schema 的校验；无效的模组数据回退到游戏自身的数据；资源层的解析顺序；原版名称；变体文件夹；布局档位 |
+| `HitTestTests.cs` | 屏幕外的点永远不会命中；边缘控件只有可见部分能被命中；隐藏和禁用的控件拒绝输入 |
+| `NoPurchaseTests.cs` | 不存在购买代码、计费权限、购买类型或购买按钮 |
+| `AiProfileTests.cs` | classic 与原版数值完全相同；继承；命令行覆盖 |
+| `MapPackTests.cs` | Natural Earth 数据包（一致性、覆盖范围、首都、马赛）；在一个合成的世界上测试管线和经典地图导出 |
+| `BuiltInModTests.cs` | 内置于游戏资源包中的模组与文件夹模组一样挂载和合并；文件夹模组会替换 id 相同的内置模组；世界地图是内置的 |
