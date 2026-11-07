@@ -582,7 +582,7 @@ public sealed partial class CGameState
                 g_Scene.ScreenToScene(ref anchorX, ref anchorY);
                 var zoomResult = new PinchZoomResult();
                 if (CalculatePinchZoom(g_Scene.camera.centerPos[0], g_Scene.camera.centerPos[1], g_Scene.camera.scale,
-                                       anchorX, anchorY, oldDistance, newDistance, g_Scene.camera.MinScale(), 1.0f, ref zoomResult))
+                                       anchorX, anchorY, oldDistance, newDistance, g_Scene.camera.MinScale(), g_Scene.camera.maxScale, ref zoomResult))
                 {
                     g_Scene.camera.SetPosAndScale(zoomResult.centerX, zoomResult.centerY, zoomResult.scale);
                 }
@@ -606,7 +606,7 @@ public sealed partial class CGameState
                 g_Scene.ScreenToScene(ref anchorX, ref anchorY);
                 var zoomResult = new PinchZoomResult();
                 if (CalculatePinchZoom(g_Scene.camera.centerPos[0], g_Scene.camera.centerPos[1], g_Scene.camera.scale,
-                                       anchorX, anchorY, oldDistance, newDistance, g_Scene.camera.MinScale(), 1.0f, ref zoomResult))
+                                       anchorX, anchorY, oldDistance, newDistance, g_Scene.camera.MinScale(), g_Scene.camera.maxScale, ref zoomResult))
                 {
                     g_Scene.camera.SetPosAndScale(zoomResult.centerX, zoomResult.centerY, zoomResult.scale);
                 }
@@ -785,9 +785,12 @@ public sealed partial class CGameState
         if (!g_GameManager.IsManipulate() || firstTouch || secondTouch || g_Scene.camera.isMoving)
             return;
 
-        float scale = g_Scene.camera.scale + delta * 0.1f;
+        float maxScale = g_Scene.camera.maxScale;
+        // above 1 (a mesh map) the wheel zooms by a factor, so a step looks the same at every zoom
+        float scale = maxScale > 1.0f ? g_Scene.camera.scale * (1f + delta * 0.1f) : g_Scene.camera.scale + delta * 0.1f;
         float minimumScale = g_contenscalefactor == 2.0f ? 0.5f : 0.68f;
-        if (scale > 1.0f) scale = 1.0f;
+        if (g_Scene.mapMesh != null) minimumScale = 0f;   // the camera's own limit (the map fills the screen)
+        if (scale > maxScale) scale = maxScale;
         else if (scale < minimumScale) scale = minimumScale;
 
         g_Scene.camera.SetPosAndScale(g_Scene.camera.centerPos[0], g_Scene.camera.centerPos[1], scale);

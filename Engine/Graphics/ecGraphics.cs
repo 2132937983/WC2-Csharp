@@ -296,6 +296,77 @@ public sealed class ecGraphics
 
     private static Color ToColor(uint abgr) => new Color { PackedValue = abgr };
 
+    // ---- vertex buffers in the current view (the map mesh) ------------------------------------------
+    private BasicEffect meshEffect;
+
+    private BasicEffect MeshEffect()
+    {
+        meshEffect ??= new BasicEffect(device) { TextureEnabled = false, VertexColorEnabled = true, LightingEnabled = false, FogEnabled = false };
+        meshEffect.World = Matrix.CreateTranslation(-viewX, -viewY, 0f)
+                         * Matrix.CreateScale(viewScale, viewScale, 1f)
+                         * Matrix.CreateScale(layoutToScreenMultiplier[0], layoutToScreenMultiplier[1], 1f)
+                         * Matrix.CreateTranslation(offsetX, offsetY, 0f);
+        meshEffect.View = Matrix.Identity;
+        meshEffect.Projection = projection;
+        device.RasterizerState = s_clipToScreen;
+        device.ScissorRectangle = screenClip;
+        device.DepthStencilState = DepthStencilState.None;
+        device.BlendState = BlendState.NonPremultiplied;
+        return meshEffect;
+    }
+
+    /// <summary>
+    /// Draws indexed triangles of a vertex buffer in the current view: with their vertex colours, or in
+    /// one colour (0xAABBGGRR) when <paramref name="flatColor"/> is given. The sprite batch is flushed first.
+    /// </summary>
+    public void DrawMesh(VertexBuffer vertices, IndexBuffer indices, int firstIndex, int triangleCount, uint? flatColor = null)
+    {
+        if (device == null || vertices == null || indices == null || triangleCount <= 0) return;
+        Flush();
+        var fx = MeshEffect();
+        if (flatColor is uint c)
+        {
+            var color = ToColor(c);
+            fx.VertexColorEnabled = false;
+            fx.DiffuseColor = color.ToVector3();
+            fx.Alpha = color.A / 255f;
+        }
+        else
+        {
+            fx.VertexColorEnabled = true;
+            fx.DiffuseColor = Vector3.One;
+            fx.Alpha = 1f;
+        }
+        device.SetVertexBuffer(vertices);
+        device.Indices = indices;
+        foreach (var pass in fx.CurrentTechnique.Passes)
+        {
+            pass.Apply();
+            device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, firstIndex, triangleCount);
+        }
+        drawCalls++;
+        matricesDirty = true;   // the sprite effect sets its own state again
+    }
+
+    /// <summary>Draws a run of a line list (two vertices per line) in the current view with its vertex colours.</summary>
+    public void DrawLines(VertexBuffer vertices, int firstVertex, int lineCount)
+    {
+        if (device == null || vertices == null || lineCount <= 0) return;
+        Flush();
+        var fx = MeshEffect();
+        fx.VertexColorEnabled = true;
+        fx.DiffuseColor = Vector3.One;
+        fx.Alpha = 1f;
+        device.SetVertexBuffer(vertices);
+        foreach (var pass in fx.CurrentTechnique.Passes)
+        {
+            pass.Apply();
+            device.DrawPrimitives(PrimitiveType.LineList, firstVertex, lineCount);
+        }
+        drawCalls++;
+        matricesDirty = true;
+    }
+
     /// <summary>
     /// Colour of the current batch on an alpha-only texture (Alpha8 samples as black with alpha): the
     /// batch is drawn with BasicEffect's fog at full strength in this colour, which keeps the texture's
@@ -416,8 +487,26 @@ public sealed class ecGraphics
         ColorDestinationBlend = Blend.One, AlphaDestinationBlend = Blend.One,
     };
 
+    // local scale (SetLocalScale): positions are pulled towards a centre before batching, so a group of
+    // sprites (the units of a small region) shrinks around its anchor without a new draw call
+    private bool localScaleOn;
+    private float localCX, localCY, localS = 1f;
+
+    /// <summary>
+    /// Scales everything drawn until <see cref="ClearLocalScale"/> by <paramref name="s"/> around
+    /// (<paramref name="cx"/>, <paramref name="cy"/>) in the current view space. Batching continues.
+    /// </summary>
+    public void SetLocalScale(float cx, float cy, float s)
+    {
+        localScaleOn = s != 1f;
+        localCX = cx; localCY = cy; localS = s;
+    }
+
+    public void ClearLocalScale() { localScaleOn = false; localS = 1f; }
+
     private void AddVertex(float x, float y, uint color, float u, float v)
     {
+        if (localScaleOn) { x = localCX + (x - localCX) * localS; y = localCY + (y - localCY) * localS; }
         if (vertexCount >= MaxVertices) Flush();
         if (AlphaTexture && alphaSampling == AlphaSampling.AlphaChannel && (color & 0x00FFFFFFu) != alphaTint && vertexCount % 3 == 0)
         {

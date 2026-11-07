@@ -158,6 +158,20 @@ public sealed partial class CArea
     {
         float constructionX = (float)info.constructionPos[0];
         float constructionY = (float)info.constructionPos[1];
+        // a small area of a mesh map: the buildings shrink towards the army anchor (a harbour's port
+        // icon around itself, it sits on the coast)
+        bool scaled = unitScale != 1f;
+        if (scaled)
+        {
+            if (info.sea) ecGraphics.Instance().SetLocalScale(constructionX, constructionY, unitScale);
+            else ecGraphics.Instance().SetLocalScale(info.armyPos[0], info.armyPos[1], unitScale);
+        }
+        RenderBuildingUnscaled(constructionX, constructionY);
+        if (scaled) ecGraphics.Instance().ClearLocalScale();
+    }
+
+    private void RenderBuildingUnscaled(float constructionX, float constructionY)
+    {
 
         if (info.enable && Terrain.Area(info.areaType).port)
         {
@@ -190,8 +204,15 @@ public sealed partial class CArea
         float armyY = (float)info.armyPos[1];
         float flagX = (float)info.constructionPos[0];
         float flagY = (float)info.constructionPos[1];
+        // a small area of a mesh map: everything shrinks towards the army anchor (unitScale)
+        var graphics = ecGraphics.Instance();
+        bool scaled = unitScale != 1f;
+        if (scaled) graphics.SetLocalScale(armyX, armyY, unitScale);
+        // a mesh map may show flags only where something stands (display "flags": "armies")
+        bool flag = !(g_Scene.display?.flagsWithArmiesOnly ?? false) || armyCount > 0 || armyDrafting != null ||
+                    armyMovingIn != null || armyMovingToFront != null || info.constructionType != NO_CONSTRUCTION;
 
-        if (info.constructionPos[1] <= info.armyPos[1])
+        if (flag && info.constructionPos[1] <= info.armyPos[1])
         {
             g_GameRes.RenderFlag(country.name, flagX, flagY);
         }
@@ -208,7 +229,11 @@ public sealed partial class CArea
 
         if (armyMovingIn != null)
         {
-            RenderArmy(armyX + movingInArmyOffset[0], armyY + movingInArmyOffset[1], 1, armyMovingIn);
+            // a unit on its way in shrinks around itself, so it still starts in the area it comes from
+            float movingX = armyX + movingInArmyOffset[0], movingY = armyY + movingInArmyOffset[1];
+            if (scaled) graphics.SetLocalScale(movingX, movingY, unitScale);
+            RenderArmy(movingX, movingY, 1, armyMovingIn);
+            if (scaled) graphics.SetLocalScale(armyX, armyY, unitScale);
         }
 
         if (armyMovingToFront != null)
@@ -220,9 +245,24 @@ public sealed partial class CArea
             RenderArmy(armyX + xOffset, armyY + yOffset, 1, armyMovingToFront);
         }
 
-        if (info.constructionPos[1] > info.armyPos[1])
+        if (flag && info.constructionPos[1] > info.armyPos[1])
         {
             g_GameRes.RenderFlag(country.name, flagX, flagY);
         }
+        if (scaled) graphics.ClearLocalScale();
+    }
+
+    /// <summary>
+    /// A zoomed out mesh map: the area's armies as one flag of constant size on screen (the size it has
+    /// at <paramref name="markerZoom"/>), so they never shrink to dots.
+    /// </summary>
+    public void RenderMarker(float cameraScale, float markerZoom)
+    {
+        if (country == null || (armyCount == 0 && armyMovingIn == null)) return;
+        var graphics = ecGraphics.Instance();
+        float x = info.armyPos[0], y = info.armyPos[1];
+        graphics.SetLocalScale(x, y, markerZoom / cameraScale);
+        g_GameRes.RenderFlag(country.name, x, y);
+        graphics.ClearLocalScale();
     }
 }

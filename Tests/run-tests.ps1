@@ -115,7 +115,8 @@ Get-ChildItem (Join-Path $PSScriptRoot '*.txt') | Where-Object { $_.BaseName -li
             }
         }
 
-        # expectations: <script>.expect lines "DUMP AREA owner COUNTRY" or "DUMP AREA units>=N" (AI tests)
+        # expectations: <script>.expect lines "DUMP AREA owner COUNTRY", "DUMP AREA units>=N" (AI tests) or
+        # "DUMP FIELD>=N" (a number at the top of the dump, e.g. the count command's)
         $expectFile = [System.IO.Path]::ChangeExtension($_.FullName, '.expect')
         if (Test-Path $expectFile) {
             foreach ($line in Get-Content $expectFile) {
@@ -124,6 +125,12 @@ Get-ChildItem (Join-Path $PSScriptRoot '*.txt') | Where-Object { $_.BaseName -li
                 $dumpFile = Join-Path $runDir ($f[0] + '.json')
                 if (-not (Test-Path $dumpFile)) { $problems += "expect: dump $($f[0]) missing"; continue }
                 $state = Get-Content $dumpFile -Raw | ConvertFrom-Json
+                # "DUMP FIELD>=N": a number at the top of the dump (the count command's naval picture)
+                if ($f.Count -eq 2 -and $f[1] -match '^(\w+)>=(\d+)$') {
+                    $value = $state.($Matches[1])
+                    if ($null -eq $value -or [int]$value -lt [int]$Matches[2]) { $problems += "expect: $($f[0]) $($Matches[1]) is $value, expected at least $($Matches[2])" }
+                    continue
+                }
                 $area = $state.areas | Where-Object { $_.id -eq [int]$f[1] } | Select-Object -First 1
                 if (-not $area) { $problems += "expect: area $($f[1]) not in $($f[0])"; continue }
                 if ($f[2] -eq 'owner' -and $area.owner -ne $f[3]) { $problems += "expect: $($f[0]) area $($f[1]) owner is $($area.owner), expected $($f[3])" }

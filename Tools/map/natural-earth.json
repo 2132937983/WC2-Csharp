@@ -29,8 +29,8 @@
   // Natural Earth countries CShapes leaves out.
   "historicalBorders": {
     "file": "CShapes-2.0.geojson",
-    "minFragmentKm2": 4000,
-    "minFragmentWidthPixels": 3,
+    "minFragmentKm2": 1500,
+    "minFragmentWidthPixels": 2,
     "fallback": { "GRL": "390", "SJM": "385", "HKG": "200", "KWT": "200" }
   },
   // The CShapes units that are the game's countries at home: their capitals of every era become
@@ -44,23 +44,38 @@
   },
 
   // Provinces (Natural Earth admin-1) split along every era's borders, then merge again with
-  // neighbours of the same borders in every era until a region has minAreaKm2 and a country has at
-  // most maxPerCountry regions. Parts below minIslandKm2: enclaves join a neighbour, islands are left
-  // out. Island groups farther than islandSplitDegrees from their region's main body (parts closer than
-  // islandClusterDegrees form a group) become regions of their own; small ones farther than
-  // maxPartDistanceDegrees are left out.
-  "regions": {
-    "minAreaKm2": 40000, "maxPerCountry": 30, "minIslandKm2": 2500,
-    "islandSplitDegrees": 6, "islandClusterDegrees": 1.5, "maxPartDistanceDegrees": 25
-  },
+  // neighbours of the same borders in every era until they have mergeBelow x the target area of their
+  // place ("detail"); groups above splitAbove x the target are cut into cells of about the target area
+  // (seeded, grown inside the group, relaxed). Parts below minIslandKm2: enclaves join a neighbour,
+  // islands are left out. Island groups farther than islandSplitDegrees from their region's main body
+  // (parts closer than islandClusterDegrees form a group) become regions of their own; small ones
+  // farther than maxPartDistanceDegrees are left out.
+  "regions": { "minIslandKm2": 1500, "islandSplitDegrees": 4, "islandClusterDegrees": 1.0, "maxPartDistanceDegrees": 25 },
 
-  // Finer regions where the game's wars are fought (game ids): Europe and its neighbours.
-  "regionOverrides": {
-    "de": { "minAreaKm2": 18000 }, "fr": { "minAreaKm2": 20000 }, "gb": { "minAreaKm2": 15000 },
-    "it": { "minAreaKm2": 18000 }, "es": { "minAreaKm2": 25000 }, "pl": { "minAreaKm2": 20000 },
-    "nl": { "minAreaKm2": 10000 }, "be": { "minAreaKm2": 10000 }, "ch": { "minAreaKm2": 10000 },
-    "ro": { "minAreaKm2": 20000 }, "hu": { "minAreaKm2": 15000 }, "gr": { "minAreaKm2": 15000 },
-    "tr": { "minAreaKm2": 30000 }, "ru": { "maxPerCountry": 60 }, "ja": { "minAreaKm2": 20000 }
+  // Target region areas (km2): a country first, then the first zone containing the part, then the
+  // default. Finest where the wars of the game are fought (Europe, East Asia), coarse in deserts, the
+  // Arctic and Siberia: about 5 000 to 6 000 land regions.
+  "detail": {
+    "defaultKm2": 22000, "mergeBelow": 0.5, "splitAbove": 1.6,
+    "countries": { "ja": 5000, "rk": 5000, "nk": 5000, "tw": 4000, "gl": 150000, "is": 9000 },
+    "zones": [
+      { "name": "western and central Europe", "west": -11, "east": 32, "south": 35, "north": 61, "km2": 5000 },
+      { "name": "northern and eastern Europe", "west": -25, "east": 45, "south": 35, "north": 72, "km2": 8000 },
+      { "name": "Turkey, the Caucasus, the Levant", "west": 25, "east": 50, "south": 29, "north": 45, "km2": 9000 },
+      { "name": "North African coast", "west": -18, "east": 37, "south": 27, "north": 38, "km2": 10000 },
+      { "name": "Sahara", "west": -18, "east": 37, "south": 15, "north": 27, "km2": 45000 },
+      { "name": "East Asia", "west": 100, "east": 146, "south": 18, "north": 55, "km2": 9000 },
+      { "name": "South and Southeast Asia", "west": 60, "east": 130, "south": -11, "north": 30, "km2": 15000 },
+      { "name": "Middle East", "west": 35, "east": 63, "south": 12, "north": 40, "km2": 15000 },
+      { "name": "Central Asia", "west": 45, "east": 100, "south": 30, "north": 55, "km2": 25000 },
+      { "name": "Siberia and the Russian Far East", "west": 45, "east": 180, "south": 45, "north": 82, "km2": 45000 },
+      { "name": "United States and southern Canada", "west": -130, "east": -52, "south": 24, "north": 55, "km2": 18000 },
+      { "name": "Alaska and northern Canada", "west": -180, "east": -52, "south": 55, "north": 82, "km2": 60000 },
+      { "name": "Central America and the Caribbean", "west": -118, "east": -59, "south": 7, "north": 24, "km2": 12000 },
+      { "name": "South America", "west": -82, "east": -34, "south": -26, "north": 13, "km2": 25000 },
+      { "name": "Africa south of the Sahara", "west": -18, "east": 52, "south": -26, "north": 18, "km2": 25000 },
+      { "name": "northern Australia and Oceania", "west": 110, "east": 180, "south": -26, "north": -5, "km2": 30000 }
+    ]
   },
 
   // Sea zones of irregular shape: seeds coastRadiusDegrees apart along the coasts, farther apart the
@@ -96,7 +111,18 @@
   // --classic-out: the map in the scene's own formats as map 2, written as a mod with its conquests
   // (MAP_PIPELINE.md).
   "classicExport": {
-    "mapId": 2, "scale": 2,
+    // 8 map units per region raster pixel: 100 units per degree (36 000 x 10 800, a multiple of 1000
+    // wide so the wrap is seamless; one region raster pixel = one 8 x 8 touch cell); the provinces are
+    // drawn again at twice the region raster's resolution for the outlines. mesh: the map is drawn from
+    // vertex buffers (map2.mesh) instead of image tiles and region masks.
+    "mapId": 2, "scale": 8, "detailRaster": 2, "mesh": true,
+    "meshSettings": { "tolerance": 0.9, "smoothing": 1, "chunkWidth": 1500 },
+    // taxes follow the area (many small regions); display: zoom in up to maxZoom, the units of a
+    // region whose fit radius is below unitFitRadius are scaled down (not below minUnitScale), below
+    // markerZoom (units on screen) only a flag marks the armies, and flags stand only where armies or
+    // buildings are (the mesh colours every province by its owner)
+    "areaTax": "area",
+    "display": { "maxZoom": 3.0, "unitFitRadius": 46, "minUnitScale": 0.35, "markerZoom": 0.32, "flags": "armies" },
     "modId": "map-natural-earth", "modName": "World map 1910-2018 (Natural Earth, CShapes)",
     "scenarios": [
       {

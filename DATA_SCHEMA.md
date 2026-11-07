@@ -252,6 +252,15 @@ dice ... at most 5 % one). `economy.moneyCap`, `economy.industryCap`: 99999.
 are plain areas with tax 100. The geometry (`area<id>.bin`, `adjion<id>.bin`, `areamark<id>.raw`) stays
 binary.
 
+A generated mesh map (MAP_PIPELINE.md) adds per area `fit` (the radius in map units of the largest circle
+around the army anchor inside the area) and a top-level `display` object: `maxZoom` (the largest camera zoom;
+the classic maps have 1), `unitFitRadius` and `minUnitScale` (an area whose `fit` is below `unitFitRadius`
+draws its units, flag and buildings scaled by `fit / unitFitRadius`, never below `minUnitScale`),
+`markerZoom` (below this on-screen unit scale, camera zoom x unit scale, armies show as a flag of constant
+size and buildings are left out) and `flags` (`all`: a flag in every owned area, the classic look;
+`armies`: only where units or a building stand). A sea area of type `port` is a harbour, as in the
+original: ships are built and healed there, and the AI plans its navy from it.
+
 ## scenarios
 
 The scenarios stay the original XML files (`data/xml/scenarios/battle_*.xml`, `conquest_*.xml`,
@@ -597,6 +606,8 @@ AI 的征召顺序按国家分别依价格、然后工业、然后科技排列�
 ## 地图地区表
 
 `data/json/maps/<id>/areas.json`：`{"areas": {"<area id>": {"type": "capital", "tax": 30}}}`。此处未列出的地区是税收为 100 的普通地区。几何数据（`area<id>.bin`、`adjion<id>.bin`、`areamark<id>.raw`）仍保持二进制格式。
+
+生成的网格地图（见 MAP_PIPELINE.md）会为每个地区增加 `fit`（以地区内军队锚点为圆心、完全位于地区内的最大圆的半径，单位为地图单位），并在顶层增加 `display` 对象：`maxZoom`（镜头最大缩放；经典地图为 1）、`unitFitRadius` 和 `minUnitScale`（`fit` 小于 `unitFitRadius` 的地区，其部队、旗帜和建筑按 `fit / unitFitRadius` 缩小绘制，但不小于 `minUnitScale`）、`markerZoom`（屏幕上的部队比例，即镜头缩放 × 部队比例，低于该值时军队显示为固定大小的旗帜，不绘制建筑）以及 `flags`（`all`：每个有归属的地区都插旗，即经典样式；`armies`：只在有部队或建筑的地区插旗）。类型为 `port` 的海上地区就是港口，与原版一致：在那里建造和修理舰船，AI 也据此规划海军。
 
 ## 剧本（scenarios）
 

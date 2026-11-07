@@ -36,6 +36,7 @@ internal static partial class MapPipeline
         public long pixels;
         public double areaKm2;
         public int occupation;   // index into the occupation keys (0: none)
+        public double sumX, sumY;
     }
 
     private sealed class Region
@@ -56,6 +57,8 @@ internal static partial class MapPipeline
         public int signature = -1;
         public string[] owners = Array.Empty<string>();   // per era: the unit holding the region
         public string occupation = "";                     // scenario occupation key ("" none)
+        public int province = -1;                          // its largest province (naming)
+        public string placeName;                           // the largest town inside (naming)
     }
 
     /// <summary>One era of the base map: CShapes on a date, or Natural Earth (today).</summary>
@@ -88,8 +91,8 @@ internal static partial class MapPipeline
         int height = (int)Math.Round((north - south) * pxPerDeg);
         int n = width * height;
         var rules = config["regions"]!.AsObject();
-        double minAreaKm2 = rules["minAreaKm2"]!.GetValue<double>();
-        int maxPerCountry = rules["maxPerCountry"]!.GetValue<int>();
+        double minAreaKm2 = rules["minAreaKm2"]?.GetValue<double>() ?? 0;
+        int maxPerCountry = rules["maxPerCountry"]?.GetValue<int>() ?? int.MaxValue;
         double minIslandKm2 = rules["minIslandKm2"]!.GetValue<double>();
         int minBorder = config["minBorderPixels"]?.GetValue<int>() ?? 2;
         // per-country sizing (game id -> { minAreaKm2, maxPerCountry }), e.g. a finer Europe
@@ -150,6 +153,8 @@ internal static partial class MapPipeline
             if (v <= 0 || v > provinces.Count) { raster[i] = 0; continue; }
             provinces[v - 1].pixels++;
             provinces[v - 1].areaKm2 += rowKm2[i / width];
+            provinces[v - 1].sumX += i % width;
+            provinces[v - 1].sumY += i / width;
         }
         Console.WriteLine($"build-map: {provinces.Count(p => p.pixels > 0)} provinces rasterized at {width}x{height}");
 
@@ -223,6 +228,7 @@ internal static partial class MapPipeline
         var atomProvince = new List<int>();
         var atomSig = new List<int>();
         var atomArea = new List<double>();
+        var atomSumX = new List<double>(); var atomSumY = new List<double>(); var atomPixels = new List<long>();
         var atomRaster = new int[n];   // atom id + 1
         for (int i = 0; i < n; i++)
         {
@@ -235,8 +241,10 @@ internal static partial class MapPipeline
                 atom = atomProvince.Count;
                 atomIds[(pv - 1, s)] = atom;
                 atomProvince.Add(pv - 1); atomSig.Add(s); atomArea.Add(0);
+                atomSumX.Add(0); atomSumY.Add(0); atomPixels.Add(0);
             }
             atomArea[atom] += rowKm2[i / width];
+            atomSumX[atom] += i % width; atomSumY[atom] += i / width; atomPixels[atom]++;
             atomRaster[i] = atom + 1;
         }
         // signature -> units per era (walk the pair chain back)
@@ -253,18 +261,41 @@ internal static partial class MapPipeline
         }
         Console.WriteLine($"build-map: {atomProvince.Count} province parts in {atomSig.Distinct().Count()} era signatures");
 
-        // ---- 4. merge the parts into regions: only neighbours of the same signature (every era's border
-        // stays), smallest first, until regions have minAreaKm2 and countries at most maxPerCountry regions
+        // ---- 4. regions of the size the place calls for. The target area comes from "detail" (a country,
+        // else the first zone containing the part, else the default) or, without it, from the old rules
+        // (minAreaKm2, maxPerCountry). Parts merge only with neighbours of the same signature (every era's
+        // border stays), smallest first, until they have mergeBelow x the target; afterwards groups above
+        // splitAbove x the target are cut into cells of about the target area.
         int atoms = atomProvince.Count;
+        var detail = config["detail"]?.AsObject();
+        double defaultKm2 = detail?["defaultKm2"]?.GetValue<double>() ?? minAreaKm2;
+        double mergeBelow = detail?["mergeBelow"]?.GetValue<double>() ?? 1.0;
+        double splitAbove = detail?["splitAbove"]?.GetValue<double>() ?? double.PositiveInfinity;
+        var detailZones = (detail?["zones"]?.AsArray() ?? new JsonArray()).Select(z => (
+            w: z!["west"]!.GetValue<double>(), e: z["east"]!.GetValue<double>(), s: z["south"]!.GetValue<double>(),
+            nn: z["north"]!.GetValue<double>(), km2: z["km2"]!.GetValue<double>())).ToList();
+        var detailCountries = (detail?["countries"]?.AsObject() ?? new JsonObject()).ToDictionary(kv => kv.Key, kv => kv.Value!.GetValue<double>());
         var gBorder = Adjacency(atomRaster, width, height, atoms, false);   // index atom + 1
         var parent = Enumerable.Range(0, atoms).ToArray();
         var alive = Enumerable.Repeat(true, atoms).ToArray();
         var gArea = atomArea.ToArray();
+        var gSumX = atomSumX.ToArray(); var gSumY = atomSumY.ToArray(); var gPixels = atomPixels.ToArray();
         string GCountry(int g) => provinces[atomProvince[g]].country;
+        double Target(int g)
+        {
+            string c = GCountry(g);
+            if (detail == null) return MinArea(c);
+            if (detailCountries.TryGetValue(c, out double km2)) return km2;
+            var (lon, lat) = Unproject(gSumX[g] / Math.Max(1, gPixels[g]), gSumY[g] / Math.Max(1, gPixels[g]));
+            foreach (var z in detailZones)
+                if (lon >= z.w && lon <= z.e && lat >= z.s && lat <= z.nn) return z.km2;
+            return defaultKm2;
+        }
         var perCountry = Enumerable.Range(0, atoms).GroupBy(GCountry).ToDictionary(g => g.Key, g => g.Count());
         void Merge(int a, int into)
         {
             parent[a] = into; gArea[into] += gArea[a]; alive[a] = false;
+            gSumX[into] += gSumX[a]; gSumY[into] += gSumY[a]; gPixels[into] += gPixels[a];
             foreach (var (o1, len) in gBorder[a + 1])
             {
                 int o = o1 - 1;
@@ -284,7 +315,7 @@ internal static partial class MapPipeline
             {
                 if (!alive[g]) continue;
                 string c = GCountry(g);
-                bool small = gArea[g] < MinArea(c), tooMany = perCountry[c] > MaxRegions(c);
+                bool small = gArea[g] < mergeBelow * Target(g), tooMany = detail == null && perCountry[c] > MaxRegions(c);
                 if (!small && !tooMany) continue;
                 int best = -1; double bestArea = double.MaxValue;
                 foreach (var (o1, len) in gBorder[g + 1])
@@ -316,31 +347,61 @@ internal static partial class MapPipeline
         }
         int Find(int i) { while (parent[i] != i) i = parent[i] = parent[parent[i]]; return i; }
 
-        // ---- regions from the groups
+        // ---- regions from the groups; a group well above its target is cut into cells
         var regions = new List<Region>();
         var groupRegion = new Dictionary<int, int>();
+        var split = new Dictionary<int, int>();   // group -> number of cells
+        foreach (int g in Enumerable.Range(0, atoms).Where(g => alive[g] && gArea[g] > splitAbove * Target(g)))
+            split[g] = Math.Max(2, (int)Math.Round(gArea[g] / Target(g)));
+        var splitPixels = split.Keys.ToDictionary(g => g, _ => new List<int>());
+        for (int i = 0; i < n; i++)
+        {
+            int a = atomRaster[i];
+            if (a != 0 && splitPixels.TryGetValue(Find(a - 1), out var pl)) pl.Add(i);
+        }
+        var regionRaster = new int[n];   // region id + 1
+        var scratch = new int[n];
         var members = Enumerable.Range(0, atoms).Where(a => !dropped[Find(a)]).GroupBy(Find).OrderBy(g => g.Key);
-        foreach (var g in members)
+        Region NewRegion(IGrouping<int, int> g)
         {
             var biggestAtom = g.OrderByDescending(a => atomArea[a]).First();
             var biggest = provinces[atomProvince[biggestAtom]];
-            var r = new Region { id = regions.Count, country = biggest.country, name = biggest.name, signature = atomSig[g.Key] };
+            var r = new Region { id = regions.Count, country = biggest.country, name = biggest.name, signature = atomSig[g.Key], province = biggest.index };
             foreach (var p in g.Select(a => provinces[atomProvince[a]]).Distinct().OrderByDescending(p => p.areaKm2))
                 r.provinces.Add(p.iso.Length > 0 ? p.iso : p.name);
             var su = SigUnits(r.signature);
             r.owners = su.Select(u => u > 0 ? units[u - 1].key : "").ToArray();
             r.occupation = occupationKeys[SigOccupation(r.signature)];
-            groupRegion[g.Key] = r.id;
             regions.Add(r);
+            return r;
         }
-        var regionRaster = new int[n];   // region id + 1
+        int cells = 0;
+        foreach (var g in members)
+        {
+            if (!split.TryGetValue(g.Key, out int k))
+            {
+                groupRegion[g.Key] = NewRegion(g).id;
+                continue;
+            }
+            var pixels = splitPixels[g.Key];
+            var cellOf = Subdivide(pixels, k, width, height, scratch);
+            var cellRegion = new int[k];
+            for (int c = 0; c < k; c++) cellRegion[c] = -1;
+            for (int j = 0; j < pixels.Count; j++)
+            {
+                int c = cellOf[j];
+                if (cellRegion[c] < 0) { cellRegion[c] = NewRegion(g).id; cells++; }
+                regionRaster[pixels[j]] = cellRegion[c] + 1;
+            }
+        }
         for (int i = 0; i < n; i++)
         {
             int a = atomRaster[i];
-            if (a == 0) continue;
+            if (a == 0 || regionRaster[i] != 0) continue;
             int root = Find(a - 1);
             regionRaster[i] = groupRegion.TryGetValue(root, out int rid) ? rid + 1 : 0;
         }
+        if (split.Count > 0) Console.WriteLine($"build-map: {split.Count} large groups cut into {cells} cells");
 
         // ---- 5. far parts: island groups far from their region become regions of their own (tiny ones
         // far away are left out); a wrapping map splits the regions that reach over the seam
@@ -464,7 +525,8 @@ internal static partial class MapPipeline
             if (r < 0 || !regions[r].coastal) continue;
             regions[r].port = true;
             regions[r].portName ??= Str(f.props, "name");
-            if (regions[r].type == "normal") regions[r].type = "port";
+            // the land region keeps its type: the original's port areas are the sea zones off the port
+            // (the harbour, where ships are built), which the map mod marks
         }
         var airRules = config["airfields"]!.AsObject();
         var airTypes = airRules["types"]!.AsArray().Select(t => t!.GetValue<string>()).ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -478,6 +540,34 @@ internal static partial class MapPipeline
             regions[r].airfieldName ??= Str(f.props, "name");
         }
         foreach (var r in regions.Where(r => !r.sea && r.city != null && r.type != "normal")) r.name = r.city;
+        // the other land regions: the largest town inside (Natural Earth 10m populated places when the
+        // source has them), else their province's name, with a compass point when the province has several
+        string townFile = Path.Combine(source, "ne_10m_populated_places.geojson");
+        foreach (var f in (File.Exists(townFile) ? Points(townFile) : places).OrderByDescending(f => Long(f.props, "POP_MAX")))
+        {
+            if (!InBounds(f.lon, f.lat)) continue;
+            int r = RegionAt(f.lon, f.lat, r => !r.sea, 1);
+            if (r >= 0) regions[r].placeName ??= Str(f.props, "NAME");
+        }
+        foreach (var r in regions.Where(r => !r.sea && (r.city == null || r.type == "normal") && r.placeName != null)) r.name = r.placeName;
+        foreach (var same in regions.Where(r => !r.sea).GroupBy(r => (r.country, r.name)).Where(g => g.Count() > 1))
+        {
+            foreach (var r in same)
+            {
+                if (r.province < 0 || provinces[r.province].pixels == 0) continue;
+                var pr = provinces[r.province];
+                double dx = r.sumX / Math.Max(1, r.pixels) - pr.sumX / pr.pixels, dy = r.sumY / Math.Max(1, r.pixels) - pr.sumY / pr.pixels;
+                if (Math.Abs(dx) < 1 && Math.Abs(dy) < 1) continue;
+                string[] points = { "E", "SE", "S", "SW", "W", "NW", "N", "NE" };
+                int octant = (int)Math.Round(Math.Atan2(dy, dx) / (Math.PI / 4));
+                r.name += " (" + points[(octant % 8 + 8) % 8] + ")";
+            }
+            foreach (var dup in same.GroupBy(r => r.name).Where(g => g.Count() > 1))
+            {
+                int k = 1;
+                foreach (var r in dup.Skip(1)) r.name += " " + (++k);
+            }
+        }
 
         // ---- 9. write the pack
         Directory.CreateDirectory(outDir);
@@ -594,11 +684,14 @@ internal static partial class MapPipeline
         // ---- 10. the playable map mod
         if (opts.TryGetValue("classic-out", out var classicOut) && config["classicExport"] != null)
         {
-            // the map in the scene's units is drawn from the provinces again at that resolution (one
-            // pixel per map unit), so coasts and province borders are finer than the region raster
+            // the map in the scene's units: scale map units per region raster pixel; the provinces are
+            // drawn again at detailRaster times the region raster's resolution, so coasts and province
+            // borders are finer than the region raster (without detailRaster: one pixel per map unit)
             int S = config["classicExport"]!["scale"]?.GetValue<int>() ?? 2;
-            int hiW = width * S, hiH = height * S;
-            var hiProvince = Rasterize(admin1.RootElement.GetProperty("features"), west, east, north, south, pxPerDeg * S, hiW, hiH, _ => 1, true);
+            int hiFactor = config["classicExport"]!["detailRaster"]?.GetValue<int>() ?? S;
+            if (S % hiFactor != 0) throw new ToolException("classicExport: scale must be a multiple of detailRaster");
+            int hiW = width * hiFactor, hiH = height * hiFactor;
+            var hiProvince = Rasterize(admin1.RootElement.GetProperty("features"), west, east, north, south, pxPerDeg * hiFactor, hiW, hiH, _ => 1, true);
             // the regions every province ended up in
             var provinceRegions = new List<int>[provinces.Count + 1];
             for (int i = 0; i < n; i++)
@@ -612,7 +705,7 @@ internal static partial class MapPipeline
             for (int y = 0; y < hiH; y++)
                 for (int x = 0; x < hiW; x++)
                 {
-                    int lx = x / S, ly = y / S, lo = regionRaster[ly * width + lx];
+                    int lx = x / hiFactor, ly = y / hiFactor, lo = regionRaster[ly * width + lx];
                     int p = hiProvince[y * hiW + x];
                     var candidates = p > 0 && p <= provinces.Count ? provinceRegions[p] : null;
                     int value = 0;
@@ -632,6 +725,18 @@ internal static partial class MapPipeline
                     }
                     hi[y * hiW + x] = value;
                 }
+            // a region the finer outlines left without a pixel (a sliver along a coast) keeps its own
+            // pixels of the region raster
+            var hiCount = new int[regions.Count + 1];
+            foreach (int v in hi) hiCount[v]++;
+            for (int i = 0; i < n; i++)
+            {
+                int v = regionRaster[i];
+                if (v == 0 || hiCount[v] > 0) continue;
+                int lx = i % width, ly = i / width;
+                for (int dy = 0; dy < hiFactor; dy++)
+                    for (int dx = 0; dx < hiFactor; dx++) hi[(ly * hiFactor + dy) * hiW + lx * hiFactor + dx] = v;
+            }
             var scenarioSpecs = new List<ScenarioSpec>();
             foreach (var s in scenarios)
             {
@@ -662,7 +767,7 @@ internal static partial class MapPipeline
                 foreach (var p in provinces) names.TryAdd(p.country, p.admin);
                 scenarioSpecs.Add(new ScenarioSpec(s, owner, names));
             }
-            ExportClassic(classicOut, config, regions, hi, hiW, hiH, 1, scenarioSpecs, wrap);
+            ExportClassic(classicOut, config, regions, hi, hiW, hiH, S / hiFactor, scenarioSpecs, wrap);
         }
         Console.WriteLine($"build-map: {regions.Count(r => !r.sea)} land regions in {countries.Count} countries, {regions.Count(r => r.sea)} sea zones, " +
                           $"{regions.Count(r => r.type == "capital")} capitals ({eraCapitals} of earlier eras), {regions.Count(r => r.port)} ports, " +
@@ -923,7 +1028,7 @@ internal static partial class MapPipeline
                     var r = new Region
                     {
                         id = regions.Count, country = source.country, name = source.name + " Islands",
-                        signature = source.signature, owners = source.owners, occupation = source.occupation,
+                        signature = source.signature, owners = source.owners, occupation = source.occupation, province = source.province,
                     };
                     r.provinces.AddRange(source.provinces);
                     regions.Add(r);
@@ -938,6 +1043,99 @@ internal static partial class MapPipeline
             }
         }
         Console.WriteLine($"build-map: {split} island groups became regions, {droppedParts} far groups left out");
+    }
+
+    /// <summary>
+    /// Cuts the pixels of one group into k cells of about equal size: seeds by farthest point sampling
+    /// from the group's middle, then three rounds of growing the cells from the seeds through the group
+    /// (chamfer distance, so a cell is one piece where the group is) and moving each seed to its cell's
+    /// middle. Pixels no seed reaches (islands of the group) join the nearest seed. Returns the cell of
+    /// every pixel (aligned with <paramref name="pixels"/>).
+    /// </summary>
+    private static int[] Subdivide(List<int> pixels, int k, int width, int height, int[] scratch)
+    {
+        int m = pixels.Count;
+        for (int j = 0; j < m; j++) scratch[pixels[j]] = j + 1;
+        double cx = 0, cy = 0;
+        foreach (int i in pixels) { cx += i % width; cy += i / width; }
+        cx /= m; cy /= m;
+        var dmin = new double[m];
+        Array.Fill(dmin, double.MaxValue);
+        var seeds = new List<int>();
+        int next = 0; double best = double.MaxValue;
+        for (int j = 0; j < m; j++)
+        {
+            double dx = pixels[j] % width - cx, dy = pixels[j] / width - cy, d = dx * dx + dy * dy;
+            if (d < best) { best = d; next = j; }
+        }
+        for (int s = 0; s < k && s < m; s++)
+        {
+            seeds.Add(next);
+            int sx = pixels[next] % width, sy = pixels[next] / width;
+            double far = -1; int farJ = 0;
+            for (int j = 0; j < m; j++)
+            {
+                double dx = pixels[j] % width - sx, dy = pixels[j] / width - sy, d = dx * dx + dy * dy;
+                if (d < dmin[j]) dmin[j] = d;
+                if (dmin[j] > far) { far = dmin[j]; farJ = j; }
+            }
+            next = farJ;
+        }
+        var cell = new int[m];
+        var cost = new int[m];
+        for (int round = 0; round < 4; round++)
+        {
+            Array.Fill(cell, -1);
+            Array.Fill(cost, int.MaxValue);
+            var pq = new PriorityQueue<int, long>();
+            for (int s = 0; s < seeds.Count; s++) { cell[seeds[s]] = s; cost[seeds[s]] = 0; pq.Enqueue(seeds[s], s); }
+            while (pq.TryDequeue(out int j, out long prio))
+            {
+                int c = (int)(prio >> 20);
+                if (c > cost[j]) continue;
+                int i = pixels[j], x = i % width, y = i / width;
+                for (int dy = -1; dy <= 1; dy++)
+                    for (int dx = -1; dx <= 1; dx++)
+                    {
+                        if (dx == 0 && dy == 0) continue;
+                        int nx = x + dx, ny = y + dy;
+                        if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
+                        int nj = scratch[ny * width + nx] - 1;
+                        if (nj < 0) continue;
+                        int nc = c + (dx != 0 && dy != 0 ? 7 : 5);
+                        if (nc >= cost[nj]) continue;
+                        cost[nj] = nc; cell[nj] = cell[j];
+                        pq.Enqueue(nj, ((long)nc << 20) | (uint)(cell[j] & 0xFFFFF));
+                    }
+            }
+            // pixels on islands of the group no seed reached: the nearest seed
+            for (int j = 0; j < m; j++)
+            {
+                if (cell[j] >= 0) continue;
+                int x = pixels[j] % width, y = pixels[j] / width, bestS = 0; double bd = double.MaxValue;
+                for (int s = 0; s < seeds.Count; s++)
+                {
+                    double dx = pixels[seeds[s]] % width - x, dy = pixels[seeds[s]] / width - y, d = dx * dx + dy * dy;
+                    if (d < bd) { bd = d; bestS = s; }
+                }
+                cell[j] = bestS;
+            }
+            if (round == 3) break;
+            // each seed to the pixel of its cell nearest the cell's middle
+            var sx = new double[seeds.Count]; var sy = new double[seeds.Count]; var cnt = new int[seeds.Count];
+            for (int j = 0; j < m; j++) { sx[cell[j]] += pixels[j] % width; sy[cell[j]] += pixels[j] / width; cnt[cell[j]]++; }
+            var bestJ = new int[seeds.Count]; var bestD = new double[seeds.Count];
+            Array.Fill(bestD, double.MaxValue);
+            for (int j = 0; j < m; j++)
+            {
+                int c = cell[j];
+                double dx = pixels[j] % width - sx[c] / cnt[c], dy = pixels[j] / width - sy[c] / cnt[c], d = dx * dx + dy * dy;
+                if (d < bestD[c]) { bestD[c] = d; bestJ[c] = j; }
+            }
+            for (int s = 0; s < seeds.Count; s++) if (cnt[s] > 0) seeds[s] = bestJ[s];
+        }
+        for (int j = 0; j < m; j++) scratch[pixels[j]] = 0;
+        return cell;
     }
 
     /// <summary>A wrapping map: a land region with pixels near both edges is split into its left and right half.</summary>
@@ -962,7 +1160,7 @@ internal static partial class MapPipeline
             var r = new Region
             {
                 id = regions.Count, country = source.country, name = source.name, signature = source.signature,
-                owners = source.owners, occupation = source.occupation,
+                owners = source.owners, occupation = source.occupation, province = source.province,
             };
             r.provinces.AddRange(source.provinces);
             regions.Add(r);

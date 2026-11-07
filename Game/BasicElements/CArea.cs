@@ -30,6 +30,8 @@ public sealed partial class CArea
     public float[] arrowEndOffsetMinus = new float[2];
     public float[] arrowStartOffset = new float[2];
     public float[] arrowStartOffsetMinus = new float[2];
+    /// <summary>Scale of the units, flag and buildings drawn in this area (1; smaller in a small area of a mesh map).</summary>
+    public float unitScale = 1f;
 
     /// <summary>Constructs the area with no armies, no owner and zeroed arrow offsets.</summary>
     public CArea() { }

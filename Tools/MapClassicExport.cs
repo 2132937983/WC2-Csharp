@@ -106,6 +106,31 @@ internal static partial class MapPipeline
         var missing = Enumerable.Range(0, n).Where(r => minX[r] == int.MaxValue).ToList();
         if (missing.Count > 0) throw new ToolException($"regions without pixels at map resolution: {string.Join(", ", missing.Take(10))}");
 
+        // harbours: as in the original, a port is the sea zone off the port city (the longest shared
+        // border), where ships are built and heal; its building anchor (the port icon) sits on that coast
+        var harbour = new int[n];
+        Array.Fill(harbour, -1);
+        foreach (var r in regions.Where(r => !r.sea && r.port).OrderBy(r => r.id))
+        {
+            int sea = r.border.Where(kv => regions[kv.Key].sea).OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).Select(kv => kv.Key).DefaultIfEmpty(-1).First();
+            if (sea >= 0 && harbour[sea] < 0) harbour[sea] = r.id;
+        }
+        var coastX = new long[n]; var coastY = new long[n]; var coastCount = new long[n];
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x + 1 < width; x++)
+            {
+                int i = y * width + x;
+                foreach (int j in new[] { i + 1, y + 1 < height ? i + width : -1 })
+                {
+                    if (j < 0) continue;
+                    int ra = raster[i] - 1, rb = raster[j] - 1;
+                    if (ra < 0 || rb < 0 || ra == rb) continue;
+                    int seaSide = harbour[ra] == rb ? ra : harbour[rb] == ra ? rb : -1;
+                    if (seaSide < 0) continue;
+                    coastX[seaSide] += x; coastY[seaSide] += y; coastCount[seaSide]++;
+                }
+            }
+
         // ---- area<id>.bin
         using (var w = new BinaryWriter(File.Create(Path.Combine(outDir, $"area{mapId}.bin"))))
         {
@@ -116,7 +141,12 @@ internal static partial class MapPipeline
                 w.Write(minX[r] * S); w.Write(minY[r] * S);
                 w.Write((maxX[r] - minX[r] + 1) * S); w.Write((maxY[r] - minY[r] + 1) * S);
                 w.Write(ax); w.Write(ay + 10);           // army (stands on the anchor)
-                w.Write(ax - 34); w.Write(ay - 22);      // building, up left of the army
+                if (harbour[r] >= 0 && coastCount[r] > 0)
+                {
+                    // a harbour: the port icon on the coast of its port city
+                    w.Write((int)(coastX[r] / coastCount[r]) * S + S / 2); w.Write((int)(coastY[r] / coastCount[r]) * S + S / 2);
+                }
+                else { w.Write(ax - 34); w.Write(ay - 22); }   // building, up left of the army
                 w.Write(ax - 40); w.Write(ay + 4);       // installation, left of the army
                 w.Write(regions[r].sea ? 1 : 0);
             }
@@ -155,24 +185,55 @@ internal static partial class MapPipeline
         // ---- area types and taxes: every area, sea zones included (type normal, no tax), like the
         // original's table; an area missing here would load as land
         var areas = new JsonObject();
+        bool fine = cfg["areaTax"]?.GetValue<string>() == "area";
+        var taxOf = new int[n];
         foreach (var r in regions)
         {
-            if (r.sea) { areas[r.id.ToString()] = new JsonObject { ["type"] = "normal", ["tax"] = 0 }; continue; }
-            // about the classic map's range: 3 to 30 per area
-            int tax = 3 + (int)Math.Min(8, r.areaKm2 / 50000) + (r.city != null ? (int)Math.Min(10, r.cityPopulation / 1000000) : 0) + (r.type == "capital" ? 10 : 0);
-            areas[r.id.ToString()] = new JsonObject { ["type"] = r.type, ["tax"] = tax };
+            if (r.sea)
+            {
+                // a harbour is a port area with tax 2, like the original's; other sea zones have none
+                areas[r.id.ToString()] = harbour[r.id] >= 0 ? new JsonObject { ["type"] = "port", ["tax"] = 2 } : new JsonObject { ["type"] = "normal", ["tax"] = 0 };
+                continue;
+            }
+            int cityTax = r.city != null ? (int)Math.Min(10, r.cityPopulation / 1000000) : 0;
+            // "area": many small regions, so the tax follows the area (1 per 25 000 km2, at least 1);
+            // otherwise about the classic map's range: 3 to 30 per area
+            int tax = fine
+                ? Math.Max(1, (int)Math.Round(r.areaKm2 / 25000)) + cityTax + (r.type == "capital" ? 8 : 0)
+                : 3 + (int)Math.Min(8, r.areaKm2 / 50000) + cityTax + (r.type == "capital" ? 10 : 0);
+            taxOf[r.id] = tax;
+            // fit: the radius of the largest circle around the army anchor inside the region (map units);
+            // the game scales the units of a small region down to fit (data/json/maps/<id>/areas.json display)
+            areas[r.id.ToString()] = new JsonObject { ["type"] = r.type, ["tax"] = tax, ["fit"] = best[r.id] * S };
         }
         string areasDir = Path.Combine(outDir, "data", "json", "maps", mapId.ToString());
         Directory.CreateDirectory(areasDir);
-        File.WriteAllText(Path.Combine(areasDir, "areas.json"), new JsonObject
+        var areasDoc = new JsonObject
         {
             ["format"] = 1,
-            ["about"] = "Area types and base taxes of the generated map (WC2.Tools build-map --classic-out).",
-            ["areas"] = areas,
-        }.ToJsonString(new JsonSerializerOptions { WriteIndented = false }) + "\n");
+            ["about"] = "Area types, base taxes and unit fit radii of the generated map (WC2.Tools build-map --classic-out).",
+        };
+        if (cfg["display"] is JsonObject display) areasDoc["display"] = display.DeepClone();
+        areasDoc["areas"] = areas;
+        File.WriteAllText(Path.Combine(areasDir, "areas.json"), areasDoc.ToJsonString(new JsonSerializerOptions { WriteIndented = false }) + "\n");
+
+        bool mesh = cfg["mesh"]?.GetValue<bool>() ?? false;
+        int tilesX = 0, tilesY = 0, pages = 0;
+        var formats = new JsonObject();
+        if (mesh)
+        {
+            // the map as vertex buffers: no background tiles, no region masks
+            var m = cfg["meshSettings"]?.AsObject();
+            var stats = MapMeshExport.Write(Path.Combine(outDir, $"map{mapId}.mesh"), raster, width, height, S, n,
+                                            m?["tolerance"]?.GetValue<double>() ?? 0.9, m?["smoothing"]?.GetValue<int>() ?? 1,
+                                            m?["chunkWidth"]?.GetValue<float>() ?? 1500f);
+            Console.WriteLine($"build-map: mesh: {stats.vertices} vertices, {stats.triangles} triangles, {stats.chains} border chains ({stats.points} points)");
+        }
+        else
+        {
 
         // ---- background tiles (500 map units each, 6 units margin, 1 texel per unit)
-        int tilesX = (mapW + 499) / 500, tilesY = (mapH + 499) / 500;
+        tilesX = (mapW + 499) / 500; tilesY = (mapH + 499) / 500;
         int RegionAtUnit(int u, int v)
         {
             if (wrap) u = ((u % mapW) + mapW) % mapW;
@@ -180,7 +241,6 @@ internal static partial class MapPipeline
             if (u < 0 || v < 0 || x >= width || y >= height) return 0;
             return raster[y * width + x];
         }
-        var formats = new JsonObject();
         for (int ty = 0; ty < tilesY; ty++)
             for (int tx = 0; tx < tilesX; tx++)
             {
@@ -239,7 +299,7 @@ internal static partial class MapPipeline
             placed.Add((pageIndex, cx + 1, cy + 1, r));
             cx += w; shelf = Math.Max(shelf, h);
         }
-        int pages = pageIndex + 1;
+        pages = pageIndex + 1;
         for (int pg = 0; pg < pages; pg++)
         {
             using var atlas = new SKBitmap(Page, Page, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -272,6 +332,7 @@ internal static partial class MapPipeline
             ["about"] = "Load-time formats of the generated map's textures (merged with the game's list).",
             ["textures"] = formats,
         }.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
+        }
 
         // ---- the conquests
         var b = config["bounds"]!.AsObject();
@@ -304,7 +365,9 @@ internal static partial class MapPipeline
                 var o = node!.AsObject();
                 int owned = owner.Count(x => x == id);
                 int[] rgb = o["color"]!.AsArray().Select(c => c!.GetValue<int>()).ToArray();
-                int money = o["money"]?.GetValue<int>() ?? 200 + 5 * owned, industry = o["industry"]?.GetValue<int>() ?? 100 + 3 * owned;
+                int taxes = Enumerable.Range(0, n).Where(r => owner[r] == id).Sum(r => taxOf[r]);
+                int money = o["money"]?.GetValue<int>() ?? (fine ? 200 + taxes : 200 + 5 * owned);
+                int industry = o["industry"]?.GetValue<int>() ?? (fine ? 100 + taxes / 2 : 100 + 3 * owned);
                 xml.Append($"        <country id=\"{id}\" name=\"{id}\" commander=\"{o["commander"]?.GetValue<string>() ?? "common1"}\" ai=\"1\" defeated=\"land\" " +
                            $"taxfactor=\"1.200000\" money=\"{money}\" industry=\"{industry}\" techlevel=\"{o["techlevel"]?.GetValue<int>() ?? 3}\" alliance=\"{o["alliance"]!.GetValue<string>()}\" " +
                            $"r=\"{rgb[0]}\" g=\"{rgb[1]}\" b=\"{rgb[2]}\" a=\"90\" />\n");
@@ -327,7 +390,10 @@ internal static partial class MapPipeline
                 xml.Append($"        <area id=\"{r.id}\" construction=\"{construction}\" level=\"{level}\" installation=\"{(r.type == "capital" ? "fort" : "none")}\" country=\"{id}\"");
                 if (unitList.Count == 0) { xml.Append(" />\n"); continue; }
                 xml.Append(">\n");
-                foreach (var u in unitList) xml.Append($"            <army type=\"{u}\" level=\"1\" cards=\"0\" />\n");
+                // cards (bits: 1 assault, 2 defence, 4 transport): units on a coast come with a transport
+                // ship (transportCards, default true), as many coastal units of the original's conquests do
+                int cards = r.coastal && (s["transportCards"]?.GetValue<bool>() ?? true) ? 4 : 0;
+                foreach (var u in unitList) xml.Append($"            <army type=\"{u}\" level=\"1\" cards=\"{cards}\" />\n");
                 xml.Append("        </area>\n");
             }
             // fleets: a destroyer in the sea zone along each port (the longest shared border), up to the
@@ -340,8 +406,10 @@ internal static partial class MapPipeline
                 foreach (var r in g.OrderByDescending(r => r.type == "capital").ThenByDescending(r => r.cityPopulation).ThenBy(r => r.id))
                 {
                     if (fleets >= maxFleets) break;
+                    // the harbour of this port (else the longest neighbouring sea zone)
                     int sea = r.border.Where(kv => regions[kv.Key].sea && !usedSeas.Contains(kv.Key))
-                                      .OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).Select(kv => kv.Key).DefaultIfEmpty(-1).First();
+                                      .OrderByDescending(kv => harbour[kv.Key] == r.id).ThenByDescending(kv => kv.Value).ThenBy(kv => kv.Key)
+                                      .Select(kv => kv.Key).DefaultIfEmpty(-1).First();
                     if (sea < 0) continue;
                     usedSeas.Add(sea);
                     fleets++; fleetCount++;
@@ -367,7 +435,7 @@ internal static partial class MapPipeline
             };
             string title = s["title"]!.GetValue<string>();
             WriteConquestButton(Path.Combine(outDir, $"button_conquest{number}@2x.png"), raster, width, height, regions,
-                                title, (int)(cxUnits / S), (int)(cyUnits / S), Math.Max(1, 6 / S));
+                                title, (int)(cxUnits / S), (int)(cyUnits / S), Math.Max(1, (int)Math.Round(mapW / 6.0 / 320 / S)));
             strings[$"conquest name {number}"] = title;
             foreach (var (id, _) in active)
             {
@@ -412,7 +480,8 @@ internal static partial class MapPipeline
             ["priority"] = 0,
             ["enabled"] = true,
         }.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
-        Console.WriteLine($"build-map: classic export (map {mapId}, {mapW}x{mapH} units{(wrap ? ", wraps" : "")}): {n} areas, {tilesX * tilesY} tiles, {pages} zone atlas pages; " +
+        Console.WriteLine($"build-map: classic export (map {mapId}, {mapW}x{mapH} units{(wrap ? ", wraps" : "")}): {n} areas, {harbour.Count(h => h >= 0)} harbours, " +
+                          (mesh ? "mesh" : $"{tilesX * tilesY} tiles, {pages} zone atlas pages") + "; " +
                           string.Join("; ", summary) + $" -> {outDir}");
     }
 }

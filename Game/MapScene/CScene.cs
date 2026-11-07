@@ -42,6 +42,10 @@ public sealed partial class CScene
     /// makes the map repeat horizontally, fogOfWar hides the armies the player cannot see.
     /// </summary>
     public bool wrapX, fogOfWar;
+    /// <summary>The map drawn from vertex buffers (map&lt;id&gt;.mesh) instead of tiles and region masks; null for the classic maps.</summary>
+    public CMapMesh mapMesh;
+    /// <summary>Display settings of the map (areas.json "display"): zoom, unit fitting, markers; null for the classic maps.</summary>
+    public MapDisplay display;
 
     /// <summary>
     /// Constructs the map scene and initialises its dynamic resource references and animation timers.
@@ -75,6 +79,9 @@ public sealed partial class CScene
 
         if (background != null) background.Release();
         background = null;
+        mapMesh?.Dispose();
+        mapMesh = null;
+        display = null;
 
         if (zoneImage != null)
         {
@@ -180,6 +187,9 @@ public sealed partial class CScene
     /// <param name="mapId">Map id to initialise.</param>
     public void Init(string areasEnable, int mapId)
     {
+        mapMesh?.Dispose();
+        mapMesh = CMapMesh.Load(Sprintf("map%d.mesh", mapId));
+        display = MapDisplay.Read(mapId);
         areaMark.Init(mapId);
         LoadAreaData(mapId);
         LoadAdjoin(mapId);
@@ -197,12 +207,15 @@ public sealed partial class CScene
         int alignedMapHeight = fullMapHeight - fullMapHeight % 100;
 
         background = new CBackground();
-        background.Init(mapId, 0, 0, alignedMapWidth, alignedMapHeight,
+        // a mesh map has no background tiles and no region masks
+        background.Init(mapId, 0, 0, mapMesh != null ? 0 : alignedMapWidth, mapMesh != null ? 0 : alignedMapHeight,
                         topLeftPos[0], topLeftPos[1], size[0], size[1]);
 
-        InitAreaImage(mapId);
+        if (mapMesh != null) zoneImage = new ecImage[areaList.Count];
+        else InitAreaImage(mapId);
         camera.Init(topLeftPos[0], topLeftPos[1], size[0], size[1]);
         camera.wrapX = wrapX;
+        camera.maxScale = display?.maxZoom ?? 1f;
         fogVisible = null;
 
         bomber = new CBomber();
@@ -291,6 +304,8 @@ public sealed partial class CScene
     internal short[] HopDistancesFrom(int startAreaId)
     {
         if (hopDistanceCache.TryGetValue(startAreaId, out var cached)) return cached;
+        // bounded: a map of thousands of areas would otherwise keep one array per area ever asked
+        if (hopDistanceCache.Count >= 2048) hopDistanceCache.Clear();
         int areaCount = GetNumAreas();
         var dist = new short[areaCount];
         Array.Fill(dist, (short)-1);

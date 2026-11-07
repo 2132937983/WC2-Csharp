@@ -281,7 +281,7 @@ public sealed partial class CScene
 
     /// <summary>Loads the area types and taxes; this also contains the extended area count support.</summary>
     /// <summary>One row of the area table: id, area type name, tax (null when not given).</summary>
-    public sealed record AreaTableEntry(int id, string type, int? tax);
+    public sealed record AreaTableEntry(int id, string type, int? tax, int? fit = null);
 
     /// <summary>Area table of a map from maps/&lt;id&gt;/areas.json; null when the package has none.</summary>
     public static List<AreaTableEntry> ReadAreaTableJson(int mapId)
@@ -293,7 +293,7 @@ public sealed partial class CScene
         foreach (var (key, o) in areas.Entries())
         {
             int id = TryParseInt(key, out int parsed) ? parsed : 0;
-            list.Add(new AreaTableEntry(id, o.Str("type"), o.TryInt("tax", out int tax) ? tax : null));
+            list.Add(new AreaTableEntry(id, o.Str("type"), o.TryInt("tax", out int tax) ? tax : null, o.TryInt("fit", out int fit) ? fit : null));
         }
         return list;
     }
@@ -371,6 +371,9 @@ public sealed partial class CScene
                     areaInfo.installationPos[1] = areaData[AreaID].InstallationPos[1];
                     areaList[AreaID].Init(AreaID, areaInfo);
                     areaList[AreaID].info.sea = areaData[AreaID].Type == TERRAIN_TYPE.WATER_SEA;
+                    // the units of a small area are scaled down to fit (areas.json fit, display unitFitRadius)
+                    if (entry.fit.HasValue && display != null)
+                        areaList[AreaID].unitScale = Math.Clamp(entry.fit.Value / display.unitFitRadius, display.minUnitScale, 1f);
                 }
             }
         }

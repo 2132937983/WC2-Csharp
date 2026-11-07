@@ -484,10 +484,18 @@ public sealed class GUISelCountry : GUIElement
         {
             // apply the conquest map camera: world coordinates to the current screen viewport
             actualMap.scene.camera.Apply();
+            CMapMesh mesh = actualMap.scene.mapMesh;
+            if (mesh != null)
+            {
+                // a mesh map: the areas in their owners' colours and the borders
+                var cam = actualMap.scene.camera;
+                float hw = cam.screenHalfSize[0] / cam.scale, hh = cam.screenHalfSize[1] / cam.scale;
+                mesh.Render(actualMap.scene, cam.centerPos[0] - hw, cam.centerPos[0] + hw, cam.centerPos[1] - hh, cam.centerPos[1] + hh);
+            }
             // draw the map background first, then the area color layer
-            if (actualMap.scene.background != null)
+            if (mesh == null && actualMap.scene.background != null)
                 actualMap.scene.background.Render(actualMap.scene.camera);
-            int areaCount = Math.Min(actualMap.scene.areaCount, actualMap.scene.areaList.Count);
+            int areaCount = mesh != null ? 0 : Math.Min(actualMap.scene.areaCount, actualMap.scene.areaList.Count);
             // every enabled area: country color for owned areas, a common translucent color for the sea
             for (int areaId = 0; areaId < areaCount; ++areaId)
             {
@@ -524,7 +532,13 @@ public sealed class GUISelCountry : GUIElement
                     }
                 }
             }
-            if (selectedCountry != null)
+            if (selectedCountry != null && mesh != null)
+            {
+                // the selected country's areas flashing
+                uint c = selectedCountry.ColorRGBA;
+                mesh.RenderCountry(selectedCountry, (c & 0x00FFFFFFu) | ((uint)(Math.Clamp(actualMap.scene.flashTimer * 0.8f, 0f, 1f) * 255f) << 24));
+            }
+            else if (selectedCountry != null)
             {
                 // overlay the flashing alpha on every area of the selected country as highlight
                 for (int areaId = 0; areaId < areaCount; ++areaId)

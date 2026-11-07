@@ -1,9 +1,0 @@
-<Texture name="m2_zone1_1.png" />
-<Images>
-    <Image name="0003.png" x="1" y="1" w="945" h="729" refx="0" refy="0" />
-    <Image name="2180.png" x="948" y="1" w="382" h="576" refx="0" refy="0" />
-    <Image name="1046.png" x="1" y="732" w="1397" h="545" refx="0" refy="0" />
-    <Image name="2174.png" x="1400" y="732" w="360" h="482" refx="0" refy="0" />
-    <Image name="0007.png" x="1" y="1279" w="1432" h="477" refx="0" refy="0" />
-    <Image name="2164.png" x="1435" y="1279" w="488" h="464" refx="0" refy="0" />
-</Images>

@@ -8,15 +8,25 @@ shot WM1_start
 hittest world_map
 texstats world
 # the map wraps (leftRightWrap): at the left edge (the Bering Strait) Chukotka shows from the right end
-camera 250 450 1
+camera 1000 1800 1
 wait 0.5
 shot WM3_seam
 # zoomed out as far as it goes: the map fills the screen height, no black bars above or below
-camera 4500 1350 0.01
+camera 18000 5400 0.01
 wait 0.5
 shot WM4_zoomed_out
-camera 4900 650 1
+# zoomed in as far as the map allows (display maxZoom): the units of the small provinces of France fit them
+camera 18200 3500 3
+wait 0.5
+shot WM5_zoomed_in
+# zoomed out: armies become flag markers of constant size, no buildings
+camera 18200 3500 0.15
+wait 0.5
+shot WM6_markers
+camera 18200 3500 1
 autoplay 4
 dump WR05
+# the naval picture: harbours exist, land units carry transports, the AI puts some to sea
+count WRN
 shot WM2_round5
 exit

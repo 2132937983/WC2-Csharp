@@ -1,0 +1,6 @@
+# the navy on the world map: harbours are sea zones (the original's port areas), coastal units start with a
+# transport ship, and after four rounds the AI has transports (land units at sea) and warships at sea
+WRN harbours>=100
+WRN canEmbark>=1
+WRN transportsAtSea>=1
+WRN shipsAtSea>=1

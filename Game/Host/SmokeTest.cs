@@ -151,6 +151,31 @@ public static class SmokeTest
             case "wheel":
                 ecGame.ecScrollWheel(0f, F(c.args[0]), 0f);
                 break;
+            case "count":
+            {
+                // count NAME: the naval picture as JSON next to the dumps: land units at sea (transport
+                // ships), ships at sea, harbours, land units able to embark (transport card)
+                int transports = 0, ships = 0, harbours = 0, embark = 0;
+                for (int i = 0; i < g_Scene.areaList.Count; i++)
+                {
+                    CArea a = g_Scene.areaList[i];
+                    if (a == null) continue;
+                    if (a.info.sea && Terrain.Area(a.info.areaType).port) harbours++;
+                    for (int k = 0; k < a.armyCount; k++)
+                    {
+                        CArmy army = a.GetArmy(k);
+                        if (army == null) continue;
+                        if (a.info.sea && army.IsNavy()) ships++;
+                        else if (a.info.sea) transports++;
+                        else if (army.HasCard(CARRIER)) embark++;
+                    }
+                }
+                string name = (c.args.Length > 0 ? c.args[0] : "count") + ".json";
+                File.WriteAllText(Path.Combine(OutputDirectory ?? ".", name),
+                    $"{{ \"transportsAtSea\": {transports}, \"shipsAtSea\": {ships}, \"harbours\": {harbours}, \"canEmbark\": {embark} }}\n");
+                Log($"Smoke: count {name}: {transports} transports and {ships} ships at sea, {harbours} harbours, {embark} land units with a transport");
+                break;
+            }
             case "camera":
             {
                 // camera X Y [SCALE]: puts the map camera on a scene position (the zoom limits still apply);

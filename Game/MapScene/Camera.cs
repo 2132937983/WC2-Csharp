@@ -63,6 +63,8 @@ public sealed class CCamera
     /// [topLeftPos[0], topLeftPos[0] + mapSize[0]).
     /// </summary>
     public bool wrapX;
+    /// <summary>The largest zoom (1 on the classic maps; a mesh map may allow more, areas.json display maxZoom).</summary>
+    public float maxScale = 1f;
 
     /// <summary>The original constructor does not initialise anything; the state comes from Init().</summary>
     public CCamera() { }
@@ -104,8 +106,8 @@ public sealed class CCamera
         float fMinScale = MinScale();
         if (Scale < fMinScale)
             Scale = fMinScale;
-        if (Scale > 1.0f)
-            Scale = 1.0f;
+        if (Scale > maxScale)
+            Scale = maxScale;
         scale = Scale;
         SetPos(x, y, true);
     }

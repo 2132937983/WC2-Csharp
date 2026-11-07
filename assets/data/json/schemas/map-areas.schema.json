@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "map-areas.schema.json",
-  "title": "Per-area table of a map (type, tax)",
+  "title": "Per-area table of a map (type, tax, unit fit) and its display settings",
   "description": "Field reference: DATA_SCHEMA.md. Checked whenever the game loads the file (mods included).",
   "type": "object",
   "properties": {
@@ -25,6 +25,11 @@
           "tax": {
             "type": "integer",
             "minimum": 0
+          },
+          "fit": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Radius (map units) of the largest circle around the army anchor inside the area; with display unitFitRadius it scales the area's units down."
           }
         },
         "required": [
@@ -36,6 +41,41 @@
     },
     "$schema": {
       "type": "string"
+    },
+    "display": {
+      "type": "object",
+      "description": "Display settings of a mesh map: zoom limit, unit fitting, zoomed out markers.",
+      "additionalProperties": false,
+      "properties": {
+        "maxZoom": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "The largest camera zoom (the classic maps: 1)."
+        },
+        "unitFitRadius": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "An area whose fit radius is below this scales its units by fit / unitFitRadius."
+        },
+        "minUnitScale": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "description": "The smallest unit scale."
+        },
+        "markerZoom": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Below this on-screen unit scale (zoom x unit scale) armies show as a flag of constant size and buildings are left out."
+        },
+        "flags": {
+          "enum": [
+            "all",
+            "armies"
+          ],
+          "description": "all: a flag in every owned area (classic); armies: only where units or a building stand."
+        }
+      }
     }
   },
   "required": [

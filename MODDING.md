@@ -181,9 +181,10 @@ XML is), its entry in `data/json/conquests/conquests.json` (`centerX`, `centerY`
 with the pause box **Save** button (`game.json`, the JSON scenario format in `DATA_SCHEMA.md`) can be put
 into a mod as `data/json/scenarios/<name>.json`; it is then read instead of the XML of that name.
 
-**A new map**: map geometry is binary (`area<id>.bin`, `adjion<id>.bin`, `areamark<id>.raw`, tiles, zone
-atlases). `WC2.Tools build-map` generates all of it from GeoJSON as a mod (`MAP_PIPELINE.md`); a new map
-takes the next free map id.
+**A new map**: map geometry is binary (`area<id>.bin`, `adjion<id>.bin`, `areamark<id>.raw`, and either
+tiles plus zone atlases or one `map<id>.mesh`, which the game draws from vertex buffers). `WC2.Tools
+build-map` generates all of it from GeoJSON as a mod (`MAP_PIPELINE.md`); a new map takes the next free map
+id. A mesh map's `areas.json` also carries display settings (zoom, unit fitting, markers; DATA_SCHEMA.md).
 
 **Checking a mod**
 
@@ -386,9 +387,10 @@ mods/my-mod/image/ui/phone-568-hd/mainbg.webp
 即 `DATA_SCHEMA.md` 中的 JSON 剧本格式）可以作为 `data/json/scenarios/<名字>.json` 放进模组，之后游戏会读取
 它而不是同名的 XML。
 
-**新增一张地图**：地图几何数据是二进制的（`area<id>.bin`、`adjion<id>.bin`、`areamark<id>.raw`、地图
-贴图块、区域图集）。`WC2.Tools build-map` 可以从 GeoJSON 生成全部这些文件并输出为模组（见
-`MAP_PIPELINE.md`）；新地图使用下一个空闲的地图 id。
+**新增一张地图**：地图几何数据是二进制的（`area<id>.bin`、`adjion<id>.bin`、`areamark<id>.raw`，以及
+地图贴图块加区域图集，或者一个由游戏用顶点缓冲绘制的 `map<id>.mesh`）。`WC2.Tools build-map` 可以从
+GeoJSON 生成全部这些文件并输出为模组（见 `MAP_PIPELINE.md`）；新地图使用下一个空闲的地图 id。网格地图的
+`areas.json` 还带有显示设置（缩放、部队缩放、标记；见 DATA_SCHEMA.md）。
 
 **检查模组**
 

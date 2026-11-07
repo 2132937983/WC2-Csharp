@@ -48,6 +48,7 @@ Coordinates are logical screen units (568 x 320 phone layout; scripts named `ipa
 | `back` | the Android back key (`CallNativeExit`: a panel or state that handles it closes, otherwise the exit box appears) |
 | `wheel DELTA` | mouse wheel |
 | `camera X Y [SCALE]` | put the map camera on a scene position (the zoom limit and the wrap still apply) and log where it ended up |
+| `count NAME` | write `NAME.json` next to the dumps: land units at sea (transport ships), ships at sea, harbours, land units with a transport (checked by `.expect` lines `NAME FIELD>=N`) |
 | `autoplay ROUNDS` | play N rounds without input: ends the human turn (the AI hosting option plays it), fast-forwards AI turns and closes boxes; stops early when the battle ends |
 | `settle` | close boxes and finish AI moves until the human side can act (ends no turn) |
 | `dump NAME` | write the rule state as `NAME.json` next to the screenshots |
@@ -80,7 +81,7 @@ against the dumps (the AI tests).
 | `resource_cycle` | menu -> conquest -> menu twice: the same texture memory on every visit |
 | `ai_defends_marseille_classic`, `ai_defends_marseille_standard` | the test mod `mods/ai-marseille` (an Italian stack next to a weakly held Marseille): the standard AI reinforces and holds Marseille (`.expect`), the classic AI loses it |
 | `ai_standard_autoplay` | conquest 1 played by the standard AI for 16 rounds |
-| `world_menu`, `world_autoplay` | the generated world map, WORLD 1939 (`mods/map-natural-earth`, MAP_PIPELINE.md): through the conquest menu (list, preview, game); as France with the seam at the Bering Strait, fully zoomed out (no black bars), and four rounds of the standard AI |
+| `world_menu`, `world_autoplay` | the generated world map, WORLD 1939 (`mods/map-natural-earth`, MAP_PIPELINE.md, 7 389 provinces drawn as a mesh): through the conquest menu (list, preview, game); as France with the seam at the Bering Strait, fully zoomed out (no black bars), fully zoomed in (units fitted to the provinces), the flag markers, four rounds of the standard AI and the naval count (`world_autoplay.expect`: harbours, transports and ships at sea) |
 
 ## Unit tests (`Unit/`, `dotnet test Tests`)
 
@@ -90,7 +91,7 @@ against the dumps (the AI tests).
 | `HitTestTests.cs` | points off the screen never hit; only the visible part of an edge control hits; hidden and disabled controls refuse input |
 | `NoPurchaseTests.cs` | no purchase code, billing permission, purchase types or buy button |
 | `AiProfileTests.cs` | classic equals the original numbers; inheritance; the command line override |
-| `MapPackTests.cs` | the world base map (consistency, wrapping, the units of every era, historical borders splitting provinces, coverage up to the polar islands and over the date line, capitals of today and of earlier eras, Marseille); the pipeline and the classic export on a synthetic world with a historical border |
+| `MapPackTests.cs` | the world base map (consistency, wrapping, the units of every era, historical borders splitting provinces, coverage up to the polar islands and over the date line, capitals of today and of earlier eras, Marseille); the pipeline and the classic export on a synthetic world with a historical border, a harbour and transports; the mesh covers every region exactly and the game reads it |
 | `CameraTests.cs` | zooming out stops when the map fills the screen; a wrapping map scrolls past its edges and the camera takes the short way over the seam |
 | `BuiltInModTests.cs` | mods built into the package mount and merge like folder mods, a folder mod replaces one with the same id, the world map is built in |
 
@@ -130,6 +131,7 @@ against the dumps (the AI tests).
 | `back` | Android 返回键（`CallNativeExit`：能处理它的面板或状态会关闭，否则会弹出退出对话框） |
 | `wheel DELTA` | 鼠标滚轮 |
 | `camera X Y [SCALE]` | 把地图镜头放到某个场景坐标（缩放限制和左右循环仍然生效），并在日志中记录最终位置 |
+| `count NAME` | 在转储文件旁写出 `NAME.json`：海上的陆军（运输船）、海上的舰船、港口数、带运输船的陆军数（由 `.expect` 中形如 `NAME FIELD>=N` 的行检查） |
 | `autoplay ROUNDS` | 在没有输入的情况下进行 N 个回合：结束人类玩家的回合（由 AI 托管选项代为进行），快进 AI 回合并关闭对话框；战斗结束时提前停止 |
 | `settle` | 关闭对话框并完成 AI 的行动，直到人类一方可以操作为止（不结束任何回合） |
 | `dump NAME` | 将规则状态写为 `NAME.json`，与截图放在一起 |
@@ -159,7 +161,7 @@ against the dumps (the AI tests).
 | `resource_cycle` | 菜单 -> 征服 -> 菜单，重复两次：每次进入时纹理内存都相同 |
 | `ai_defends_marseille_classic`、`ai_defends_marseille_standard` | 测试模组 `mods/ai-marseille`（一支意大利部队堆叠在防守薄弱的马赛旁边）：standard AI 会增援并守住马赛（`.expect`），classic AI 则会丢掉马赛 |
 | `ai_standard_autoplay` | 征服 1，由 standard AI 进行 16 个回合 |
-| `world_menu`、`world_autoplay` | 生成的世界地图 WORLD 1939（`mods/map-natural-earth`，MAP_PIPELINE.md）：通过征服菜单进入（列表、预览、游戏）；以法国开局，查看白令海峡处的接缝、最大缩小（没有黑边），以及由 standard AI 进行四个回合 |
+| `world_menu`、`world_autoplay` | 生成的世界地图 WORLD 1939（`mods/map-natural-earth`，MAP_PIPELINE.md，以网格绘制的 7 389 个省份）：通过征服菜单进入（列表、预览、游戏）；以法国开局，查看白令海峡处的接缝、最大缩小（没有黑边）、最大放大（部队缩放到省份内）、旗帜标记、standard AI 进行四个回合，以及海军统计（`world_autoplay.expect`：港口、海上的运输船和舰船） |
 
 ## 单元测试（`Unit/`，`dotnet test Tests`）
 
@@ -169,6 +171,6 @@ against the dumps (the AI tests).
 | `HitTestTests.cs` | 屏幕外的点永远不会命中；边缘控件只有可见部分能被命中；隐藏和禁用的控件拒绝输入 |
 | `NoPurchaseTests.cs` | 不存在购买代码、计费权限、购买类型或购买按钮 |
 | `AiProfileTests.cs` | classic 与原版数值完全相同；继承；命令行覆盖 |
-| `MapPackTests.cs` | 世界底图（一致性、左右循环、各时代的单元、历史边界拆分省份、覆盖到北极群岛并跨越日期变更线、今天和早期时代的首都、马赛）；在一个带历史边界的合成世界上测试生成流程和经典地图导出 |
+| `MapPackTests.cs` | 世界底图（一致性、左右循环、各时代的单元、历史边界拆分省份、覆盖到北极群岛并跨越日期变更线、今天和早期时代的首都、马赛）；在一个带历史边界、港口和运输船的合成世界上测试生成流程和经典地图导出；网格精确覆盖每个区域，并且游戏能读取它 |
 | `CameraTests.cs` | 缩小到地图填满屏幕时停止；循环地图可以越过边缘滚动，镜头跨越接缝走近路 |
 | `BuiltInModTests.cs` | 内置于游戏资源包中的模组与文件夹模组一样挂载和合并；文件夹模组会替换 id 相同的内置模组；世界地图是内置的 |

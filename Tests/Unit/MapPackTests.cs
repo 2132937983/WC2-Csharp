@@ -20,7 +20,8 @@ public class MapPackTests
     {
         var pack = LoadPack();
         Assert.Empty(pack.Check());
-        Assert.InRange(pack.regions.Count(r => !r.sea), 500, 3000);
+        // about the granularity of Age of History II: thousands of land provinces
+        Assert.InRange(pack.regions.Count(r => !r.sea), 5000, 12000);
         Assert.InRange(pack.regions.Count(r => r.sea), 100, 2000);
         Assert.True(pack.wrap);
         Assert.Equal(new[] { "1910", "1914", "1936", "1939", "1945", "1949", "2018" }, pack.eras.Keys.ToArray());
@@ -177,7 +178,8 @@ public class MapPackTests
         Assert.Equal("Westcity", west.name);
         Assert.NotNull(westWest.airfield);
         Assert.Equal("bb", east.country);
-        Assert.Equal("port", east.type);
+        Assert.Equal("normal", east.type);                             // the port's harbour is the sea zone off it
+        Assert.NotNull(east.port);
         Assert.Contains(east.id, west.neighbours);                     // the two countries touch
         Assert.True(west.coastal && east.coastal);
         Assert.Null(pack.LandRegionNear(25.1, 20.1, 0));               // the islet is water now
@@ -190,6 +192,53 @@ public class MapPackTests
         Assert.Contains("\"leftRightWrap\": false", conquests);
     }
 
+    [Fact]
+    public void TheMeshCoversEveryRegionExactlyWithoutGaps()
+    {
+        // three regions and a lake: 1 the left block, 2 the right block, 3 an L along the bottom with a
+        // hole of water (0); without simplification the triangles must cover exactly the pixels
+        int w = 12, h = 8;
+        var raster = new int[w * h];
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+                raster[y * w + x] = y >= 5 ? 3 : x < 5 ? 1 : 2;
+        raster[6 * w + 6] = 0;   // the lake inside region 3
+        raster[2 * w + 3] = 2;   // a pixel of region 2 inside region 1 (an enclave)
+        string dir = Support.TempTree(("readme.txt", "mesh test"));
+        string path = Path.Combine(dir, "map9.mesh");
+        MapMeshExport.Write(path, raster, w, h, 4f, 3, 0, 0, 16f);
+        var areaOf = new double[3];
+        using (var r = new BinaryReader(File.OpenRead(path)))
+        {
+            Assert.Equal("WCMH", new string(r.ReadChars(4)));
+            Assert.Equal(2, r.ReadInt32());
+            int regions = r.ReadInt32(), vertices = r.ReadInt32(), indexCount = r.ReadInt32();
+            r.ReadInt32(); r.ReadInt32(); r.ReadInt32();
+            Assert.Equal(3, regions);
+            var pos = new (double x, double y)[vertices];
+            for (int i = 0; i < vertices; i++) pos[i] = (r.ReadUInt16(), r.ReadUInt16());
+            var local = new ushort[indexCount];
+            for (int i = 0; i < indexCount; i++) local[i] = r.ReadUInt16();
+            for (int g = 0; g < regions; g++)
+            {
+                int firstVertex = r.ReadInt32(); r.ReadInt32(); int firstIndex = r.ReadInt32(), count = r.ReadInt32();
+                for (int k = 0; k < count; k += 3)
+                {
+                    var a = pos[firstVertex + local[firstIndex + k]]; var b = pos[firstVertex + local[firstIndex + k + 1]]; var c = pos[firstVertex + local[firstIndex + k + 2]];
+                    areaOf[g] += Math.Abs((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y)) / 2;
+                }
+            }
+        }
+        for (int g = 0; g < 3; g++)
+            Assert.Equal(raster.Count(v => v == g + 1) * 16.0, areaOf[g], 3);   // 4 x 4 map units per pixel
+        // and the game reads it
+        AssetSystem.Reset();
+        AssetSystem.Mount(new AssetLayer { Id = "test", Source = new DirectoryAssetSource(dir) });
+        var mesh = CMapMesh.Load("map9.mesh");
+        Assert.NotNull(mesh);
+        Assert.Equal(3, mesh.regionCount);
+    }
+
     /// <summary>The map in the scene's own formats (map 7 here): what the game's loaders read.</summary>
     private static void CheckClassicExport(string dir)
     {
@@ -200,9 +249,15 @@ public class MapPackTests
         int seas = Enumerable.Range(0, count).Count(i => BitConverter.ToInt32(area, 4 + i * 44 + 40) == 1);
         Assert.Equal(3, count - seas);                                  // the three land regions
         Assert.True(seas > 0);
-        // the area table lists every area, the sea zones too (an area missing there would load as land)
+        // the area table lists every area, the sea zones too (an area missing there would load as land);
+        // a harbour (a port in the original's sense: where ships are built) is a sea zone
         var table = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(Path.Combine(dir, "data", "json", "maps", "7", "areas.json")))!["areas"]!.AsObject();
         Assert.Equal(count, table.Count);
+        var harbours = table.Where(kv => kv.Value!["type"]!.GetValue<string>() == "port").Select(kv => int.Parse(kv.Key)).ToList();
+        Assert.Single(harbours);
+        Assert.Equal(1, BitConverter.ToInt32(area, 4 + harbours[0] * 44 + 40));   // at sea
+        // the capital's units start with a transport ship (cards bit 4): they can put to sea
+        Assert.Contains("cards=\"4\"", File.ReadAllText(Path.Combine(dir, "conquest_test.xml")));
         // adjion7.bin: count, then 17 ints per area (neighbour count + 16 ids); symmetric
         var adj = File.ReadAllBytes(Path.Combine(dir, "adjion7.bin"));
         Assert.Equal(count, BitConverter.ToInt32(adj, 0));

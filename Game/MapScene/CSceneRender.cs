@@ -234,6 +234,12 @@ public sealed partial class CScene
         camera.Apply();
         // Reuse the visible area list of the previous frame when the camera did not change.
         EnsureVisibleRenderAreaList();
+        if (mapMesh != null)
+        {
+            RenderMeshLayer();
+        }
+        else
+        {
         background.Render(camera);
 
         int SelectedAreaID = -1;
@@ -316,17 +322,31 @@ public sealed partial class CScene
         // camera never shows anything above or below it
         if (!wrapX)
             background.RenderBox(camera, topLeftPos[0], topLeftPos[1], size[0], size[1]);
+        }
 
-        for (int i = 0; i < visibleAreaCount; ++i)
-            visibleRenderAreaList[i].area.RenderBuilding();
+        int visibleCount = visibleRenderAreaList.Count;
+        // a mesh map zoomed out: buildings are left out and armies become flag markers (display markerZoom)
+        float cameraScale = camera.scale;
+        for (int i = 0; i < visibleCount; ++i)
+        {
+            CArea area = visibleRenderAreaList[i].area;
+            if (display != null && cameraScale * area.unitScale < display.markerZoom) continue;
+            area.RenderBuilding();
+        }
 
-        for (int i = 0; i < visibleAreaCount; ++i)
+        for (int i = 0; i < visibleCount; ++i)
         {
             CArea RenderArea = visibleRenderAreaList[i].area;
             // fog of war hides the armies of the areas the player cannot see
             if (fogOfWar && !IsVisibleToPlayer(RenderArea))
                 continue;
-            RenderArea.Render();
+            bool marker = display != null && cameraScale * RenderArea.unitScale < display.markerZoom;
+            if (marker) RenderArea.RenderMarker(cameraScale, display.markerZoom);
+            else RenderArea.Render();
+            // the target arrows above the army follow its scale
+            float arrowScale = marker ? display.markerZoom / cameraScale : RenderArea.unitScale;
+            if (arrowScale != 1f && RenderArea.targetType != 0)
+                ecGraphics.Instance().SetLocalScale(RenderArea.info.armyPos[0], RenderArea.info.armyPos[1], arrowScale);
             if (RenderArea.targetType == 1)
             {
                 g_GameRes.imageArrowshadow.RenderEx(RenderArea.info.armyPos[0] - verticalArrowTimer * 0.5f,
@@ -343,6 +363,7 @@ public sealed partial class CScene
                 g_GameRes.imageArrowYellow.Render(RenderArea.info.armyPos[0],
                                                   RenderArea.info.armyPos[1] + verticalArrowTimer);
             }
+            ecGraphics.Instance().ClearLocalScale();
         }
 
         if (areaSelected != null)
@@ -415,6 +436,28 @@ public sealed partial class CScene
             Medal.Render();
         if (bomber != null && !g_GameManager.SkipMode)
             bomber.Render();
+    }
+
+    private static uint WithAlpha(uint abgr, float alpha) =>
+        (abgr & 0x00FFFFFFu) | ((uint)Math.Clamp((int)(alpha * 255f), 0, 255) << 24);
+
+    /// <summary>
+    /// A mesh map (map&lt;id&gt;.mesh): the areas in their owners' colours and the borders, then the
+    /// highlights of the classic zone masks: the current country's areas flashing at a new round, the
+    /// selected area and the two areas of a fight.
+    /// </summary>
+    private void RenderMeshLayer()
+    {
+        float halfWidth = camera.screenHalfSize[0] / camera.scale, halfHeight = camera.screenHalfSize[1] / camera.scale;
+        mapMesh.Render(this, camera.centerPos[0] - halfWidth, camera.centerPos[0] + halfWidth,
+                       camera.centerPos[1] - halfHeight, camera.centerPos[1] + halfHeight);
+        if (g_GameManager.SkipMode) return;
+        if (newRoundFlashing && g_GameManager.GetCurCountry() is CCountry current)
+            mapMesh.RenderCountry(current, WithAlpha(0xFFFFFFFFu, (flashTimer - 0.5f) * 0.8f));
+        if (areaSelected != null && areaSelected.id >= 0)
+            mapMesh.RenderRegion(areaSelected.id, WithAlpha(areaSelected.country?.ColorRGBA ?? 0xFF0000FFu, flashTimer * 0.75f));
+        foreach (int i in fightFlashAreaId)
+            if (i >= 0 && i < areaCount) mapMesh.RenderRegion(i, WithAlpha(0xFF8080FFu, flashTimer * 0.75f));
     }
 
     /// <summary>Renders the sea area debug overlay.</summary>

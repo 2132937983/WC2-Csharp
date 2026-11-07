@@ -17,496 +17,508 @@
     "height": 1350,
     "pixelsPerDegree": 12.5
   },
-  "landRegions": 1074,
-  "seaZones": 1116,
+  "landRegions": 7389,
+  "seaZones": 1125,
   "countries": {
     "-1": {
-      "regions": 3,
+      "regions": 10,
       "capital": null
     },
     "ae": {
-      "regions": 1,
-      "capital": 546
+      "regions": 5,
+      "capital": 5104
     },
     "af": {
-      "regions": 12,
-      "capital": 402
+      "regions": 33,
+      "capital": 3992
     },
     "al": {
-      "regions": 1,
-      "capital": 307
+      "regions": 8,
+      "capital": 3074
     },
     "am": {
-      "regions": 36,
-      "capital": 472
+      "regions": 470,
+      "capital": 3298
     },
     "ao": {
-      "regions": 14,
-      "capital": 925
+      "regions": 48,
+      "capital": 6801
     },
     "ar": {
-      "regions": 5,
+      "regions": 15,
       "capital": null
     },
     "at": {
-      "regions": 1,
-      "capital": 205
+      "regions": 16,
+      "capital": 2115
     },
     "au": {
-      "regions": 5,
+      "regions": 136,
       "capital": null
     },
     "az": {
-      "regions": 2,
-      "capital": 299
+      "regions": 15,
+      "capital": 3223
     },
     "ba": {
-      "regions": 1,
-      "capital": 248
+      "regions": 12,
+      "capital": 2718
     },
     "bd": {
-      "regions": 2,
-      "capital": 552
+      "regions": 9,
+      "capital": 5075
     },
     "be": {
-      "regions": 2,
-      "capital": 140
+      "regions": 8,
+      "capital": 1839
     },
     "bf": {
-      "regions": 3,
-      "capital": 719
+      "regions": 13,
+      "capital": 5798
     },
     "bg": {
-      "regions": 4,
-      "capital": 270
+      "regions": 27,
+      "capital": 2840
     },
     "bi": {
       "regions": 1,
-      "capital": 889
+      "capital": 6643
     },
     "bj": {
-      "regions": 2,
-      "capital": 721
+      "regions": 5,
+      "capital": 6059
     },
     "bn": {
       "regions": 1,
-      "capital": 810
+      "capital": 6224
     },
     "bo": {
-      "regions": 8,
-      "capital": 961
+      "regions": 42,
+      "capital": 7015
     },
     "br": {
-      "regions": 23,
-      "capital": 964
+      "regions": 322,
+      "capital": 7029
     },
     "bs": {
       "regions": 1,
       "capital": null
     },
     "bt": {
-      "regions": 1,
-      "capital": 509
+      "regions": 4,
+      "capital": 4878
     },
     "bw": {
-      "regions": 5,
-      "capital": 1037
+      "regions": 22,
+      "capital": 7365
     },
     "by": {
-      "regions": 3,
-      "capital": 101
+      "regions": 41,
+      "capital": 1320
     },
     "bz": {
-      "regions": 1,
-      "capital": 627
+      "regions": 2,
+      "capital": 5553
     },
     "ca": {
-      "regions": 20,
-      "capital": 75
+      "regions": 371,
+      "capital": 1180
     },
     "cd": {
-      "regions": 10,
-      "capital": 897
+      "regions": 94,
+      "capital": 6666
     },
     "cf": {
-      "regions": 10,
-      "capital": 792
+      "regions": 24,
+      "capital": 6131
     },
     "cg": {
-      "regions": 6,
+      "regions": 14,
       "capital": null
     },
     "ch": {
-      "regions": 3,
-      "capital": 211
+      "regions": 9,
+      "capital": 2356
     },
     "ci": {
-      "regions": 5,
-      "capital": 766
+      "regions": 14,
+      "capital": 6102
     },
     "cl": {
-      "regions": 2,
+      "regions": 8,
       "capital": null
     },
     "cm": {
-      "regions": 6,
-      "capital": 787
+      "regions": 19,
+      "capital": 6114
     },
     "cn": {
-      "regions": 29,
-      "capital": 279
+      "regions": 788,
+      "capital": 3144
     },
     "co": {
-      "regions": 17,
-      "capital": 794
+      "regions": 54,
+      "capital": 6137
     },
     "cr": {
-      "regions": 1,
-      "capital": 710
+      "regions": 5,
+      "capital": 5920
     },
     "cu": {
-      "regions": 3,
-      "capital": 563
+      "regions": 13,
+      "capital": 5204
     },
     "cy": {
       "regions": 1,
-      "capital": 407
+      "capital": 3926
     },
     "cz": {
-      "regions": 3,
-      "capital": 166
+      "regions": 16,
+      "capital": 1860
     },
     "de": {
-      "regions": 10,
-      "capital": 116
+      "regions": 73,
+      "capital": 1479
     },
     "dj": {
       "regions": 1,
-      "capital": 704
+      "capital": 5776
     },
     "dk": {
-      "regions": 2,
-      "capital": 86
+      "regions": 9,
+      "capital": 1242
     },
     "do": {
-      "regions": 1,
-      "capital": 603
+      "regions": 5,
+      "capital": 5426
     },
     "dz": {
-      "regions": 14,
-      "capital": 390
+      "regions": 147,
+      "capital": 3678
     },
     "ec": {
-      "regions": 5,
-      "capital": 852
+      "regions": 13,
+      "capital": 6480
     },
     "ee": {
-      "regions": 2,
-      "capital": 62
+      "regions": 10,
+      "capital": 888
     },
     "eg": {
-      "regions": 6,
-      "capital": 466
+      "regions": 53,
+      "capital": 4558
     },
     "eh": {
       "regions": 2,
       "capital": null
     },
     "er": {
-      "regions": 1,
-      "capital": 621
+      "regions": 7,
+      "capital": 5640
     },
     "es": {
-      "regions": 17,
-      "capital": 288
+      "regions": 95,
+      "capital": 3111
     },
     "et": {
-      "regions": 7,
-      "capital": 726
+      "regions": 48,
+      "capital": 5891
     },
     "fj": {
       "regions": 3,
-      "capital": 995
+      "capital": 7202
     },
     "fl": {
-      "regions": 5,
-      "capital": 41
+      "regions": 44,
+      "capital": 711
+    },
+    "fo": {
+      "regions": 1,
+      "capital": null
     },
     "fr": {
-      "regions": 18,
-      "capital": 206
+      "regions": 102,
+      "capital": 2185
     },
     "ga": {
-      "regions": 5,
-      "capital": 844
+      "regions": 10,
+      "capital": 6462
     },
     "gb": {
-      "regions": 11,
-      "capital": 138
+      "regions": 55,
+      "capital": 1770
     },
     "ge": {
-      "regions": 1,
-      "capital": 280
+      "regions": 10,
+      "capital": 3055
     },
     "gh": {
-      "regions": 4,
-      "capital": 772
+      "regions": 9,
+      "capital": 6110
     },
     "gl": {
-      "regions": 6,
+      "regions": 16,
       "capital": null
     },
     "gm": {
       "regions": 1,
-      "capital": 664
+      "capital": 5696
     },
     "gn": {
-      "regions": 4,
-      "capital": 697
+      "regions": 14,
+      "capital": 5870
     },
     "gq": {
-      "regions": 1,
-      "capital": null
+      "regions": 2,
+      "capital": 6283
     },
     "gr": {
-      "regions": 8,
-      "capital": 363
+      "regions": 27,
+      "capital": 3491
     },
     "gt": {
-      "regions": 2,
-      "capital": 639
+      "regions": 11,
+      "capital": 5661
     },
     "gw": {
       "regions": 1,
-      "capital": 689
+      "capital": 5773
     },
     "gy": {
-      "regions": 4,
-      "capital": 756
+      "regions": 10,
+      "capital": 6057
     },
     "hn": {
-      "regions": 2,
-      "capital": 649
+      "regions": 10,
+      "capital": 5646
     },
     "hr": {
-      "regions": 1,
-      "capital": 252
+      "regions": 13,
+      "capital": 2452
     },
     "ht": {
-      "regions": 1,
-      "capital": 597
+      "regions": 3,
+      "capital": 5443
     },
     "hu": {
-      "regions": 4,
-      "capital": 197
+      "regions": 18,
+      "capital": 2262
     },
     "id": {
-      "regions": 23,
-      "capital": 911
+      "regions": 117,
+      "capital": 6727
     },
     "ie": {
-      "regions": 2,
-      "capital": 125
+      "regions": 15,
+      "capital": 1483
     },
     "il": {
-      "regions": 1,
-      "capital": 459
+      "regions": 3,
+      "capital": 4169
     },
     "in": {
-      "regions": 24,
-      "capital": 473
+      "regions": 204,
+      "capital": 4519
     },
     "iq": {
-      "regions": 5,
-      "capital": 441
+      "regions": 50,
+      "capital": 4202
     },
     "ir": {
-      "regions": 19,
-      "capital": 379
+      "regions": 123,
+      "capital": 3832
     },
     "is": {
-      "regions": 2,
-      "capital": 23
+      "regions": 10,
+      "capital": 396
     },
     "it": {
-      "regions": 12,
-      "capital": 283
+      "regions": 70,
+      "capital": 2960
     },
     "ja": {
-      "regions": 12,
-      "capital": 376
+      "regions": 72,
+      "capital": 3880
     },
     "jm": {
       "regions": 1,
-      "capital": 617
+      "capital": 5505
     },
     "jo": {
-      "regions": 1,
-      "capital": 433
+      "regions": 11,
+      "capital": 4381
     },
     "ke": {
-      "regions": 5,
-      "capital": 812
+      "regions": 24,
+      "capital": 6488
     },
     "kg": {
-      "regions": 4,
-      "capital": 287
+      "regions": 8,
+      "capital": 2806
     },
     "kh": {
-      "regions": 3,
-      "capital": 660
+      "regions": 15,
+      "capital": 5852
     },
     "kw": {
       "regions": 2,
-      "capital": 493
+      "capital": 4584
     },
     "kz": {
-      "regions": 14,
-      "capital": 110
+      "regions": 109,
+      "capital": 1409
     },
     "la": {
-      "regions": 4,
-      "capital": 602
+      "regions": 22,
+      "capital": 5441
     },
     "lb": {
       "regions": 1,
-      "capital": 418
+      "capital": 4033
     },
     "lk": {
-      "regions": 1,
-      "capital": 773
+      "regions": 6,
+      "capital": 6082
     },
     "lr": {
-      "regions": 1,
-      "capital": 769
+      "regions": 5,
+      "capital": 6062
     },
     "lt": {
-      "regions": 2,
-      "capital": 88
+      "regions": 13,
+      "capital": 1273
+    },
+    "lu": {
+      "regions": 1,
+      "capital": 1941
     },
     "lv": {
-      "regions": 1,
-      "capital": 73
+      "regions": 17,
+      "capital": 1124
     },
     "ly": {
-      "regions": 17,
-      "capital": 447
+      "regions": 102,
+      "capital": 4232
     },
     "ma": {
-      "regions": 13,
-      "capital": 421
+      "regions": 50,
+      "capital": 4121
     },
     "md": {
-      "regions": 1,
-      "capital": 227
+      "regions": 9,
+      "capital": 2322
     },
     "me": {
-      "regions": 2,
-      "capital": 284
+      "regions": 3,
+      "capital": 2823
     },
     "mg": {
-      "regions": 11,
-      "capital": 1004
+      "regions": 26,
+      "capital": 7241
     },
     "mk": {
-      "regions": 1,
-      "capital": 290
+      "regions": 7,
+      "capital": 3039
     },
     "ml": {
-      "regions": 8,
-      "capital": 650
+      "regions": 35,
+      "capital": 5628
     },
     "mm": {
-      "regions": 8,
-      "capital": 558
+      "regions": 44,
+      "capital": 5180
     },
     "mn": {
-      "regions": 18,
-      "capital": 176
+      "regions": 128,
+      "capital": 2108
     },
     "mr": {
-      "regions": 8,
-      "capital": 605
+      "regions": 24,
+      "capital": 5442
+    },
+    "mu": {
+      "regions": 1,
+      "capital": 7287
     },
     "mw": {
-      "regions": 2,
-      "capital": 972
+      "regions": 6,
+      "capital": 7038
     },
     "mx": {
-      "regions": 20,
-      "capital": 592
+      "regions": 135,
+      "capital": 5427
     },
     "my": {
-      "regions": 6,
-      "capital": 809
+      "regions": 22,
+      "capital": 6278
     },
     "mz": {
-      "regions": 9,
-      "capital": 1026
+      "regions": 32,
+      "capital": 7370
     },
     "na": {
-      "regions": 7,
-      "capital": 1019
+      "regions": 27,
+      "capital": 7325
     },
     "nc": {
-      "regions": 1,
+      "regions": 2,
       "capital": null
     },
     "ne": {
-      "regions": 5,
-      "capital": 646
+      "regions": 28,
+      "capital": 5613
     },
     "ng": {
-      "regions": 17,
-      "capital": 728
+      "regions": 39,
+      "capital": 5962
     },
     "ni": {
-      "regions": 1,
-      "capital": 675
+      "regions": 12,
+      "capital": 5741
     },
     "nk": {
-      "regions": 2,
-      "capital": 326
+      "regions": 25,
+      "capital": 3392
     },
     "nl": {
-      "regions": 2,
-      "capital": 115
+      "regions": 7,
+      "capital": 1641
     },
     "no": {
-      "regions": 8,
-      "capital": 46
+      "regions": 48,
+      "capital": 713
     },
     "np": {
-      "regions": 3,
-      "capital": 513
+      "regions": 13,
+      "capital": 4853
     },
     "om": {
-      "regions": 4,
-      "capital": 567
+      "regions": 21,
+      "capital": 5178
     },
     "pa": {
-      "regions": 1,
-      "capital": 750
+      "regions": 8,
+      "capital": 5955
     },
     "pe": {
-      "regions": 15,
-      "capital": 948
+      "regions": 52,
+      "capital": 6924
     },
     "pg": {
-      "regions": 9,
-      "capital": 926
+      "regions": 20,
+      "capital": 6802
     },
     "ph": {
-      "regions": 12,
-      "capital": 657
+      "regions": 27,
+      "capital": 5670
     },
     "pk": {
-      "regions": 5,
-      "capital": 381
+      "regions": 47,
+      "capital": 3667
     },
     "pl": {
-      "regions": 12,
-      "capital": 117
+      "regions": 63,
+      "capital": 1492
     },
     "pr": {
       "regions": 1,
@@ -517,176 +529,180 @@
       "capital": null
     },
     "pt": {
-      "regions": 2,
-      "capital": 324
+      "regions": 18,
+      "capital": 3385
     },
     "py": {
-      "regions": 6,
-      "capital": 1042
+      "regions": 15,
+      "capital": 7375
     },
     "qa": {
       "regions": 1,
-      "capital": 538
+      "capital": 5052
     },
     "rk": {
-      "regions": 1,
-      "capital": 368
+      "regions": 19,
+      "capital": 3522
     },
     "ro": {
-      "regions": 7,
-      "capital": 245
+      "regions": 43,
+      "capital": 2694
     },
     "ru": {
-      "regions": 69,
-      "capital": 45
+      "regions": 796,
+      "capital": 682
     },
     "rw": {
       "regions": 1,
-      "capital": 869
+      "capital": 6580
     },
     "sa": {
-      "regions": 11,
-      "capital": 521
+      "regions": 140,
+      "capital": 4920
     },
     "sb": {
       "regions": 6,
-      "capital": 942
+      "capital": 6865
     },
     "sd": {
-      "regions": 14,
-      "capital": 652
+      "regions": 55,
+      "capital": 5633
     },
     "se": {
-      "regions": 8,
-      "capital": 59
+      "regions": 65,
+      "capital": 738
     },
     "si": {
-      "regions": 1,
-      "capital": 219
+      "regions": 5,
+      "capital": 2440
     },
     "sk": {
-      "regions": 3,
-      "capital": 183
+      "regions": 9,
+      "capital": 2182
     },
     "sl": {
-      "regions": 1,
-      "capital": 736
+      "regions": 3,
+      "capital": 6015
     },
     "sn": {
-      "regions": 3,
-      "capital": 636
+      "regions": 7,
+      "capital": 5662
     },
     "so": {
-      "regions": 9,
-      "capital": 826
+      "regions": 19,
+      "capital": 6290
     },
     "sr": {
-      "regions": 1,
-      "capital": 798
+      "regions": 5,
+      "capital": 6144
     },
     "ss": {
-      "regions": 8,
+      "regions": 24,
       "capital": null
     },
     "sv": {
-      "regions": 1,
-      "capital": 658
+      "regions": 3,
+      "capital": 5687
     },
     "sy": {
-      "regions": 3,
-      "capital": 403
+      "regions": 22,
+      "capital": 4111
     },
     "td": {
-      "regions": 15,
-      "capital": 691
+      "regions": 39,
+      "capital": 5782
     },
     "tg": {
-      "regions": 1,
-      "capital": 761
+      "regions": 3,
+      "capital": 6021
     },
     "th": {
-      "regions": 9,
-      "capital": 739
+      "regions": 41,
+      "capital": 5652
     },
     "tj": {
-      "regions": 3,
-      "capital": 356
+      "regions": 6,
+      "capital": 3313
     },
     "tl": {
       "regions": 1,
-      "capital": 934
+      "capital": 6833
     },
     "tm": {
-      "regions": 6,
-      "capital": 327
+      "regions": 29,
+      "capital": 3260
     },
     "tn": {
-      "regions": 2,
-      "capital": 425
+      "regions": 25,
+      "capital": 3596
     },
     "tr": {
-      "regions": 18,
-      "capital": 314
+      "regions": 116,
+      "capital": 3077
     },
     "tt": {
       "regions": 1,
-      "capital": 723
+      "capital": 5886
     },
     "tw": {
-      "regions": 1,
-      "capital": 550
+      "regions": 11,
+      "capital": 5082
     },
     "tz": {
-      "regions": 15,
-      "capital": 896
+      "regions": 39,
+      "capital": 6725
     },
     "ua": {
-      "regions": 13,
-      "capital": 135
+      "regions": 96,
+      "capital": 1774
     },
     "ug": {
-      "regions": 4,
-      "capital": 840
+      "regions": 15,
+      "capital": 6476
     },
     "uz": {
-      "regions": 7,
-      "capital": 304
+      "regions": 20,
+      "capital": 2970
     },
     "ve": {
-      "regions": 10,
-      "capital": 733
+      "regions": 57,
+      "capital": 5883
     },
     "vn": {
-      "regions": 5,
-      "capital": 562
+      "regions": 34,
+      "capital": 5329
     },
     "vu": {
-      "regions": 2,
+      "regions": 4,
+      "capital": 7193
+    },
+    "ws": {
+      "regions": 1,
       "capital": null
     },
     "xk": {
-      "regions": 1,
+      "regions": 3,
       "capital": null
     },
     "ye": {
-      "regions": 10,
-      "capital": 625
+      "regions": 34,
+      "capital": 5588
     },
     "yu": {
-      "regions": 2,
-      "capital": 257
+      "regions": 21,
+      "capital": 2638
     },
     "za": {
-      "regions": 4,
-      "capital": 1040
+      "regions": 10,
+      "capital": 7373
     },
     "zm": {
-      "regions": 8,
-      "capital": 967
+      "regions": 30,
+      "capital": 7164
     },
     "zw": {
-      "regions": 6,
-      "capital": 992
+      "regions": 14,
+      "capital": 7180
     }
   },
   "eras": {
@@ -764,6 +780,10 @@
         "gw:211": {
           "name": "Belgium",
           "capital": "Brussels"
+        },
+        "gw:212": {
+          "name": "Luxembourg",
+          "capital": "Luxembourg"
         },
         "gw:220": {
           "name": "France",
@@ -961,6 +981,10 @@
           "name": "Tanzania (Tanganyika)",
           "capital": "Dodoma"
         },
+        "gw:511": {
+          "name": "Zanzibar",
+          "capital": "Zanzibar City"
+        },
         "gw:52": {
           "name": "Trinidad and Tobago",
           "capital": "Port-of-Spain"
@@ -1032,6 +1056,10 @@
         "gw:585": {
           "name": "Reunion",
           "capital": "Saint-Denis"
+        },
+        "gw:590": {
+          "name": "Mauritius",
+          "capital": "Port Louis"
         },
         "gw:6": {
           "name": "Puerto Rico",
@@ -1164,6 +1192,10 @@
         "gw:824": {
           "name": "Sarawak",
           "capital": "Kuching"
+        },
+        "gw:827": {
+          "name": "Straits Settlements",
+          "capital": "Singapore City"
         },
         "gw:835": {
           "name": "Brunei",
@@ -1305,6 +1337,10 @@
         "gw:211": {
           "name": "Belgium",
           "capital": "Brussels"
+        },
+        "gw:212": {
+          "name": "Luxembourg",
+          "capital": "Luxembourg"
         },
         "gw:220": {
           "name": "France",
@@ -1502,6 +1538,10 @@
           "name": "Tanzania (Tanganyika)",
           "capital": "Dodoma"
         },
+        "gw:511": {
+          "name": "Zanzibar",
+          "capital": "Zanzibar City"
+        },
         "gw:52": {
           "name": "Trinidad and Tobago",
           "capital": "Port-of-Spain"
@@ -1565,6 +1605,10 @@
         "gw:585": {
           "name": "Reunion",
           "capital": "Saint-Denis"
+        },
+        "gw:590": {
+          "name": "Mauritius",
+          "capital": "Port Louis"
         },
         "gw:6": {
           "name": "Puerto Rico",
@@ -1709,6 +1753,10 @@
         "gw:824": {
           "name": "Sarawak",
           "capital": "Kuching"
+        },
+        "gw:827": {
+          "name": "Straits Settlements",
+          "capital": "Singapore City"
         },
         "gw:835": {
           "name": "Brunei",
@@ -1859,6 +1907,10 @@
           "name": "Belgium",
           "capital": "Brussels"
         },
+        "gw:212": {
+          "name": "Luxembourg",
+          "capital": "Luxembourg"
+        },
         "gw:220": {
           "name": "France",
           "capital": "Paris"
@@ -1882,6 +1934,10 @@
         "gw:290": {
           "name": "Poland",
           "capital": "Warsaw"
+        },
+        "gw:291": {
+          "name": "Danzig",
+          "capital": "Danzig"
         },
         "gw:3": {
           "name": "Alaska",
@@ -2091,6 +2147,10 @@
           "name": "Tanzania (Tanganyika)",
           "capital": "Dodoma"
         },
+        "gw:511": {
+          "name": "Zanzibar",
+          "capital": "Zanzibar City"
+        },
         "gw:515": {
           "name": "Rwanda-Urundi",
           "capital": "Usumbura"
@@ -2158,6 +2218,10 @@
         "gw:585": {
           "name": "Reunion",
           "capital": "Saint-Denis"
+        },
+        "gw:590": {
+          "name": "Mauritius",
+          "capital": "Port Louis"
         },
         "gw:6": {
           "name": "Puerto Rico",
@@ -2331,6 +2395,10 @@
           "name": "Sarawak",
           "capital": "Kuching"
         },
+        "gw:827": {
+          "name": "Straits Settlements",
+          "capital": "Singapore City"
+        },
         "gw:835": {
           "name": "Brunei",
           "capital": "Bandar Seri Begawan"
@@ -2479,6 +2547,10 @@
         "gw:211": {
           "name": "Belgium",
           "capital": "Brussels"
+        },
+        "gw:212": {
+          "name": "Luxembourg",
+          "capital": "Luxembourg"
         },
         "gw:220": {
           "name": "France",
@@ -2712,6 +2784,10 @@
           "name": "Tanzania (Tanganyika)",
           "capital": "Dodoma"
         },
+        "gw:511": {
+          "name": "Zanzibar",
+          "capital": "Zanzibar City"
+        },
         "gw:515": {
           "name": "Rwanda-Urundi",
           "capital": "Usumbura"
@@ -2779,6 +2855,10 @@
         "gw:585": {
           "name": "Reunion",
           "capital": "Saint-Denis"
+        },
+        "gw:590": {
+          "name": "Mauritius",
+          "capital": "Port Louis"
         },
         "gw:6": {
           "name": "Puerto Rico",
@@ -2964,6 +3044,10 @@
           "name": "Sarawak",
           "capital": "Kuching"
         },
+        "gw:827": {
+          "name": "Straits Settlements",
+          "capital": "Singapore City"
+        },
         "gw:835": {
           "name": "Brunei",
           "capital": "Bandar Seri Begawan"
@@ -3112,6 +3196,10 @@
         "gw:211": {
           "name": "Belgium",
           "capital": "Brussels"
+        },
+        "gw:212": {
+          "name": "Luxembourg",
+          "capital": "Luxembourg"
         },
         "gw:220": {
           "name": "France",
@@ -3337,6 +3425,10 @@
           "name": "Tanzania (Tanganyika)",
           "capital": "Dodoma"
         },
+        "gw:511": {
+          "name": "Zanzibar",
+          "capital": "Zanzibar City"
+        },
         "gw:515": {
           "name": "Rwanda-Urundi",
           "capital": "Usumbura"
@@ -3404,6 +3496,10 @@
         "gw:585": {
           "name": "Reunion",
           "capital": "Saint-Denis"
+        },
+        "gw:590": {
+          "name": "Mauritius",
+          "capital": "Port Louis"
         },
         "gw:6": {
           "name": "Puerto Rico",
@@ -3585,6 +3681,10 @@
           "name": "Sarawak",
           "capital": "Kuching"
         },
+        "gw:827": {
+          "name": "Straits Settlements",
+          "capital": "Singapore City"
+        },
         "gw:835": {
           "name": "Brunei",
           "capital": "Bandar Seri Begawan"
@@ -3725,6 +3825,10 @@
         "gw:211": {
           "name": "Belgium",
           "capital": "Brussels"
+        },
+        "gw:212": {
+          "name": "Luxembourg",
+          "capital": "Luxembourg"
         },
         "gw:220": {
           "name": "France",
@@ -3954,6 +4058,10 @@
           "name": "Tanzania (Tanganyika)",
           "capital": "Dodoma"
         },
+        "gw:511": {
+          "name": "Zanzibar",
+          "capital": "Zanzibar City"
+        },
         "gw:515": {
           "name": "Rwanda-Urundi",
           "capital": "Usumbura"
@@ -4021,6 +4129,10 @@
         "gw:585": {
           "name": "Reunion",
           "capital": "Saint-Denis"
+        },
+        "gw:590": {
+          "name": "Mauritius",
+          "capital": "Port Louis"
         },
         "gw:6": {
           "name": "Puerto Rico",
@@ -4438,6 +4550,9 @@
         "ne:FRA": {
           "name": "France"
         },
+        "ne:FRO": {
+          "name": "Faroe Islands"
+        },
         "ne:GAB": {
           "name": "Gabon"
         },
@@ -4522,6 +4637,9 @@
         "ne:KAB": {
           "name": "Baykonur Cosmodrome"
         },
+        "ne:KAS": {
+          "name": "Siachen Glacier"
+        },
         "ne:KAZ": {
           "name": "Kazakhstan"
         },
@@ -4561,6 +4679,9 @@
         "ne:LTU": {
           "name": "Lithuania"
         },
+        "ne:LUX": {
+          "name": "Luxembourg"
+        },
         "ne:LVA": {
           "name": "Latvia"
         },
@@ -4596,6 +4717,9 @@
         },
         "ne:MRT": {
           "name": "Mauritania"
+        },
+        "ne:MUS": {
+          "name": "Mauritius"
         },
         "ne:MWI": {
           "name": "Malawi"
@@ -4777,6 +4901,9 @@
         "ne:VUT": {
           "name": "Vanuatu"
         },
+        "ne:WSM": {
+          "name": "Samoa"
+        },
         "ne:YEM": {
           "name": "Yemen"
         },
@@ -4830,8 +4957,8 @@
     },
     "historicalBorders": {
       "file": "CShapes-2.0.geojson",
-      "minFragmentKm2": 4000,
-      "minFragmentWidthPixels": 3,
+      "minFragmentKm2": 1500,
+      "minFragmentWidthPixels": 2,
       "fallback": {
         "GRL": "390",
         "SJM": "385",
@@ -4937,59 +5064,153 @@
       ]
     },
     "regions": {
-      "minAreaKm2": 40000,
-      "maxPerCountry": 30,
-      "minIslandKm2": 2500,
-      "islandSplitDegrees": 6,
-      "islandClusterDegrees": 1.5,
+      "minIslandKm2": 1500,
+      "islandSplitDegrees": 4,
+      "islandClusterDegrees": 1.0,
       "maxPartDistanceDegrees": 25
     },
-    "regionOverrides": {
-      "de": {
-        "minAreaKm2": 18000
+    "detail": {
+      "defaultKm2": 22000,
+      "mergeBelow": 0.5,
+      "splitAbove": 1.6,
+      "countries": {
+        "ja": 5000,
+        "rk": 5000,
+        "nk": 5000,
+        "tw": 4000,
+        "gl": 150000,
+        "is": 9000
       },
-      "fr": {
-        "minAreaKm2": 20000
-      },
-      "gb": {
-        "minAreaKm2": 15000
-      },
-      "it": {
-        "minAreaKm2": 18000
-      },
-      "es": {
-        "minAreaKm2": 25000
-      },
-      "pl": {
-        "minAreaKm2": 20000
-      },
-      "nl": {
-        "minAreaKm2": 10000
-      },
-      "be": {
-        "minAreaKm2": 10000
-      },
-      "ch": {
-        "minAreaKm2": 10000
-      },
-      "ro": {
-        "minAreaKm2": 20000
-      },
-      "hu": {
-        "minAreaKm2": 15000
-      },
-      "gr": {
-        "minAreaKm2": 15000
-      },
-      "tr": {
-        "minAreaKm2": 30000
-      },
-      "ru": {
-        "maxPerCountry": 60
-      },
-      "ja": {
-        "minAreaKm2": 20000
-      }
+      "zones": [
+        {
+          "name": "western and central Europe",
+          "west": -11,
+          "east": 32,
+          "south": 35,
+          "north": 61,
+          "km2": 5000
+        },
+        {
+          "name": "northern and eastern Europe",
+          "west": -25,
+          "east": 45,
+          "south": 35,
+          "north": 72,
+          "km2": 8000
+        },
+        {
+          "name": "Turkey, the Caucasus, the Levant",
+          "west": 25,
+          "east": 50,
+          "south": 29,
+          "north": 45,
+          "km2": 9000
+        },
+        {
+          "name": "North African coast",
+          "west": -18,
+          "east": 37,
+          "south": 27,
+          "north": 38,
+          "km2": 10000
+        },
+        {
+          "name": "Sahara",
+          "west": -18,
+          "east": 37,
+          "south": 15,
+          "north": 27,
+          "km2": 45000
+        },
+        {
+          "name": "East Asia",
+          "west": 100,
+          "east": 146,
+          "south": 18,
+          "north": 55,
+          "km2": 9000
+        },
+        {
+          "name": "South and Southeast Asia",
+          "west": 60,
+          "east": 130,
+          "south": -11,
+          "north": 30,
+          "km2": 15000
+        },
+        {
+          "name": "Middle East",
+          "west": 35,
+          "east": 63,
+          "south": 12,
+          "north": 40,
+          "km2": 15000
+        },
+        {
+          "name": "Central Asia",
+          "west": 45,
+          "east": 100,
+          "south": 30,
+          "north": 55,
+          "km2": 25000
+        },
+        {
+          "name": "Siberia and the Russian Far East",
+          "west": 45,
+          "east": 180,
+          "south": 45,
+          "north": 82,
+          "km2": 45000
+        },
+        {
+          "name": "United States and southern Canada",
+          "west": -130,
+          "east": -52,
+          "south": 24,
+          "north": 55,
+          "km2": 18000
+        },
+        {
+          "name": "Alaska and northern Canada",
+          "west": -180,
+          "east": -52,
+          "south": 55,
+          "north": 82,
+          "km2": 60000
+        },
+        {
+          "name": "Central America and the Caribbean",
+          "west": -118,
+          "east": -59,
+          "south": 7,
+          "north": 24,
+          "km2": 12000
+        },
+        {
+          "name": "South America",
+          "west": -82,
+          "east": -34,
+          "south": -26,
+          "north": 13,
+          "km2": 25000
+        },
+        {
+          "name": "Africa south of the Sahara",
+          "west": -18,
+          "east": 52,
+          "south": -26,
+          "north": 18,
+          "km2": 25000
+        },
+        {
+          "name": "northern Australia and Oceania",
+          "west": 110,
+          "east": 180,
+          "south": -26,
+          "north": -5,
+          "km2": 30000
+        }
+      ]
     },
     "sea": {
       "coastRadiusDegrees": 1.8,
