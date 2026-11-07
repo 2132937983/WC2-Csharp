@@ -181,10 +181,10 @@
         2273,
         2328,
         2329,
-        7345,
-        7468,
-        7625,
-        8066
+        7677,
+        7812,
+        7989,
+        8477
       ],
       "capitals": [
         1442,
@@ -565,10 +565,10 @@
         6237,
         6398,
         6399,
-        7357,
-        7499,
-        8492,
-        7676
+        7689,
+        7846,
+        8931,
+        8042
       ],
       "capitals": [
         2897,
@@ -989,9 +989,9 @@
         5329,
         5330,
         5331,
-        7777,
-        7441,
-        8249
+        8158,
+        7783,
+        8671
       ],
       "capitals": [
         3093,
@@ -1470,7 +1470,7 @@
         2921,
         2996,
         2997,
-        8230
+        8652
       ],
       "capitals": [
         2791
@@ -1644,10 +1644,10 @@
         689,
         707,
         708,
-        7334,
-        7338,
-        7608,
-        8451
+        7666,
+        7670,
+        7969,
+        8888
       ],
       "capitals": [
         707
@@ -1884,9 +1884,9 @@
         5078,
         6230,
         6373,
-        8119,
-        7879,
-        8035
+        8533,
+        8270,
+        8445
       ],
       "capitals": [
         3060,
@@ -2001,8 +2001,8 @@
       "defeatType": "LAND",
       "ai": true,
       "defeated": false,
-      "money": 1708,
-      "industry": 854,
+      "money": 1815,
+      "industry": 907,
       "taxRate": "1.2",
       "tech": 3,
       "techTurn": 0,
@@ -2833,125 +2833,197 @@
         6803,
         6804,
         6805,
-        6861,
-        6862,
-        6872,
-        6889,
-        6890,
-        6891,
-        6892,
-        6893,
-        6948,
-        6949,
-        6958,
+        6873,
+        6874,
+        6884,
+        6901,
+        6902,
+        6903,
+        6904,
+        6905,
+        6960,
         6961,
-        6962,
-        6977,
-        6984,
-        6985,
-        6986,
-        7009,
-        7018,
-        7019,
-        7020,
+        6970,
+        6973,
+        6974,
+        6989,
+        6996,
+        6997,
+        6998,
         7021,
-        7022,
-        7069,
-        7099,
-        7103,
-        7104,
-        7114,
-        7115,
-        7116,
-        7117,
-        7118,
+        7030,
+        7031,
+        7032,
+        7033,
+        7034,
         7119,
-        7126,
-        7133,
-        7138,
-        7139,
-        7140,
-        7141,
-        7142,
-        7143,
-        7144,
-        7145,
-        7146,
-        7147,
-        7148,
-        7163,
+        7149,
+        7153,
+        7154,
         7164,
         7165,
         7166,
         7167,
-        7170,
-        7173,
-        7174,
-        7175,
+        7168,
+        7169,
         7176,
-        7177,
-        7178,
+        7183,
+        7188,
+        7189,
+        7190,
+        7191,
+        7192,
         7193,
         7194,
         7195,
         7196,
-        7199,
-        7200,
-        7201,
-        7202,
-        7203,
-        7204,
-        7205,
-        7206,
-        7210,
-        7211,
+        7197,
+        7198,
+        7213,
+        7214,
+        7215,
+        7216,
+        7217,
+        7220,
+        7223,
+        7224,
+        7225,
         7226,
         7227,
         7228,
-        7229,
-        7232,
-        7233,
-        7234,
+        7243,
+        7244,
+        7245,
         7246,
-        7247,
-        7248,
         7249,
         7250,
-        7264,
-        7275,
+        7251,
+        7252,
+        7253,
+        7254,
+        7255,
+        7256,
+        7260,
+        7261,
         7276,
         7277,
         7278,
         7279,
-        7292,
-        7293,
-        7294,
-        7295,
+        7282,
+        7283,
+        7284,
         7296,
+        7297,
         7298,
         7299,
         7300,
-        7301,
-        7304,
-        7305,
-        7306,
-        7312,
-        7313,
-        7315,
-        7317,
+        7314,
+        7325,
+        7326,
+        7327,
+        7328,
+        7329,
+        7343,
+        7344,
+        7345,
+        7346,
+        7347,
+        7349,
+        7350,
+        7351,
+        7352,
+        7355,
         7356,
+        7357,
         7358,
-        7359,
-        7360,
-        7363,
-        7364,
-        7365,
+        7366,
+        7367,
+        7368,
+        7369,
+        7370,
+        7371,
         7372,
         7373,
-        7394,
-        7755,
-        7587,
-        8218
+        7374,
+        7375,
+        7376,
+        7377,
+        7378,
+        7379,
+        7380,
+        7381,
+        7382,
+        7383,
+        7384,
+        7385,
+        7386,
+        7387,
+        7388,
+        7389,
+        7390,
+        7398,
+        7399,
+        7409,
+        7448,
+        7449,
+        7450,
+        7451,
+        7452,
+        7453,
+        7454,
+        7455,
+        7468,
+        7513,
+        7522,
+        7523,
+        7524,
+        7525,
+        7526,
+        7527,
+        7528,
+        7532,
+        7533,
+        7534,
+        7535,
+        7536,
+        7576,
+        7590,
+        7591,
+        7592,
+        7593,
+        7602,
+        7603,
+        7604,
+        7605,
+        7610,
+        7611,
+        7612,
+        7613,
+        7614,
+        7615,
+        7616,
+        7617,
+        7618,
+        7629,
+        7630,
+        7631,
+        7632,
+        7633,
+        7634,
+        7647,
+        7688,
+        7690,
+        7691,
+        7692,
+        7695,
+        7696,
+        7697,
+        7704,
+        7705,
+        7736,
+        8724,
+        8135,
+        7946
       ],
       "capitals": [
         1733,
@@ -2985,14 +3057,17 @@
         6433,
         6665,
         6805,
-        6977,
-        7103,
-        7119,
-        7141,
-        7226,
-        7264,
-        7304,
-        7312
+        6989,
+        7153,
+        7169,
+        7191,
+        7276,
+        7314,
+        7355,
+        7409,
+        7513,
+        7534,
+        7611
       ],
       "cardRound": [
         0,
@@ -3764,41 +3839,41 @@
         6548,
         6570,
         6591,
-        6956,
-        6978,
-        7070,
-        7071,
-        7105,
-        7113,
-        7122,
-        7124,
-        7125,
-        7127,
-        7128,
-        7132,
+        6968,
+        6990,
+        7120,
+        7121,
+        7155,
+        7163,
         7172,
-        7179,
-        7180,
-        7188,
-        7189,
-        7192,
-        7207,
-        7212,
-        7223,
+        7174,
+        7175,
+        7177,
+        7178,
+        7182,
+        7222,
+        7229,
         7230,
-        7231,
-        7235,
-        7240,
-        7254,
-        7255,
-        7256,
-        7261,
+        7238,
+        7239,
+        7242,
+        7257,
+        7262,
+        7273,
         7280,
-        7291,
-        7303,
-        8180,
-        8398,
-        7965
+        7281,
+        7285,
+        7290,
+        7304,
+        7305,
+        7306,
+        7311,
+        7330,
+        7342,
+        7354,
+        8600,
+        8829,
+        8371
       ],
       "capitals": [
         2148,
@@ -3824,8 +3899,8 @@
         6062,
         6079,
         6410,
-        7132,
-        7180
+        7182,
+        7230
       ],
       "cardRound": [
         0,
@@ -4428,19 +4503,19 @@
         6003,
         6004,
         6041,
-        7339,
-        7340,
-        7341,
-        7342,
-        7343,
-        7361,
-        7362,
-        7367,
-        7371,
-        7393,
-        8322,
-        8416,
-        7568
+        7671,
+        7672,
+        7673,
+        7674,
+        7675,
+        7693,
+        7694,
+        7699,
+        7703,
+        7735,
+        8749,
+        8850,
+        7924
       ],
       "capitals": [
         3247,
@@ -5082,20 +5157,20 @@
         2334,
         2335,
         2336,
-        7322,
-        7324,
-        7325,
-        7326,
-        7329,
-        7330,
-        7331,
-        7335,
-        7337,
-        7346,
-        7391,
-        8418,
-        8046,
-        8095
+        7654,
+        7656,
+        7657,
+        7658,
+        7661,
+        7662,
+        7663,
+        7667,
+        7669,
+        7678,
+        7732,
+        8852,
+        8456,
+        8508
       ],
       "capitals": [
         1145
@@ -5209,8 +5284,8 @@
       "defeatType": "LAND",
       "ai": true,
       "defeated": false,
-      "money": 388,
-      "industry": 194,
+      "money": 559,
+      "industry": 279,
       "taxRate": "1.2",
       "tech": 3,
       "techTurn": 0,
@@ -5284,18 +5359,18 @@
         6848,
         6849,
         6850,
-        6894,
-        6895,
-        6896,
-        6897,
-        6898,
-        6899,
-        6900,
-        6901,
-        6902,
-        6903,
-        6904,
-        6905,
+        6851,
+        6852,
+        6853,
+        6854,
+        6855,
+        6856,
+        6857,
+        6858,
+        6859,
+        6860,
+        6861,
+        6862,
         6906,
         6907,
         6908,
@@ -5329,18 +5404,18 @@
         6936,
         6937,
         6938,
-        7023,
-        7024,
-        7025,
-        7026,
-        7027,
-        7028,
-        7029,
-        7030,
-        7031,
-        7032,
-        7033,
-        7034,
+        6939,
+        6940,
+        6941,
+        6942,
+        6943,
+        6944,
+        6945,
+        6946,
+        6947,
+        6948,
+        6949,
+        6950,
         7035,
         7036,
         7037,
@@ -5375,14 +5450,136 @@
         7066,
         7067,
         7068,
-        7381,
-        7387,
-        8059,
-        7635,
-        8490
+        7069,
+        7070,
+        7071,
+        7072,
+        7073,
+        7074,
+        7075,
+        7076,
+        7077,
+        7078,
+        7079,
+        7080,
+        7081,
+        7082,
+        7083,
+        7084,
+        7085,
+        7086,
+        7087,
+        7088,
+        7089,
+        7090,
+        7091,
+        7092,
+        7093,
+        7094,
+        7095,
+        7096,
+        7097,
+        7098,
+        7099,
+        7100,
+        7101,
+        7102,
+        7103,
+        7104,
+        7105,
+        7106,
+        7107,
+        7108,
+        7109,
+        7110,
+        7111,
+        7112,
+        7113,
+        7114,
+        7115,
+        7116,
+        7117,
+        7118,
+        7414,
+        7415,
+        7416,
+        7417,
+        7418,
+        7419,
+        7420,
+        7421,
+        7422,
+        7423,
+        7424,
+        7425,
+        7426,
+        7427,
+        7428,
+        7429,
+        7430,
+        7431,
+        7432,
+        7433,
+        7434,
+        7435,
+        7436,
+        7437,
+        7438,
+        7439,
+        7440,
+        7441,
+        7442,
+        7443,
+        7444,
+        7445,
+        7482,
+        7483,
+        7484,
+        7485,
+        7486,
+        7487,
+        7488,
+        7489,
+        7490,
+        7491,
+        7492,
+        7493,
+        7494,
+        7495,
+        7496,
+        7497,
+        7498,
+        7499,
+        7500,
+        7501,
+        7502,
+        7503,
+        7504,
+        7505,
+        7506,
+        7507,
+        7508,
+        7568,
+        7569,
+        7570,
+        7571,
+        7572,
+        7573,
+        7574,
+        7575,
+        7607,
+        7608,
+        7713,
+        7719,
+        7723,
+        8190,
+        8469,
+        8728
       ],
       "capitals": [
-        6742
+        6742,
+        7503,
+        7570
       ],
       "cardRound": [
         0,
@@ -5631,25 +5828,25 @@
         6760,
         6761,
         6762,
-        7344,
-        7374,
-        7375,
-        7376,
-        7377,
-        7378,
-        7379,
-        7380,
-        7382,
-        7383,
-        7384,
-        7385,
-        7386,
-        7388,
-        7389,
-        7390,
-        8279,
-        7496,
-        8232
+        7676,
+        7706,
+        7707,
+        7708,
+        7709,
+        7710,
+        7711,
+        7712,
+        7714,
+        7715,
+        7716,
+        7717,
+        7718,
+        7720,
+        7721,
+        7722,
+        8703,
+        7841,
+        8655
       ],
       "capitals": [
         1604,
@@ -6051,11 +6248,11 @@
         855,
         856,
         881,
-        7333,
-        7336,
-        8226,
-        8460,
-        8244
+        7665,
+        7668,
+        8648,
+        8897,
+        8666
       ],
       "capitals": [
         709
@@ -6212,12 +6409,12 @@
         1207,
         1208,
         1220,
-        7319,
-        7323,
-        7327,
-        7580,
-        8394,
-        7555
+        7651,
+        7655,
+        7659,
+        7937,
+        8825,
+        7911
       ],
       "capitals": [
         394,
@@ -6369,9 +6566,9 @@
         3479,
         3815,
         3816,
-        7980,
-        8224,
-        7767
+        8387,
+        8646,
+        8147
       ],
       "capitals": [
         3440
@@ -6559,9 +6756,9 @@
         3003,
         3010,
         3031,
-        7501,
-        8210,
-        7719
+        7848,
+        8632,
+        8088
       ],
       "capitals": [
         2394,
@@ -6825,9 +7022,9 @@
         5462,
         5463,
         5464,
-        7852,
-        8045,
-        8430
+        8241,
+        8455,
+        8864
       ],
       "capitals": [
         5375
@@ -7502,12 +7699,12 @@
         5019,
         5020,
         5021,
-        7352,
-        7353,
-        7354,
-        7514,
-        8163,
-        8161
+        7684,
+        7685,
+        7686,
+        7862,
+        8581,
+        8579
       ],
       "capitals": [],
       "cardRound": [
@@ -8828,18 +9025,18 @@
         3396,
         3409,
         3410,
-        7320,
-        7321,
-        7328,
-        7332,
-        7347,
-        7348,
-        7349,
-        7350,
-        7392,
-        8089,
-        7786,
-        7711
+        7652,
+        7653,
+        7660,
+        7664,
+        7679,
+        7680,
+        7681,
+        7682,
+        7733,
+        8502,
+        8167,
+        8080
       ],
       "capitals": [
         679,
@@ -9011,72 +9208,72 @@
         6767,
         6768,
         6773,
-        6856,
-        6857,
-        6873,
-        6874,
-        6875,
-        6876,
-        6877,
-        6878,
-        6879,
-        6880,
-        6881,
-        6882,
-        6883,
-        6884,
+        6868,
+        6869,
         6885,
         6886,
-        6942,
-        6943,
-        6944,
-        6945,
-        6946,
-        6947,
-        6950,
-        6987,
-        6988,
-        6989,
-        7004,
-        7005,
-        7006,
-        7007,
-        7008,
-        7010,
-        7011,
-        7012,
-        7013,
-        7014,
-        7015,
+        6887,
+        6888,
+        6889,
+        6890,
+        6891,
+        6892,
+        6893,
+        6894,
+        6895,
+        6896,
+        6897,
+        6898,
+        6954,
+        6955,
+        6956,
+        6957,
+        6958,
+        6959,
+        6962,
+        6999,
+        7000,
+        7001,
         7016,
         7017,
-        7072,
-        7073,
-        7074,
-        7075,
-        7106,
-        7107,
-        7108,
-        7109,
-        7110,
-        7111,
-        7112,
-        7129,
-        7130,
-        7131,
-        7135,
-        7136,
-        7137,
-        7251,
-        7252,
-        7253,
-        7257,
-        7258,
-        7259,
+        7018,
+        7019,
+        7020,
+        7022,
+        7023,
+        7024,
+        7025,
+        7026,
+        7027,
+        7028,
+        7029,
+        7122,
+        7123,
+        7124,
+        7125,
+        7156,
+        7157,
+        7158,
+        7159,
+        7160,
+        7161,
+        7162,
+        7179,
+        7180,
+        7181,
+        7185,
+        7186,
+        7187,
+        7301,
+        7302,
+        7303,
+        7307,
+        7308,
         7309,
-        8145,
-        8052,
-        8277
+        7363,
+        8561,
+        8462,
+        8701
       ],
       "capitals": [
         3334,
@@ -9084,7 +9281,7 @@
         5721,
         6741,
         6773,
-        7309
+        7363
       ],
       "cardRound": [
         0,
@@ -9269,9 +9466,9 @@
         1171,
         1172,
         1179,
-        7691,
-        8141,
-        7509
+        8058,
+        8556,
+        7856
       ],
       "capitals": [
         734
@@ -9643,9 +9840,9 @@
         3522,
         3523,
         3565,
-        7351,
-        8383,
-        7602
+        7683,
+        8813,
+        7962
       ],
       "capitals": [
         3026,
@@ -65593,8 +65790,48 @@
       "units": []
     },
     {
+      "id": 6851,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6852,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6853,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6854,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6855,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
       "id": 6856,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65602,7 +65839,44 @@
     },
     {
       "id": 6857,
-      "owner": "pt",
+      "owner": "au",
+      "construction": "AIRPORT",
+      "level": 1,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 0,
+          "country": "au",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 6858,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6859,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6860,
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65610,7 +65884,7 @@
     },
     {
       "id": 6861,
-      "owner": "gb",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65618,15 +65892,23 @@
     },
     {
       "id": 6862,
-      "owner": "gb",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
       "units": []
     },
     {
-      "id": 6872,
-      "owner": "gb",
+      "id": 6868,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6869,
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65634,7 +65916,7 @@
     },
     {
       "id": 6873,
-      "owner": "pt",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65642,79 +65924,7 @@
     },
     {
       "id": 6874,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6875,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6876,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6877,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6878,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6879,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6880,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6881,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6882,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6883,
-      "owner": "pt",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65722,7 +65932,7 @@
     },
     {
       "id": 6884,
-      "owner": "pt",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65745,8 +65955,24 @@
       "units": []
     },
     {
+      "id": 6887,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6888,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
       "id": 6889,
-      "owner": "gb",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65754,7 +65980,7 @@
     },
     {
       "id": 6890,
-      "owner": "gb",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65762,7 +65988,7 @@
     },
     {
       "id": 6891,
-      "owner": "gb",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65770,7 +65996,7 @@
     },
     {
       "id": 6892,
-      "owner": "gb",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65778,7 +66004,7 @@
     },
     {
       "id": 6893,
-      "owner": "gb",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65786,7 +66012,7 @@
     },
     {
       "id": 6894,
-      "owner": "au",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65794,7 +66020,7 @@
     },
     {
       "id": 6895,
-      "owner": "au",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65802,7 +66028,7 @@
     },
     {
       "id": 6896,
-      "owner": "au",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65810,7 +66036,7 @@
     },
     {
       "id": 6897,
-      "owner": "au",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65818,23 +66044,7 @@
     },
     {
       "id": 6898,
-      "owner": "au",
-      "construction": "AIRPORT",
-      "level": 1,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6899,
-      "owner": "au",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6900,
-      "owner": "au",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65842,7 +66052,7 @@
     },
     {
       "id": 6901,
-      "owner": "au",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65850,7 +66060,7 @@
     },
     {
       "id": 6902,
-      "owner": "au",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65858,7 +66068,7 @@
     },
     {
       "id": 6903,
-      "owner": "au",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65866,7 +66076,7 @@
     },
     {
       "id": 6904,
-      "owner": "au",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65874,7 +66084,7 @@
     },
     {
       "id": 6905,
-      "owner": "au",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -65915,8 +66125,8 @@
     {
       "id": 6910,
       "owner": "au",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
+      "construction": "AIRPORT",
+      "level": 1,
       "installation": "NO_INSTALLATION",
       "units": []
     },
@@ -66145,8 +66355,32 @@
       "units": []
     },
     {
+      "id": 6939,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6940,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6941,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
       "id": 6942,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66154,7 +66388,7 @@
     },
     {
       "id": 6943,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66162,7 +66396,7 @@
     },
     {
       "id": 6944,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66170,7 +66404,7 @@
     },
     {
       "id": 6945,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66178,7 +66412,7 @@
     },
     {
       "id": 6946,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66186,6 +66420,78 @@
     },
     {
       "id": 6947,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6948,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6949,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6950,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6954,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6955,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6956,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6957,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6958,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6959,
       "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -66206,39 +66512,7 @@
       ]
     },
     {
-      "id": 6948,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6949,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6950,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6956,
-      "owner": "fr",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 6958,
+      "id": 6960,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -66255,6 +66529,22 @@
     },
     {
       "id": 6962,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6968,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6970,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -66262,7 +66552,23 @@
       "units": []
     },
     {
-      "id": 6977,
+      "id": 6973,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6974,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 6989,
       "owner": "gb",
       "construction": "CITY",
       "level": 2,
@@ -66319,7 +66625,7 @@
       ]
     },
     {
-      "id": 6978,
+      "id": 6990,
       "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -66327,7 +66633,7 @@
       "units": []
     },
     {
-      "id": 6984,
+      "id": 6996,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -66335,7 +66641,7 @@
       "units": []
     },
     {
-      "id": 6985,
+      "id": 6997,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -66343,7 +66649,7 @@
       "units": []
     },
     {
-      "id": 6986,
+      "id": 6998,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -66351,7 +66657,7 @@
       "units": []
     },
     {
-      "id": 6987,
+      "id": 6999,
       "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -66359,7 +66665,7 @@
       "units": []
     },
     {
-      "id": 6988,
+      "id": 7000,
       "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -66367,103 +66673,7 @@
       "units": []
     },
     {
-      "id": 6989,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7004,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7005,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7006,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7007,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7008,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7009,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7010,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7011,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7012,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7013,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7014,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7015,
+      "id": 7001,
       "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -66488,7 +66698,7 @@
     },
     {
       "id": 7018,
-      "owner": "gb",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66496,7 +66706,7 @@
     },
     {
       "id": 7019,
-      "owner": "gb",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66504,7 +66714,7 @@
     },
     {
       "id": 7020,
-      "owner": "gb",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66520,7 +66730,7 @@
     },
     {
       "id": 7022,
-      "owner": "gb",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66528,7 +66738,7 @@
     },
     {
       "id": 7023,
-      "owner": "au",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66536,7 +66746,7 @@
     },
     {
       "id": 7024,
-      "owner": "au",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66544,7 +66754,7 @@
     },
     {
       "id": 7025,
-      "owner": "au",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66552,7 +66762,7 @@
     },
     {
       "id": 7026,
-      "owner": "au",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66560,7 +66770,7 @@
     },
     {
       "id": 7027,
-      "owner": "au",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66568,7 +66778,7 @@
     },
     {
       "id": 7028,
-      "owner": "au",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66576,7 +66786,7 @@
     },
     {
       "id": 7029,
-      "owner": "au",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66584,7 +66794,7 @@
     },
     {
       "id": 7030,
-      "owner": "au",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66592,7 +66802,7 @@
     },
     {
       "id": 7031,
-      "owner": "au",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66600,7 +66810,7 @@
     },
     {
       "id": 7032,
-      "owner": "au",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66608,7 +66818,7 @@
     },
     {
       "id": 7033,
-      "owner": "au",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66616,7 +66826,7 @@
     },
     {
       "id": 7034,
-      "owner": "au",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66896,7 +67106,7 @@
     },
     {
       "id": 7069,
-      "owner": "gb",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66904,7 +67114,7 @@
     },
     {
       "id": 7070,
-      "owner": "fr",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66912,7 +67122,7 @@
     },
     {
       "id": 7071,
-      "owner": "fr",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66920,7 +67130,7 @@
     },
     {
       "id": 7072,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66928,7 +67138,7 @@
     },
     {
       "id": 7073,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66936,7 +67146,7 @@
     },
     {
       "id": 7074,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66944,7 +67154,191 @@
     },
     {
       "id": 7075,
-      "owner": "pt",
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7076,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7077,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7078,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7079,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7080,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7081,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7082,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7083,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7084,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7085,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7086,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7087,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7088,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7089,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7090,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7091,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7092,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7093,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7094,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7095,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7096,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7097,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7098,
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66952,7 +67346,31 @@
     },
     {
       "id": 7099,
-      "owner": "gb",
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7100,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7101,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7102,
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -66960,64 +67378,15 @@
     },
     {
       "id": 7103,
-      "owner": "gb",
-      "construction": "CITY",
-      "level": 2,
-      "installation": "FORT",
-      "units": [
-        {
-          "type": 0,
-          "country": "gb",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        },
-        {
-          "type": 0,
-          "country": "gb",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        },
-        {
-          "type": 4,
-          "country": "gb",
-          "hp": 110,
-          "maxHp": 110,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        },
-        {
-          "type": 0,
-          "country": "gb",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
     },
     {
       "id": 7104,
-      "owner": "gb",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67025,7 +67394,7 @@
     },
     {
       "id": 7105,
-      "owner": "fr",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67033,7 +67402,7 @@
     },
     {
       "id": 7106,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67041,7 +67410,7 @@
     },
     {
       "id": 7107,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67049,7 +67418,7 @@
     },
     {
       "id": 7108,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67057,7 +67426,7 @@
     },
     {
       "id": 7109,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67065,7 +67434,7 @@
     },
     {
       "id": 7110,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67073,7 +67442,7 @@
     },
     {
       "id": 7111,
-      "owner": "pt",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67081,15 +67450,28 @@
     },
     {
       "id": 7112,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
+      "owner": "au",
+      "construction": "AIRPORT",
+      "level": 1,
       "installation": "NO_INSTALLATION",
-      "units": []
+      "units": [
+        {
+          "type": 0,
+          "country": "au",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        }
+      ]
     },
     {
       "id": 7113,
-      "owner": "fr",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67097,7 +67479,7 @@
     },
     {
       "id": 7114,
-      "owner": "gb",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67105,7 +67487,7 @@
     },
     {
       "id": 7115,
-      "owner": "gb",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67113,7 +67495,7 @@
     },
     {
       "id": 7116,
-      "owner": "gb",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67121,7 +67503,7 @@
     },
     {
       "id": 7117,
-      "owner": "gb",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67129,7 +67511,7 @@
     },
     {
       "id": 7118,
-      "owner": "gb",
+      "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67138,63 +67520,38 @@
     {
       "id": 7119,
       "owner": "gb",
-      "construction": "CITY",
-      "level": 2,
-      "installation": "FORT",
-      "units": [
-        {
-          "type": 0,
-          "country": "gb",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        },
-        {
-          "type": 0,
-          "country": "gb",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        },
-        {
-          "type": 4,
-          "country": "gb",
-          "hp": 110,
-          "maxHp": 110,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        },
-        {
-          "type": 0,
-          "country": "gb",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7120,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7121,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
     },
     {
       "id": 7122,
-      "owner": "fr",
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7123,
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67202,7 +67559,7 @@
     },
     {
       "id": 7124,
-      "owner": "fr",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67210,14 +67567,14 @@
     },
     {
       "id": 7125,
-      "owner": "fr",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
       "units": []
     },
     {
-      "id": 7126,
+      "id": 7149,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67225,160 +67582,7 @@
       "units": []
     },
     {
-      "id": 7127,
-      "owner": "fr",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7128,
-      "owner": "fr",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7129,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7130,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7131,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7132,
-      "owner": "fr",
-      "construction": "CITY",
-      "level": 2,
-      "installation": "FORT",
-      "units": [
-        {
-          "type": 0,
-          "country": "fr",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 4,
-          "active": false
-        },
-        {
-          "type": 0,
-          "country": "fr",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 4,
-          "active": false
-        },
-        {
-          "type": 4,
-          "country": "fr",
-          "hp": 110,
-          "maxHp": 110,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 4,
-          "active": false
-        },
-        {
-          "type": 0,
-          "country": "fr",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 4,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 7133,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7135,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7136,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7137,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7138,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7139,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7140,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7141,
+      "id": 7153,
       "owner": "gb",
       "construction": "CITY",
       "level": 2,
@@ -67393,7 +67597,7 @@
           "level": 1,
           "exp": 0,
           "morale": 0,
-          "cards": 4,
+          "cards": 0,
           "active": false
         },
         {
@@ -67405,7 +67609,7 @@
           "level": 1,
           "exp": 0,
           "morale": 0,
-          "cards": 4,
+          "cards": 0,
           "active": false
         },
         {
@@ -67417,7 +67621,7 @@
           "level": 1,
           "exp": 0,
           "morale": 0,
-          "cards": 4,
+          "cards": 0,
           "active": false
         },
         {
@@ -67429,13 +67633,13 @@
           "level": 1,
           "exp": 0,
           "morale": 0,
-          "cards": 4,
+          "cards": 0,
           "active": false
         }
       ]
     },
     {
-      "id": 7142,
+      "id": 7154,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67443,48 +67647,64 @@
       "units": []
     },
     {
-      "id": 7143,
-      "owner": "gb",
+      "id": 7155,
+      "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
       "units": []
     },
     {
-      "id": 7144,
-      "owner": "gb",
+      "id": 7156,
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
       "units": []
     },
     {
-      "id": 7145,
-      "owner": "gb",
+      "id": 7157,
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
       "units": []
     },
     {
-      "id": 7146,
-      "owner": "gb",
+      "id": 7158,
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
       "units": []
     },
     {
-      "id": 7147,
-      "owner": "gb",
+      "id": 7159,
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
       "units": []
     },
     {
-      "id": 7148,
-      "owner": "gb",
+      "id": 7160,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7161,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7162,
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67492,7 +67712,7 @@
     },
     {
       "id": 7163,
-      "owner": "gb",
+      "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67531,12 +67751,69 @@
       "units": []
     },
     {
-      "id": 7170,
+      "id": 7168,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
       "units": []
+    },
+    {
+      "id": 7169,
+      "owner": "gb",
+      "construction": "CITY",
+      "level": 2,
+      "installation": "FORT",
+      "units": [
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 4,
+          "country": "gb",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
     },
     {
       "id": 7172,
@@ -67547,16 +67824,8 @@
       "units": []
     },
     {
-      "id": 7173,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
       "id": 7174,
-      "owner": "gb",
+      "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67564,7 +67833,7 @@
     },
     {
       "id": 7175,
-      "owner": "gb",
+      "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67580,22 +67849,6 @@
     },
     {
       "id": 7177,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7178,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7179,
       "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67603,7 +67856,39 @@
       "units": []
     },
     {
+      "id": 7178,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7179,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
       "id": 7180,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7181,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7182,
       "owner": "fr",
       "construction": "CITY",
       "level": 2,
@@ -67618,7 +67903,7 @@
           "level": 1,
           "exp": 0,
           "morale": 0,
-          "cards": 0,
+          "cards": 4,
           "active": false
         },
         {
@@ -67630,7 +67915,7 @@
           "level": 1,
           "exp": 0,
           "morale": 0,
-          "cards": 0,
+          "cards": 4,
           "active": false
         },
         {
@@ -67642,7 +67927,7 @@
           "level": 1,
           "exp": 0,
           "morale": 0,
-          "cards": 0,
+          "cards": 4,
           "active": false
         },
         {
@@ -67654,14 +67939,46 @@
           "level": 1,
           "exp": 0,
           "morale": 0,
-          "cards": 0,
+          "cards": 4,
           "active": false
         }
       ]
     },
     {
+      "id": 7183,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7185,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7186,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7187,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
       "id": 7188,
-      "owner": "fr",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67669,15 +67986,80 @@
     },
     {
       "id": 7189,
-      "owner": "fr",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
       "units": []
     },
     {
+      "id": 7190,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7191,
+      "owner": "gb",
+      "construction": "CITY",
+      "level": 2,
+      "installation": "FORT",
+      "units": [
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        },
+        {
+          "type": 4,
+          "country": "gb",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        }
+      ]
+    },
+    {
       "id": 7192,
-      "owner": "fr",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67716,7 +68098,7 @@
       "units": []
     },
     {
-      "id": 7199,
+      "id": 7197,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67724,7 +68106,7 @@
       "units": []
     },
     {
-      "id": 7200,
+      "id": 7198,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67732,7 +68114,7 @@
       "units": []
     },
     {
-      "id": 7201,
+      "id": 7213,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67740,7 +68122,7 @@
       "units": []
     },
     {
-      "id": 7202,
+      "id": 7214,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67748,7 +68130,7 @@
       "units": []
     },
     {
-      "id": 7203,
+      "id": 7215,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67756,7 +68138,7 @@
       "units": []
     },
     {
-      "id": 7204,
+      "id": 7216,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67764,7 +68146,7 @@
       "units": []
     },
     {
-      "id": 7205,
+      "id": 7217,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67772,7 +68154,7 @@
       "units": []
     },
     {
-      "id": 7206,
+      "id": 7220,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67780,31 +68162,7 @@
       "units": []
     },
     {
-      "id": 7207,
-      "owner": "fr",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7210,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7211,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7212,
+      "id": 7222,
       "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67813,7 +68171,23 @@
     },
     {
       "id": 7223,
-      "owner": "fr",
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7224,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7225,
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67822,59 +68196,10 @@
     {
       "id": 7226,
       "owner": "gb",
-      "construction": "CITY",
-      "level": 2,
-      "installation": "FORT",
-      "units": [
-        {
-          "type": 0,
-          "country": "gb",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 4,
-          "active": false
-        },
-        {
-          "type": 0,
-          "country": "gb",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 4,
-          "active": false
-        },
-        {
-          "type": 4,
-          "country": "gb",
-          "hp": 110,
-          "maxHp": 110,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 4,
-          "active": false
-        },
-        {
-          "type": 0,
-          "country": "gb",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 4,
-          "active": false
-        }
-      ]
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
     },
     {
       "id": 7227,
@@ -67894,7 +68219,7 @@
     },
     {
       "id": 7229,
-      "owner": "gb",
+      "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67903,13 +68228,62 @@
     {
       "id": 7230,
       "owner": "fr",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
+      "construction": "CITY",
+      "level": 2,
+      "installation": "FORT",
+      "units": [
+        {
+          "type": 0,
+          "country": "fr",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "fr",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 4,
+          "country": "fr",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "fr",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
     },
     {
-      "id": 7231,
+      "id": 7238,
       "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67917,31 +68291,7 @@
       "units": []
     },
     {
-      "id": 7232,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7233,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7234,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7235,
+      "id": 7239,
       "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67949,8 +68299,32 @@
       "units": []
     },
     {
-      "id": 7240,
+      "id": 7242,
       "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7243,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7244,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7245,
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -67958,22 +68332,6 @@
     },
     {
       "id": 7246,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7247,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7248,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -67998,7 +68356,7 @@
     },
     {
       "id": 7251,
-      "owner": "pt",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -68006,7 +68364,7 @@
     },
     {
       "id": 7252,
-      "owner": "pt",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -68014,7 +68372,7 @@
     },
     {
       "id": 7253,
-      "owner": "pt",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -68022,7 +68380,7 @@
     },
     {
       "id": 7254,
-      "owner": "fr",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -68030,7 +68388,7 @@
     },
     {
       "id": 7255,
-      "owner": "fr",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -68038,7 +68396,7 @@
     },
     {
       "id": 7256,
-      "owner": "fr",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -68046,30 +68404,6 @@
     },
     {
       "id": 7257,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7258,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7259,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7261,
       "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -68077,7 +68411,39 @@
       "units": []
     },
     {
-      "id": 7264,
+      "id": 7260,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7261,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7262,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7273,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7276,
       "owner": "gb",
       "construction": "CITY",
       "level": 2,
@@ -68092,7 +68458,7 @@
           "level": 1,
           "exp": 0,
           "morale": 0,
-          "cards": 0,
+          "cards": 4,
           "active": false
         },
         {
@@ -68104,7 +68470,7 @@
           "level": 1,
           "exp": 0,
           "morale": 0,
-          "cards": 0,
+          "cards": 4,
           "active": false
         },
         {
@@ -68116,7 +68482,7 @@
           "level": 1,
           "exp": 0,
           "morale": 0,
-          "cards": 0,
+          "cards": 4,
           "active": false
         },
         {
@@ -68128,26 +68494,10 @@
           "level": 1,
           "exp": 0,
           "morale": 0,
-          "cards": 0,
+          "cards": 4,
           "active": false
         }
       ]
-    },
-    {
-      "id": 7275,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7276,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
     },
     {
       "id": 7277,
@@ -68182,7 +68532,7 @@
       "units": []
     },
     {
-      "id": 7291,
+      "id": 7281,
       "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -68190,7 +68540,7 @@
       "units": []
     },
     {
-      "id": 7292,
+      "id": 7282,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -68198,7 +68548,7 @@
       "units": []
     },
     {
-      "id": 7293,
+      "id": 7283,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -68206,7 +68556,7 @@
       "units": []
     },
     {
-      "id": 7294,
+      "id": 7284,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -68214,8 +68564,16 @@
       "units": []
     },
     {
-      "id": 7295,
-      "owner": "gb",
+      "id": 7285,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7290,
+      "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -68223,6 +68581,14 @@
     },
     {
       "id": 7296,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7297,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -68255,7 +68621,15 @@
     },
     {
       "id": 7301,
-      "owner": "gb",
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7302,
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -68263,7 +68637,7 @@
     },
     {
       "id": 7303,
-      "owner": "fr",
+      "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -68271,6 +68645,62 @@
     },
     {
       "id": 7304,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7305,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7306,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7307,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7308,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7309,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7311,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7314,
       "owner": "gb",
       "construction": "CITY",
       "level": 2,
@@ -68327,7 +68757,7 @@
       ]
     },
     {
-      "id": 7305,
+      "id": 7325,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -68335,7 +68765,7 @@
       "units": []
     },
     {
-      "id": 7306,
+      "id": 7326,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -68343,7 +68773,208 @@
       "units": []
     },
     {
-      "id": 7309,
+      "id": 7327,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7328,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7329,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7330,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7342,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7343,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7344,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7345,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7346,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7347,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7349,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7350,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7351,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7352,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7354,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7355,
+      "owner": "gb",
+      "construction": "CITY",
+      "level": 2,
+      "installation": "FORT",
+      "units": [
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 4,
+          "country": "gb",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7356,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7357,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7358,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7363,
       "owner": "pt",
       "construction": "CITY",
       "level": 2,
@@ -68388,448 +69019,7 @@
       ]
     },
     {
-      "id": 7312,
-      "owner": "gb",
-      "construction": "CITY",
-      "level": 2,
-      "installation": "FORT",
-      "units": [
-        {
-          "type": 0,
-          "country": "gb",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        },
-        {
-          "type": 0,
-          "country": "gb",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        },
-        {
-          "type": 4,
-          "country": "gb",
-          "hp": 110,
-          "maxHp": 110,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        },
-        {
-          "type": 0,
-          "country": "gb",
-          "hp": 70,
-          "maxHp": 70,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 7313,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7315,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7317,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7319,
-      "owner": "dk",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7320,
-      "owner": "ru",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7321,
-      "owner": "ru",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7322,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7323,
-      "owner": "dk",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7324,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7325,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7326,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7327,
-      "owner": "dk",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7328,
-      "owner": "ru",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7329,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7330,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7331,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7332,
-      "owner": "ru",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7333,
-      "owner": "no",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7334,
-      "owner": "fl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7335,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7336,
-      "owner": "no",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7337,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7338,
-      "owner": "fl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7339,
-      "owner": "am",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7340,
-      "owner": "am",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7341,
-      "owner": "am",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7342,
-      "owner": "am",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7343,
-      "owner": "am",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7344,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7345,
-      "owner": "de",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7346,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7347,
-      "owner": "ru",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7348,
-      "owner": "ru",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7349,
-      "owner": "ru",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7350,
-      "owner": "ru",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7351,
-      "owner": "tr",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7352,
-      "owner": "tw",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7353,
-      "owner": "tw",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7354,
-      "owner": "tw",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7356,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7357,
-      "owner": "it",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7358,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7359,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7360,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7361,
-      "owner": "am",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7362,
-      "owner": "am",
-      "construction": "AIRPORT",
-      "level": 1,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7363,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7364,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7365,
+      "id": 7366,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -68838,7 +69028,31 @@
     },
     {
       "id": 7367,
-      "owner": "am",
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7368,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7369,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7370,
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -68846,7 +69060,7 @@
     },
     {
       "id": 7371,
-      "owner": "am",
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
@@ -68870,166 +69084,6 @@
     },
     {
       "id": 7374,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7375,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7376,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7377,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7378,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7379,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7380,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7381,
-      "owner": "au",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7382,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7383,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7384,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7385,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7386,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7387,
-      "owner": "au",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7388,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7389,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7390,
-      "owner": "nl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7391,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7392,
-      "owner": "ru",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7393,
-      "owner": "am",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": []
-    },
-    {
-      "id": 7394,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69037,7 +69091,2011 @@
       "units": []
     },
     {
+      "id": 7375,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7376,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7377,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7378,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7379,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7380,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7381,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7382,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7383,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7384,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7385,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7386,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7387,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7388,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7389,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7390,
+      "owner": "gb",
+      "construction": "AIRPORT",
+      "level": 1,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7398,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7399,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7409,
+      "owner": "gb",
+      "construction": "CITY",
+      "level": 2,
+      "installation": "FORT",
+      "units": [
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 4,
+          "country": "gb",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7414,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7415,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7416,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7417,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7418,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7419,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7420,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7421,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7422,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7423,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7424,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7425,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7426,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7427,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7428,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7429,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7430,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7431,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7432,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7433,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7434,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7435,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7436,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7437,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7438,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7439,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7440,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
       "id": 7441,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 0,
+          "country": "au",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7442,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7443,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7444,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7445,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7448,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7449,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7450,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7451,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7452,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7453,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7454,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7455,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7468,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7482,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7483,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7484,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7485,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7486,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7487,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7488,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7489,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7490,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7491,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7492,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7493,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7494,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7495,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7496,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7497,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7498,
+      "owner": "au",
+      "construction": "AIRPORT",
+      "level": 1,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 0,
+          "country": "au",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7499,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7500,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7501,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7502,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7503,
+      "owner": "au",
+      "construction": "CITY",
+      "level": 2,
+      "installation": "FORT",
+      "units": [
+        {
+          "type": 0,
+          "country": "au",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "au",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 4,
+          "country": "au",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7504,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7505,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7506,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7507,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7508,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7513,
+      "owner": "gb",
+      "construction": "CITY",
+      "level": 2,
+      "installation": "FORT",
+      "units": [
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 4,
+          "country": "gb",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7522,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7523,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7524,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7525,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7526,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7527,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7528,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7532,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7533,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7534,
+      "owner": "gb",
+      "construction": "CITY",
+      "level": 2,
+      "installation": "FORT",
+      "units": [
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        },
+        {
+          "type": 4,
+          "country": "gb",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7535,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7536,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7568,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7569,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7570,
+      "owner": "au",
+      "construction": "CITY",
+      "level": 2,
+      "installation": "FORT",
+      "units": [
+        {
+          "type": 0,
+          "country": "au",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "au",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        },
+        {
+          "type": 4,
+          "country": "au",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7571,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7572,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7573,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7574,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7575,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7576,
+      "owner": "gb",
+      "construction": "AIRPORT",
+      "level": 1,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7590,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7591,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7592,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7593,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7602,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7603,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7604,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7605,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7607,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7608,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7610,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7611,
+      "owner": "gb",
+      "construction": "CITY",
+      "level": 2,
+      "installation": "FORT",
+      "units": [
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        },
+        {
+          "type": 4,
+          "country": "gb",
+          "hp": 110,
+          "maxHp": 110,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        },
+        {
+          "type": 0,
+          "country": "gb",
+          "hp": 70,
+          "maxHp": 70,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 4,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 7612,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7613,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7614,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7615,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7616,
+      "owner": "gb",
+      "construction": "AIRPORT",
+      "level": 1,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7617,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7618,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7629,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7630,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7631,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7632,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7633,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7634,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7647,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7651,
+      "owner": "dk",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7652,
+      "owner": "ru",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7653,
+      "owner": "ru",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7654,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7655,
+      "owner": "dk",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7656,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7657,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7658,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7659,
+      "owner": "dk",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7660,
+      "owner": "ru",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7661,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7662,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7663,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7664,
+      "owner": "ru",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7665,
+      "owner": "no",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7666,
+      "owner": "fl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7667,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7668,
+      "owner": "no",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7669,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7670,
+      "owner": "fl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7671,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7672,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7673,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7674,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7675,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7676,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7677,
+      "owner": "de",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7678,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7679,
+      "owner": "ru",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7680,
+      "owner": "ru",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7681,
+      "owner": "ru",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7682,
+      "owner": "ru",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7683,
+      "owner": "tr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7684,
+      "owner": "tw",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7685,
+      "owner": "tw",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7686,
+      "owner": "tw",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7688,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7689,
+      "owner": "it",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7690,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7691,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7692,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7693,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7694,
+      "owner": "am",
+      "construction": "AIRPORT",
+      "level": 1,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7695,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7696,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7697,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7699,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7703,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7704,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7705,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7706,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7707,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7708,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7709,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7710,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7711,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7712,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7713,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7714,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7715,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7716,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7717,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7718,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7719,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7720,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7721,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7722,
+      "owner": "nl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7723,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7732,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7733,
+      "owner": "ru",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7735,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7736,
+      "owner": "gb",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": []
+    },
+    {
+      "id": 7783,
       "owner": "ja",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69058,7 +71116,7 @@
       ]
     },
     {
-      "id": 7468,
+      "id": 7812,
       "owner": "de",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69079,7 +71137,7 @@
       ]
     },
     {
-      "id": 7496,
+      "id": 7841,
       "owner": "nl",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69100,7 +71158,7 @@
       ]
     },
     {
-      "id": 7499,
+      "id": 7846,
       "owner": "it",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69121,7 +71179,7 @@
       ]
     },
     {
-      "id": 7501,
+      "id": 7848,
       "owner": "yu",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69142,7 +71200,7 @@
       ]
     },
     {
-      "id": 7509,
+      "id": 7856,
       "owner": "se",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69163,7 +71221,7 @@
       ]
     },
     {
-      "id": 7514,
+      "id": 7862,
       "owner": "tw",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69184,7 +71242,7 @@
       ]
     },
     {
-      "id": 7555,
+      "id": 7911,
       "owner": "dk",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69205,7 +71263,7 @@
       ]
     },
     {
-      "id": 7568,
+      "id": 7924,
       "owner": "am",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69226,7 +71284,7 @@
       ]
     },
     {
-      "id": 7580,
+      "id": 7937,
       "owner": "dk",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69247,7 +71305,7 @@
       ]
     },
     {
-      "id": 7587,
+      "id": 7946,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69268,7 +71326,7 @@
       ]
     },
     {
-      "id": 7602,
+      "id": 7962,
       "owner": "tr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69289,7 +71347,7 @@
       ]
     },
     {
-      "id": 7608,
+      "id": 7969,
       "owner": "fl",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69310,7 +71368,7 @@
       ]
     },
     {
-      "id": 7625,
+      "id": 7989,
       "owner": "de",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69331,28 +71389,7 @@
       ]
     },
     {
-      "id": 7635,
-      "owner": "au",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "au",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 7676,
+      "id": 8042,
       "owner": "it",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69373,7 +71410,7 @@
       ]
     },
     {
-      "id": 7691,
+      "id": 8058,
       "owner": "se",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69394,7 +71431,7 @@
       ]
     },
     {
-      "id": 7711,
+      "id": 8080,
       "owner": "ru",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69415,7 +71452,7 @@
       ]
     },
     {
-      "id": 7719,
+      "id": 8088,
       "owner": "yu",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69436,7 +71473,7 @@
       ]
     },
     {
-      "id": 7755,
+      "id": 8135,
       "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69457,7 +71494,7 @@
       ]
     },
     {
-      "id": 7767,
+      "id": 8147,
       "owner": "gr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69478,7 +71515,7 @@
       ]
     },
     {
-      "id": 7777,
+      "id": 8158,
       "owner": "ja",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69499,7 +71536,7 @@
       ]
     },
     {
-      "id": 7786,
+      "id": 8167,
       "owner": "ru",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69520,175 +71557,7 @@
       ]
     },
     {
-      "id": 7852,
-      "owner": "mx",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "mx",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 7879,
-      "owner": "es",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "es",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 7965,
-      "owner": "fr",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "fr",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 7980,
-      "owner": "gr",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "gr",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8035,
-      "owner": "es",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "es",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8045,
-      "owner": "mx",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "mx",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8046,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "ca",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8052,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "pt",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8059,
+      "id": 8190,
       "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69709,36 +71578,15 @@
       ]
     },
     {
-      "id": 8066,
-      "owner": "de",
+      "id": 8241,
+      "owner": "mx",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
       "units": [
         {
           "type": 6,
-          "country": "de",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 1,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": true
-        }
-      ]
-    },
-    {
-      "id": 8089,
-      "owner": "ru",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "ru",
+          "country": "mx",
           "hp": 180,
           "maxHp": 180,
           "movement": 0,
@@ -69751,28 +71599,7 @@
       ]
     },
     {
-      "id": 8095,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "ca",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8119,
+      "id": 8270,
       "owner": "es",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69793,91 +71620,7 @@
       ]
     },
     {
-      "id": 8141,
-      "owner": "se",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "se",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8145,
-      "owner": "pt",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "pt",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8161,
-      "owner": "tw",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "tw",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8163,
-      "owner": "tw",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "tw",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8180,
+      "id": 8371,
       "owner": "fr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69898,49 +71641,7 @@
       ]
     },
     {
-      "id": 8210,
-      "owner": "yu",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "yu",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8218,
-      "owner": "gb",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "gb",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8224,
+      "id": 8387,
       "owner": "gr",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69961,7 +71662,343 @@
       ]
     },
     {
-      "id": 8226,
+      "id": 8445,
+      "owner": "es",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "es",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8455,
+      "owner": "mx",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "mx",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8456,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "ca",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8462,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "pt",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8469,
+      "owner": "au",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "au",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8477,
+      "owner": "de",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "de",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 1,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": 8502,
+      "owner": "ru",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "ru",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8508,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "ca",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8533,
+      "owner": "es",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "es",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8556,
+      "owner": "se",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "se",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8561,
+      "owner": "pt",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "pt",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8579,
+      "owner": "tw",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "tw",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8581,
+      "owner": "tw",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "tw",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8600,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "fr",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8632,
+      "owner": "yu",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "yu",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8646,
+      "owner": "gr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "gr",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8648,
       "owner": "no",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -69982,7 +72019,7 @@
       ]
     },
     {
-      "id": 8230,
+      "id": 8652,
       "owner": "bg",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -70003,7 +72040,7 @@
       ]
     },
     {
-      "id": 8232,
+      "id": 8655,
       "owner": "nl",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -70024,7 +72061,7 @@
       ]
     },
     {
-      "id": 8244,
+      "id": 8666,
       "owner": "no",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -70045,7 +72082,7 @@
       ]
     },
     {
-      "id": 8249,
+      "id": 8671,
       "owner": "ja",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -70066,7 +72103,7 @@
       ]
     },
     {
-      "id": 8277,
+      "id": 8701,
       "owner": "pt",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -70087,7 +72124,7 @@
       ]
     },
     {
-      "id": 8279,
+      "id": 8703,
       "owner": "nl",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -70108,15 +72145,15 @@
       ]
     },
     {
-      "id": 8322,
-      "owner": "am",
+      "id": 8724,
+      "owner": "gb",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
       "installation": "NO_INSTALLATION",
       "units": [
         {
           "type": 6,
-          "country": "am",
+          "country": "gb",
           "hp": 180,
           "maxHp": 180,
           "movement": 0,
@@ -70129,175 +72166,7 @@
       ]
     },
     {
-      "id": 8383,
-      "owner": "tr",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "tr",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8394,
-      "owner": "dk",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "dk",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8398,
-      "owner": "fr",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "fr",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8416,
-      "owner": "am",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "am",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8418,
-      "owner": "ca",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "ca",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8430,
-      "owner": "mx",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "mx",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8451,
-      "owner": "fl",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "fl",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8460,
-      "owner": "no",
-      "construction": "NO_CONSTRUCTION",
-      "level": 0,
-      "installation": "NO_INSTALLATION",
-      "units": [
-        {
-          "type": 6,
-          "country": "no",
-          "hp": 180,
-          "maxHp": 180,
-          "movement": 0,
-          "level": 1,
-          "exp": 0,
-          "morale": 0,
-          "cards": 0,
-          "active": false
-        }
-      ]
-    },
-    {
-      "id": 8490,
+      "id": 8728,
       "owner": "au",
       "construction": "NO_CONSTRUCTION",
       "level": 0,
@@ -70318,7 +72187,196 @@
       ]
     },
     {
-      "id": 8492,
+      "id": 8749,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "am",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8813,
+      "owner": "tr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "tr",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8825,
+      "owner": "dk",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "dk",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8829,
+      "owner": "fr",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "fr",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8850,
+      "owner": "am",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "am",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8852,
+      "owner": "ca",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "ca",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8864,
+      "owner": "mx",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "mx",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8888,
+      "owner": "fl",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "fl",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8897,
+      "owner": "no",
+      "construction": "NO_CONSTRUCTION",
+      "level": 0,
+      "installation": "NO_INSTALLATION",
+      "units": [
+        {
+          "type": 6,
+          "country": "no",
+          "hp": 180,
+          "maxHp": 180,
+          "movement": 0,
+          "level": 1,
+          "exp": 0,
+          "morale": 0,
+          "cards": 0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "id": 8931,
       "owner": "it",
       "construction": "NO_CONSTRUCTION",
       "level": 0,

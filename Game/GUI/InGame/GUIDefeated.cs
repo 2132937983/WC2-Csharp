@@ -71,10 +71,9 @@ public sealed class GUIDefeated : GUIElement
             textureResFlag.LoadRes("flag_hd.xml", true);
         string tmp_char = Sprintf("flag_%s.png", country_in.name);
         // without a dedicated flag the reference stays null and the render skips it
-        if (textureResFlag.GetImage(tmp_char) != null)
-            imageFlag = new ecImage(textureResFlag.GetImage(tmp_char));
-        else if (CountryArt.UiFlag(tmp_char) is ecImageAttr modFlag)
-            imageFlag = new ecImage(modFlag);   // a mod's new country
+        // a mod's flag picture, the flag table, a new country's picture (CountryArt)
+        if (CountryArt.BoxFlag(textureResFlag, tmp_char) is ecImageAttr flagAttr)
+            imageFlag = new ecImage(flagAttr);
         else
             imageFlag = null;
         defeatedCountry = country_in;

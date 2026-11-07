@@ -393,7 +393,8 @@ File names are original names or package paths; a mod can point a role at its ow
 the unit atlas) and flag (`flag_<id>.png`) the game looks up; `others` is the fallback art.
 `commanderMedal` countries have an AI commander badge (`medal_<id>.png`), the others use the common
 badges. Scenarios refer to these ids, with a digit for several countries of one nation (`de1`, `de2`).
-A mod adds a country by adding its id; its flag comes from `flag_<id>.png` (MODDING.md, section 4).
+A mod adds a country by adding its id; its flag comes from `flag_<id>.png` (MODDING.md, section 4), and a
+mod's `flag_<id>.png` also replaces the flag of a country the game knows.
 
 ## ai
 
@@ -732,7 +733,7 @@ JSON 剧本可以拥有比原版三方更多的阵营，并定义它们之间的
 
 ## 国家（countries）
 
-`data/json/countries/countries.json`：`{"countries": {"gb": {"commanderMedal": true}, "ca": {}, ...}, "commonMedals": ["common_1", "common_2", "common_3"]}`。这些是游戏据以查找单位美术（单位图集中的 `<unit>_<id>.png`）和旗帜（`flag_<id>.png`）的 id；`others` 是后备美术。`commanderMedal` 国家拥有 AI 将领徽章（`medal_<id>.png`），其他国家使用通用徽章。剧本引用这些 id，同一国家在剧本中出现多个时会附加一位数字（`de1`、`de2`）。模组通过添加 id 来新增国家；其国旗来自 `flag_<id>.png`（MODDING.md 第 4 节）。
+`data/json/countries/countries.json`：`{"countries": {"gb": {"commanderMedal": true}, "ca": {}, ...}, "commonMedals": ["common_1", "common_2", "common_3"]}`。这些是游戏据以查找单位美术（单位图集中的 `<unit>_<id>.png`）和旗帜（`flag_<id>.png`）的 id；`others` 是后备美术。`commanderMedal` 国家拥有 AI 将领徽章（`medal_<id>.png`），其他国家使用通用徽章。剧本引用这些 id，同一国家在剧本中出现多个时会附加一位数字（`de1`、`de2`）。模组通过添加 id 来新增国家；其国旗来自 `flag_<id>.png`（MODDING.md 第 4 节）；模组的 `flag_<id>.png` 也会替换游戏已认识国家的国旗。
 
 ## AI（ai）
 

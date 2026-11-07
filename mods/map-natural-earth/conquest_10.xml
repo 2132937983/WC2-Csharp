@@ -8,12 +8,12 @@
         <country id="bg" name="bg" commander="common1" ai="1" defeated="land" taxfactor="1.200000" money="234" industry="117" techlevel="3" alliance="a" r="0" g="0" b="128" a="90" />
         <country id="fl" name="fl" commander="common1" ai="1" defeated="land" taxfactor="1.200000" money="261" industry="130" techlevel="3" alliance="a" r="146" g="205" b="220" a="90" />
         <country id="es" name="es" commander="common1" ai="1" defeated="land" taxfactor="1.200000" money="342" industry="171" techlevel="3" alliance="a" r="255" g="0" b="128" a="90" />
-        <country id="gb" name="gb" commander="Montgomery" ai="1" defeated="land" taxfactor="1.200000" money="1708" industry="854" techlevel="3" alliance="b" r="255" g="255" b="0" a="90" />
+        <country id="gb" name="gb" commander="Montgomery" ai="1" defeated="land" taxfactor="1.200000" money="1815" industry="907" techlevel="3" alliance="b" r="255" g="255" b="0" a="90" />
         <country id="fr" name="fr" commander="de Gaulle" ai="1" defeated="land" taxfactor="1.200000" money="1237" industry="618" techlevel="3" alliance="b" r="0" g="170" b="170" a="90" />
         <country id="am" name="am" commander="Patton" ai="1" defeated="land" taxfactor="1.200000" money="861" industry="430" techlevel="3" alliance="b" r="64" g="199" b="64" a="90" />
         <country id="pl" name="pl" commander="common1" ai="1" defeated="land" taxfactor="1.200000" money="293" industry="146" techlevel="3" alliance="b" r="255" g="128" b="64" a="90" />
         <country id="ca" name="ca" commander="common1" ai="1" defeated="land" taxfactor="1.200000" money="676" industry="338" techlevel="3" alliance="b" r="0" g="162" b="232" a="90" />
-        <country id="au" name="au" commander="common1" ai="1" defeated="land" taxfactor="1.200000" money="388" industry="194" techlevel="3" alliance="b" r="0" g="49" b="146" a="90" />
+        <country id="au" name="au" commander="common1" ai="1" defeated="land" taxfactor="1.200000" money="559" industry="279" techlevel="3" alliance="b" r="0" g="49" b="146" a="90" />
         <country id="nl" name="nl" commander="common1" ai="1" defeated="land" taxfactor="1.200000" money="390" industry="195" techlevel="3" alliance="b" r="255" g="192" b="0" a="90" />
         <country id="be" name="be" commander="common1" ai="1" defeated="land" taxfactor="1.200000" money="345" industry="172" techlevel="3" alliance="b" r="148" g="138" b="84" a="90" />
         <country id="no" name="no" commander="common1" ai="1" defeated="land" taxfactor="1.200000" money="259" industry="129" techlevel="3" alliance="b" r="255" g="0" b="128" a="90" />
@@ -6960,47 +6960,49 @@
         <area id="6848" construction="none" level="0" installation="none" country="au" />
         <area id="6849" construction="none" level="0" installation="none" country="au" />
         <area id="6850" construction="none" level="0" installation="none" country="au" />
-        <area id="6856" construction="none" level="0" installation="none" country="pt" />
-        <area id="6857" construction="none" level="0" installation="none" country="pt" />
-        <area id="6861" construction="none" level="0" installation="none" country="gb" />
-        <area id="6862" construction="none" level="0" installation="none" country="gb" />
-        <area id="6872" construction="none" level="0" installation="none" country="gb" />
-        <area id="6873" construction="none" level="0" installation="none" country="pt" />
-        <area id="6874" construction="none" level="0" installation="none" country="pt" />
-        <area id="6875" construction="none" level="0" installation="none" country="pt" />
-        <area id="6876" construction="none" level="0" installation="none" country="pt" />
-        <area id="6877" construction="none" level="0" installation="none" country="pt" />
-        <area id="6878" construction="none" level="0" installation="none" country="pt" />
-        <area id="6879" construction="none" level="0" installation="none" country="pt" />
-        <area id="6880" construction="none" level="0" installation="none" country="pt" />
-        <area id="6881" construction="none" level="0" installation="none" country="pt" />
-        <area id="6882" construction="none" level="0" installation="none" country="pt" />
-        <area id="6883" construction="none" level="0" installation="none" country="pt" />
-        <area id="6884" construction="none" level="0" installation="none" country="pt" />
+        <area id="6851" construction="none" level="0" installation="none" country="au" />
+        <area id="6852" construction="none" level="0" installation="none" country="au" />
+        <area id="6853" construction="none" level="0" installation="none" country="au" />
+        <area id="6854" construction="none" level="0" installation="none" country="au" />
+        <area id="6855" construction="none" level="0" installation="none" country="au" />
+        <area id="6856" construction="none" level="0" installation="none" country="au" />
+        <area id="6857" construction="airport" level="1" installation="none" country="au">
+            <army type="infantry" level="1" cards="4" />
+        </area>
+        <area id="6858" construction="none" level="0" installation="none" country="au" />
+        <area id="6859" construction="none" level="0" installation="none" country="au" />
+        <area id="6860" construction="none" level="0" installation="none" country="au" />
+        <area id="6861" construction="none" level="0" installation="none" country="au" />
+        <area id="6862" construction="none" level="0" installation="none" country="au" />
+        <area id="6868" construction="none" level="0" installation="none" country="pt" />
+        <area id="6869" construction="none" level="0" installation="none" country="pt" />
+        <area id="6873" construction="none" level="0" installation="none" country="gb" />
+        <area id="6874" construction="none" level="0" installation="none" country="gb" />
+        <area id="6884" construction="none" level="0" installation="none" country="gb" />
         <area id="6885" construction="none" level="0" installation="none" country="pt" />
         <area id="6886" construction="none" level="0" installation="none" country="pt" />
-        <area id="6889" construction="none" level="0" installation="none" country="gb" />
-        <area id="6890" construction="none" level="0" installation="none" country="gb" />
-        <area id="6891" construction="none" level="0" installation="none" country="gb" />
-        <area id="6892" construction="none" level="0" installation="none" country="gb" />
-        <area id="6893" construction="none" level="0" installation="none" country="gb" />
-        <area id="6894" construction="none" level="0" installation="none" country="au" />
-        <area id="6895" construction="none" level="0" installation="none" country="au" />
-        <area id="6896" construction="none" level="0" installation="none" country="au" />
-        <area id="6897" construction="none" level="0" installation="none" country="au" />
-        <area id="6898" construction="airport" level="1" installation="none" country="au" />
-        <area id="6899" construction="none" level="0" installation="none" country="au" />
-        <area id="6900" construction="none" level="0" installation="none" country="au" />
-        <area id="6901" construction="none" level="0" installation="none" country="au" />
-        <area id="6902" construction="none" level="0" installation="none" country="au" />
-        <area id="6903" construction="none" level="0" installation="none" country="au" />
-        <area id="6904" construction="none" level="0" installation="none" country="au" />
-        <area id="6905" construction="none" level="0" installation="none" country="au" />
+        <area id="6887" construction="none" level="0" installation="none" country="pt" />
+        <area id="6888" construction="none" level="0" installation="none" country="pt" />
+        <area id="6889" construction="none" level="0" installation="none" country="pt" />
+        <area id="6890" construction="none" level="0" installation="none" country="pt" />
+        <area id="6891" construction="none" level="0" installation="none" country="pt" />
+        <area id="6892" construction="none" level="0" installation="none" country="pt" />
+        <area id="6893" construction="none" level="0" installation="none" country="pt" />
+        <area id="6894" construction="none" level="0" installation="none" country="pt" />
+        <area id="6895" construction="none" level="0" installation="none" country="pt" />
+        <area id="6896" construction="none" level="0" installation="none" country="pt" />
+        <area id="6897" construction="none" level="0" installation="none" country="pt" />
+        <area id="6898" construction="none" level="0" installation="none" country="pt" />
+        <area id="6901" construction="none" level="0" installation="none" country="gb" />
+        <area id="6902" construction="none" level="0" installation="none" country="gb" />
+        <area id="6903" construction="none" level="0" installation="none" country="gb" />
+        <area id="6904" construction="none" level="0" installation="none" country="gb" />
+        <area id="6905" construction="none" level="0" installation="none" country="gb" />
         <area id="6906" construction="none" level="0" installation="none" country="au" />
         <area id="6907" construction="none" level="0" installation="none" country="au" />
         <area id="6908" construction="none" level="0" installation="none" country="au" />
         <area id="6909" construction="none" level="0" installation="none" country="au" />
-        <area id="6910" construction="none" level="0" installation="none" country="au" />
+        <area id="6910" construction="airport" level="1" installation="none" country="au" />
         <area id="6911" construction="none" level="0" installation="none" country="au" />
         <area id="6912" construction="none" level="0" installation="none" country="au" />
         <area id="6913" construction="none" level="0" installation="none" country="au" />
@@ -7029,65 +7031,65 @@
         <area id="6936" construction="none" level="0" installation="none" country="au" />
         <area id="6937" construction="none" level="0" installation="none" country="au" />
         <area id="6938" construction="none" level="0" installation="none" country="au" />
-        <area id="6942" construction="none" level="0" installation="none" country="pt" />
-        <area id="6943" construction="none" level="0" installation="none" country="pt" />
-        <area id="6944" construction="none" level="0" installation="none" country="pt" />
-        <area id="6945" construction="none" level="0" installation="none" country="pt" />
-        <area id="6946" construction="none" level="0" installation="none" country="pt" />
-        <area id="6947" construction="none" level="0" installation="none" country="pt">
+        <area id="6939" construction="none" level="0" installation="none" country="au" />
+        <area id="6940" construction="none" level="0" installation="none" country="au" />
+        <area id="6941" construction="none" level="0" installation="none" country="au" />
+        <area id="6942" construction="none" level="0" installation="none" country="au" />
+        <area id="6943" construction="none" level="0" installation="none" country="au" />
+        <area id="6944" construction="none" level="0" installation="none" country="au" />
+        <area id="6945" construction="none" level="0" installation="none" country="au" />
+        <area id="6946" construction="none" level="0" installation="none" country="au" />
+        <area id="6947" construction="none" level="0" installation="none" country="au" />
+        <area id="6948" construction="none" level="0" installation="none" country="au" />
+        <area id="6949" construction="none" level="0" installation="none" country="au" />
+        <area id="6950" construction="none" level="0" installation="none" country="au" />
+        <area id="6954" construction="none" level="0" installation="none" country="pt" />
+        <area id="6955" construction="none" level="0" installation="none" country="pt" />
+        <area id="6956" construction="none" level="0" installation="none" country="pt" />
+        <area id="6957" construction="none" level="0" installation="none" country="pt" />
+        <area id="6958" construction="none" level="0" installation="none" country="pt" />
+        <area id="6959" construction="none" level="0" installation="none" country="pt">
             <army type="infantry" level="1" cards="0" />
         </area>
-        <area id="6948" construction="none" level="0" installation="none" country="gb" />
-        <area id="6949" construction="none" level="0" installation="none" country="gb" />
-        <area id="6950" construction="none" level="0" installation="none" country="pt" />
-        <area id="6956" construction="none" level="0" installation="none" country="fr" />
-        <area id="6958" construction="none" level="0" installation="none" country="gb" />
+        <area id="6960" construction="none" level="0" installation="none" country="gb" />
         <area id="6961" construction="none" level="0" installation="none" country="gb" />
-        <area id="6962" construction="none" level="0" installation="none" country="gb" />
-        <area id="6977" construction="city" level="2" installation="fort" country="gb">
+        <area id="6962" construction="none" level="0" installation="none" country="pt" />
+        <area id="6968" construction="none" level="0" installation="none" country="fr" />
+        <area id="6970" construction="none" level="0" installation="none" country="gb" />
+        <area id="6973" construction="none" level="0" installation="none" country="gb" />
+        <area id="6974" construction="none" level="0" installation="none" country="gb" />
+        <area id="6989" construction="city" level="2" installation="fort" country="gb">
             <army type="infantry" level="1" cards="0" />
             <army type="infantry" level="1" cards="0" />
             <army type="tank" level="1" cards="0" />
             <army type="infantry" level="1" cards="0" />
         </area>
-        <area id="6978" construction="none" level="0" installation="none" country="fr" />
-        <area id="6984" construction="none" level="0" installation="none" country="gb" />
-        <area id="6985" construction="none" level="0" installation="none" country="gb" />
-        <area id="6986" construction="none" level="0" installation="none" country="gb" />
-        <area id="6987" construction="none" level="0" installation="none" country="pt" />
-        <area id="6988" construction="none" level="0" installation="none" country="pt" />
-        <area id="6989" construction="none" level="0" installation="none" country="pt" />
-        <area id="7004" construction="none" level="0" installation="none" country="pt" />
-        <area id="7005" construction="none" level="0" installation="none" country="pt" />
-        <area id="7006" construction="none" level="0" installation="none" country="pt" />
-        <area id="7007" construction="none" level="0" installation="none" country="pt" />
-        <area id="7008" construction="none" level="0" installation="none" country="pt" />
-        <area id="7009" construction="none" level="0" installation="none" country="gb" />
-        <area id="7010" construction="none" level="0" installation="none" country="pt" />
-        <area id="7011" construction="none" level="0" installation="none" country="pt" />
-        <area id="7012" construction="none" level="0" installation="none" country="pt" />
-        <area id="7013" construction="none" level="0" installation="none" country="pt" />
-        <area id="7014" construction="none" level="0" installation="none" country="pt" />
-        <area id="7015" construction="none" level="0" installation="none" country="pt" />
+        <area id="6990" construction="none" level="0" installation="none" country="fr" />
+        <area id="6996" construction="none" level="0" installation="none" country="gb" />
+        <area id="6997" construction="none" level="0" installation="none" country="gb" />
+        <area id="6998" construction="none" level="0" installation="none" country="gb" />
+        <area id="6999" construction="none" level="0" installation="none" country="pt" />
+        <area id="7000" construction="none" level="0" installation="none" country="pt" />
+        <area id="7001" construction="none" level="0" installation="none" country="pt" />
         <area id="7016" construction="none" level="0" installation="none" country="pt" />
         <area id="7017" construction="none" level="0" installation="none" country="pt" />
-        <area id="7018" construction="none" level="0" installation="none" country="gb" />
-        <area id="7019" construction="none" level="0" installation="none" country="gb" />
-        <area id="7020" construction="none" level="0" installation="none" country="gb" />
+        <area id="7018" construction="none" level="0" installation="none" country="pt" />
+        <area id="7019" construction="none" level="0" installation="none" country="pt" />
+        <area id="7020" construction="none" level="0" installation="none" country="pt" />
         <area id="7021" construction="none" level="0" installation="none" country="gb" />
-        <area id="7022" construction="none" level="0" installation="none" country="gb" />
-        <area id="7023" construction="none" level="0" installation="none" country="au" />
-        <area id="7024" construction="none" level="0" installation="none" country="au" />
-        <area id="7025" construction="none" level="0" installation="none" country="au" />
-        <area id="7026" construction="none" level="0" installation="none" country="au" />
-        <area id="7027" construction="none" level="0" installation="none" country="au" />
-        <area id="7028" construction="none" level="0" installation="none" country="au" />
-        <area id="7029" construction="none" level="0" installation="none" country="au" />
-        <area id="7030" construction="none" level="0" installation="none" country="au" />
-        <area id="7031" construction="none" level="0" installation="none" country="au" />
-        <area id="7032" construction="none" level="0" installation="none" country="au" />
-        <area id="7033" construction="none" level="0" installation="none" country="au" />
-        <area id="7034" construction="none" level="0" installation="none" country="au" />
+        <area id="7022" construction="none" level="0" installation="none" country="pt" />
+        <area id="7023" construction="none" level="0" installation="none" country="pt" />
+        <area id="7024" construction="none" level="0" installation="none" country="pt" />
+        <area id="7025" construction="none" level="0" installation="none" country="pt" />
+        <area id="7026" construction="none" level="0" installation="none" country="pt" />
+        <area id="7027" construction="none" level="0" installation="none" country="pt" />
+        <area id="7028" construction="none" level="0" installation="none" country="pt" />
+        <area id="7029" construction="none" level="0" installation="none" country="pt" />
+        <area id="7030" construction="none" level="0" installation="none" country="gb" />
+        <area id="7031" construction="none" level="0" installation="none" country="gb" />
+        <area id="7032" construction="none" level="0" installation="none" country="gb" />
+        <area id="7033" construction="none" level="0" installation="none" country="gb" />
+        <area id="7034" construction="none" level="0" installation="none" country="gb" />
         <area id="7035" construction="none" level="0" installation="none" country="au" />
         <area id="7036" construction="none" level="0" installation="none" country="au" />
         <area id="7037" construction="none" level="0" installation="none" country="au" />
@@ -7122,447 +7124,676 @@
         <area id="7066" construction="none" level="0" installation="none" country="au" />
         <area id="7067" construction="none" level="0" installation="none" country="au" />
         <area id="7068" construction="none" level="0" installation="none" country="au" />
-        <area id="7069" construction="none" level="0" installation="none" country="gb" />
-        <area id="7070" construction="none" level="0" installation="none" country="fr" />
-        <area id="7071" construction="none" level="0" installation="none" country="fr" />
-        <area id="7072" construction="none" level="0" installation="none" country="pt" />
-        <area id="7073" construction="none" level="0" installation="none" country="pt" />
-        <area id="7074" construction="none" level="0" installation="none" country="pt" />
-        <area id="7075" construction="none" level="0" installation="none" country="pt" />
-        <area id="7099" construction="none" level="0" installation="none" country="gb" />
-        <area id="7103" construction="city" level="2" installation="fort" country="gb">
+        <area id="7069" construction="none" level="0" installation="none" country="au" />
+        <area id="7070" construction="none" level="0" installation="none" country="au" />
+        <area id="7071" construction="none" level="0" installation="none" country="au" />
+        <area id="7072" construction="none" level="0" installation="none" country="au" />
+        <area id="7073" construction="none" level="0" installation="none" country="au" />
+        <area id="7074" construction="none" level="0" installation="none" country="au" />
+        <area id="7075" construction="none" level="0" installation="none" country="au" />
+        <area id="7076" construction="none" level="0" installation="none" country="au" />
+        <area id="7077" construction="none" level="0" installation="none" country="au" />
+        <area id="7078" construction="none" level="0" installation="none" country="au" />
+        <area id="7079" construction="none" level="0" installation="none" country="au" />
+        <area id="7080" construction="none" level="0" installation="none" country="au" />
+        <area id="7081" construction="none" level="0" installation="none" country="au" />
+        <area id="7082" construction="none" level="0" installation="none" country="au" />
+        <area id="7083" construction="none" level="0" installation="none" country="au" />
+        <area id="7084" construction="none" level="0" installation="none" country="au" />
+        <area id="7085" construction="none" level="0" installation="none" country="au" />
+        <area id="7086" construction="none" level="0" installation="none" country="au" />
+        <area id="7087" construction="none" level="0" installation="none" country="au" />
+        <area id="7088" construction="none" level="0" installation="none" country="au" />
+        <area id="7089" construction="none" level="0" installation="none" country="au" />
+        <area id="7090" construction="none" level="0" installation="none" country="au" />
+        <area id="7091" construction="none" level="0" installation="none" country="au" />
+        <area id="7092" construction="none" level="0" installation="none" country="au" />
+        <area id="7093" construction="none" level="0" installation="none" country="au" />
+        <area id="7094" construction="none" level="0" installation="none" country="au" />
+        <area id="7095" construction="none" level="0" installation="none" country="au" />
+        <area id="7096" construction="none" level="0" installation="none" country="au" />
+        <area id="7097" construction="none" level="0" installation="none" country="au" />
+        <area id="7098" construction="none" level="0" installation="none" country="au" />
+        <area id="7099" construction="none" level="0" installation="none" country="au" />
+        <area id="7100" construction="none" level="0" installation="none" country="au" />
+        <area id="7101" construction="none" level="0" installation="none" country="au" />
+        <area id="7102" construction="none" level="0" installation="none" country="au" />
+        <area id="7103" construction="none" level="0" installation="none" country="au" />
+        <area id="7104" construction="none" level="0" installation="none" country="au" />
+        <area id="7105" construction="none" level="0" installation="none" country="au" />
+        <area id="7106" construction="none" level="0" installation="none" country="au" />
+        <area id="7107" construction="none" level="0" installation="none" country="au" />
+        <area id="7108" construction="none" level="0" installation="none" country="au" />
+        <area id="7109" construction="none" level="0" installation="none" country="au" />
+        <area id="7110" construction="none" level="0" installation="none" country="au" />
+        <area id="7111" construction="none" level="0" installation="none" country="au" />
+        <area id="7112" construction="airport" level="1" installation="none" country="au">
+            <army type="infantry" level="1" cards="4" />
+        </area>
+        <area id="7113" construction="none" level="0" installation="none" country="au" />
+        <area id="7114" construction="none" level="0" installation="none" country="au" />
+        <area id="7115" construction="none" level="0" installation="none" country="au" />
+        <area id="7116" construction="none" level="0" installation="none" country="au" />
+        <area id="7117" construction="none" level="0" installation="none" country="au" />
+        <area id="7118" construction="none" level="0" installation="none" country="au" />
+        <area id="7119" construction="none" level="0" installation="none" country="gb" />
+        <area id="7120" construction="none" level="0" installation="none" country="fr" />
+        <area id="7121" construction="none" level="0" installation="none" country="fr" />
+        <area id="7122" construction="none" level="0" installation="none" country="pt" />
+        <area id="7123" construction="none" level="0" installation="none" country="pt" />
+        <area id="7124" construction="none" level="0" installation="none" country="pt" />
+        <area id="7125" construction="none" level="0" installation="none" country="pt" />
+        <area id="7149" construction="none" level="0" installation="none" country="gb" />
+        <area id="7153" construction="city" level="2" installation="fort" country="gb">
             <army type="infantry" level="1" cards="0" />
             <army type="infantry" level="1" cards="0" />
             <army type="tank" level="1" cards="0" />
             <army type="infantry" level="1" cards="0" />
         </area>
-        <area id="7104" construction="none" level="0" installation="none" country="gb" />
-        <area id="7105" construction="none" level="0" installation="none" country="fr" />
-        <area id="7106" construction="none" level="0" installation="none" country="pt" />
-        <area id="7107" construction="none" level="0" installation="none" country="pt" />
-        <area id="7108" construction="none" level="0" installation="none" country="pt" />
-        <area id="7109" construction="none" level="0" installation="none" country="pt" />
-        <area id="7110" construction="none" level="0" installation="none" country="pt" />
-        <area id="7111" construction="none" level="0" installation="none" country="pt" />
-        <area id="7112" construction="none" level="0" installation="none" country="pt" />
-        <area id="7113" construction="none" level="0" installation="none" country="fr" />
-        <area id="7114" construction="none" level="0" installation="none" country="gb" />
-        <area id="7115" construction="none" level="0" installation="none" country="gb" />
-        <area id="7116" construction="none" level="0" installation="none" country="gb" />
-        <area id="7117" construction="none" level="0" installation="none" country="gb" />
-        <area id="7118" construction="none" level="0" installation="none" country="gb" />
-        <area id="7119" construction="city" level="2" installation="fort" country="gb">
-            <army type="infantry" level="1" cards="0" />
-            <army type="infantry" level="1" cards="0" />
-            <army type="tank" level="1" cards="0" />
-            <army type="infantry" level="1" cards="0" />
-        </area>
-        <area id="7122" construction="none" level="0" installation="none" country="fr" />
-        <area id="7124" construction="none" level="0" installation="none" country="fr" />
-        <area id="7125" construction="none" level="0" installation="none" country="fr" />
-        <area id="7126" construction="none" level="0" installation="none" country="gb" />
-        <area id="7127" construction="none" level="0" installation="none" country="fr" />
-        <area id="7128" construction="none" level="0" installation="none" country="fr" />
-        <area id="7129" construction="none" level="0" installation="none" country="pt" />
-        <area id="7130" construction="none" level="0" installation="none" country="pt" />
-        <area id="7131" construction="none" level="0" installation="none" country="pt" />
-        <area id="7132" construction="city" level="2" installation="fort" country="fr">
-            <army type="infantry" level="1" cards="4" />
-            <army type="infantry" level="1" cards="4" />
-            <army type="tank" level="1" cards="4" />
-            <army type="infantry" level="1" cards="4" />
-        </area>
-        <area id="7133" construction="none" level="0" installation="none" country="gb" />
-        <area id="7135" construction="none" level="0" installation="none" country="pt" />
-        <area id="7136" construction="none" level="0" installation="none" country="pt" />
-        <area id="7137" construction="none" level="0" installation="none" country="pt" />
-        <area id="7138" construction="none" level="0" installation="none" country="gb" />
-        <area id="7139" construction="none" level="0" installation="none" country="gb" />
-        <area id="7140" construction="none" level="0" installation="none" country="gb" />
-        <area id="7141" construction="city" level="2" installation="fort" country="gb">
-            <army type="infantry" level="1" cards="4" />
-            <army type="infantry" level="1" cards="4" />
-            <army type="tank" level="1" cards="4" />
-            <army type="infantry" level="1" cards="4" />
-        </area>
-        <area id="7142" construction="none" level="0" installation="none" country="gb" />
-        <area id="7143" construction="none" level="0" installation="none" country="gb" />
-        <area id="7144" construction="none" level="0" installation="none" country="gb" />
-        <area id="7145" construction="none" level="0" installation="none" country="gb" />
-        <area id="7146" construction="none" level="0" installation="none" country="gb" />
-        <area id="7147" construction="none" level="0" installation="none" country="gb" />
-        <area id="7148" construction="none" level="0" installation="none" country="gb" />
-        <area id="7163" construction="none" level="0" installation="none" country="gb" />
+        <area id="7154" construction="none" level="0" installation="none" country="gb" />
+        <area id="7155" construction="none" level="0" installation="none" country="fr" />
+        <area id="7156" construction="none" level="0" installation="none" country="pt" />
+        <area id="7157" construction="none" level="0" installation="none" country="pt" />
+        <area id="7158" construction="none" level="0" installation="none" country="pt" />
+        <area id="7159" construction="none" level="0" installation="none" country="pt" />
+        <area id="7160" construction="none" level="0" installation="none" country="pt" />
+        <area id="7161" construction="none" level="0" installation="none" country="pt" />
+        <area id="7162" construction="none" level="0" installation="none" country="pt" />
+        <area id="7163" construction="none" level="0" installation="none" country="fr" />
         <area id="7164" construction="none" level="0" installation="none" country="gb" />
         <area id="7165" construction="none" level="0" installation="none" country="gb" />
         <area id="7166" construction="none" level="0" installation="none" country="gb" />
         <area id="7167" construction="none" level="0" installation="none" country="gb" />
-        <area id="7170" construction="none" level="0" installation="none" country="gb" />
-        <area id="7172" construction="none" level="0" installation="none" country="fr" />
-        <area id="7173" construction="none" level="0" installation="none" country="gb" />
-        <area id="7174" construction="none" level="0" installation="none" country="gb" />
-        <area id="7175" construction="none" level="0" installation="none" country="gb" />
-        <area id="7176" construction="none" level="0" installation="none" country="gb" />
-        <area id="7177" construction="none" level="0" installation="none" country="gb" />
-        <area id="7178" construction="none" level="0" installation="none" country="gb" />
-        <area id="7179" construction="none" level="0" installation="none" country="fr" />
-        <area id="7180" construction="city" level="2" installation="fort" country="fr">
+        <area id="7168" construction="none" level="0" installation="none" country="gb" />
+        <area id="7169" construction="city" level="2" installation="fort" country="gb">
             <army type="infantry" level="1" cards="0" />
             <army type="infantry" level="1" cards="0" />
             <army type="tank" level="1" cards="0" />
             <army type="infantry" level="1" cards="0" />
         </area>
-        <area id="7188" construction="none" level="0" installation="none" country="fr" />
-        <area id="7189" construction="none" level="0" installation="none" country="fr" />
-        <area id="7192" construction="none" level="0" installation="none" country="fr" />
+        <area id="7172" construction="none" level="0" installation="none" country="fr" />
+        <area id="7174" construction="none" level="0" installation="none" country="fr" />
+        <area id="7175" construction="none" level="0" installation="none" country="fr" />
+        <area id="7176" construction="none" level="0" installation="none" country="gb" />
+        <area id="7177" construction="none" level="0" installation="none" country="fr" />
+        <area id="7178" construction="none" level="0" installation="none" country="fr" />
+        <area id="7179" construction="none" level="0" installation="none" country="pt" />
+        <area id="7180" construction="none" level="0" installation="none" country="pt" />
+        <area id="7181" construction="none" level="0" installation="none" country="pt" />
+        <area id="7182" construction="city" level="2" installation="fort" country="fr">
+            <army type="infantry" level="1" cards="4" />
+            <army type="infantry" level="1" cards="4" />
+            <army type="tank" level="1" cards="4" />
+            <army type="infantry" level="1" cards="4" />
+        </area>
+        <area id="7183" construction="none" level="0" installation="none" country="gb" />
+        <area id="7185" construction="none" level="0" installation="none" country="pt" />
+        <area id="7186" construction="none" level="0" installation="none" country="pt" />
+        <area id="7187" construction="none" level="0" installation="none" country="pt" />
+        <area id="7188" construction="none" level="0" installation="none" country="gb" />
+        <area id="7189" construction="none" level="0" installation="none" country="gb" />
+        <area id="7190" construction="none" level="0" installation="none" country="gb" />
+        <area id="7191" construction="city" level="2" installation="fort" country="gb">
+            <army type="infantry" level="1" cards="4" />
+            <army type="infantry" level="1" cards="4" />
+            <army type="tank" level="1" cards="4" />
+            <army type="infantry" level="1" cards="4" />
+        </area>
+        <area id="7192" construction="none" level="0" installation="none" country="gb" />
         <area id="7193" construction="none" level="0" installation="none" country="gb" />
         <area id="7194" construction="none" level="0" installation="none" country="gb" />
         <area id="7195" construction="none" level="0" installation="none" country="gb" />
         <area id="7196" construction="none" level="0" installation="none" country="gb" />
-        <area id="7199" construction="none" level="0" installation="none" country="gb" />
-        <area id="7200" construction="none" level="0" installation="none" country="gb" />
-        <area id="7201" construction="none" level="0" installation="none" country="gb" />
-        <area id="7202" construction="none" level="0" installation="none" country="gb" />
-        <area id="7203" construction="none" level="0" installation="none" country="gb" />
-        <area id="7204" construction="none" level="0" installation="none" country="gb" />
-        <area id="7205" construction="none" level="0" installation="none" country="gb" />
-        <area id="7206" construction="none" level="0" installation="none" country="gb" />
-        <area id="7207" construction="none" level="0" installation="none" country="fr" />
-        <area id="7210" construction="none" level="0" installation="none" country="gb" />
-        <area id="7211" construction="none" level="0" installation="none" country="gb" />
-        <area id="7212" construction="none" level="0" installation="none" country="fr" />
-        <area id="7223" construction="none" level="0" installation="none" country="fr" />
-        <area id="7226" construction="city" level="2" installation="fort" country="gb">
-            <army type="infantry" level="1" cards="4" />
-            <army type="infantry" level="1" cards="4" />
-            <army type="tank" level="1" cards="4" />
-            <army type="infantry" level="1" cards="4" />
-        </area>
+        <area id="7197" construction="none" level="0" installation="none" country="gb" />
+        <area id="7198" construction="none" level="0" installation="none" country="gb" />
+        <area id="7213" construction="none" level="0" installation="none" country="gb" />
+        <area id="7214" construction="none" level="0" installation="none" country="gb" />
+        <area id="7215" construction="none" level="0" installation="none" country="gb" />
+        <area id="7216" construction="none" level="0" installation="none" country="gb" />
+        <area id="7217" construction="none" level="0" installation="none" country="gb" />
+        <area id="7220" construction="none" level="0" installation="none" country="gb" />
+        <area id="7222" construction="none" level="0" installation="none" country="fr" />
+        <area id="7223" construction="none" level="0" installation="none" country="gb" />
+        <area id="7224" construction="none" level="0" installation="none" country="gb" />
+        <area id="7225" construction="none" level="0" installation="none" country="gb" />
+        <area id="7226" construction="none" level="0" installation="none" country="gb" />
         <area id="7227" construction="none" level="0" installation="none" country="gb" />
         <area id="7228" construction="none" level="0" installation="none" country="gb" />
-        <area id="7229" construction="none" level="0" installation="none" country="gb" />
-        <area id="7230" construction="none" level="0" installation="none" country="fr" />
-        <area id="7231" construction="none" level="0" installation="none" country="fr" />
-        <area id="7232" construction="none" level="0" installation="none" country="gb" />
-        <area id="7233" construction="none" level="0" installation="none" country="gb" />
-        <area id="7234" construction="none" level="0" installation="none" country="gb" />
-        <area id="7235" construction="none" level="0" installation="none" country="fr" />
-        <area id="7240" construction="none" level="0" installation="none" country="fr" />
-        <area id="7246" construction="none" level="0" installation="none" country="gb" />
-        <area id="7247" construction="none" level="0" installation="none" country="gb" />
-        <area id="7248" construction="none" level="0" installation="none" country="gb" />
-        <area id="7249" construction="none" level="0" installation="none" country="gb" />
-        <area id="7250" construction="none" level="0" installation="none" country="gb" />
-        <area id="7251" construction="none" level="0" installation="none" country="pt" />
-        <area id="7252" construction="none" level="0" installation="none" country="pt" />
-        <area id="7253" construction="none" level="0" installation="none" country="pt" />
-        <area id="7254" construction="none" level="0" installation="none" country="fr" />
-        <area id="7255" construction="none" level="0" installation="none" country="fr" />
-        <area id="7256" construction="none" level="0" installation="none" country="fr" />
-        <area id="7257" construction="none" level="0" installation="none" country="pt" />
-        <area id="7258" construction="none" level="0" installation="none" country="pt" />
-        <area id="7259" construction="none" level="0" installation="none" country="pt" />
-        <area id="7261" construction="none" level="0" installation="none" country="fr" />
-        <area id="7264" construction="city" level="2" installation="fort" country="gb">
+        <area id="7229" construction="none" level="0" installation="none" country="fr" />
+        <area id="7230" construction="city" level="2" installation="fort" country="fr">
             <army type="infantry" level="1" cards="0" />
             <army type="infantry" level="1" cards="0" />
             <army type="tank" level="1" cards="0" />
             <army type="infantry" level="1" cards="0" />
         </area>
-        <area id="7275" construction="none" level="0" installation="none" country="gb" />
-        <area id="7276" construction="none" level="0" installation="none" country="gb" />
+        <area id="7238" construction="none" level="0" installation="none" country="fr" />
+        <area id="7239" construction="none" level="0" installation="none" country="fr" />
+        <area id="7242" construction="none" level="0" installation="none" country="fr" />
+        <area id="7243" construction="none" level="0" installation="none" country="gb" />
+        <area id="7244" construction="none" level="0" installation="none" country="gb" />
+        <area id="7245" construction="none" level="0" installation="none" country="gb" />
+        <area id="7246" construction="none" level="0" installation="none" country="gb" />
+        <area id="7249" construction="none" level="0" installation="none" country="gb" />
+        <area id="7250" construction="none" level="0" installation="none" country="gb" />
+        <area id="7251" construction="none" level="0" installation="none" country="gb" />
+        <area id="7252" construction="none" level="0" installation="none" country="gb" />
+        <area id="7253" construction="none" level="0" installation="none" country="gb" />
+        <area id="7254" construction="none" level="0" installation="none" country="gb" />
+        <area id="7255" construction="none" level="0" installation="none" country="gb" />
+        <area id="7256" construction="none" level="0" installation="none" country="gb" />
+        <area id="7257" construction="none" level="0" installation="none" country="fr" />
+        <area id="7260" construction="none" level="0" installation="none" country="gb" />
+        <area id="7261" construction="none" level="0" installation="none" country="gb" />
+        <area id="7262" construction="none" level="0" installation="none" country="fr" />
+        <area id="7273" construction="none" level="0" installation="none" country="fr" />
+        <area id="7276" construction="city" level="2" installation="fort" country="gb">
+            <army type="infantry" level="1" cards="4" />
+            <army type="infantry" level="1" cards="4" />
+            <army type="tank" level="1" cards="4" />
+            <army type="infantry" level="1" cards="4" />
+        </area>
         <area id="7277" construction="none" level="0" installation="none" country="gb" />
         <area id="7278" construction="none" level="0" installation="none" country="gb" />
         <area id="7279" construction="none" level="0" installation="none" country="gb" />
         <area id="7280" construction="none" level="0" installation="none" country="fr" />
-        <area id="7291" construction="none" level="0" installation="none" country="fr" />
-        <area id="7292" construction="none" level="0" installation="none" country="gb" />
-        <area id="7293" construction="none" level="0" installation="none" country="gb" />
-        <area id="7294" construction="none" level="0" installation="none" country="gb" />
-        <area id="7295" construction="none" level="0" installation="none" country="gb" />
+        <area id="7281" construction="none" level="0" installation="none" country="fr" />
+        <area id="7282" construction="none" level="0" installation="none" country="gb" />
+        <area id="7283" construction="none" level="0" installation="none" country="gb" />
+        <area id="7284" construction="none" level="0" installation="none" country="gb" />
+        <area id="7285" construction="none" level="0" installation="none" country="fr" />
+        <area id="7290" construction="none" level="0" installation="none" country="fr" />
         <area id="7296" construction="none" level="0" installation="none" country="gb" />
+        <area id="7297" construction="none" level="0" installation="none" country="gb" />
         <area id="7298" construction="none" level="0" installation="none" country="gb" />
         <area id="7299" construction="none" level="0" installation="none" country="gb" />
         <area id="7300" construction="none" level="0" installation="none" country="gb" />
-        <area id="7301" construction="none" level="0" installation="none" country="gb" />
-        <area id="7303" construction="none" level="0" installation="none" country="fr" />
-        <area id="7304" construction="city" level="2" installation="fort" country="gb">
+        <area id="7301" construction="none" level="0" installation="none" country="pt" />
+        <area id="7302" construction="none" level="0" installation="none" country="pt" />
+        <area id="7303" construction="none" level="0" installation="none" country="pt" />
+        <area id="7304" construction="none" level="0" installation="none" country="fr" />
+        <area id="7305" construction="none" level="0" installation="none" country="fr" />
+        <area id="7306" construction="none" level="0" installation="none" country="fr" />
+        <area id="7307" construction="none" level="0" installation="none" country="pt" />
+        <area id="7308" construction="none" level="0" installation="none" country="pt" />
+        <area id="7309" construction="none" level="0" installation="none" country="pt" />
+        <area id="7311" construction="none" level="0" installation="none" country="fr" />
+        <area id="7314" construction="city" level="2" installation="fort" country="gb">
             <army type="infantry" level="1" cards="0" />
             <army type="infantry" level="1" cards="0" />
             <army type="tank" level="1" cards="0" />
             <army type="infantry" level="1" cards="0" />
         </area>
-        <area id="7305" construction="none" level="0" installation="none" country="gb" />
-        <area id="7306" construction="none" level="0" installation="none" country="gb" />
-        <area id="7309" construction="city" level="2" installation="fort" country="pt">
+        <area id="7325" construction="none" level="0" installation="none" country="gb" />
+        <area id="7326" construction="none" level="0" installation="none" country="gb" />
+        <area id="7327" construction="none" level="0" installation="none" country="gb" />
+        <area id="7328" construction="none" level="0" installation="none" country="gb" />
+        <area id="7329" construction="none" level="0" installation="none" country="gb" />
+        <area id="7330" construction="none" level="0" installation="none" country="fr" />
+        <area id="7342" construction="none" level="0" installation="none" country="fr" />
+        <area id="7343" construction="none" level="0" installation="none" country="gb" />
+        <area id="7344" construction="none" level="0" installation="none" country="gb" />
+        <area id="7345" construction="none" level="0" installation="none" country="gb" />
+        <area id="7346" construction="none" level="0" installation="none" country="gb" />
+        <area id="7347" construction="none" level="0" installation="none" country="gb" />
+        <area id="7349" construction="none" level="0" installation="none" country="gb" />
+        <area id="7350" construction="none" level="0" installation="none" country="gb" />
+        <area id="7351" construction="none" level="0" installation="none" country="gb" />
+        <area id="7352" construction="none" level="0" installation="none" country="gb" />
+        <area id="7354" construction="none" level="0" installation="none" country="fr" />
+        <area id="7355" construction="city" level="2" installation="fort" country="gb">
+            <army type="infantry" level="1" cards="0" />
+            <army type="infantry" level="1" cards="0" />
+            <army type="tank" level="1" cards="0" />
+            <army type="infantry" level="1" cards="0" />
+        </area>
+        <area id="7356" construction="none" level="0" installation="none" country="gb" />
+        <area id="7357" construction="none" level="0" installation="none" country="gb" />
+        <area id="7358" construction="none" level="0" installation="none" country="gb" />
+        <area id="7363" construction="city" level="2" installation="fort" country="pt">
             <army type="infantry" level="1" cards="4" />
             <army type="infantry" level="1" cards="4" />
             <army type="tank" level="1" cards="4" />
         </area>
-        <area id="7312" construction="city" level="2" installation="fort" country="gb">
+        <area id="7366" construction="none" level="0" installation="none" country="gb" />
+        <area id="7367" construction="none" level="0" installation="none" country="gb" />
+        <area id="7368" construction="none" level="0" installation="none" country="gb" />
+        <area id="7369" construction="none" level="0" installation="none" country="gb" />
+        <area id="7370" construction="none" level="0" installation="none" country="gb" />
+        <area id="7371" construction="none" level="0" installation="none" country="gb" />
+        <area id="7372" construction="none" level="0" installation="none" country="gb" />
+        <area id="7373" construction="none" level="0" installation="none" country="gb" />
+        <area id="7374" construction="none" level="0" installation="none" country="gb" />
+        <area id="7375" construction="none" level="0" installation="none" country="gb" />
+        <area id="7376" construction="none" level="0" installation="none" country="gb" />
+        <area id="7377" construction="none" level="0" installation="none" country="gb" />
+        <area id="7378" construction="none" level="0" installation="none" country="gb" />
+        <area id="7379" construction="none" level="0" installation="none" country="gb" />
+        <area id="7380" construction="none" level="0" installation="none" country="gb" />
+        <area id="7381" construction="none" level="0" installation="none" country="gb" />
+        <area id="7382" construction="none" level="0" installation="none" country="gb" />
+        <area id="7383" construction="none" level="0" installation="none" country="gb" />
+        <area id="7384" construction="none" level="0" installation="none" country="gb" />
+        <area id="7385" construction="none" level="0" installation="none" country="gb" />
+        <area id="7386" construction="none" level="0" installation="none" country="gb" />
+        <area id="7387" construction="none" level="0" installation="none" country="gb" />
+        <area id="7388" construction="none" level="0" installation="none" country="gb" />
+        <area id="7389" construction="none" level="0" installation="none" country="gb" />
+        <area id="7390" construction="airport" level="1" installation="none" country="gb">
+            <army type="infantry" level="1" cards="0" />
+        </area>
+        <area id="7398" construction="none" level="0" installation="none" country="gb" />
+        <area id="7399" construction="none" level="0" installation="none" country="gb" />
+        <area id="7409" construction="city" level="2" installation="fort" country="gb">
             <army type="infantry" level="1" cards="0" />
             <army type="infantry" level="1" cards="0" />
             <army type="tank" level="1" cards="0" />
             <army type="infantry" level="1" cards="0" />
         </area>
-        <area id="7313" construction="none" level="0" installation="none" country="gb" />
-        <area id="7315" construction="none" level="0" installation="none" country="gb" />
-        <area id="7317" construction="none" level="0" installation="none" country="gb" />
-        <area id="7319" construction="none" level="0" installation="none" country="dk" />
-        <area id="7320" construction="none" level="0" installation="none" country="ru" />
-        <area id="7321" construction="none" level="0" installation="none" country="ru" />
-        <area id="7322" construction="none" level="0" installation="none" country="ca" />
-        <area id="7323" construction="none" level="0" installation="none" country="dk" />
-        <area id="7324" construction="none" level="0" installation="none" country="ca" />
-        <area id="7325" construction="none" level="0" installation="none" country="ca" />
-        <area id="7326" construction="none" level="0" installation="none" country="ca" />
-        <area id="7327" construction="none" level="0" installation="none" country="dk" />
-        <area id="7328" construction="none" level="0" installation="none" country="ru" />
-        <area id="7329" construction="none" level="0" installation="none" country="ca" />
-        <area id="7330" construction="none" level="0" installation="none" country="ca" />
-        <area id="7331" construction="none" level="0" installation="none" country="ca" />
-        <area id="7332" construction="none" level="0" installation="none" country="ru" />
-        <area id="7333" construction="none" level="0" installation="none" country="no" />
-        <area id="7334" construction="none" level="0" installation="none" country="fl" />
-        <area id="7335" construction="none" level="0" installation="none" country="ca" />
-        <area id="7336" construction="none" level="0" installation="none" country="no" />
-        <area id="7337" construction="none" level="0" installation="none" country="ca" />
-        <area id="7338" construction="none" level="0" installation="none" country="fl" />
-        <area id="7339" construction="none" level="0" installation="none" country="am" />
-        <area id="7340" construction="none" level="0" installation="none" country="am" />
-        <area id="7341" construction="none" level="0" installation="none" country="am" />
-        <area id="7342" construction="none" level="0" installation="none" country="am" />
-        <area id="7343" construction="none" level="0" installation="none" country="am" />
-        <area id="7344" construction="none" level="0" installation="none" country="nl" />
-        <area id="7345" construction="none" level="0" installation="none" country="de" />
-        <area id="7346" construction="none" level="0" installation="none" country="ca" />
-        <area id="7347" construction="none" level="0" installation="none" country="ru" />
-        <area id="7348" construction="none" level="0" installation="none" country="ru" />
-        <area id="7349" construction="none" level="0" installation="none" country="ru" />
-        <area id="7350" construction="none" level="0" installation="none" country="ru" />
-        <area id="7351" construction="none" level="0" installation="none" country="tr" />
-        <area id="7352" construction="none" level="0" installation="none" country="tw" />
-        <area id="7353" construction="none" level="0" installation="none" country="tw" />
-        <area id="7354" construction="none" level="0" installation="none" country="tw" />
-        <area id="7356" construction="none" level="0" installation="none" country="gb" />
-        <area id="7357" construction="none" level="0" installation="none" country="it" />
-        <area id="7358" construction="none" level="0" installation="none" country="gb" />
-        <area id="7359" construction="none" level="0" installation="none" country="gb" />
-        <area id="7360" construction="none" level="0" installation="none" country="gb" />
-        <area id="7361" construction="none" level="0" installation="none" country="am" />
-        <area id="7362" construction="airport" level="1" installation="none" country="am" />
-        <area id="7363" construction="none" level="0" installation="none" country="gb" />
-        <area id="7364" construction="none" level="0" installation="none" country="gb" />
-        <area id="7365" construction="none" level="0" installation="none" country="gb" />
-        <area id="7367" construction="none" level="0" installation="none" country="am" />
-        <area id="7371" construction="none" level="0" installation="none" country="am" />
-        <area id="7372" construction="none" level="0" installation="none" country="gb" />
-        <area id="7373" construction="none" level="0" installation="none" country="gb" />
-        <area id="7374" construction="none" level="0" installation="none" country="nl" />
-        <area id="7375" construction="none" level="0" installation="none" country="nl" />
-        <area id="7376" construction="none" level="0" installation="none" country="nl" />
-        <area id="7377" construction="none" level="0" installation="none" country="nl" />
-        <area id="7378" construction="none" level="0" installation="none" country="nl" />
-        <area id="7379" construction="none" level="0" installation="none" country="nl" />
-        <area id="7380" construction="none" level="0" installation="none" country="nl" />
-        <area id="7381" construction="none" level="0" installation="none" country="au" />
-        <area id="7382" construction="none" level="0" installation="none" country="nl" />
-        <area id="7383" construction="none" level="0" installation="none" country="nl" />
-        <area id="7384" construction="none" level="0" installation="none" country="nl" />
-        <area id="7385" construction="none" level="0" installation="none" country="nl" />
-        <area id="7386" construction="none" level="0" installation="none" country="nl" />
-        <area id="7387" construction="none" level="0" installation="none" country="au" />
-        <area id="7388" construction="none" level="0" installation="none" country="nl" />
-        <area id="7389" construction="none" level="0" installation="none" country="nl" />
-        <area id="7390" construction="none" level="0" installation="none" country="nl" />
-        <area id="7391" construction="none" level="0" installation="none" country="ca" />
-        <area id="7392" construction="none" level="0" installation="none" country="ru" />
-        <area id="7393" construction="none" level="0" installation="none" country="am" />
-        <area id="7394" construction="none" level="0" installation="none" country="gb" />
-        <area id="8322" construction="none" level="0" installation="none" country="am">
+        <area id="7414" construction="none" level="0" installation="none" country="au" />
+        <area id="7415" construction="none" level="0" installation="none" country="au" />
+        <area id="7416" construction="none" level="0" installation="none" country="au" />
+        <area id="7417" construction="none" level="0" installation="none" country="au" />
+        <area id="7418" construction="none" level="0" installation="none" country="au" />
+        <area id="7419" construction="none" level="0" installation="none" country="au" />
+        <area id="7420" construction="none" level="0" installation="none" country="au" />
+        <area id="7421" construction="none" level="0" installation="none" country="au" />
+        <area id="7422" construction="none" level="0" installation="none" country="au" />
+        <area id="7423" construction="none" level="0" installation="none" country="au" />
+        <area id="7424" construction="none" level="0" installation="none" country="au" />
+        <area id="7425" construction="none" level="0" installation="none" country="au" />
+        <area id="7426" construction="none" level="0" installation="none" country="au" />
+        <area id="7427" construction="none" level="0" installation="none" country="au" />
+        <area id="7428" construction="none" level="0" installation="none" country="au" />
+        <area id="7429" construction="none" level="0" installation="none" country="au" />
+        <area id="7430" construction="none" level="0" installation="none" country="au" />
+        <area id="7431" construction="none" level="0" installation="none" country="au" />
+        <area id="7432" construction="none" level="0" installation="none" country="au" />
+        <area id="7433" construction="none" level="0" installation="none" country="au" />
+        <area id="7434" construction="none" level="0" installation="none" country="au" />
+        <area id="7435" construction="none" level="0" installation="none" country="au" />
+        <area id="7436" construction="none" level="0" installation="none" country="au" />
+        <area id="7437" construction="none" level="0" installation="none" country="au" />
+        <area id="7438" construction="none" level="0" installation="none" country="au" />
+        <area id="7439" construction="none" level="0" installation="none" country="au" />
+        <area id="7440" construction="none" level="0" installation="none" country="au" />
+        <area id="7441" construction="none" level="0" installation="none" country="au">
+            <army type="infantry" level="1" cards="4" />
+        </area>
+        <area id="7442" construction="none" level="0" installation="none" country="au" />
+        <area id="7443" construction="none" level="0" installation="none" country="au" />
+        <area id="7444" construction="none" level="0" installation="none" country="au" />
+        <area id="7445" construction="none" level="0" installation="none" country="au" />
+        <area id="7448" construction="none" level="0" installation="none" country="gb" />
+        <area id="7449" construction="none" level="0" installation="none" country="gb" />
+        <area id="7450" construction="none" level="0" installation="none" country="gb" />
+        <area id="7451" construction="none" level="0" installation="none" country="gb" />
+        <area id="7452" construction="none" level="0" installation="none" country="gb" />
+        <area id="7453" construction="none" level="0" installation="none" country="gb" />
+        <area id="7454" construction="none" level="0" installation="none" country="gb" />
+        <area id="7455" construction="none" level="0" installation="none" country="gb">
+            <army type="infantry" level="1" cards="4" />
+        </area>
+        <area id="7468" construction="none" level="0" installation="none" country="gb" />
+        <area id="7482" construction="none" level="0" installation="none" country="au" />
+        <area id="7483" construction="none" level="0" installation="none" country="au" />
+        <area id="7484" construction="none" level="0" installation="none" country="au" />
+        <area id="7485" construction="none" level="0" installation="none" country="au" />
+        <area id="7486" construction="none" level="0" installation="none" country="au" />
+        <area id="7487" construction="none" level="0" installation="none" country="au" />
+        <area id="7488" construction="none" level="0" installation="none" country="au" />
+        <area id="7489" construction="none" level="0" installation="none" country="au" />
+        <area id="7490" construction="none" level="0" installation="none" country="au" />
+        <area id="7491" construction="none" level="0" installation="none" country="au" />
+        <area id="7492" construction="none" level="0" installation="none" country="au" />
+        <area id="7493" construction="none" level="0" installation="none" country="au" />
+        <area id="7494" construction="none" level="0" installation="none" country="au" />
+        <area id="7495" construction="none" level="0" installation="none" country="au" />
+        <area id="7496" construction="none" level="0" installation="none" country="au" />
+        <area id="7497" construction="none" level="0" installation="none" country="au" />
+        <area id="7498" construction="airport" level="1" installation="none" country="au">
+            <army type="infantry" level="1" cards="4" />
+        </area>
+        <area id="7499" construction="none" level="0" installation="none" country="au" />
+        <area id="7500" construction="none" level="0" installation="none" country="au" />
+        <area id="7501" construction="none" level="0" installation="none" country="au" />
+        <area id="7502" construction="none" level="0" installation="none" country="au" />
+        <area id="7503" construction="city" level="2" installation="fort" country="au">
+            <army type="infantry" level="1" cards="0" />
+            <army type="infantry" level="1" cards="0" />
+            <army type="tank" level="1" cards="0" />
+        </area>
+        <area id="7504" construction="none" level="0" installation="none" country="au" />
+        <area id="7505" construction="none" level="0" installation="none" country="au" />
+        <area id="7506" construction="none" level="0" installation="none" country="au" />
+        <area id="7507" construction="none" level="0" installation="none" country="au" />
+        <area id="7508" construction="none" level="0" installation="none" country="au" />
+        <area id="7513" construction="city" level="2" installation="fort" country="gb">
+            <army type="infantry" level="1" cards="0" />
+            <army type="infantry" level="1" cards="0" />
+            <army type="tank" level="1" cards="0" />
+            <army type="infantry" level="1" cards="0" />
+        </area>
+        <area id="7522" construction="none" level="0" installation="none" country="gb" />
+        <area id="7523" construction="none" level="0" installation="none" country="gb" />
+        <area id="7524" construction="none" level="0" installation="none" country="gb" />
+        <area id="7525" construction="none" level="0" installation="none" country="gb" />
+        <area id="7526" construction="none" level="0" installation="none" country="gb" />
+        <area id="7527" construction="none" level="0" installation="none" country="gb" />
+        <area id="7528" construction="none" level="0" installation="none" country="gb">
+            <army type="infantry" level="1" cards="4" />
+        </area>
+        <area id="7532" construction="none" level="0" installation="none" country="gb" />
+        <area id="7533" construction="none" level="0" installation="none" country="gb" />
+        <area id="7534" construction="city" level="2" installation="fort" country="gb">
+            <army type="infantry" level="1" cards="4" />
+            <army type="infantry" level="1" cards="4" />
+            <army type="tank" level="1" cards="4" />
+            <army type="infantry" level="1" cards="4" />
+        </area>
+        <area id="7535" construction="none" level="0" installation="none" country="gb" />
+        <area id="7536" construction="none" level="0" installation="none" country="gb" />
+        <area id="7568" construction="none" level="0" installation="none" country="au" />
+        <area id="7569" construction="none" level="0" installation="none" country="au" />
+        <area id="7570" construction="city" level="2" installation="fort" country="au">
+            <army type="infantry" level="1" cards="4" />
+            <army type="infantry" level="1" cards="4" />
+            <army type="tank" level="1" cards="4" />
+        </area>
+        <area id="7571" construction="none" level="0" installation="none" country="au" />
+        <area id="7572" construction="none" level="0" installation="none" country="au" />
+        <area id="7573" construction="none" level="0" installation="none" country="au" />
+        <area id="7574" construction="none" level="0" installation="none" country="au" />
+        <area id="7575" construction="none" level="0" installation="none" country="au" />
+        <area id="7576" construction="airport" level="1" installation="none" country="gb">
+            <army type="infantry" level="1" cards="4" />
+        </area>
+        <area id="7590" construction="none" level="0" installation="none" country="gb" />
+        <area id="7591" construction="none" level="0" installation="none" country="gb" />
+        <area id="7592" construction="none" level="0" installation="none" country="gb" />
+        <area id="7593" construction="none" level="0" installation="none" country="gb" />
+        <area id="7602" construction="none" level="0" installation="none" country="gb" />
+        <area id="7603" construction="none" level="0" installation="none" country="gb" />
+        <area id="7604" construction="none" level="0" installation="none" country="gb" />
+        <area id="7605" construction="none" level="0" installation="none" country="gb" />
+        <area id="7607" construction="none" level="0" installation="none" country="au" />
+        <area id="7608" construction="none" level="0" installation="none" country="au" />
+        <area id="7610" construction="none" level="0" installation="none" country="gb" />
+        <area id="7611" construction="city" level="2" installation="fort" country="gb">
+            <army type="infantry" level="1" cards="4" />
+            <army type="infantry" level="1" cards="4" />
+            <army type="tank" level="1" cards="4" />
+            <army type="infantry" level="1" cards="4" />
+        </area>
+        <area id="7612" construction="none" level="0" installation="none" country="gb" />
+        <area id="7613" construction="none" level="0" installation="none" country="gb" />
+        <area id="7614" construction="none" level="0" installation="none" country="gb" />
+        <area id="7615" construction="none" level="0" installation="none" country="gb" />
+        <area id="7616" construction="airport" level="1" installation="none" country="gb" />
+        <area id="7617" construction="none" level="0" installation="none" country="gb" />
+        <area id="7618" construction="none" level="0" installation="none" country="gb" />
+        <area id="7629" construction="none" level="0" installation="none" country="gb" />
+        <area id="7630" construction="none" level="0" installation="none" country="gb" />
+        <area id="7631" construction="none" level="0" installation="none" country="gb" />
+        <area id="7632" construction="none" level="0" installation="none" country="gb" />
+        <area id="7633" construction="none" level="0" installation="none" country="gb" />
+        <area id="7634" construction="none" level="0" installation="none" country="gb" />
+        <area id="7647" construction="none" level="0" installation="none" country="gb" />
+        <area id="7651" construction="none" level="0" installation="none" country="dk" />
+        <area id="7652" construction="none" level="0" installation="none" country="ru" />
+        <area id="7653" construction="none" level="0" installation="none" country="ru" />
+        <area id="7654" construction="none" level="0" installation="none" country="ca" />
+        <area id="7655" construction="none" level="0" installation="none" country="dk" />
+        <area id="7656" construction="none" level="0" installation="none" country="ca" />
+        <area id="7657" construction="none" level="0" installation="none" country="ca" />
+        <area id="7658" construction="none" level="0" installation="none" country="ca" />
+        <area id="7659" construction="none" level="0" installation="none" country="dk" />
+        <area id="7660" construction="none" level="0" installation="none" country="ru" />
+        <area id="7661" construction="none" level="0" installation="none" country="ca" />
+        <area id="7662" construction="none" level="0" installation="none" country="ca" />
+        <area id="7663" construction="none" level="0" installation="none" country="ca" />
+        <area id="7664" construction="none" level="0" installation="none" country="ru" />
+        <area id="7665" construction="none" level="0" installation="none" country="no" />
+        <area id="7666" construction="none" level="0" installation="none" country="fl" />
+        <area id="7667" construction="none" level="0" installation="none" country="ca" />
+        <area id="7668" construction="none" level="0" installation="none" country="no" />
+        <area id="7669" construction="none" level="0" installation="none" country="ca" />
+        <area id="7670" construction="none" level="0" installation="none" country="fl" />
+        <area id="7671" construction="none" level="0" installation="none" country="am" />
+        <area id="7672" construction="none" level="0" installation="none" country="am" />
+        <area id="7673" construction="none" level="0" installation="none" country="am" />
+        <area id="7674" construction="none" level="0" installation="none" country="am" />
+        <area id="7675" construction="none" level="0" installation="none" country="am" />
+        <area id="7676" construction="none" level="0" installation="none" country="nl" />
+        <area id="7677" construction="none" level="0" installation="none" country="de" />
+        <area id="7678" construction="none" level="0" installation="none" country="ca" />
+        <area id="7679" construction="none" level="0" installation="none" country="ru" />
+        <area id="7680" construction="none" level="0" installation="none" country="ru" />
+        <area id="7681" construction="none" level="0" installation="none" country="ru" />
+        <area id="7682" construction="none" level="0" installation="none" country="ru" />
+        <area id="7683" construction="none" level="0" installation="none" country="tr" />
+        <area id="7684" construction="none" level="0" installation="none" country="tw" />
+        <area id="7685" construction="none" level="0" installation="none" country="tw" />
+        <area id="7686" construction="none" level="0" installation="none" country="tw" />
+        <area id="7688" construction="none" level="0" installation="none" country="gb" />
+        <area id="7689" construction="none" level="0" installation="none" country="it" />
+        <area id="7690" construction="none" level="0" installation="none" country="gb" />
+        <area id="7691" construction="none" level="0" installation="none" country="gb" />
+        <area id="7692" construction="none" level="0" installation="none" country="gb" />
+        <area id="7693" construction="none" level="0" installation="none" country="am" />
+        <area id="7694" construction="airport" level="1" installation="none" country="am" />
+        <area id="7695" construction="none" level="0" installation="none" country="gb" />
+        <area id="7696" construction="none" level="0" installation="none" country="gb" />
+        <area id="7697" construction="none" level="0" installation="none" country="gb" />
+        <area id="7699" construction="none" level="0" installation="none" country="am" />
+        <area id="7703" construction="none" level="0" installation="none" country="am" />
+        <area id="7704" construction="none" level="0" installation="none" country="gb" />
+        <area id="7705" construction="none" level="0" installation="none" country="gb" />
+        <area id="7706" construction="none" level="0" installation="none" country="nl" />
+        <area id="7707" construction="none" level="0" installation="none" country="nl" />
+        <area id="7708" construction="none" level="0" installation="none" country="nl" />
+        <area id="7709" construction="none" level="0" installation="none" country="nl" />
+        <area id="7710" construction="none" level="0" installation="none" country="nl" />
+        <area id="7711" construction="none" level="0" installation="none" country="nl" />
+        <area id="7712" construction="none" level="0" installation="none" country="nl" />
+        <area id="7713" construction="none" level="0" installation="none" country="au" />
+        <area id="7714" construction="none" level="0" installation="none" country="nl" />
+        <area id="7715" construction="none" level="0" installation="none" country="nl" />
+        <area id="7716" construction="none" level="0" installation="none" country="nl" />
+        <area id="7717" construction="none" level="0" installation="none" country="nl" />
+        <area id="7718" construction="none" level="0" installation="none" country="nl" />
+        <area id="7719" construction="none" level="0" installation="none" country="au" />
+        <area id="7720" construction="none" level="0" installation="none" country="nl" />
+        <area id="7721" construction="none" level="0" installation="none" country="nl" />
+        <area id="7722" construction="none" level="0" installation="none" country="nl" />
+        <area id="7723" construction="none" level="0" installation="none" country="au" />
+        <area id="7732" construction="none" level="0" installation="none" country="ca" />
+        <area id="7733" construction="none" level="0" installation="none" country="ru" />
+        <area id="7735" construction="none" level="0" installation="none" country="am" />
+        <area id="7736" construction="none" level="0" installation="none" country="gb" />
+        <area id="8749" construction="none" level="0" installation="none" country="am">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8416" construction="none" level="0" installation="none" country="am">
+        <area id="8850" construction="none" level="0" installation="none" country="am">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7568" construction="none" level="0" installation="none" country="am">
+        <area id="7924" construction="none" level="0" installation="none" country="am">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8059" construction="none" level="0" installation="none" country="au">
+        <area id="8190" construction="none" level="0" installation="none" country="au">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7635" construction="none" level="0" installation="none" country="au">
+        <area id="8469" construction="none" level="0" installation="none" country="au">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8490" construction="none" level="0" installation="none" country="au">
+        <area id="8728" construction="none" level="0" installation="none" country="au">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8230" construction="none" level="0" installation="none" country="bg">
+        <area id="8652" construction="none" level="0" installation="none" country="bg">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8418" construction="none" level="0" installation="none" country="ca">
+        <area id="8852" construction="none" level="0" installation="none" country="ca">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8046" construction="none" level="0" installation="none" country="ca">
+        <area id="8456" construction="none" level="0" installation="none" country="ca">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8095" construction="none" level="0" installation="none" country="ca">
+        <area id="8508" construction="none" level="0" installation="none" country="ca">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7468" construction="none" level="0" installation="none" country="de">
+        <area id="7812" construction="none" level="0" installation="none" country="de">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7625" construction="none" level="0" installation="none" country="de">
+        <area id="7989" construction="none" level="0" installation="none" country="de">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8066" construction="none" level="0" installation="none" country="de">
+        <area id="8477" construction="none" level="0" installation="none" country="de">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7580" construction="none" level="0" installation="none" country="dk">
+        <area id="7937" construction="none" level="0" installation="none" country="dk">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8394" construction="none" level="0" installation="none" country="dk">
+        <area id="8825" construction="none" level="0" installation="none" country="dk">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7555" construction="none" level="0" installation="none" country="dk">
+        <area id="7911" construction="none" level="0" installation="none" country="dk">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8119" construction="none" level="0" installation="none" country="es">
+        <area id="8533" construction="none" level="0" installation="none" country="es">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7879" construction="none" level="0" installation="none" country="es">
+        <area id="8270" construction="none" level="0" installation="none" country="es">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8035" construction="none" level="0" installation="none" country="es">
+        <area id="8445" construction="none" level="0" installation="none" country="es">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7608" construction="none" level="0" installation="none" country="fl">
+        <area id="7969" construction="none" level="0" installation="none" country="fl">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8451" construction="none" level="0" installation="none" country="fl">
+        <area id="8888" construction="none" level="0" installation="none" country="fl">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8180" construction="none" level="0" installation="none" country="fr">
+        <area id="8600" construction="none" level="0" installation="none" country="fr">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8398" construction="none" level="0" installation="none" country="fr">
+        <area id="8829" construction="none" level="0" installation="none" country="fr">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7965" construction="none" level="0" installation="none" country="fr">
+        <area id="8371" construction="none" level="0" installation="none" country="fr">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7755" construction="none" level="0" installation="none" country="gb">
+        <area id="8724" construction="none" level="0" installation="none" country="gb">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7587" construction="none" level="0" installation="none" country="gb">
+        <area id="8135" construction="none" level="0" installation="none" country="gb">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8218" construction="none" level="0" installation="none" country="gb">
+        <area id="7946" construction="none" level="0" installation="none" country="gb">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7980" construction="none" level="0" installation="none" country="gr">
+        <area id="8387" construction="none" level="0" installation="none" country="gr">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8224" construction="none" level="0" installation="none" country="gr">
+        <area id="8646" construction="none" level="0" installation="none" country="gr">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7767" construction="none" level="0" installation="none" country="gr">
+        <area id="8147" construction="none" level="0" installation="none" country="gr">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7499" construction="none" level="0" installation="none" country="it">
+        <area id="7846" construction="none" level="0" installation="none" country="it">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8492" construction="none" level="0" installation="none" country="it">
+        <area id="8931" construction="none" level="0" installation="none" country="it">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7676" construction="none" level="0" installation="none" country="it">
+        <area id="8042" construction="none" level="0" installation="none" country="it">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7777" construction="none" level="0" installation="none" country="ja">
+        <area id="8158" construction="none" level="0" installation="none" country="ja">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7441" construction="none" level="0" installation="none" country="ja">
+        <area id="7783" construction="none" level="0" installation="none" country="ja">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8249" construction="none" level="0" installation="none" country="ja">
+        <area id="8671" construction="none" level="0" installation="none" country="ja">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7852" construction="none" level="0" installation="none" country="mx">
+        <area id="8241" construction="none" level="0" installation="none" country="mx">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8045" construction="none" level="0" installation="none" country="mx">
+        <area id="8455" construction="none" level="0" installation="none" country="mx">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8430" construction="none" level="0" installation="none" country="mx">
+        <area id="8864" construction="none" level="0" installation="none" country="mx">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8279" construction="none" level="0" installation="none" country="nl">
+        <area id="8703" construction="none" level="0" installation="none" country="nl">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7496" construction="none" level="0" installation="none" country="nl">
+        <area id="7841" construction="none" level="0" installation="none" country="nl">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8232" construction="none" level="0" installation="none" country="nl">
+        <area id="8655" construction="none" level="0" installation="none" country="nl">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8226" construction="none" level="0" installation="none" country="no">
+        <area id="8648" construction="none" level="0" installation="none" country="no">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8460" construction="none" level="0" installation="none" country="no">
+        <area id="8897" construction="none" level="0" installation="none" country="no">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8244" construction="none" level="0" installation="none" country="no">
+        <area id="8666" construction="none" level="0" installation="none" country="no">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8145" construction="none" level="0" installation="none" country="pt">
+        <area id="8561" construction="none" level="0" installation="none" country="pt">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8052" construction="none" level="0" installation="none" country="pt">
+        <area id="8462" construction="none" level="0" installation="none" country="pt">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8277" construction="none" level="0" installation="none" country="pt">
+        <area id="8701" construction="none" level="0" installation="none" country="pt">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8089" construction="none" level="0" installation="none" country="ru">
+        <area id="8502" construction="none" level="0" installation="none" country="ru">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7786" construction="none" level="0" installation="none" country="ru">
+        <area id="8167" construction="none" level="0" installation="none" country="ru">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7711" construction="none" level="0" installation="none" country="ru">
+        <area id="8080" construction="none" level="0" installation="none" country="ru">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7691" construction="none" level="0" installation="none" country="se">
+        <area id="8058" construction="none" level="0" installation="none" country="se">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8141" construction="none" level="0" installation="none" country="se">
+        <area id="8556" construction="none" level="0" installation="none" country="se">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7509" construction="none" level="0" installation="none" country="se">
+        <area id="7856" construction="none" level="0" installation="none" country="se">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8383" construction="none" level="0" installation="none" country="tr">
+        <area id="8813" construction="none" level="0" installation="none" country="tr">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7602" construction="none" level="0" installation="none" country="tr">
+        <area id="7962" construction="none" level="0" installation="none" country="tr">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7514" construction="none" level="0" installation="none" country="tw">
+        <area id="7862" construction="none" level="0" installation="none" country="tw">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8163" construction="none" level="0" installation="none" country="tw">
+        <area id="8581" construction="none" level="0" installation="none" country="tw">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8161" construction="none" level="0" installation="none" country="tw">
+        <area id="8579" construction="none" level="0" installation="none" country="tw">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7501" construction="none" level="0" installation="none" country="yu">
+        <area id="7848" construction="none" level="0" installation="none" country="yu">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="8210" construction="none" level="0" installation="none" country="yu">
+        <area id="8632" construction="none" level="0" installation="none" country="yu">
             <army type="destroyer" level="1" cards="0" />
         </area>
-        <area id="7719" construction="none" level="0" installation="none" country="yu">
+        <area id="8088" construction="none" level="0" installation="none" country="yu">
             <army type="destroyer" level="1" cards="0" />
         </area>
     </list>

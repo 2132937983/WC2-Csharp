@@ -1,4 +1,4 @@
-# the 1962 sample: 65 countries on 10 faction sides (+1 for nobody) with relations; the blocs and the
+# the 1962 sample: 66 countries on 10 faction sides (+1 for nobody) with relations; the blocs and the
 # Non-Aligned are at peace in round 5, so no area changed hands between countries at peace, while the
 # wars (the Russian successor states, the Republic of China against the Sphere) moved some borders
 W62D_start countries>=60

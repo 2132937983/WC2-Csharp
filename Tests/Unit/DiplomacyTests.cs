@@ -93,7 +93,7 @@ public class DiplomacyTests
 
     private static JsonObject SampleScenario()
     {
-        string path = Path.Combine(Support.Repo, "samples", "mods", "world-1962", "data", "json", "scenarios", "conquest_11.json");
+        string path = Path.Combine(Support.Repo, "samples", "mods", "world-1962", "data", "json", "scenarios", "conquest_12.json");
         return JsonData.Parse(File.ReadAllText(path)).AsObject();
     }
 

@@ -934,26 +934,30 @@ public sealed class CGameRes
     /// <summary>Image attribute from the flag table, for callers needing the raw texture attribute.</summary>
     public ecImageAttr GetFlagImage(string name)
     {
-        // the flags table first; a mod's new country brings a picture of its own (CountryArt)
-        return textureResFlag.GetImage(name) ?? CountryArt.UiFlag(name);
+        // a mod's flag picture, else the flags table, else a new country's picture (CountryArt)
+        return CountryArt.BoxFlag(textureResFlag, name);
     }
 
     /// <summary>Map flags of countries without an atlas flag, built from a mod's picture (CountryArt).</summary>
     private readonly Dictionary<string, CountryArt.MapFlag> modMapFlags = new();
 
     /// <summary>
-    /// Loads the map flag of a country: the army atlas flag, else one built from the mod's
-    /// <c>flag_&lt;id&gt;.png</c> on the pole of an atlas flag.
+    /// Loads the map flag of a country: a mod's <c>flag_&lt;id&gt;.png</c> (on the pole of an atlas flag),
+    /// else the army atlas flag, else the picture a new country brings.
     /// </summary>
     private void LoadFlagImage(string countryName)
     {
-        ecImage atlasFlag = textureResArmy.GetImageByFormat("flag_%s.png", countryName);
-        imageFlag[countryName] = atlasFlag;
-        if (atlasFlag != null) return;
-        ecImageAttr donor = textureResArmy.GetImage("flag_de.png")
+        string name = Sprintf("flag_%s.png", countryName);
+        ecImageAttr own = textureResArmy.GetImage(name);
+        ecImageAttr donor = own ?? textureResArmy.GetImage("flag_de.png")
                             ?? CountryDefs.ids.Select(id => textureResArmy.GetImage($"flag_{id}.png")).FirstOrDefault(a => a != null);
-        if (CountryArt.MapFlag.Create(countryName, donor) is CountryArt.MapFlag built)
+        imageFlag[countryName] = null;
+        if ((own == null || CountryArt.FromMod(name)) && CountryArt.MapFlag.Create(countryName, donor) is CountryArt.MapFlag built)
+        {
             modMapFlags[countryName] = built;
+            return;
+        }
+        if (own != null) imageFlag[countryName] = new ecImage(own);
     }
 
     /// <summary>Renders a country flag; silently skips countries without a loaded flag.</summary>

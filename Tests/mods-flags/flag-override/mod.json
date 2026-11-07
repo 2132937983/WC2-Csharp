@@ -1,0 +1,9 @@
+{
+  "id": "flag-override",
+  "name": "Test: a mod replaces two flags",
+  "version": "1.0",
+  "author": "Tests",
+  "description": "flag_fr.png (a plain flag) and flag_gb.png (a complete map flag with its pole) replace the game's flags of France and Britain (Tests/flag_override.txt).",
+  "priority": 1,
+  "enabled": true
+}

@@ -1,9 +1,9 @@
 #! --mods $TESTS/../samples/mods --ai standard
 # the sample total conversion samples/mods/world-1962 (WC2.Tools build-scenario, MODDING.md "A total
-# conversion"): 65 countries, ten factions with their own colours, relations that change with the rounds,
+# conversion"): 66 countries, ten factions with their own colours, relations that change with the rounds,
 # new countries with their flags drawn from designs. As the Greater Germanic Reich; the AI plays the rest.
 wait 4.5
-startconquest conquest_11.xml de
+startconquest conquest_12.xml de
 wait 8
 # close the round box (the map, not the clipboard, is what the photos show)
 settle

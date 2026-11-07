@@ -207,7 +207,7 @@ built-in one with the same id).
 ## 4. A total conversion: build-scenario
 
 A conquest with its own countries, factions and wars needs no code. `samples/mods/world-1962` is a complete
-example: an original alternate 1962 on the world map, 65 countries, ten factions and relations that change
+example: an original alternate 1962 on the world map, 66 countries, ten factions and relations that change
 with the rounds. It is a sample, not part of the game: nothing under `samples/` is packaged or loaded
 unless you ask for it.
 
@@ -216,19 +216,19 @@ unless you ask for it.
 * Windows: copy `samples/mods/world-1962` into `%LOCALAPPDATA%\WC2CSharp\mods\` (or into `mods\` next to
   `WC2.exe`), or start a development build with `dotnet run --project Hosts/Desktop -- --mods samples/mods`.
 * Android: copy the folder to `Android/data/com.wc2remake.csharp/files/mods/world-1962/`.
-* Then **Conquest**, the 11th entry, *1962 DIVIDED WORLD*. It needs the world map (`map-natural-earth`, built
+* Then **Conquest**, the 12th entry, *1962 DIVIDED WORLD*. It needs the world map (`map-natural-earth`, built
   in). To switch it off, delete the folder or set `"enabled": false` in its `mod.json`.
 
 **What the mod contains** (all generated, about 1 MB)
 
 | File | What |
 |---|---|
-| `data/json/scenarios/conquest_11.json` | the scenario: factions, relations, countries, every area's owner, cities, units |
-| `conquest_11.bin` | the area switch file (every area takes part) |
+| `data/json/scenarios/conquest_12.json` | the scenario: factions, relations, countries, every area's owner, cities, units |
+| `conquest_12.bin` | the area switch file (every area takes part) |
 | `data/json/conquests/conquests.json` | the conquest list entry (camera, `fogOfWar`, `leftRightWrap`) |
 | `data/json/countries/countries.json` | the ids of the new countries |
 | `flag_<id>.png`, `button_<id>@2x.png`, `sflag_<id>@2x.png` | each new country's flag, list button and small preview flag |
-| `button_conquest11@2x.png` | the conquest list button |
+| `button_conquest12@2x.png` | the conquest list button |
 | `data/json/text/<lang>/stringtable_<lang>.json` (and `_iPad`) | names, intros, faction names, announcements (English and Chinese; English in the other languages) |
 | `source/world-1962.json` | the rules everything above is built from |
 
@@ -238,7 +238,8 @@ restart the game.
 
 **The rules file** (JSON; comments and trailing commas allowed)
 
-* `mod` (the `mod.json` fields), `conquest` (the number; 11 is the first free one), `map` (`id`, the map
+* `mod` (the `mod.json` fields), `conquest` (the number: 10 is WORLD 1939, the sample takes 12, 11 is left for
+  your own), `map` (`id`, the map
   pack and its area table), `texts` (`name`, `age`, `intro`), `camera` and `button` (lon, lat),
   `fogOfWar`, `leftRightWrap`, `economy`: money = (`moneyBase` + `moneyPerTax` x taxes) x the country's
   `economy`, industry likewise with `industryBase` and `industryPerTax`. Every text is per language
@@ -268,6 +269,13 @@ than tall (150 x 102 has the original's proportions). The game puts it on a pole
 the boxes, and shows it in the conquest list unless the mod also has `button_<id>@2x.png` (151 x 105) and
 `sflag_<id>@2x.png` (66 x 43). Such a country's units use the common art and its AI badge is a common one;
 in the scenario its `name` (the art id) is that id.
+
+**Replacing a flag the game has**: a mod's `flag_<id>.png` also replaces the game's own flag of a country
+it knows (`de`, `fr`, ...) on the map, in the boxes, in the conquest list and in the preview. The picture
+may be the plain flag (the game puts it on a pole) or a complete map flag taller than wide, laid out like
+the game's atlas flags (65 x 115: pole at x 18-23, cloth from (19, 19) to (65, 46), the pole's foot at
+(21, 99)). `button_<id>@2x.png` and `sflag_<id>@2x.png` replace the list button and preview flag when
+present. `Tests/mods-flags/flag-override` is an example with one of each.
 
 Everything here is data, so a mod can name countries, draw borders and bring pictures as its author wants.
 Use pictures you may use: the sample draws its flags from simple designs (national flags and new ones).
@@ -482,7 +490,7 @@ dotnet run --project Hosts/Desktop -- --verify-data --mods <folder that contains
 ## 4. 全面改造：build-scenario
 
 一场拥有自己的国家、阵营和战争的征服无需编写代码。`samples/mods/world-1962` 是一个完整的示例：世界地图上
-一个原创的 1962 年架空历史，65 个国家、10 个阵营，以及随回合变化的外交关系。它只是示例，不属于游戏本身：
+一个原创的 1962 年架空历史，66 个国家、10 个阵营，以及随回合变化的外交关系。它只是示例，不属于游戏本身：
 `samples/` 下的任何内容都不会被打包或加载，除非你主动要求。
 
 **游玩示例**
@@ -490,19 +498,19 @@ dotnet run --project Hosts/Desktop -- --verify-data --mods <folder that contains
 * Windows：把 `samples/mods/world-1962` 复制到 `%LOCALAPPDATA%\WC2CSharp\mods\`（或 `WC2.exe` 旁边的
   `mods\`），或者用 `dotnet run --project Hosts/Desktop -- --mods samples/mods` 启动开发版。
 * Android：把该文件夹复制到 `Android/data/com.wc2remake.csharp/files/mods/world-1962/`。
-* 然后进入 **征服**，第 11 项 *1962 DIVIDED WORLD*。它需要世界地图（`map-natural-earth`，内置）。要关闭它，
+* 然后进入 **征服**，第 12 项 *1962 DIVIDED WORLD*。它需要世界地图（`map-natural-earth`，内置）。要关闭它，
   删除该文件夹，或在其 `mod.json` 中设置 `"enabled": false`。
 
 **模组包含的内容**（全部自动生成，约 1 MB）
 
 | 文件 | 内容 |
 |---|---|
-| `data/json/scenarios/conquest_11.json` | 剧本：阵营、外交关系、国家、每个地区的归属、城市、部队 |
-| `conquest_11.bin` | 地区开关文件（所有地区都参与） |
+| `data/json/scenarios/conquest_12.json` | 剧本：阵营、外交关系、国家、每个地区的归属、城市、部队 |
+| `conquest_12.bin` | 地区开关文件（所有地区都参与） |
 | `data/json/conquests/conquests.json` | 征服列表条目（镜头、`fogOfWar`、`leftRightWrap`） |
 | `data/json/countries/countries.json` | 新国家的 id |
 | `flag_<id>.png`、`button_<id>@2x.png`、`sflag_<id>@2x.png` | 每个新国家的国旗、列表按钮和预览小旗 |
-| `button_conquest11@2x.png` | 征服列表按钮 |
+| `button_conquest12@2x.png` | 征服列表按钮 |
 | `data/json/text/<语言>/stringtable_<语言>.json`（及 `_iPad`） | 国名、简介、阵营名、公告（英文和中文；其他语言使用英文） |
 | `source/world-1962.json` | 以上所有内容据以生成的规则 |
 
@@ -511,7 +519,7 @@ dotnet run --project Hosts/Desktop -- --verify-data --mods <folder that contains
 
 **规则文件**（JSON；允许注释和末尾逗号）
 
-* `mod`（`mod.json` 的字段）、`conquest`（编号；11 是第一个空闲编号）、`map`（`id`、地图包及其地区表）、
+* `mod`（`mod.json` 的字段）、`conquest`（编号：10 是 WORLD 1939，示例使用 12，11 留给你自己的模组）、`map`（`id`、地图包及其地区表）、
   `texts`（`name`、`age`、`intro`）、`camera` 和 `button`（经度、纬度）、`fogOfWar`、`leftRightWrap`、
   `economy`：金钱 =（`moneyBase` + `moneyPerTax` x 税收）x 该国的 `economy`，工业同理使用 `industryBase`
   和 `industryPerTax`。所有文本都按语言给出（`{"en": ..., "cn": ...}`）；缺少的语言使用英文。
@@ -536,6 +544,12 @@ dotnet run --project Hosts/Desktop -- --verify-data --mods <folder that contains
 上，为各种对话框缩放它，并在征服列表中显示它，除非模组还提供了 `button_<id>@2x.png`（151 x 105）和
 `sflag_<id>@2x.png`（66 x 43）。这样的国家的部队使用通用美术，其 AI 徽章也是通用徽章；在剧本中它的 `name`
 （美术 id）就是这个 id。
+
+**替换游戏已有的国旗**：模组的 `flag_<id>.png` 也会替换游戏认识的国家（`de`、`fr`……）自己的国旗，地图上、对话框中、
+征服列表和预览中都会生效。图片可以是普通的国旗（游戏会把它挂到旗杆上），也可以是一面高大于宽的完整地图旗帜，布局与
+游戏图集中的旗帜相同（65 x 115：旗杆位于 x 18-23，旗面从 (19, 19) 到 (65, 46)，旗杆底部在 (21, 99)）。如果提供了
+`button_<id>@2x.png` 和 `sflag_<id>@2x.png`，它们会替换列表按钮和预览小旗。`Tests/mods-flags/flag-override` 是一个
+两种格式各有一张的示例。
 
 这里的一切都是数据，所以模组可以按作者的意愿命名国家、划定边界、提供图片。请使用你有权使用的图片：本示例的
 国旗是由简单的设计绘制的（各国国旗以及新设计的旗帜）。

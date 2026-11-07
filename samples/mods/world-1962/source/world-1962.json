@@ -14,10 +14,10 @@
     "id": "world-1962",
     "name": "1962: Divided World",
     "version": "1.0",
-    "description": "Conquest 11: an original alternate 1962 on the world map, 65 countries in four blocs and six Russian successor states, with timed wars and peace. Needs the world map (map-natural-earth, built in). Sample of MODDING.md, 'A total conversion'.",
+    "description": "Conquest 12: an original alternate 1962 on the world map, 66 countries in four blocs and six Russian successor states, with timed wars and peace. Needs the world map (map-natural-earth, built in). Sample of MODDING.md, 'A total conversion'.",
     "priority": 1
   },
-  "conquest": 11,
+  "conquest": 12,
   "map": {
     "id": 2,
     "pack": "assets/data/maps/natural-earth",
@@ -196,6 +196,8 @@
       "flag": { "bands": ["#d91023", "#ffffff", "#d91023"], "vertical": true } },
     { "id": "chl", "faction": "atlantic", "tags": ["republic"], "name": { "en": "CHILE", "cn": "智利" }, "color": [150, 90, 140], "capital": [-70.67, -33.45],
       "flag": { "bands": ["#ffffff", "#d52b1e"], "overlays": [ { "type": "rect", "x": 0, "y": 0, "w": 0.333, "h": 0.5, "color": "#0039a6" }, { "type": "star", "x": 0.1665, "y": 0.25, "r": 0.16, "color": "#ffffff" } ] } },
+    { "id": "ury", "faction": "atlantic", "tags": ["republic"], "name": { "en": "URUGUAY", "cn": "乌拉圭" }, "color": [130, 170, 220], "capital": [-56.16, -34.90],
+      "flag": { "bands": ["#ffffff", "#0038a8", "#ffffff", "#0038a8", "#ffffff", "#0038a8", "#ffffff", "#0038a8", "#ffffff"], "overlays": [ { "type": "rect", "x": 0, "y": 0, "w": 0.4, "h": 0.556, "color": "#ffffff" }, { "type": "disc", "x": 0.2, "y": 0.278, "r": 0.15, "color": "#fcd116" } ] } },
     { "id": "lbr", "faction": "atlantic", "tags": ["republic"], "name": { "en": "LIBERIA", "cn": "利比里亚" }, "color": [190, 90, 90], "capital": [-10.80, 6.30],
       "flag": { "bands": ["#bf0a30", "#ffffff", "#bf0a30", "#ffffff", "#bf0a30", "#ffffff", "#bf0a30", "#ffffff", "#bf0a30", "#ffffff", "#bf0a30"], "overlays": [ { "type": "rect", "x": 0, "y": 0, "w": 0.36, "h": 0.455, "color": "#002868" }, { "type": "star", "x": 0.18, "y": 0.227, "r": 0.15, "color": "#ffffff" } ] } },
 
@@ -252,7 +254,7 @@
     { "to": "fr", "countries": ["fr"], "not": { "provinces": ["FR-57", "FR-67", "FR-68", "FR-59", "FR-62", "FR-80", "FR-60", "FR-02", "FR-08", "FR-51", "FR-10", "FR-52",
                                                               "FR-54", "FR-55", "FR-88", "FR-70", "FR-25", "FR-39", "FR-21", "FR-71", "FR-58", "FR-89",
                                                               "FR-06", "FR-73", "FR-74", "FR-2A", "FR-2B"] } },
-    { "to": "fr", "countries": ["dz", "ml", "mr", "ne", "td", "bf", "ci", "sn", "gn", "bj", "mg", "nc"] },
+    { "to": "fr", "countries": ["dz", "ml", "mr", "ne", "td", "bf", "ci", "sn", "gn", "bj", "mg", "nc", "tf"] },
     { "to": "ggv", "provinces": ["PL-MZ", "PL-LD", "PL-SK", "PL-MA", "PL-LU", "PL-PK", "PL-PD", "UA-46", "UA-26", "UA-61"] },
     { "to": "ost", "countries": ["ee", "lv", "lt", "by"], "not": { "era": { "1939": ["gw:255"] } } },
     { "to": "ost", "provinces": ["RU-PSK", "RU-LEN", "RU-SPE", "RU-NGR"] },
@@ -303,7 +305,7 @@
 
     // ---- Atlantic Alliance
     { "to": "am", "countries": ["am", "pr", "cu", "do", "ht", "jm", "bs", "tt", "pa", "cr", "ni", "hn", "gt", "sv", "is", "gl", "gy", "sr"], "not": { "provinces": ["AM-"] } },
-    { "to": "gb", "countries": ["gb", "fo", "bz", "kw", "qa", "ae", "om", "ye", "cy", "mu", "sl", "gm", "gh", "zw", "bw", "ls", "sz"] },
+    { "to": "gb", "countries": ["gb", "fo", "bz", "kw", "qa", "ae", "om", "ye", "cy", "mu", "sl", "gm", "gh", "zw", "bw", "ls", "sz", "fk", "gs"] },
     { "to": "gb", "regions": [3817] },
     { "to": "ca", "countries": ["ca"] },
     { "to": "au", "countries": ["au", "nz", "vu", "fj", "ws"] },
@@ -318,6 +320,7 @@
     { "to": "ecu", "countries": ["ec"] },
     { "to": "per", "countries": ["pe"] },
     { "to": "chl", "countries": ["cl"] },
+    { "to": "ury", "countries": ["uy"] },
     { "to": "lbr", "countries": ["lr"] },
 
     // ---- Non-Aligned

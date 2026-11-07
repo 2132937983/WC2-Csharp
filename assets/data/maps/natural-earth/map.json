@@ -9,16 +9,16 @@
     "west": -180,
     "east": 180,
     "north": 82,
-    "south": -26
+    "south": -56
   },
   "raster": {
     "file": "regions.raster",
     "width": 4500,
-    "height": 1350,
+    "height": 1725,
     "pixelsPerDegree": 12.5
   },
-  "landRegions": 7395,
-  "seaZones": 1141,
+  "landRegions": 7737,
+  "seaZones": 1264,
   "countries": {
     "-1": {
       "regions": 10,
@@ -45,16 +45,16 @@
       "capital": 6741
     },
     "ar": {
-      "regions": 15,
-      "capital": null
+      "regions": 107,
+      "capital": 7555
     },
     "at": {
       "regions": 16,
       "capital": 2078
     },
     "au": {
-      "regions": 136,
-      "capital": null
+      "regions": 256,
+      "capital": 7503
     },
     "az": {
       "regions": 15,
@@ -94,11 +94,11 @@
     },
     "bo": {
       "regions": 42,
-      "capital": 6954
+      "capital": 6966
     },
     "br": {
-      "regions": 322,
-      "capital": 6968
+      "regions": 338,
+      "capital": 6980
     },
     "bs": {
       "regions": 2,
@@ -110,7 +110,7 @@
     },
     "bw": {
       "regions": 22,
-      "capital": 7304
+      "capital": 7355
     },
     "by": {
       "regions": 41,
@@ -145,8 +145,8 @@
       "capital": 6050
     },
     "cl": {
-      "regions": 8,
-      "capital": null
+      "regions": 36,
+      "capital": 7551
     },
     "cm": {
       "regions": 19,
@@ -226,7 +226,11 @@
     },
     "fj": {
       "regions": 2,
-      "capital": 7141
+      "capital": 7191
+    },
+    "fk": {
+      "regions": 2,
+      "capital": null
     },
     "fl": {
       "regions": 44,
@@ -275,6 +279,10 @@
     "gr": {
       "regions": 27,
       "capital": 3440
+    },
+    "gs": {
+      "regions": 1,
+      "capital": null
     },
     "gt": {
       "regions": 11,
@@ -384,6 +392,10 @@
       "regions": 5,
       "capital": 6010
     },
+    "ls": {
+      "regions": 1,
+      "capital": 7513
+    },
     "lt": {
       "regions": 14,
       "capital": 1236
@@ -414,7 +426,7 @@
     },
     "mg": {
       "regions": 26,
-      "capital": 7180
+      "capital": 7230
     },
     "mk": {
       "regions": 7,
@@ -438,11 +450,11 @@
     },
     "mu": {
       "regions": 1,
-      "capital": 7226
+      "capital": 7276
     },
     "mw": {
       "regions": 5,
-      "capital": 6977
+      "capital": 6989
     },
     "mx": {
       "regions": 135,
@@ -454,11 +466,11 @@
     },
     "mz": {
       "regions": 32,
-      "capital": 7309
+      "capital": 7363
     },
     "na": {
-      "regions": 27,
-      "capital": 7264
+      "regions": 32,
+      "capital": 7314
     },
     "nc": {
       "regions": 2,
@@ -492,6 +504,10 @@
       "regions": 13,
       "capital": 4801
     },
+    "nz": {
+      "regions": 24,
+      "capital": 7611
+    },
     "om": {
       "regions": 22,
       "capital": 5126
@@ -502,7 +518,7 @@
     },
     "pe": {
       "regions": 52,
-      "capital": 6863
+      "capital": 6875
     },
     "pg": {
       "regions": 22,
@@ -533,8 +549,8 @@
       "capital": 3334
     },
     "py": {
-      "regions": 15,
-      "capital": 7314
+      "regions": 18,
+      "capital": 7400
     },
     "qa": {
       "regions": 1,
@@ -608,9 +624,17 @@
       "regions": 22,
       "capital": 4060
     },
+    "sz": {
+      "regions": 1,
+      "capital": 7409
+    },
     "td": {
       "regions": 39,
       "capital": 5730
+    },
+    "tf": {
+      "regions": 1,
+      "capital": null
     },
     "tg": {
       "regions": 3,
@@ -660,6 +684,10 @@
       "regions": 11,
       "capital": 6393
     },
+    "uy": {
+      "regions": 8,
+      "capital": 7566
+    },
     "uz": {
       "regions": 22,
       "capital": 2907
@@ -674,7 +702,7 @@
     },
     "vu": {
       "regions": 4,
-      "capital": 7132
+      "capital": 7182
     },
     "ws": {
       "regions": 1,
@@ -693,16 +721,16 @@
       "capital": 2590
     },
     "za": {
-      "regions": 10,
-      "capital": 7312
+      "regions": 50,
+      "capital": 7534
     },
     "zm": {
       "regions": 30,
-      "capital": 7103
+      "capital": 7153
     },
     "zw": {
       "regions": 14,
-      "capital": 7119
+      "capital": 7169
     }
   },
   "eras": {
@@ -756,6 +784,10 @@
         "gw:160": {
           "name": "Argentina",
           "capital": "Buenos Aires"
+        },
+        "gw:165": {
+          "name": "Uruguay",
+          "capital": "Montevideo"
         },
         "gw:2": {
           "name": "United States of America",
@@ -1037,17 +1069,33 @@
           "name": "Cape Colony",
           "capital": "Cape Town"
         },
+        "gw:562": {
+          "name": "Natal",
+          "capital": "Pietermatritzburg"
+        },
         "gw:563": {
           "name": "Transvaal",
           "capital": "Pretoria"
+        },
+        "gw:564": {
+          "name": "Orange Free State",
+          "capital": "Bloemfontein"
         },
         "gw:565": {
           "name": "Namibia",
           "capital": "Windhoek"
         },
+        "gw:570": {
+          "name": "Lesotho",
+          "capital": "Maseru"
+        },
         "gw:571": {
           "name": "Botswana",
           "capital": "Gaborone"
+        },
+        "gw:572": {
+          "name": "Swaziland (Eswatini)",
+          "capital": "Mbabane"
         },
         "gw:580": {
           "name": "Madagascar (Malagasy)",
@@ -1237,6 +1285,10 @@
           "name": "El Salvador",
           "capital": "San Salvador"
         },
+        "gw:920": {
+          "name": "New Zealand",
+          "capital": "Wellington"
+        },
         "gw:93": {
           "name": "Nicaragua",
           "capital": "Managua"
@@ -1313,6 +1365,10 @@
         "gw:160": {
           "name": "Argentina",
           "capital": "Buenos Aires"
+        },
+        "gw:165": {
+          "name": "Uruguay",
+          "capital": "Montevideo"
         },
         "gw:2": {
           "name": "United States of America",
@@ -1594,9 +1650,17 @@
           "name": "Namibia",
           "capital": "Windhoek"
         },
+        "gw:570": {
+          "name": "Lesotho",
+          "capital": "Maseru"
+        },
         "gw:571": {
           "name": "Botswana",
           "capital": "Gaborone"
+        },
+        "gw:572": {
+          "name": "Swaziland (Eswatini)",
+          "capital": "Mbabane"
         },
         "gw:580": {
           "name": "Madagascar (Malagasy)",
@@ -1798,6 +1862,10 @@
           "name": "El Salvador",
           "capital": "San Salvador"
         },
+        "gw:920": {
+          "name": "New Zealand",
+          "capital": "Wellington"
+        },
         "gw:93": {
           "name": "Nicaragua",
           "capital": "Managua"
@@ -1878,6 +1946,10 @@
         "gw:160": {
           "name": "Argentina",
           "capital": "Buenos Aires"
+        },
+        "gw:165": {
+          "name": "Uruguay",
+          "capital": "Montevideo"
         },
         "gw:2": {
           "name": "United States of America",
@@ -2207,9 +2279,17 @@
           "name": "Namibia",
           "capital": "Windhoek"
         },
+        "gw:570": {
+          "name": "Lesotho",
+          "capital": "Maseru"
+        },
         "gw:571": {
           "name": "Botswana",
           "capital": "Gaborone"
+        },
+        "gw:572": {
+          "name": "Swaziland (Eswatini)",
+          "capital": "Mbabane"
         },
         "gw:580": {
           "name": "Madagascar (Malagasy)",
@@ -2439,6 +2519,10 @@
           "name": "El Salvador",
           "capital": "San Salvador"
         },
+        "gw:920": {
+          "name": "New Zealand",
+          "capital": "Wellington"
+        },
         "gw:93": {
           "name": "Nicaragua",
           "capital": "Managua"
@@ -2519,6 +2603,10 @@
         "gw:160": {
           "name": "Argentina",
           "capital": "Buenos Aires"
+        },
+        "gw:165": {
+          "name": "Uruguay",
+          "capital": "Montevideo"
         },
         "gw:2": {
           "name": "United States of America",
@@ -2844,9 +2932,17 @@
           "name": "Namibia",
           "capital": "Windhoek"
         },
+        "gw:570": {
+          "name": "Lesotho",
+          "capital": "Maseru"
+        },
         "gw:571": {
           "name": "Botswana",
           "capital": "Gaborone"
+        },
+        "gw:572": {
+          "name": "Swaziland (Eswatini)",
+          "capital": "Mbabane"
         },
         "gw:580": {
           "name": "Madagascar (Malagasy)",
@@ -3088,6 +3184,10 @@
           "name": "El Salvador",
           "capital": "San Salvador"
         },
+        "gw:920": {
+          "name": "New Zealand",
+          "capital": "Wellington"
+        },
         "gw:93": {
           "name": "Nicaragua",
           "capital": "Managua"
@@ -3168,6 +3268,10 @@
         "gw:160": {
           "name": "Argentina",
           "capital": "Buenos Aires"
+        },
+        "gw:165": {
+          "name": "Uruguay",
+          "capital": "Montevideo"
         },
         "gw:2": {
           "name": "United States of America",
@@ -3485,9 +3589,17 @@
           "name": "Namibia",
           "capital": "Windhoek"
         },
+        "gw:570": {
+          "name": "Lesotho",
+          "capital": "Maseru"
+        },
         "gw:571": {
           "name": "Botswana",
           "capital": "Gaborone"
+        },
+        "gw:572": {
+          "name": "Swaziland (Eswatini)",
+          "capital": "Mbabane"
         },
         "gw:580": {
           "name": "Madagascar (Malagasy)",
@@ -3725,6 +3837,10 @@
           "name": "El Salvador",
           "capital": "San Salvador"
         },
+        "gw:920": {
+          "name": "New Zealand",
+          "capital": "Wellington"
+        },
         "gw:93": {
           "name": "Nicaragua",
           "capital": "Managua"
@@ -3801,6 +3917,10 @@
         "gw:160": {
           "name": "Argentina",
           "capital": "Buenos Aires"
+        },
+        "gw:165": {
+          "name": "Uruguay",
+          "capital": "Montevideo"
         },
         "gw:2": {
           "name": "United States of America",
@@ -4118,9 +4238,17 @@
           "name": "Namibia",
           "capital": "Windhoek"
         },
+        "gw:570": {
+          "name": "Lesotho",
+          "capital": "Maseru"
+        },
         "gw:571": {
           "name": "Botswana",
           "capital": "Gaborone"
+        },
+        "gw:572": {
+          "name": "Swaziland (Eswatini)",
+          "capital": "Mbabane"
         },
         "gw:580": {
           "name": "Madagascar (Malagasy)",
@@ -4362,6 +4490,10 @@
           "name": "El Salvador",
           "capital": "San Salvador"
         },
+        "gw:920": {
+          "name": "New Zealand",
+          "capital": "Wellington"
+        },
         "gw:93": {
           "name": "Nicaragua",
           "capital": "Managua"
@@ -4408,6 +4540,9 @@
         },
         "ne:ARM": {
           "name": "Armenia"
+        },
+        "ne:ATF": {
+          "name": "French Southern and Antarctic Lands"
         },
         "ne:AUS": {
           "name": "Australia"
@@ -4547,6 +4682,9 @@
         "ne:FJI": {
           "name": "Fiji"
         },
+        "ne:FLK": {
+          "name": "Falkland Islands"
+        },
         "ne:FRA": {
           "name": "France"
         },
@@ -4676,6 +4814,9 @@
         "ne:LKA": {
           "name": "Sri Lanka"
         },
+        "ne:LSO": {
+          "name": "Lesotho"
+        },
         "ne:LTU": {
           "name": "Lithuania"
         },
@@ -4751,6 +4892,9 @@
         "ne:NPL": {
           "name": "Nepal"
         },
+        "ne:NZL": {
+          "name": "New Zealand"
+        },
         "ne:OMN": {
           "name": "Oman"
         },
@@ -4814,6 +4958,9 @@
         "ne:SEN": {
           "name": "Senegal"
         },
+        "ne:SGS": {
+          "name": "South Georgia and the Islands"
+        },
         "ne:SLB": {
           "name": "Solomon Islands"
         },
@@ -4843,6 +4990,9 @@
         },
         "ne:SWE": {
           "name": "Sweden"
+        },
+        "ne:SWZ": {
+          "name": "Swaziland"
         },
         "ne:SYR": {
           "name": "Syria"
@@ -4886,6 +5036,9 @@
         "ne:UKR": {
           "name": "Ukraine"
         },
+        "ne:URY": {
+          "name": "Uruguay"
+        },
         "ne:USA": {
           "name": "United States of America"
         },
@@ -4926,7 +5079,7 @@
       "west": -180,
       "east": 180,
       "north": 82,
-      "south": -26
+      "south": -56
     },
     "wrap": true,
     "raster": {
@@ -5244,23 +5397,39 @@
           "name": "South America",
           "west": -82,
           "east": -34,
-          "south": -26,
+          "south": -40,
           "north": 13,
           "km2": 25000
+        },
+        {
+          "name": "Patagonia and Tierra del Fuego",
+          "west": -82,
+          "east": -50,
+          "south": -56,
+          "north": -40,
+          "km2": 30000
         },
         {
           "name": "Africa south of the Sahara",
           "west": -18,
           "east": 52,
-          "south": -26,
+          "south": -36,
           "north": 18,
           "km2": 25000
         },
         {
-          "name": "northern Australia and Oceania",
+          "name": "New Zealand",
+          "west": 165,
+          "east": 180,
+          "south": -48,
+          "north": -33,
+          "km2": 12000
+        },
+        {
+          "name": "Australia and Oceania",
           "west": 110,
           "east": 180,
-          "south": -26,
+          "south": -45,
           "north": -5,
           "km2": 30000
         }

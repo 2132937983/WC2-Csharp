@@ -1,0 +1,13 @@
+#! --mods $TESTS/mods-flags
+# a mod replaces the flags of countries the game knows (Tests/mods-flags/flag-override): flag_fr.png, a plain
+# flag (a purple cloth with a yellow disc), goes on an atlas pole; flag_gb.png, a complete map flag with its
+# pole (orange with a black band), is drawn like the atlas flags. WORLD 1939 as Germany, Paris and London.
+wait 4.5
+startconquest conquest_10.xml de
+wait 8
+settle
+wait 2
+camera 18110 3170 0.85
+wait 0.5
+shot FO_paris_london
+exit

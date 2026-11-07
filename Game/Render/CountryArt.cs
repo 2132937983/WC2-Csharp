@@ -15,7 +15,8 @@ namespace WC2;
 /// draws both), otherwise the plain flag.</item>
 /// </list>
 /// A picture taller than wide is taken as a complete map flag with its pole, laid out like the atlas
-/// flags (its cloth area serves the boxes).
+/// flags (its cloth area serves the boxes). A mod's picture also replaces the game's own flag of a
+/// country the atlases know (<see cref="FromMod"/>).
 /// </summary>
 public static class CountryArt
 {
@@ -54,6 +55,30 @@ public static class CountryArt
 
     private static bool IsPoleFlag(ecImageAttr a) => a != null && a.h > a.w;
 
+    private static readonly Dictionary<string, bool> fromMod = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Whether a mod (not the game package) brings a picture of that name. A mod's picture replaces the
+    /// game's art of the same name, even for a country the atlases know: a mod changes a flag by shipping
+    /// <c>flag_&lt;id&gt;.png</c>.
+    /// </summary>
+    public static bool FromMod(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return false;
+        if (fromMod.TryGetValue(name, out bool cached)) return cached;
+        string path = ecGraphics.ResolveTextureFile(name, out _);
+        bool mod = path != null && AssetSystem.GetLayer(path) is AssetLayer layer && layer.IsMod;
+        fromMod[name] = mod;
+        return mod;
+    }
+
+    /// <summary>Forgets the pictures found so far (the mods changed).</summary>
+    public static void Reset()
+    {
+        pictures.Clear();
+        fromMod.Clear();
+    }
+
     /// <summary>The flag of the boxes for "flag_&lt;id&gt;.png" when the flag table has none.</summary>
     public static ecImageAttr UiFlag(string flagName)
     {
@@ -67,13 +92,30 @@ public static class CountryArt
         };
     }
 
-    /// <summary>The conquest list button of a country: the UI atlas, a picture of that name, the plain flag.</summary>
-    public static ecImageAttr Button(ecTextureRes ui, string countryName) =>
-        ui.GetImage($"button_{countryName}.png") ?? Picture($"button_{countryName}.png") ?? UiFlag($"flag_{countryName}.png");
+    /// <summary>
+    /// The flag of the boxes: a mod's <c>flag_&lt;id&gt;.png</c>, else the game's flag table (passed in),
+    /// else the plain flag of a new country.
+    /// </summary>
+    public static ecImageAttr BoxFlag(ecTextureRes table, string flagName) =>
+        (FromMod(flagName) ? UiFlag(flagName) : null) ?? table?.GetImage(flagName) ?? UiFlag(flagName);
 
-    /// <summary>The small preview flag of a country: the UI atlas, a picture of that name, the plain flag.</summary>
+    /// <summary>
+    /// The conquest list button of a country: a mod's button picture, a mod's flag (the game's button
+    /// would show the old one), the UI atlas, a picture of that name, the plain flag.
+    /// </summary>
+    public static ecImageAttr Button(ecTextureRes ui, string countryName) =>
+        ModPicture($"button_{countryName}.png") ?? ModFlag(countryName) ?? ui.GetImage($"button_{countryName}.png")
+        ?? Picture($"button_{countryName}.png") ?? UiFlag($"flag_{countryName}.png");
+
+    /// <summary>The small preview flag of a country, in the same order as <see cref="Button"/>.</summary>
     public static ecImageAttr SmallFlag(ecTextureRes ui, string countryId) =>
-        ui.GetImage($"sflag_{countryId}.png") ?? Picture($"sflag_{countryId}.png") ?? UiFlag($"flag_{countryId}.png");
+        ModPicture($"sflag_{countryId}.png") ?? ModFlag(countryId) ?? ui.GetImage($"sflag_{countryId}.png")
+        ?? Picture($"sflag_{countryId}.png") ?? UiFlag($"flag_{countryId}.png");
+
+    private static ecImageAttr ModPicture(string name) => FromMod(name) ? Picture(name) : null;
+
+    private static ecImageAttr ModFlag(string countryName) =>
+        FromMod($"flag_{countryName}.png") ? UiFlag($"flag_{countryName}.png") : null;
 
     /// <summary>A map flag built from a mod's picture: drawn at an atlas flag's size and anchor.</summary>
     public sealed class MapFlag

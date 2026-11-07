@@ -83,8 +83,9 @@ against the dumps (the AI tests).
 | `resource_cycle` | menu -> conquest -> menu twice: the same texture memory on every visit |
 | `ai_defends_marseille_classic`, `ai_defends_marseille_standard` | the test mod `mods/ai-marseille` (an Italian stack next to a weakly held Marseille): the standard AI reinforces and holds Marseille (`.expect`), the classic AI loses it |
 | `ai_standard_autoplay` | conquest 1 played by the standard AI for 16 rounds |
-| `world_menu`, `world_autoplay` | the generated world map, WORLD 1939 (`mods/map-natural-earth`, MAP_PIPELINE.md, 7 389 provinces drawn as a mesh): through the conquest menu (list, preview, game); as France with the seam at the Bering Strait, fully zoomed out (no black bars) and fully zoomed out at the seam (Asia left of America, no empty water), fully zoomed in (units fitted to the provinces), the flag markers, four rounds of the standard AI and the naval count (`world_autoplay.expect`: harbours, transports and ships at sea) |
-| `world1962_autoplay` | the sample total conversion `samples/mods/world-1962` (`--mods samples/mods`): 65 countries on ten faction sides, new countries' flags on the map (Dijon), the successor states and East Asia; four rounds of the standard AI: borders move in the wars, none between countries at peace (`.expect`) |
+| `world_menu`, `world_autoplay` | the generated world map, WORLD 1939 (`mods/map-natural-earth`, MAP_PIPELINE.md, 7 737 provinces drawn as a mesh, from the polar islands to Cape Horn): through the conquest menu (list, preview, game); as France with the seam at the Bering Strait, fully zoomed out (no black bars) and fully zoomed out at the seam (Asia left of America, no empty water), fully zoomed in (units fitted to the provinces), the flag markers, four rounds of the standard AI and the naval count (`world_autoplay.expect`: harbours, transports and ships at sea) |
+| `world1962_autoplay` | the sample total conversion `samples/mods/world-1962` (`--mods samples/mods`): 66 countries on ten faction sides, new countries' flags on the map (Dijon), the successor states and East Asia; four rounds of the standard AI: borders move in the wars, none between countries at peace (`.expect`) |
+| `flag_override` | the test mod `Tests/mods-flags/flag-override` replaces the flags of France (a plain picture on an atlas pole) and Britain (a complete map flag with its pole) on the world map |
 
 ## Unit tests (`Unit/`, `dotnet test Tests`)
 
@@ -167,8 +168,9 @@ against the dumps (the AI tests).
 | `resource_cycle` | 菜单 -> 征服 -> 菜单，重复两次：每次进入时纹理内存都相同 |
 | `ai_defends_marseille_classic`、`ai_defends_marseille_standard` | 测试模组 `mods/ai-marseille`（一支意大利部队堆叠在防守薄弱的马赛旁边）：standard AI 会增援并守住马赛（`.expect`），classic AI 则会丢掉马赛 |
 | `ai_standard_autoplay` | 征服 1，由 standard AI 进行 16 个回合 |
-| `world_menu`、`world_autoplay` | 生成的世界地图 WORLD 1939（`mods/map-natural-earth`，MAP_PIPELINE.md，以网格绘制的 7 389 个省份）：通过征服菜单进入（列表、预览、游戏）；以法国开局，查看白令海峡处的接缝、最大缩小（没有黑边）以及在接缝处最大缩小（亚洲在美洲左侧，没有空白海面）、最大放大（部队缩放到省份内）、旗帜标记、standard AI 进行四个回合，以及海军统计（`world_autoplay.expect`：港口、海上的运输船和舰船） |
-| `world1962_autoplay` | 全面改造示例 `samples/mods/world-1962`（`--mods samples/mods`）：分属十个阵营的 65 个国家，新国家在地图上的国旗（第戎），苏联继承国和东亚；standard AI 进行四个回合：战争中边界变化，处于和平的国家之间没有任何地区易手（`.expect`） |
+| `world_menu`、`world_autoplay` | 生成的世界地图 WORLD 1939（`mods/map-natural-earth`，MAP_PIPELINE.md，以网格绘制的 7 737 个省份，从北极群岛到合恩角）：通过征服菜单进入（列表、预览、游戏）；以法国开局，查看白令海峡处的接缝、最大缩小（没有黑边）以及在接缝处最大缩小（亚洲在美洲左侧，没有空白海面）、最大放大（部队缩放到省份内）、旗帜标记、standard AI 进行四个回合，以及海军统计（`world_autoplay.expect`：港口、海上的运输船和舰船） |
+| `world1962_autoplay` | 全面改造示例 `samples/mods/world-1962`（`--mods samples/mods`）：分属十个阵营的 66 个国家，新国家在地图上的国旗（第戎），苏联继承国和东亚；standard AI 进行四个回合：战争中边界变化，处于和平的国家之间没有任何地区易手（`.expect`） |
+| `flag_override` | 测试模组 `Tests/mods-flags/flag-override` 在世界地图上替换法国（挂在图集旗杆上的普通图片）和英国（带旗杆的完整地图旗帜）的国旗 |
 
 ## 单元测试（`Unit/`，`dotnet test Tests`）
 

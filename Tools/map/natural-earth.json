@@ -4,12 +4,12 @@
   "name": "World (1910-2018)",
 
   // Coverage: the whole width (the map wraps left-right), north to the Russian polar islands
-  // (Franz Josef Land 81.9 N) and all of northern Europe, south to southern Madagascar (25.6 S) and
-  // northern Australia.
-  "bounds": { "west": -180, "east": 180, "north": 82, "south": -26 },
+  // (Franz Josef Land 81.9 N) and all of northern Europe, south to Cape Horn (55.98 S): all of South
+  // America, Africa, Australia, Tasmania and New Zealand.
+  "bounds": { "west": -180, "east": 180, "north": 82, "south": -56 },
   "wrap": true,
-  // 12.5 pixels per degree; the map mod doubles it (9000 x 2700 map units, a multiple of 1000 wide
-  // so the wrap is seamless)
+  // 12.5 pixels per degree (4500 x 1725); the map mod uses 100 map units per degree (36000 x 13800,
+  // a multiple of 1000 wide so the wrap is seamless)
   "raster": { "width": 4500 },
 
   // The eras of the base map. Every era's borders are kept as region borders, so a scenario of any
@@ -83,9 +83,11 @@
       { "name": "United States and southern Canada", "west": -130, "east": -52, "south": 24, "north": 55, "km2": 18000 },
       { "name": "Alaska and northern Canada", "west": -180, "east": -52, "south": 55, "north": 82, "km2": 60000 },
       { "name": "Central America and the Caribbean", "west": -118, "east": -59, "south": 7, "north": 24, "km2": 12000 },
-      { "name": "South America", "west": -82, "east": -34, "south": -26, "north": 13, "km2": 25000 },
-      { "name": "Africa south of the Sahara", "west": -18, "east": 52, "south": -26, "north": 18, "km2": 25000 },
-      { "name": "northern Australia and Oceania", "west": 110, "east": 180, "south": -26, "north": -5, "km2": 30000 }
+      { "name": "South America", "west": -82, "east": -34, "south": -40, "north": 13, "km2": 25000 },
+      { "name": "Patagonia and Tierra del Fuego", "west": -82, "east": -50, "south": -56, "north": -40, "km2": 30000 },
+      { "name": "Africa south of the Sahara", "west": -18, "east": 52, "south": -36, "north": 18, "km2": 25000 },
+      { "name": "New Zealand", "west": 165, "east": 180, "south": -48, "north": -33, "km2": 12000 },
+      { "name": "Australia and Oceania", "west": 110, "east": 180, "south": -45, "north": -5, "km2": 30000 }
     ]
   },
 

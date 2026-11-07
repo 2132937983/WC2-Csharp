@@ -91,7 +91,7 @@ and CShapes historical borders (`MAP_PIPELINE.md`): one map whose regions follow
 mod (`mods/map-natural-earth`: conquest 10 "WORLD 1939" in the conquest list; the map wraps left-right).
 How mods work, and how to change the game package directly: `MODDING.md`. A total conversion needs no
 code: `WC2.Tools build-scenario` writes a conquest with new countries, factions and timed war and peace
-from a rules file; `samples/mods/world-1962` (an original alternate 1962, 65 countries) is the example,
+from a rules file; `samples/mods/world-1962` (an original alternate 1962, 66 countries, conquest 12) is the example,
 not loaded unless you copy it into a mods folder (MODDING.md, section 4).
 
 ## Android
@@ -200,7 +200,7 @@ dotnet run --project Hosts/Desktop
 
 AI 的各项数值也是数据（`data/json/ai/profiles.json`）：`classic` 与原版 AI 完全一致；`standard`（默认）会防守受到威胁的首都、港口、机场、城市和本土地区，并更积极地购买卡牌；`hard` 会对玩家施加更大的压力。
 
-除经典地图之外，`WC2.Tools build-map` 还能根据 Natural Earth 地理数据和 CShapes 历史边界生成一张世界底图（见 `MAP_PIPELINE.md`）：一张区域同时遵循 1910、1914、1936、1939、1945、1949 年和今天边界的地图，输出为数据包（`assets/data/maps/natural-earth`）和可游玩的模组（`mods/map-natural-earth`：征服列表中的征服 10 “WORLD 1939”；地图左右循环）。模组的工作方式以及如何直接修改游戏资源包，见 `MODDING.md`。全面改造无需编写代码：`WC2.Tools build-scenario` 可以根据规则文件生成一场带有新国家、阵营以及定时战争与和平的征服；`samples/mods/world-1962`（原创的 1962 年架空历史，65 个国家）就是示例，只有复制到模组文件夹后才会加载（MODDING.md 第 4 节）。
+除经典地图之外，`WC2.Tools build-map` 还能根据 Natural Earth 地理数据和 CShapes 历史边界生成一张世界底图（见 `MAP_PIPELINE.md`）：一张区域同时遵循 1910、1914、1936、1939、1945、1949 年和今天边界的地图，输出为数据包（`assets/data/maps/natural-earth`）和可游玩的模组（`mods/map-natural-earth`：征服列表中的征服 10 “WORLD 1939”；地图左右循环）。模组的工作方式以及如何直接修改游戏资源包，见 `MODDING.md`。全面改造无需编写代码：`WC2.Tools build-scenario` 可以根据规则文件生成一场带有新国家、阵营以及定时战争与和平的征服；`samples/mods/world-1962`（原创的 1962 年架空历史，66 个国家，征服 12）就是示例，只有复制到模组文件夹后才会加载（MODDING.md 第 4 节）。
 
 ## Android
 

@@ -197,7 +197,7 @@ are (`flags: "armies"`), the colours show the owners.
 
 | Field | World base map |
 |---|---|
-| `bounds`, `wrap` | west -180, east 180 (wrapping), north 82, south -26 |
+| `bounds`, `wrap` | west -180, east 180 (wrapping), north 82 (Franz Josef Land), south -56 (Cape Horn: all of South America, Africa, Australia, New Zealand); 36 000 x 13 800 map units |
 | `raster.width` | 4500 (12.5 pixels per degree) |
 | `eras` | 1910-01-01, 1914-07-01, 1936-01-01, 1939-09-01, 1945-09-02, 1949-12-31 (CShapes), 2018 (`naturalearth`) |
 | `historicalBorders` | `file`, `minFragmentKm2` 1500, `minFragmentWidthPixels` 2, `fallback`, `corrections` (name, `unit`, `eras`, `polygon` lon/lat: the Memel Territory) |
@@ -432,7 +432,7 @@ LibTessDotNet（MIT）三角化。区域和边界按竖条（`chunkWidth`）存�
 
 | 字段 | 世界底图 |
 |---|---|
-| `bounds`、`wrap` | 西 -180、东 180（左右循环），北 82，南 -26 |
+| `bounds`、`wrap` | 西 -180、东 180（左右循环），北 82（法兰士约瑟夫地群岛），南 -56（合恩角：整个南美洲、非洲、澳大利亚和新西兰）；36 000 x 13 800 地图单位 |
 | `raster.width` | 4500（每度 12.5 像素） |
 | `eras` | 1910-01-01、1914-07-01、1936-01-01、1939-09-01、1945-09-02、1949-12-31（CShapes），2018（`naturalearth`） |
 | `historicalBorders` | `file`、`minFragmentKm2` 1500、`minFragmentWidthPixels` 2、`fallback`、`corrections`（名称、`unit`、`eras`、经纬度 `polygon`：梅梅尔地区） |
