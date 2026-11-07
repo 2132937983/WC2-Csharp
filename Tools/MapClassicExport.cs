@@ -61,7 +61,7 @@ internal static partial class MapPipeline
 
     /// <param name="scale">map units per pixel of <paramref name="raster"/> (1: the raster is drawn at map resolution)</param>
     private static void ExportClassic(string outDir, JsonObject config, List<Region> regions, int[] raster, int width, int height,
-                                      int scale, List<ScenarioSpec> scenarios, bool wrap)
+                                      int scale, List<ScenarioSpec> scenarios, bool wrap, string source = null)
     {
         var cfg = config["classicExport"]!.AsObject();
         int mapId = cfg["mapId"]!.GetValue<int>();
@@ -152,7 +152,23 @@ internal static partial class MapPipeline
             }
         }
 
-        // ---- adjion<id>.bin: the 16 longest borders per region, kept only when both ends keep them
+        // ---- adjion<id>.bin: every neighbour (version 2: "WCAJ", 2, count, most neighbours, then per area
+        // the count and the neighbours) when some area has more than the original format's 16 (a coast of
+        // many small provinces, straits); otherwise the 16 longest borders kept by both ends, as before
+        int mostNeighbours = regions.Max(r => r.border.Count);
+        if (mostNeighbours > 16)
+        {
+            using var w2 = new BinaryWriter(File.Create(Path.Combine(outDir, $"adjion{mapId}.bin")));
+            w2.Write("WCAJ".ToCharArray()); w2.Write(2); w2.Write(n); w2.Write(mostNeighbours);
+            for (int r = 0; r < n; r++)
+            {
+                var list = regions[r].border.Keys.OrderBy(o => o).ToList();
+                w2.Write(list.Count);
+                for (int k = 0; k < mostNeighbours; k++) w2.Write(k < list.Count ? list[k] : 0);
+            }
+        }
+        else
+        {
         var keep = new HashSet<(int, int)>();
         var top = regions.Select(r => r.border.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).Take(16).Select(kv => kv.Key).ToHashSet()).ToArray();
         for (int r = 0; r < n; r++)
@@ -166,6 +182,7 @@ internal static partial class MapPipeline
                 w.Write(list.Count);
                 for (int k = 0; k < 16; k++) w.Write(k < list.Count ? list[k] : 0);
             }
+        }
         }
 
         // ---- areamark<id>.raw
@@ -213,7 +230,21 @@ internal static partial class MapPipeline
             ["format"] = 1,
             ["about"] = "Area types, base taxes and unit fit radii of the generated map (WC2.Tools build-map --classic-out).",
         };
-        if (cfg["display"] is JsonObject display) areasDoc["display"] = display.DeepClone();
+        if (cfg["display"] is JsonObject display)
+        {
+            var shown = display.DeepClone().AsObject();
+            // the terrain picture and the paper grain the export writes (MapTerrainExport)
+            if (cfg["mesh"]?.GetValue<bool>() == true && cfg["terrain"] is JsonObject t)
+            {
+                shown["terrain"] = new JsonObject
+                {
+                    ["file"] = $"terrain{mapId}_{{0}}.webp", ["columns"] = t["columns"]?.GetValue<int>() ?? 8, ["rows"] = t["rows"]?.GetValue<int>() ?? 4,
+                    ["ownerAlpha"] = t["ownerAlpha"]?.GetValue<double>() ?? 0.45,
+                };
+                shown["detail"] = new JsonObject { ["file"] = $"paper{mapId}.png", ["units"] = t["grainUnits"]?.GetValue<double>() ?? 600, ["minZoom"] = t["grainMinZoom"]?.GetValue<double>() ?? 0.12 };
+            }
+            areasDoc["display"] = shown;
+        }
         areasDoc["areas"] = areas;
         File.WriteAllText(Path.Combine(areasDir, "areas.json"), areasDoc.ToJsonString(new JsonSerializerOptions { WriteIndented = false }) + "\n");
 
@@ -228,6 +259,18 @@ internal static partial class MapPipeline
                                             m?["tolerance"]?.GetValue<double>() ?? 0.9, m?["smoothing"]?.GetValue<int>() ?? 1,
                                             m?["chunkWidth"]?.GetValue<float>() ?? 1500f);
             Console.WriteLine($"build-map: mesh: {stats.vertices} vertices, {stats.triangles} triangles, {stats.chains} border chains ({stats.points} points)");
+            if (cfg["terrain"] is JsonObject terrainCfg)
+            {
+                foreach (var (name, format) in MapTerrainExport.Write(outDir, mapId, terrainCfg, config, regions.Select(r => r.sea).ToArray(), raster, width, height, source))
+                    formats[name] = format;
+                Directory.CreateDirectory(Path.Combine(outDir, "generated"));
+                File.WriteAllText(Path.Combine(outDir, "generated", "texture_formats.json"), new JsonObject
+                {
+                    ["format"] = 1,
+                    ["about"] = "Load-time formats of the generated map's textures (merged with the game's list).",
+                    ["textures"] = formats,
+                }.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
+            }
         }
         else
         {

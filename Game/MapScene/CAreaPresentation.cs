@@ -253,15 +253,17 @@ public sealed partial class CArea
     }
 
     /// <summary>
-    /// A zoomed out mesh map: the area's armies as one flag of constant size on screen (the size it has
-    /// at <paramref name="markerZoom"/>), so they never shrink to dots.
+    /// A zoomed out mesh map: the area's armies and buildings as one flag of nearly constant size on
+    /// screen (the size the units have at <paramref name="markerZoom"/>, a little smaller in a small
+    /// province), so nothing on screen vanishes.
     /// </summary>
     public void RenderMarker(float cameraScale, float markerZoom)
     {
-        if (country == null || (armyCount == 0 && armyMovingIn == null)) return;
+        if (country == null || info.sea && armyCount == 0) return;
+        if (armyCount == 0 && armyMovingIn == null && armyDrafting == null && info.constructionType == NO_CONSTRUCTION) return;
         var graphics = ecGraphics.Instance();
         float x = info.armyPos[0], y = info.armyPos[1];
-        graphics.SetLocalScale(x, y, markerZoom / cameraScale);
+        graphics.SetLocalScale(x, y, markerZoom * Math.Max(0.55f, unitScale) / cameraScale);
         g_GameRes.RenderFlag(country.name, x, y);
         graphics.ClearLocalScale();
     }

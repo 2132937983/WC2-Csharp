@@ -8,9 +8,14 @@ shot WM1_start
 hittest world_map
 texstats world
 # the map wraps (leftRightWrap): at the left edge (the Bering Strait) Chukotka shows from the right end
-camera 1000 1800 1
+camera 150 1800 1
 wait 0.5
 shot WM3_seam
+# zoomed out at the seam: Asia from the right end left of America, never empty water (each copy of the
+# map draws its own background)
+camera 2000 5400 0.01
+wait 0.5
+shot WM7_seam_zoomed_out
 # zoomed out as far as it goes: the map fills the screen height, no black bars above or below
 camera 18000 5400 0.01
 wait 0.5

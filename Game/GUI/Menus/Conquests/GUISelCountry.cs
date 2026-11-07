@@ -490,7 +490,8 @@ public sealed class GUISelCountry : GUIElement
                 // a mesh map: the areas in their owners' colours and the borders
                 var cam = actualMap.scene.camera;
                 float hw = cam.screenHalfSize[0] / cam.scale, hh = cam.screenHalfSize[1] / cam.scale;
-                mesh.Render(actualMap.scene, cam.centerPos[0] - hw, cam.centerPos[0] + hw, cam.centerPos[1] - hh, cam.centerPos[1] + hh);
+                mesh.Render(actualMap.scene, cam.centerPos[0] - hw, cam.centerPos[0] + hw, cam.centerPos[1] - hh, cam.centerPos[1] + hh,
+                            actualMap.scene.topLeftPos[0] + actualMap.scene.size[0], actualMap.scene.topLeftPos[1] + actualMap.scene.size[1], cam.scale);
             }
             // draw the map background first, then the area color layer
             if (mesh == null && actualMap.scene.background != null)

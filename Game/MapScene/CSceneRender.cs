@@ -325,14 +325,14 @@ public sealed partial class CScene
         }
 
         int visibleCount = visibleRenderAreaList.Count;
-        // a mesh map zoomed out: buildings are left out and armies become flag markers (display markerZoom)
+        // a mesh map zoomed out below markerZoom: every province's armies and buildings become one flag
+        // marker of nearly constant size on screen (smaller provinces a little smaller), so none vanishes;
+        // above it units and buildings are drawn, scaled to their province
         float cameraScale = camera.scale;
-        for (int i = 0; i < visibleCount; ++i)
-        {
-            CArea area = visibleRenderAreaList[i].area;
-            if (display != null && cameraScale * area.unitScale < display.markerZoom) continue;
-            area.RenderBuilding();
-        }
+        bool markers = display != null && cameraScale < display.markerZoom;
+        if (!markers)
+            for (int i = 0; i < visibleCount; ++i)
+                visibleRenderAreaList[i].area.RenderBuilding();
 
         for (int i = 0; i < visibleCount; ++i)
         {
@@ -340,11 +340,10 @@ public sealed partial class CScene
             // fog of war hides the armies of the areas the player cannot see
             if (fogOfWar && !IsVisibleToPlayer(RenderArea))
                 continue;
-            bool marker = display != null && cameraScale * RenderArea.unitScale < display.markerZoom;
-            if (marker) RenderArea.RenderMarker(cameraScale, display.markerZoom);
+            if (markers) RenderArea.RenderMarker(cameraScale, display.markerZoom);
             else RenderArea.Render();
             // the target arrows above the army follow its scale
-            float arrowScale = marker ? display.markerZoom / cameraScale : RenderArea.unitScale;
+            float arrowScale = markers ? display.markerZoom * Math.Max(0.55f, RenderArea.unitScale) / cameraScale : RenderArea.unitScale;
             if (arrowScale != 1f && RenderArea.targetType != 0)
                 ecGraphics.Instance().SetLocalScale(RenderArea.info.armyPos[0], RenderArea.info.armyPos[1], arrowScale);
             if (RenderArea.targetType == 1)
@@ -450,7 +449,8 @@ public sealed partial class CScene
     {
         float halfWidth = camera.screenHalfSize[0] / camera.scale, halfHeight = camera.screenHalfSize[1] / camera.scale;
         mapMesh.Render(this, camera.centerPos[0] - halfWidth, camera.centerPos[0] + halfWidth,
-                       camera.centerPos[1] - halfHeight, camera.centerPos[1] + halfHeight);
+                       camera.centerPos[1] - halfHeight, camera.centerPos[1] + halfHeight,
+                       topLeftPos[0] + size[0], topLeftPos[1] + size[1], camera.scale);
         if (g_GameManager.SkipMode) return;
         if (newRoundFlashing && g_GameManager.GetCurCountry() is CCountry current)
             mapMesh.RenderCountry(current, WithAlpha(0xFFFFFFFFu, (flashTimer - 0.5f) * 0.8f));

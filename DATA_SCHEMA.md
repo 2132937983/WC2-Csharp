@@ -258,8 +258,12 @@ the classic maps have 1), `unitFitRadius` and `minUnitScale` (an area whose `fit
 draws its units, flag and buildings scaled by `fit / unitFitRadius`, never below `minUnitScale`),
 `markerZoom` (below this on-screen unit scale, camera zoom x unit scale, armies show as a flag of constant
 size and buildings are left out) and `flags` (`all`: a flag in every owned area, the classic look;
-`armies`: only where units or a building stand). A sea area of type `port` is a harbour, as in the
-original: ships are built and healed there, and the AI plans its navy from it.
+`armies`: only where units or a building stand), `terrain` (the background picture: tiles `file` with `{0}`
+for the index, `columns` x `rows` over the whole map, and `ownerAlpha`, the opacity of the owners' colours
+over it) and `detail` (the paper grain: `file`, a tile of `units` map units, from the camera zoom `minZoom`).
+A sea area of type `port` is a harbour, as in the original: ships are built and healed there, and the AI
+plans its navy from it. A generated map may store more than 16 neighbours per area: `adjion<id>.bin`
+version 2 ("WCAJ", 2, area count, most neighbours, then per area the count and the neighbours).
 
 ## scenarios
 
@@ -607,7 +611,7 @@ AI 的征召顺序按国家分别依价格、然后工业、然后科技排列�
 
 `data/json/maps/<id>/areas.json`：`{"areas": {"<area id>": {"type": "capital", "tax": 30}}}`。此处未列出的地区是税收为 100 的普通地区。几何数据（`area<id>.bin`、`adjion<id>.bin`、`areamark<id>.raw`）仍保持二进制格式。
 
-生成的网格地图（见 MAP_PIPELINE.md）会为每个地区增加 `fit`（以地区内军队锚点为圆心、完全位于地区内的最大圆的半径，单位为地图单位），并在顶层增加 `display` 对象：`maxZoom`（镜头最大缩放；经典地图为 1）、`unitFitRadius` 和 `minUnitScale`（`fit` 小于 `unitFitRadius` 的地区，其部队、旗帜和建筑按 `fit / unitFitRadius` 缩小绘制，但不小于 `minUnitScale`）、`markerZoom`（屏幕上的部队比例，即镜头缩放 × 部队比例，低于该值时军队显示为固定大小的旗帜，不绘制建筑）以及 `flags`（`all`：每个有归属的地区都插旗，即经典样式；`armies`：只在有部队或建筑的地区插旗）。类型为 `port` 的海上地区就是港口，与原版一致：在那里建造和修理舰船，AI 也据此规划海军。
+生成的网格地图（见 MAP_PIPELINE.md）会为每个地区增加 `fit`（以地区内军队锚点为圆心、完全位于地区内的最大圆的半径，单位为地图单位），并在顶层增加 `display` 对象：`maxZoom`（镜头最大缩放；经典地图为 1）、`unitFitRadius` 和 `minUnitScale`（`fit` 小于 `unitFitRadius` 的地区，其部队、旗帜和建筑按 `fit / unitFitRadius` 缩小绘制，但不小于 `minUnitScale`）、`markerZoom`（屏幕上的部队比例，即镜头缩放 × 部队比例，低于该值时军队显示为固定大小的旗帜，不绘制建筑）`flags`（`all`：每个有归属的地区都插旗，即经典样式；`armies`：只在有部队或建筑的地区插旗）、`terrain`（背景图：图块 `file`，其中 `{0}` 为序号，`columns` × `rows` 覆盖整张地图，以及 `ownerAlpha`，即叠加其上的归属色的不透明度）和 `detail`（纸张纹理：`file`，每块 `units` 地图单位，从镜头缩放 `minZoom` 起显示）。类型为 `port` 的海上地区就是港口，与原版一致：在那里建造和修理舰船，AI 也据此规划海军。生成的地图每个地区可以存储超过 16 个邻居：`adjion<id>.bin` 版本 2（"WCAJ"、2、地区数、最多邻居数，然后是每个地区的邻居数和各邻居）。
 
 ## 剧本（scenarios）
 

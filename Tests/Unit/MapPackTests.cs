@@ -46,6 +46,52 @@ public class MapPackTests
     }
 
     [Fact]
+    public void ShipsSailThroughTheStraitsAndCanalsAndTheLakesAreInlandSeas()
+    {
+        var pack = LoadPack();
+        MapRegion Sea(double lon, double lat)
+        {
+            for (int r = 0; r <= 6; r++)
+                foreach (var (dx, dy) in new[] { (0, 0), (r, 0), (-r, 0), (0, r), (0, -r), (r, r), (-r, -r), (r, -r), (-r, r) })
+                {
+                    var region = pack.RegionAt(lon + dx / pack.pixelsPerDegree, lat + dy / pack.pixelsPerDegree);
+                    if (region != null && region.sea) return region;
+                }
+            return null;
+        }
+        // the sea zones reachable from the mid Atlantic by sea
+        var start = Sea(-30, 40);
+        var reached = new HashSet<int> { start.id };
+        var queue = new Queue<int>(reached);
+        while (queue.Count > 0)
+            foreach (int n in pack.regions[queue.Dequeue()].neighbours)
+                if (pack.regions[n].sea && reached.Add(n)) queue.Enqueue(n);
+        Assert.Contains(Sea(34, 43).id, reached);        // the Black Sea: Bosporus and Dardanelles
+        Assert.Contains(Sea(28, 40.7).id, reached);      // the Sea of Marmara
+        Assert.Contains(Sea(38, 20).id, reached);        // the Red Sea: the Suez Canal
+        Assert.Contains(Sea(-80, 6.5).id, reached);      // the Pacific: the Panama Canal
+        Assert.Contains(Sea(26.5, 59.9).id, reached);    // the Gulf of Finland
+        Assert.Contains(Sea(36.5, 46).id, reached);      // the Sea of Azov: Kerch
+        // inland seas with zones of their own (the province layer covers them as land; the pipeline cuts them out)
+        foreach (var (lon, lat) in new[] { (-87.5, 47.6), (-87.0, 44.0), (108.0, 53.5), (60.0, 45.0), (31.5, 61.0), (51.0, 41.0) })
+        {
+            var lake = Sea(lon, lat);
+            Assert.NotNull(lake);
+            Assert.DoesNotContain(lake.id, reached);
+        }
+        // the Great Lakes are joined by their rivers: Superior to Ontario by water
+        var superior = Sea(-87.5, 47.6);
+        var lakes = new HashSet<int> { superior.id };
+        var q2 = new Queue<int>(lakes);
+        while (q2.Count > 0)
+            foreach (int n in pack.regions[q2.Dequeue()].neighbours)
+                if (pack.regions[n].sea && lakes.Add(n)) q2.Enqueue(n);
+        Assert.Contains(Sea(-77.8, 43.6).id, lakes);
+        // a strait is water, not land: the two shores of the Bosporus touch only through Istanbul's own region
+        Assert.True(pack.RegionAt(29.07, 41.13)?.sea ?? true);
+    }
+
+    [Fact]
     public void HistoricalBordersSplitTodaysProvinces()
     {
         // Lviv was Austrian in 1914, Polish in 1939 and Soviet in 1945; Krakow was Austrian in 1914 and

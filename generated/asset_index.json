@@ -385,7 +385,7 @@
       "size": 1514
     },
     "data/json/schemas/map-areas.schema.json": {
-      "size": 2564
+      "size": 3914
     },
     "data/json/schemas/map-pack.schema.json": {
       "size": 3659
@@ -500,16 +500,16 @@
       "legacy": "map.ini"
     },
     "data/maps/natural-earth/map.json": {
-      "size": 123211
+      "size": 126030
     },
     "data/maps/natural-earth/preview.png": {
-      "size": 940510
+      "size": 942541
     },
     "data/maps/natural-earth/regions.json": {
-      "size": 2556614
+      "size": 2541856
     },
     "data/maps/natural-earth/regions.raster": {
-      "size": 417867
+      "size": 419442
     },
     "data/strings/cn/InfoPlist.strings": {
       "size": 263,
@@ -5958,10 +5958,10 @@
       "legacy": "victorybg_wto_iPad.webp"
     },
     "mods/map-natural-earth/adjion2.bin": {
-      "size": 578956
+      "size": 610000
     },
     "mods/map-natural-earth/area2.bin": {
-      "size": 374620
+      "size": 372772
     },
     "mods/map-natural-earth/areamark2.raw": {
       "size": 12150008
@@ -5970,16 +5970,16 @@
       "size": 12423
     },
     "mods/map-natural-earth/conquest_10.bin": {
-      "size": 8518
+      "size": 8476
     },
     "mods/map-natural-earth/conquest_10.xml": {
-      "size": 622571
+      "size": 617392
     },
     "mods/map-natural-earth/data/json/conquests/conquests.json": {
       "size": 300
     },
     "mods/map-natural-earth/data/json/maps/2/areas.json": {
-      "size": 348144
+      "size": 346317
     },
     "mods/map-natural-earth/data/json/text/cn/stringtable_cn.json": {
       "size": 8333,
@@ -6029,11 +6029,113 @@
       "size": 8333,
       "lang": "tw"
     },
+    "mods/map-natural-earth/generated/texture_formats.json": {
+      "size": 1258
+    },
     "mods/map-natural-earth/map2.mesh": {
-      "size": 11876816
+      "size": 11931530
     },
     "mods/map-natural-earth/mod.json": {
       "size": 431
+    },
+    "mods/map-natural-earth/paper2.png": {
+      "size": 43201
+    },
+    "mods/map-natural-earth/terrain2_0.webp": {
+      "size": 49610
+    },
+    "mods/map-natural-earth/terrain2_1.webp": {
+      "size": 76992
+    },
+    "mods/map-natural-earth/terrain2_10.webp": {
+      "size": 42570
+    },
+    "mods/map-natural-earth/terrain2_11.webp": {
+      "size": 24142
+    },
+    "mods/map-natural-earth/terrain2_12.webp": {
+      "size": 77266
+    },
+    "mods/map-natural-earth/terrain2_13.webp": {
+      "size": 85734
+    },
+    "mods/map-natural-earth/terrain2_14.webp": {
+      "size": 100074
+    },
+    "mods/map-natural-earth/terrain2_15.webp": {
+      "size": 25534
+    },
+    "mods/map-natural-earth/terrain2_16.webp": {
+      "size": 5258
+    },
+    "mods/map-natural-earth/terrain2_17.webp": {
+      "size": 21640
+    },
+    "mods/map-natural-earth/terrain2_18.webp": {
+      "size": 37428
+    },
+    "mods/map-natural-earth/terrain2_19.webp": {
+      "size": 16774
+    },
+    "mods/map-natural-earth/terrain2_2.webp": {
+      "size": 86612
+    },
+    "mods/map-natural-earth/terrain2_20.webp": {
+      "size": 51422
+    },
+    "mods/map-natural-earth/terrain2_21.webp": {
+      "size": 34532
+    },
+    "mods/map-natural-earth/terrain2_22.webp": {
+      "size": 66488
+    },
+    "mods/map-natural-earth/terrain2_23.webp": {
+      "size": 3884
+    },
+    "mods/map-natural-earth/terrain2_24.webp": {
+      "size": 4222
+    },
+    "mods/map-natural-earth/terrain2_25.webp": {
+      "size": 4534
+    },
+    "mods/map-natural-earth/terrain2_26.webp": {
+      "size": 45790
+    },
+    "mods/map-natural-earth/terrain2_27.webp": {
+      "size": 14848
+    },
+    "mods/map-natural-earth/terrain2_28.webp": {
+      "size": 45046
+    },
+    "mods/map-natural-earth/terrain2_29.webp": {
+      "size": 10044
+    },
+    "mods/map-natural-earth/terrain2_3.webp": {
+      "size": 35932
+    },
+    "mods/map-natural-earth/terrain2_30.webp": {
+      "size": 42330
+    },
+    "mods/map-natural-earth/terrain2_31.webp": {
+      "size": 32012
+    },
+    "mods/map-natural-earth/terrain2_4.webp": {
+      "size": 52316
+    },
+    "mods/map-natural-earth/terrain2_5.webp": {
+      "size": 49376
+    },
+    "mods/map-natural-earth/terrain2_6.webp": {
+      "size": 66554
+    },
+    "mods/map-natural-earth/terrain2_7.webp": {
+      "size": 57882
+    },
+    "mods/map-natural-earth/terrain2_8.webp": {
+      "size": 7534
+    },
+    "mods/map-natural-earth/terrain2_9.webp": {
+      "size": 69160
     },
     "scripts/tutorial/tutorails_script-512h.xml": {
       "size": 4184,

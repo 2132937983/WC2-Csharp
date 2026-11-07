@@ -299,13 +299,13 @@ public sealed class ecGraphics
     // ---- vertex buffers in the current view (the map mesh) ------------------------------------------
     private BasicEffect meshEffect;
 
-    private BasicEffect MeshEffect()
+    private BasicEffect MeshEffect(float shiftX = 0f, float shiftY = 0f)
     {
         meshEffect ??= new BasicEffect(device) { TextureEnabled = false, VertexColorEnabled = true, LightingEnabled = false, FogEnabled = false };
         meshEffect.World = Matrix.CreateTranslation(-viewX, -viewY, 0f)
                          * Matrix.CreateScale(viewScale, viewScale, 1f)
                          * Matrix.CreateScale(layoutToScreenMultiplier[0], layoutToScreenMultiplier[1], 1f)
-                         * Matrix.CreateTranslation(offsetX, offsetY, 0f);
+                         * Matrix.CreateTranslation(offsetX + shiftX, offsetY + shiftY, 0f);
         meshEffect.View = Matrix.Identity;
         meshEffect.Projection = projection;
         device.RasterizerState = s_clipToScreen;
@@ -348,15 +348,18 @@ public sealed class ecGraphics
         matricesDirty = true;   // the sprite effect sets its own state again
     }
 
-    /// <summary>Draws a run of a line list (two vertices per line) in the current view with its vertex colours.</summary>
-    public void DrawLines(VertexBuffer vertices, int firstVertex, int lineCount)
+    /// <summary>
+    /// Draws a run of a line list (two vertices per line) in the current view with its vertex colours,
+    /// optionally shifted by whole window pixels and faded (a second, soft stroke beside the first).
+    /// </summary>
+    public void DrawLines(VertexBuffer vertices, int firstVertex, int lineCount, float shiftPixels = 0f, float alpha = 1f)
     {
         if (device == null || vertices == null || lineCount <= 0) return;
         Flush();
-        var fx = MeshEffect();
+        var fx = MeshEffect(shiftPixels, shiftPixels);
         fx.VertexColorEnabled = true;
         fx.DiffuseColor = Vector3.One;
-        fx.Alpha = 1f;
+        fx.Alpha = alpha;
         device.SetVertexBuffer(vertices);
         foreach (var pass in fx.CurrentTechnique.Passes)
         {

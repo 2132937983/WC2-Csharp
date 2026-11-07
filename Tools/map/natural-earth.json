@@ -83,6 +83,23 @@
   // through the water and relaxed relaxIterations times; zones below minSeaPixels join a neighbour.
   "sea": { "coastRadiusDegrees": 1.8, "oceanRadiusDegrees": 14, "growth": 0.9, "relaxIterations": 2, "minSeaPixels": 300 },
   "minBorderPixels": 2,
+  // Water cut out of the provinces (the province layer covers lakes as land): the large lakes (Natural
+  // Earth scalerank up to 2: the Great Lakes, Baikal, Ladoga, Victoria, ...) and the Aral Sea of 1960, as
+  // inland seas with their own sea zones; the straits and canals as channels widthPixels wide, so ships
+  // pass and land units cannot walk across (the sea zones on both sides connect through them).
+  "water": {
+    "lakes": { "file": "ne_10m_lakes.geojson", "maxScalerank": 2 },
+    "historicLakes": { "file": "ne_10m_lakes_historic.geojson", "names": ["Aral Sea"] },
+    "channels": [
+      { "name": "Bosporus", "path": [29.13, 41.23, 29.07, 41.13, 29.02, 41.06, 28.99, 41.01], "widthPixels": 2.5 },
+      { "name": "Dardanelles", "path": [26.70, 40.42, 26.56, 40.28, 26.38, 40.13, 26.20, 40.03], "widthPixels": 2.5 },
+      { "name": "Suez Canal", "path": [32.30, 31.27, 32.33, 30.95, 32.28, 30.58, 32.40, 30.30, 32.56, 29.95], "widthPixels": 2.5 },
+      { "name": "Panama Canal", "path": [-79.92, 9.38, -79.85, 9.20, -79.70, 9.10, -79.55, 8.95], "widthPixels": 2.5 },
+      { "name": "Strait of Gibraltar", "path": [-5.95, 35.98, -5.60, 35.96, -5.25, 36.02], "widthPixels": 2.5 },
+      { "name": "Oresund", "path": [12.62, 56.10, 12.70, 55.90, 12.68, 55.62], "widthPixels": 2.5 },
+      { "name": "Strait of Kerch", "path": [36.52, 45.42, 36.58, 45.30, 36.62, 45.15], "widthPixels": 2.5 }
+    ]
+  },
   // Waterways the raster closes (a few kilometres wide): the sea zones at the two points become neighbours.
   "straits": [
     { "name": "Bosporus", "points": [29.3, 41.35, 28.9, 40.85] },
@@ -93,7 +110,12 @@
     { "name": "Kiel Canal", "points": [8.6, 54.0, 10.3, 54.5] },
     { "name": "Oresund", "points": [12.2, 56.3, 12.9, 55.3] },
     { "name": "Kerch", "points": [36.6, 45.6, 36.6, 44.9] },
-    { "name": "Bab-el-Mandeb", "points": [43.0, 13.0, 43.8, 12.4] }
+    { "name": "Bab-el-Mandeb", "points": [43.0, 13.0, 43.8, 12.4] },
+    // the Great Lakes, joined by their rivers (an inland sea of five zones)
+    { "name": "St. Marys River", "points": [-84.8, 46.6, -84.0, 46.0] },
+    { "name": "Straits of Mackinac", "points": [-85.2, 45.8, -84.4, 45.8] },
+    { "name": "St. Clair and Detroit Rivers", "points": [-82.4, 43.4, -83.0, 41.9] },
+    { "name": "Niagara River", "points": [-79.0, 42.8, -79.0, 43.4] }
   ],
 
   // Populated places with POP_MAX >= minPopulation make a region a city (>= largeCityPopulation:
@@ -122,6 +144,13 @@
     // markerZoom (units on screen) only a flag marks the armies, and flags stand only where armies or
     // buildings are (the mesh colours every province by its owner)
     "areaTax": "area",
+    // the look (MapTerrainExport): Natural Earth II shaded relief graded towards parchment for the land,
+    // a depth gradient with wave lines and foam for the water, the owners' colours over it at ownerAlpha
+    "terrain": {
+      "file": "ne2/NE2_50M_SR_W/NE2_50M_SR_W.tif", "pixelsPerDegree": 20, "columns": 8, "rows": 4, "quality": 86,
+      "parchment": [224, 207, 163], "parchmentMix": 0.24, "shallow": [86, 136, 160], "deep": [28, 60, 96], "foam": [196, 214, 210],
+      "depthPixels": 45, "waveLines": [5, 11, 19], "ownerAlpha": 0.38, "grainUnits": 600, "grainMinZoom": 0.12
+    },
     "display": { "maxZoom": 3.0, "unitFitRadius": 46, "minUnitScale": 0.35, "markerZoom": 0.32, "flags": "armies" },
     "modId": "map-natural-earth", "modName": "World map 1910-2018 (Natural Earth, CShapes)",
     "scenarios": [

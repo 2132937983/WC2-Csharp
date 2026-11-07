@@ -32,6 +32,12 @@ public sealed class CMapMesh : IDisposable
     private float[] chunkMinX, chunkMaxX;
 
     private GraphicsDevice device;
+    // the background picture and the paper grain (display terrain / detail)
+    private MapDisplay display;
+    private ecTexture[] terrain;
+    private ecTexture detail;
+    private readonly ecQuad quad = new();
+    private bool Translucent => display?.terrainFile != null;
     private DynamicVertexBuffer fillBuffer, lineBuffer;
     private IndexBuffer indexBuffer;
     private DynamicIndexBuffer setBuffer;
@@ -45,7 +51,7 @@ public sealed class CMapMesh : IDisposable
     private int fillDirtyMin = int.MaxValue, fillDirtyMax = -1, lineDirtyMin = int.MaxValue, lineDirtyMax = -1;
 
     /// <summary>Reads a mesh from the asset layer; null when there is none or it cannot be read.</summary>
-    public static CMapMesh Load(string name)
+    public static CMapMesh Load(string name, MapDisplay display = null)
     {
         if (!AssetSystem.Exists(name)) return null;
         try
@@ -112,6 +118,9 @@ public sealed class CMapMesh : IDisposable
                 m.chunkLineCount[c] = chainCount > 0 ? m.chainFirstLine[firstChain + chainCount - 1] + m.chainLineCount[firstChain + chainCount - 1] - m.chunkFirstLine[c] : 0;
                 m.chunkMinX[c] = r.ReadSingle(); m.chunkMaxX[c] = r.ReadSingle();
             }
+            m.display = display;
+            if (display?.terrainFile != null)
+                for (int i = 0; i < vertexCount; i++) m.fill[i].Color = Color.Transparent;
             m.owner = new CCountry[regions];
             m.isSea = new bool[regions];
             m.ownerKnown = new bool[regions];
@@ -128,6 +137,11 @@ public sealed class CMapMesh : IDisposable
     {
         fillBuffer?.Dispose(); lineBuffer?.Dispose(); indexBuffer?.Dispose(); setBuffer?.Dispose();
         fillBuffer = null; lineBuffer = null; indexBuffer = null; setBuffer = null;
+        var g = ecGraphics.Instance();
+        if (terrain != null) foreach (var t in terrain) if (t != null) g.FreeTexture(t);
+        terrain = null;
+        if (detail != null) g.FreeTexture(detail);
+        detail = null;
     }
 
     /// <summary>Bytes of the GPU buffers (statistics).</summary>
@@ -170,7 +184,17 @@ public sealed class CMapMesh : IDisposable
             isSea[i] = area.info.sea;
             ownerVersion++;
             Color c;
-            if (area.info.sea) c = Sea;
+            if (Translucent)
+            {
+                // over the terrain picture: the owner's colour, translucent; nothing for the sea and unowned land
+                if (area.info.sea || area.country == null || !area.info.enable) c = Color.Transparent;
+                else
+                {
+                    var oc = new Color { PackedValue = area.country.ColorRGBA };
+                    c = new Color(oc.R, oc.G, oc.B, (byte)(255 * display.ownerAlpha));
+                }
+            }
+            else if (area.info.sea) c = Sea;
             else if (area.country == null || !area.info.enable) c = Land;
             else
             {
@@ -232,15 +256,22 @@ public sealed class CMapMesh : IDisposable
         return (first, last);
     }
 
-    /// <summary>Draws the areas (in their owners' colours) and the borders visible in [left, right].</summary>
-    public void Render(CScene scene, float left, float right, float top, float bottom)
+    /// <summary>
+    /// Draws the map visible in [left, right] x [top, bottom]: the terrain picture (or the sea colour),
+    /// the areas in their owners' colours, the paper grain, then the borders, soft (a faded second
+    /// stroke one pixel beside) and sharp. Everything is clipped to the map (mapWidth x mapHeight), so the
+    /// copies of a wrapping map, drawn one after another, never cover each other.
+    /// </summary>
+    public void Render(CScene scene, float left, float right, float top, float bottom, float mapWidth, float mapHeight, float cameraScale)
     {
         SyncOwners(scene);
         Upload();
         if (fillBuffer == null) return;
         var g = ecGraphics.Instance();
-        // the water below everything (lakes without an area)
-        g.RenderRect(left, top, right - left, bottom - top, SeaColor);
+        float x0 = Math.Max(left, 0f), x1 = Math.Min(right, mapWidth), y0 = Math.Max(top, 0f), y1 = Math.Min(bottom, mapHeight);
+        if (x1 <= x0 || y1 <= y0) return;
+        if (Translucent) RenderTerrain(x0, x1, y0, y1, mapWidth, mapHeight);
+        else g.RenderRect(x0, y0, x1 - x0, y1 - y0, SeaColor);   // the water below everything (lakes without an area)
         var (c0, c1) = VisibleChunks(left, right);
         if (c0 < 0) return;
         int firstIndex = chunkFirstIndex[c0], lastIndex = firstIndex;
@@ -251,7 +282,55 @@ public sealed class CMapMesh : IDisposable
             if (chunkLineCount[c] > 0) { firstLine = Math.Min(firstLine, chunkFirstLine[c]); lastLine = Math.Max(lastLine, chunkFirstLine[c] + chunkLineCount[c]); }
         }
         g.DrawMesh(fillBuffer, indexBuffer, firstIndex, (lastIndex - firstIndex) / 3);
-        if (lastLine > firstLine) g.DrawLines(lineBuffer, firstLine * 2, lastLine - firstLine);
+        if (display?.detailFile != null && cameraScale >= display.detailMinZoom) RenderGrain(x0, x1, y0, y1, cameraScale);
+        if (lastLine > firstLine)
+        {
+            if (Translucent) g.DrawLines(lineBuffer, firstLine * 2, lastLine - firstLine, 1f, 0.45f);
+            g.DrawLines(lineBuffer, firstLine * 2, lastLine - firstLine);
+        }
+    }
+
+    /// <summary>The terrain tiles over [x0, x1] x [y0, y1] (loaded when first seen).</summary>
+    private void RenderTerrain(float x0, float x1, float y0, float y1, float mapWidth, float mapHeight)
+    {
+        var g = ecGraphics.Instance();
+        int cols = display.terrainColumns, rows = display.terrainRows;
+        terrain ??= new ecTexture[cols * rows];
+        float tw = mapWidth / cols, th = mapHeight / rows;
+        for (int r = Math.Max(0, (int)(y0 / th)); r <= Math.Min(rows - 1, (int)(y1 / th)); r++)
+            for (int c = Math.Max(0, (int)(x0 / tw)); c <= Math.Min(cols - 1, (int)(x1 / tw)); c++)
+            {
+                int i = r * cols + c;
+                terrain[i] ??= g.LoadTexture(string.Format(System.Globalization.CultureInfo.InvariantCulture, display.terrainFile, i));
+                if (terrain[i]?.handle == null) { g.RenderRect(c * tw, r * th, tw, th, SeaColor); continue; }
+                Quad(terrain[i], c * tw, r * th, tw, th, 0f, 0f, 1f, 1f, 0xFFFFFFFFu);
+            }
+    }
+
+    /// <summary>The paper grain: a tile repeated over [x0, x1] x [y0, y1], fading in above detailMinZoom.</summary>
+    private void RenderGrain(float x0, float x1, float y0, float y1, float cameraScale)
+    {
+        var g = ecGraphics.Instance();
+        detail ??= g.LoadTexture(display.detailFile);
+        if (detail?.handle == null) return;
+        float fade = Math.Clamp((cameraScale - display.detailMinZoom) / display.detailMinZoom, 0f, 1f);
+        uint color = ((uint)(fade * 255f) << 24) | 0x00FFFFFFu;
+        float s = display.detailUnits;
+        for (float y = MathF.Floor(y0 / s) * s; y < y1; y += s)
+            for (float x = MathF.Floor(x0 / s) * s; x < x1; x += s)
+                Quad(detail, x, y, s, s, 0f, 0f, 1f, 1f, color);
+    }
+
+    private void Quad(ecTexture texture, float x, float y, float w, float h, float u0, float v0, float u1, float v1, uint color)
+    {
+        quad.texture = texture;
+        quad.blendMode = 0;
+        quad.x[0] = x; quad.y[0] = y; quad.u[0] = u0; quad.v[0] = v0;
+        quad.x[1] = x + w; quad.y[1] = y; quad.u[1] = u1; quad.v[1] = v0;
+        quad.x[2] = x + w; quad.y[2] = y + h; quad.u[2] = u1; quad.v[2] = v1;
+        quad.x[3] = x; quad.y[3] = y + h; quad.u[3] = u0; quad.v[3] = v1;
+        for (int k = 0; k < 4; k++) quad.color[k] = color;
+        ecGraphics.Instance().RenderQuad(quad);
     }
 
     /// <summary>One area in a single colour (selection, fights); 0xAABBGGRR.</summary>

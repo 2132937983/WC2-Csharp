@@ -17,8 +17,8 @@
     "height": 1350,
     "pixelsPerDegree": 12.5
   },
-  "landRegions": 7389,
-  "seaZones": 1125,
+  "landRegions": 7327,
+  "seaZones": 1145,
   "countries": {
     "-1": {
       "regions": 10,
@@ -26,23 +26,23 @@
     },
     "ae": {
       "regions": 5,
-      "capital": 5104
+      "capital": 5051
     },
     "af": {
       "regions": 33,
-      "capital": 3992
+      "capital": 3940
     },
     "al": {
       "regions": 8,
-      "capital": 3074
+      "capital": 3022
     },
     "am": {
-      "regions": 470,
-      "capital": 3298
+      "regions": 461,
+      "capital": 3246
     },
     "ao": {
       "regions": 48,
-      "capital": 6801
+      "capital": 6740
     },
     "ar": {
       "regions": 15,
@@ -50,7 +50,7 @@
     },
     "at": {
       "regions": 16,
-      "capital": 2115
+      "capital": 2077
     },
     "au": {
       "regions": 136,
@@ -58,47 +58,47 @@
     },
     "az": {
       "regions": 15,
-      "capital": 3223
+      "capital": 3171
     },
     "ba": {
       "regions": 12,
-      "capital": 2718
+      "capital": 2667
     },
     "bd": {
       "regions": 9,
-      "capital": 5075
+      "capital": 5022
     },
     "be": {
       "regions": 8,
-      "capital": 1839
+      "capital": 1801
     },
     "bf": {
       "regions": 13,
-      "capital": 5798
+      "capital": 5745
     },
     "bg": {
       "regions": 27,
-      "capital": 2840
+      "capital": 2790
     },
     "bi": {
       "regions": 1,
-      "capital": 6643
+      "capital": 6583
     },
     "bj": {
       "regions": 5,
-      "capital": 6059
+      "capital": 6006
     },
     "bn": {
       "regions": 1,
-      "capital": 6224
+      "capital": 6171
     },
     "bo": {
       "regions": 42,
-      "capital": 7015
+      "capital": 6953
     },
     "br": {
       "regions": 322,
-      "capital": 7029
+      "capital": 6967
     },
     "bs": {
       "regions": 1,
@@ -106,31 +106,31 @@
     },
     "bt": {
       "regions": 4,
-      "capital": 4878
+      "capital": 4825
     },
     "bw": {
       "regions": 22,
-      "capital": 7365
+      "capital": 7303
     },
     "by": {
       "regions": 41,
-      "capital": 1320
+      "capital": 1282
     },
     "bz": {
       "regions": 2,
-      "capital": 5553
+      "capital": 5500
     },
     "ca": {
-      "regions": 371,
-      "capital": 1180
+      "regions": 339,
+      "capital": 1145
     },
     "cd": {
-      "regions": 94,
-      "capital": 6666
+      "regions": 92,
+      "capital": 6606
     },
     "cf": {
       "regions": 24,
-      "capital": 6131
+      "capital": 6078
     },
     "cg": {
       "regions": 14,
@@ -138,11 +138,11 @@
     },
     "ch": {
       "regions": 9,
-      "capital": 2356
+      "capital": 2302
     },
     "ci": {
       "regions": 14,
-      "capital": 6102
+      "capital": 6049
     },
     "cl": {
       "regions": 8,
@@ -150,63 +150,63 @@
     },
     "cm": {
       "regions": 19,
-      "capital": 6114
+      "capital": 6061
     },
     "cn": {
       "regions": 788,
-      "capital": 3144
+      "capital": 3092
     },
     "co": {
       "regions": 54,
-      "capital": 6137
+      "capital": 6084
     },
     "cr": {
       "regions": 5,
-      "capital": 5920
+      "capital": 5867
     },
     "cu": {
       "regions": 13,
-      "capital": 5204
+      "capital": 5151
     },
     "cy": {
       "regions": 1,
-      "capital": 3926
+      "capital": 3874
     },
     "cz": {
       "regions": 16,
-      "capital": 1860
+      "capital": 1822
     },
     "de": {
       "regions": 73,
-      "capital": 1479
+      "capital": 1441
     },
     "dj": {
       "regions": 1,
-      "capital": 5776
+      "capital": 5723
     },
     "dk": {
       "regions": 9,
-      "capital": 1242
+      "capital": 1204
     },
     "do": {
       "regions": 5,
-      "capital": 5426
+      "capital": 5373
     },
     "dz": {
       "regions": 147,
-      "capital": 3678
+      "capital": 3626
     },
     "ec": {
       "regions": 13,
-      "capital": 6480
+      "capital": 6425
     },
     "ee": {
       "regions": 10,
-      "capital": 888
+      "capital": 857
     },
     "eg": {
-      "regions": 53,
-      "capital": 4558
+      "regions": 52,
+      "capital": 4505
     },
     "eh": {
       "regions": 2,
@@ -214,23 +214,23 @@
     },
     "er": {
       "regions": 7,
-      "capital": 5640
+      "capital": 5587
     },
     "es": {
       "regions": 95,
-      "capital": 3111
+      "capital": 3059
     },
     "et": {
       "regions": 48,
-      "capital": 5891
+      "capital": 5838
     },
     "fj": {
       "regions": 3,
-      "capital": 7202
+      "capital": 7140
     },
     "fl": {
-      "regions": 44,
-      "capital": 711
+      "regions": 43,
+      "capital": 707
     },
     "fo": {
       "regions": 1,
@@ -238,23 +238,23 @@
     },
     "fr": {
       "regions": 102,
-      "capital": 2185
+      "capital": 2147
     },
     "ga": {
       "regions": 10,
-      "capital": 6462
+      "capital": 6409
     },
     "gb": {
       "regions": 55,
-      "capital": 1770
+      "capital": 1732
     },
     "ge": {
       "regions": 10,
-      "capital": 3055
+      "capital": 3003
     },
     "gh": {
       "regions": 9,
-      "capital": 6110
+      "capital": 6057
     },
     "gl": {
       "regions": 16,
@@ -262,203 +262,203 @@
     },
     "gm": {
       "regions": 1,
-      "capital": 5696
+      "capital": 5643
     },
     "gn": {
       "regions": 14,
-      "capital": 5870
+      "capital": 5817
     },
     "gq": {
       "regions": 2,
-      "capital": 6283
+      "capital": 6229
     },
     "gr": {
       "regions": 27,
-      "capital": 3491
+      "capital": 3439
     },
     "gt": {
       "regions": 11,
-      "capital": 5661
+      "capital": 5608
     },
     "gw": {
       "regions": 1,
-      "capital": 5773
+      "capital": 5720
     },
     "gy": {
       "regions": 10,
-      "capital": 6057
+      "capital": 6004
     },
     "hn": {
       "regions": 10,
-      "capital": 5646
+      "capital": 5593
     },
     "hr": {
       "regions": 13,
-      "capital": 2452
+      "capital": 2405
     },
     "ht": {
       "regions": 3,
-      "capital": 5443
+      "capital": 5390
     },
     "hu": {
       "regions": 18,
-      "capital": 2262
+      "capital": 2218
     },
     "id": {
       "regions": 117,
-      "capital": 6727
+      "capital": 6666
     },
     "ie": {
       "regions": 15,
-      "capital": 1483
+      "capital": 1445
     },
     "il": {
       "regions": 3,
-      "capital": 4169
+      "capital": 4117
     },
     "in": {
       "regions": 204,
-      "capital": 4519
+      "capital": 4466
     },
     "iq": {
       "regions": 50,
-      "capital": 4202
+      "capital": 4150
     },
     "ir": {
       "regions": 123,
-      "capital": 3832
+      "capital": 3780
     },
     "is": {
       "regions": 10,
-      "capital": 396
+      "capital": 394
     },
     "it": {
       "regions": 70,
-      "capital": 2960
+      "capital": 2896
     },
     "ja": {
       "regions": 72,
-      "capital": 3880
+      "capital": 3828
     },
     "jm": {
       "regions": 1,
-      "capital": 5505
+      "capital": 5452
     },
     "jo": {
       "regions": 11,
-      "capital": 4381
+      "capital": 4329
     },
     "ke": {
       "regions": 24,
-      "capital": 6488
+      "capital": 6432
     },
     "kg": {
-      "regions": 8,
-      "capital": 2806
+      "regions": 7,
+      "capital": 2756
     },
     "kh": {
       "regions": 15,
-      "capital": 5852
+      "capital": 5799
     },
     "kw": {
       "regions": 2,
-      "capital": 4584
+      "capital": 4531
     },
     "kz": {
-      "regions": 109,
-      "capital": 1409
+      "regions": 106,
+      "capital": 1371
     },
     "la": {
       "regions": 22,
-      "capital": 5441
+      "capital": 5388
     },
     "lb": {
       "regions": 1,
-      "capital": 4033
+      "capital": 3981
     },
     "lk": {
       "regions": 6,
-      "capital": 6082
+      "capital": 6029
     },
     "lr": {
       "regions": 5,
-      "capital": 6062
+      "capital": 6009
     },
     "lt": {
       "regions": 13,
-      "capital": 1273
+      "capital": 1235
     },
     "lu": {
       "regions": 1,
-      "capital": 1941
+      "capital": 1903
     },
     "lv": {
       "regions": 17,
-      "capital": 1124
+      "capital": 1090
     },
     "ly": {
       "regions": 102,
-      "capital": 4232
+      "capital": 4180
     },
     "ma": {
       "regions": 50,
-      "capital": 4121
+      "capital": 4069
     },
     "md": {
       "regions": 9,
-      "capital": 2322
+      "capital": 2277
     },
     "me": {
       "regions": 3,
-      "capital": 2823
+      "capital": 2773
     },
     "mg": {
       "regions": 26,
-      "capital": 7241
+      "capital": 7179
     },
     "mk": {
       "regions": 7,
-      "capital": 3039
+      "capital": 2987
     },
     "ml": {
       "regions": 35,
-      "capital": 5628
+      "capital": 5575
     },
     "mm": {
       "regions": 44,
-      "capital": 5180
+      "capital": 5127
     },
     "mn": {
       "regions": 128,
-      "capital": 2108
+      "capital": 2070
     },
     "mr": {
       "regions": 24,
-      "capital": 5442
+      "capital": 5389
     },
     "mu": {
       "regions": 1,
-      "capital": 7287
+      "capital": 7225
     },
     "mw": {
-      "regions": 6,
-      "capital": 7038
+      "regions": 5,
+      "capital": 6976
     },
     "mx": {
       "regions": 135,
-      "capital": 5427
+      "capital": 5374
     },
     "my": {
       "regions": 22,
-      "capital": 6278
+      "capital": 6224
     },
     "mz": {
       "regions": 32,
-      "capital": 7370
+      "capital": 7308
     },
     "na": {
       "regions": 27,
-      "capital": 7325
+      "capital": 7263
     },
     "nc": {
       "regions": 2,
@@ -466,59 +466,59 @@
     },
     "ne": {
       "regions": 28,
-      "capital": 5613
+      "capital": 5560
     },
     "ng": {
       "regions": 39,
-      "capital": 5962
+      "capital": 5908
     },
     "ni": {
       "regions": 12,
-      "capital": 5741
+      "capital": 5688
     },
     "nk": {
       "regions": 25,
-      "capital": 3392
+      "capital": 3340
     },
     "nl": {
       "regions": 7,
-      "capital": 1641
+      "capital": 1603
     },
     "no": {
       "regions": 48,
-      "capital": 713
+      "capital": 709
     },
     "np": {
       "regions": 13,
-      "capital": 4853
+      "capital": 4800
     },
     "om": {
       "regions": 21,
-      "capital": 5178
+      "capital": 5125
     },
     "pa": {
       "regions": 8,
-      "capital": 5955
+      "capital": 5901
     },
     "pe": {
       "regions": 52,
-      "capital": 6924
+      "capital": 6862
     },
     "pg": {
       "regions": 20,
-      "capital": 6802
+      "capital": 6741
     },
     "ph": {
       "regions": 27,
-      "capital": 5670
+      "capital": 5617
     },
     "pk": {
       "regions": 47,
-      "capital": 3667
+      "capital": 3615
     },
     "pl": {
       "regions": 63,
-      "capital": 1492
+      "capital": 1454
     },
     "pr": {
       "regions": 1,
@@ -530,71 +530,71 @@
     },
     "pt": {
       "regions": 18,
-      "capital": 3385
+      "capital": 3333
     },
     "py": {
       "regions": 15,
-      "capital": 7375
+      "capital": 7313
     },
     "qa": {
       "regions": 1,
-      "capital": 5052
+      "capital": 4999
     },
     "rk": {
       "regions": 19,
-      "capital": 3522
+      "capital": 3470
     },
     "ro": {
       "regions": 43,
-      "capital": 2694
+      "capital": 2644
     },
     "ru": {
-      "regions": 796,
-      "capital": 682
+      "regions": 792,
+      "capital": 679
     },
     "rw": {
       "regions": 1,
-      "capital": 6580
+      "capital": 6522
     },
     "sa": {
       "regions": 140,
-      "capital": 4920
+      "capital": 4867
     },
     "sb": {
       "regions": 6,
-      "capital": 6865
+      "capital": 6804
     },
     "sd": {
       "regions": 55,
-      "capital": 5633
+      "capital": 5580
     },
     "se": {
-      "regions": 65,
-      "capital": 738
+      "regions": 64,
+      "capital": 734
     },
     "si": {
       "regions": 5,
-      "capital": 2440
+      "capital": 2393
     },
     "sk": {
       "regions": 9,
-      "capital": 2182
+      "capital": 2144
     },
     "sl": {
       "regions": 3,
-      "capital": 6015
+      "capital": 5962
     },
     "sn": {
       "regions": 7,
-      "capital": 5662
+      "capital": 5609
     },
     "so": {
       "regions": 19,
-      "capital": 6290
+      "capital": 6236
     },
     "sr": {
       "regions": 5,
-      "capital": 6144
+      "capital": 6091
     },
     "ss": {
       "regions": 24,
@@ -602,79 +602,79 @@
     },
     "sv": {
       "regions": 3,
-      "capital": 5687
+      "capital": 5634
     },
     "sy": {
       "regions": 22,
-      "capital": 4111
+      "capital": 4059
     },
     "td": {
       "regions": 39,
-      "capital": 5782
+      "capital": 5729
     },
     "tg": {
       "regions": 3,
-      "capital": 6021
+      "capital": 5968
     },
     "th": {
       "regions": 41,
-      "capital": 5652
+      "capital": 5599
     },
     "tj": {
       "regions": 6,
-      "capital": 3313
+      "capital": 3261
     },
     "tl": {
       "regions": 1,
-      "capital": 6833
+      "capital": 6772
     },
     "tm": {
       "regions": 29,
-      "capital": 3260
+      "capital": 3208
     },
     "tn": {
       "regions": 25,
-      "capital": 3596
+      "capital": 3544
     },
     "tr": {
       "regions": 116,
-      "capital": 3077
+      "capital": 3025
     },
     "tt": {
       "regions": 1,
-      "capital": 5886
+      "capital": 5833
     },
     "tw": {
       "regions": 11,
-      "capital": 5082
+      "capital": 5029
     },
     "tz": {
-      "regions": 39,
-      "capital": 6725
+      "regions": 37,
+      "capital": 6664
     },
     "ua": {
       "regions": 96,
-      "capital": 1774
+      "capital": 1736
     },
     "ug": {
-      "regions": 15,
-      "capital": 6476
+      "regions": 11,
+      "capital": 6392
     },
     "uz": {
-      "regions": 20,
-      "capital": 2970
+      "regions": 19,
+      "capital": 2906
     },
     "ve": {
       "regions": 57,
-      "capital": 5883
+      "capital": 5830
     },
     "vn": {
       "regions": 34,
-      "capital": 5329
+      "capital": 5276
     },
     "vu": {
       "regions": 4,
-      "capital": 7193
+      "capital": 7131
     },
     "ws": {
       "regions": 1,
@@ -686,23 +686,23 @@
     },
     "ye": {
       "regions": 34,
-      "capital": 5588
+      "capital": 5535
     },
     "yu": {
       "regions": 21,
-      "capital": 2638
+      "capital": 2589
     },
     "za": {
       "regions": 10,
-      "capital": 7373
+      "capital": 7311
     },
     "zm": {
       "regions": 30,
-      "capital": 7164
+      "capital": 7102
     },
     "zw": {
       "regions": 14,
-      "capital": 7180
+      "capital": 7118
     }
   },
   "eras": {
@@ -5220,6 +5220,114 @@
       "minSeaPixels": 300
     },
     "minBorderPixels": 2,
+    "water": {
+      "lakes": {
+        "file": "ne_10m_lakes.geojson",
+        "maxScalerank": 2
+      },
+      "historicLakes": {
+        "file": "ne_10m_lakes_historic.geojson",
+        "names": [
+          "Aral Sea"
+        ]
+      },
+      "channels": [
+        {
+          "name": "Bosporus",
+          "path": [
+            29.13,
+            41.23,
+            29.07,
+            41.13,
+            29.02,
+            41.06,
+            28.99,
+            41.01
+          ],
+          "widthPixels": 2.5
+        },
+        {
+          "name": "Dardanelles",
+          "path": [
+            26.70,
+            40.42,
+            26.56,
+            40.28,
+            26.38,
+            40.13,
+            26.20,
+            40.03
+          ],
+          "widthPixels": 2.5
+        },
+        {
+          "name": "Suez Canal",
+          "path": [
+            32.30,
+            31.27,
+            32.33,
+            30.95,
+            32.28,
+            30.58,
+            32.40,
+            30.30,
+            32.56,
+            29.95
+          ],
+          "widthPixels": 2.5
+        },
+        {
+          "name": "Panama Canal",
+          "path": [
+            -79.92,
+            9.38,
+            -79.85,
+            9.20,
+            -79.70,
+            9.10,
+            -79.55,
+            8.95
+          ],
+          "widthPixels": 2.5
+        },
+        {
+          "name": "Strait of Gibraltar",
+          "path": [
+            -5.95,
+            35.98,
+            -5.60,
+            35.96,
+            -5.25,
+            36.02
+          ],
+          "widthPixels": 2.5
+        },
+        {
+          "name": "Oresund",
+          "path": [
+            12.62,
+            56.10,
+            12.70,
+            55.90,
+            12.68,
+            55.62
+          ],
+          "widthPixels": 2.5
+        },
+        {
+          "name": "Strait of Kerch",
+          "path": [
+            36.52,
+            45.42,
+            36.58,
+            45.30,
+            36.62,
+            45.15
+          ],
+          "widthPixels": 2.5
+        }
+      ]
+    },
     "straits": [
       {
         "name": "Bosporus",
@@ -5300,6 +5408,42 @@
           13.0,
           43.8,
           12.4
+        ]
+      },
+      {
+        "name": "St. Marys River",
+        "points": [
+          -84.8,
+          46.6,
+          -84.0,
+          46.0
+        ]
+      },
+      {
+        "name": "Straits of Mackinac",
+        "points": [
+          -85.2,
+          45.8,
+          -84.4,
+          45.8
+        ]
+      },
+      {
+        "name": "St. Clair and Detroit Rivers",
+        "points": [
+          -82.4,
+          43.4,
+          -83.0,
+          41.9
+        ]
+      },
+      {
+        "name": "Niagara River",
+        "points": [
+          -79.0,
+          42.8,
+          -79.0,
+          43.4
         ]
       }
     ],

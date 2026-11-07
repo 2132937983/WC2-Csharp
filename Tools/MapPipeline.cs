@@ -129,6 +129,7 @@ internal static partial class MapPipeline
             return string.Join("|", parts);
         }
         using var admin1 = JsonDocument.Parse(File.OpenRead(Path.Combine(source, "ne_10m_admin_1_states_provinces.geojson")));
+        var carve = WaterCarver(config, source, west, north, pxPerDeg);
         var raster = Rasterize(admin1.RootElement.GetProperty("features"), west, east, north, south, pxPerDeg, width, height, p =>
         {
             var province = new Province
@@ -146,7 +147,7 @@ internal static partial class MapPipeline
             province.occupation = oi;
             provinces.Add(province);
             return provinces.Count;   // 1-based
-        });
+        }, false, carve);
         for (int i = 0; i < n; i++)
         {
             int v = raster[i];
@@ -470,6 +471,32 @@ internal static partial class MapPipeline
             regions[c].border[a] = Math.Max(regions[c].border.GetValueOrDefault(a), minBorder);
             straits++;
         }
+        // a region that touches nothing (an island in a lake too small for a sea zone) is linked to the
+        // nearest region across the water, so every province can be reached
+        int ferries = 0;
+        foreach (var r in regions.Where(r => r.border.Count == 0))
+        {
+            var seen = new HashSet<int>();
+            var frontier = new Queue<int>();
+            for (int i = 0; i < n; i++) if (regionRaster[i] == r.id + 1) { frontier.Enqueue(i); seen.Add(i); }
+            int found = -1;
+            while (frontier.Count > 0 && found < 0)
+            {
+                int i = frontier.Dequeue(), x = i % width, y = i / width;
+                foreach (int j in new[] { x > 0 ? i - 1 : (wrap ? i + width - 1 : -1), x < width - 1 ? i + 1 : (wrap ? i - width + 1 : -1), y > 0 ? i - width : -1, y < height - 1 ? i + width : -1 })
+                {
+                    if (j < 0 || !seen.Add(j)) continue;
+                    int v = regionRaster[j];
+                    if (v != 0 && v != r.id + 1) { found = v - 1; break; }
+                    if (v == 0) frontier.Enqueue(j);
+                }
+            }
+            if (found < 0) continue;
+            r.border[found] = minBorder;
+            regions[found].border[r.id] = minBorder;
+            ferries++;
+        }
+        if (ferries > 0) Console.WriteLine($"build-map: {ferries} isolated regions linked across the water");
         foreach (var r in regions.Where(r => !r.sea)) r.coastal = r.border.Keys.Any(o => regions[o].sea);
 
         // ---- 8. features: capitals of today and of every era, cities, ports, airfields
@@ -691,7 +718,7 @@ internal static partial class MapPipeline
             int hiFactor = config["classicExport"]!["detailRaster"]?.GetValue<int>() ?? S;
             if (S % hiFactor != 0) throw new ToolException("classicExport: scale must be a multiple of detailRaster");
             int hiW = width * hiFactor, hiH = height * hiFactor;
-            var hiProvince = Rasterize(admin1.RootElement.GetProperty("features"), west, east, north, south, pxPerDeg * hiFactor, hiW, hiH, _ => 1, true);
+            var hiProvince = Rasterize(admin1.RootElement.GetProperty("features"), west, east, north, south, pxPerDeg * hiFactor, hiW, hiH, _ => 1, true, carve);
             // the regions every province ended up in
             var provinceRegions = new List<int>[provinces.Count + 1];
             for (int i = 0; i < n; i++)
@@ -767,7 +794,7 @@ internal static partial class MapPipeline
                 foreach (var p in provinces) names.TryAdd(p.country, p.admin);
                 scenarioSpecs.Add(new ScenarioSpec(s, owner, names));
             }
-            ExportClassic(classicOut, config, regions, hi, hiW, hiH, S / hiFactor, scenarioSpecs, wrap);
+            ExportClassic(classicOut, config, regions, hi, hiW, hiH, S / hiFactor, scenarioSpecs, wrap, source);
         }
         Console.WriteLine($"build-map: {regions.Count(r => !r.sea)} land regions in {countries.Count} countries, {regions.Count(r => r.sea)} sea zones, " +
                           $"{regions.Count(r => r.type == "capital")} capitals ({eraCapitals} of earlier eras), {regions.Count(r => r.port)} ports, " +
@@ -802,7 +829,7 @@ internal static partial class MapPipeline
     /// the bounds (the same numbering a first pass with a counting codeOf gives).
     /// </summary>
     private static int[] Rasterize(JsonElement features, double west, double east, double north, double south, double pxPerDeg,
-                                   int width, int height, Func<JsonElement, int> codeOf, bool counter = false)
+                                   int width, int height, Func<JsonElement, int> codeOf, bool counter = false, Action<SKCanvas, double> carve = null)
     {
         using var bitmap = new SKBitmap(new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul));
         int count = 0;
@@ -834,12 +861,80 @@ internal static partial class MapPipeline
                 paint.Color = new SKColor((byte)(code & 0xFF), (byte)((code >> 8) & 0xFF), (byte)((code >> 16) & 0xFF), 255);
                 canvas.DrawPath(path, paint);
             }
+            // water cut out of the land afterwards (lakes, straits and canals): drawn transparent
+            carve?.Invoke(canvas, pxPerDeg);
         }
         var raster = new int[width * height];
         var pixels = bitmap.GetPixelSpan();
         for (int i = 0; i < raster.Length; i++)
             raster[i] = pixels[i * 4 + 3] == 0 ? 0 : pixels[i * 4] | (pixels[i * 4 + 1] << 8) | (pixels[i * 4 + 2] << 16);
         return raster;
+    }
+
+    /// <summary>
+    /// The water cut out of the provinces (config "water"): lakes from Natural Earth (scalerank up to
+    /// maxScalerank; the province layer covers them as land), historical lakes by name (the Aral Sea of
+    /// 1960), and channels: straits and canals as lines of widthPixels region raster pixels, so ships
+    /// sail through them and land units cannot walk across.
+    /// </summary>
+    private static Action<SKCanvas, double> WaterCarver(JsonObject config, string source, double west, double north, double basePxPerDeg)
+    {
+        var water = config["water"]?.AsObject();
+        if (water == null) return null;
+        var polygons = new List<List<(double lon, double lat)>>();
+        void AddLakes(string file, Func<JsonElement, bool> take)
+        {
+            string path = Path.Combine(source, file);
+            if (!File.Exists(path)) throw new ToolException($"water: {file} missing in {source}");
+            using var doc = JsonDocument.Parse(File.OpenRead(path));
+            foreach (var f in doc.RootElement.GetProperty("features").EnumerateArray())
+            {
+                var g = f.GetProperty("geometry");
+                if (g.ValueKind != JsonValueKind.Object || !take(f.GetProperty("properties"))) continue;
+                polygons.AddRange(Rings(g));
+            }
+        }
+        if (water["lakes"] is JsonObject lakes)
+        {
+            int maxRank = lakes["maxScalerank"]?.GetValue<int>() ?? 2;
+            AddLakes(lakes["file"]!.GetValue<string>(), p => Long(p, "scalerank") <= maxRank || Str(p, "scalerank") is string s && int.TryParse(s, out int r) && r <= maxRank);
+        }
+        if (water["historicLakes"] is JsonObject historic)
+        {
+            var names = historic["names"]!.AsArray().Select(n => n!.GetValue<string>()).ToHashSet();
+            AddLakes(historic["file"]!.GetValue<string>(), p => names.Contains(Str(p, "name")));
+        }
+        var channels = (water["channels"]?.AsArray() ?? new JsonArray()).Select(c => (
+            pts: c!["path"]!.AsArray().Select(v => v!.GetValue<double>()).ToArray(),
+            width: c["widthPixels"]?.GetValue<double>() ?? 2.5)).ToList();
+        return (canvas, pxPerDeg) =>
+        {
+            using var clear = new SKPaint { IsAntialias = false, Style = SKPaintStyle.Fill, BlendMode = SKBlendMode.Src, Color = SKColors.Transparent };
+            using var path = new SKPath { FillType = SKPathFillType.EvenOdd };
+            foreach (var ring in polygons)
+            {
+                bool first = true;
+                foreach (var (lon, lat) in ring)
+                {
+                    float x = (float)((lon - west) * pxPerDeg), y = (float)((north - lat) * pxPerDeg);
+                    if (first) { path.MoveTo(x, y); first = false; } else path.LineTo(x, y);
+                }
+                path.Close();
+            }
+            canvas.DrawPath(path, clear);
+            foreach (var (pts, width) in channels)
+            {
+                using var stroke = new SKPaint { IsAntialias = false, Style = SKPaintStyle.Stroke, BlendMode = SKBlendMode.Src, Color = SKColors.Transparent,
+                                                 StrokeWidth = (float)(width * pxPerDeg / basePxPerDeg), StrokeCap = SKStrokeCap.Round, StrokeJoin = SKStrokeJoin.Round };
+                using var line = new SKPath();
+                for (int k = 0; k + 1 < pts.Length; k += 2)
+                {
+                    float x = (float)((pts[k] - west) * pxPerDeg), y = (float)((north - pts[k + 1]) * pxPerDeg);
+                    if (k == 0) line.MoveTo(x, y); else line.LineTo(x, y);
+                }
+                canvas.DrawPath(line, stroke);
+            }
+        };
     }
 
     /// <summary>

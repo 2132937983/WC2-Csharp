@@ -188,8 +188,8 @@ public sealed partial class CScene
     public void Init(string areasEnable, int mapId)
     {
         mapMesh?.Dispose();
-        mapMesh = CMapMesh.Load(Sprintf("map%d.mesh", mapId));
         display = MapDisplay.Read(mapId);
+        mapMesh = CMapMesh.Load(Sprintf("map%d.mesh", mapId), display);
         areaMark.Init(mapId);
         LoadAreaData(mapId);
         LoadAdjoin(mapId);

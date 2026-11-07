@@ -13,9 +13,11 @@ it is, and every campaign and conquest keeps using it. Next to it, `WC2.Tools bu
 
 The base map is **one map for every era**: its regions follow the borders of 1910, 1914, 1936, 1939,
 1945, 1949 and today at the same time, so a scenario of any of these years only says who owns which
-region. It has **7 389 land provinces** (about the granularity of Age of History II; 1939 Austria has
-about 15, Czechoslovakia about 10, Poland about 70) and 1 125 sea zones. Disabling or deleting the mod
-reverts everything.
+region. It has **7 327 land provinces** (about the granularity of Age of History II; 1939 Austria has
+about 15, Czechoslovakia about 10, Poland about 70) and 1 145 sea zones, inland seas and canals
+included. It is drawn in the style of European War 4 and World Conqueror 3: natural colours and shaded
+relief under translucent owner colours, paper grain, an ocean with depth and coastal wave lines.
+Disabling or deleting the mod reverts everything.
 
 ## Running it
 
@@ -41,6 +43,8 @@ into the package). `--preview-dir` also draws every era (`era-<year>.png`) and c
 | `ne_10m_populated_places.geojson` | Natural Earth | the names of the provinces (the largest town inside) |
 | `ne_10m_ports.geojson` | Natural Earth | ports (`scalerank`) |
 | `ne_10m_airports.geojson` | Natural Earth | airfields (`type`, `scalerank`) |
+| `ne_10m_lakes.geojson`, `ne_10m_lakes_historic.geojson` | Natural Earth | the large lakes (the province layer covers them as land) and the Aral Sea of 1960 |
+| `ne2/NE2_50M_SR_W/NE2_50M_SR_W.tif` | Natural Earth II with shaded relief and water, 1:50m (public domain) | the terrain picture: natural colours and relief |
 | `CShapes-2.0.geojson` | CShapes 2.0, ETH Zurich (Schvitz, Rüegger, Girardin, Cederman, Weidmann, Gleditsch), CC BY-NC-SA 4.0, icr.ethz.ch/data/cshapes | the borders of states and colonies from 1886 to 2019, each with its dates, Gleditsch-Ward code (`gwcode`) and capital |
 
 CShapes is licensed for non-commercial use with attribution and share-alike: the map pack and the map
@@ -48,8 +52,9 @@ mod are derived from it and carry the same terms (the game earns nothing; see `m
 
 ## How the base map is made
 
-1. **Provinces.** Every Natural Earth province inside the bounds is drawn into an equirectangular raster
-   (4500 pixels across the 360 degrees, 12.5 per degree), without antialiasing.
+1. **Provinces and water.** Every Natural Earth province inside the bounds is drawn into an
+   equirectangular raster (4500 pixels across the 360 degrees, 12.5 per degree), without antialiasing;
+   then the water is cut out of it (`water`, see below): the large lakes and the straits and canals.
 2. **Eras.** For every era with a `date`, the CShapes units valid that day (states and colonies) are drawn
    into a raster of their own; the era `naturalearth` (today) takes the province's country. Land no unit
    covers takes the `fallback` unit of its Natural Earth country, else the province's main unit, else the
@@ -70,7 +75,10 @@ mod are derived from it and carry the same terms (the game earns nothing; see `m
 6. **Sea zones of irregular shape.** Seeds spaced by the distance from the coast (small zones along the
    coasts, large ones in the open ocean), grown through the water and relaxed; lakes large enough get a
    zone; the seam is a zone border.
-7. **Adjacency** over the seam on a wrapping map, plus `straits` (Bosporus, Gibraltar, the canals, ...).
+7. **Adjacency** over the seam on a wrapping map, plus `straits` (links between sea zones where the
+   water is too narrow even for a channel: the Kiel Canal, Bab-el-Mandeb, the rivers between the Great
+   Lakes); a region left touching nothing (an island in a small lake) is linked to the nearest region
+   across the water.
 8. **Features.** Capitals of today and of the game's countries in the other eras (`homeUnits`), cities,
    ports (a port region keeps its land type; its harbour is the sea zone off it, see below), airfields.
    A province is named after the largest town inside it, else after its Natural Earth province with a
@@ -104,6 +112,25 @@ nearest game country (WORLD 1939: Austria and Czechoslovakia to Germany, Korea a
 colonies to their empires, Mongolia to the Soviet Union, China to the Republic of China `tw`) or left
 unclaimed.
 
+## Lakes, straits and canals
+
+The province layer covers lakes as land, and straits a few kilometres wide close in a raster of 9 km
+pixels. `water` therefore cuts them out of the provinces at both resolutions (the region raster and the
+outline raster), before anything else:
+
+* **lakes**: Natural Earth lakes up to `maxScalerank` 2 (the Great Lakes, Baikal, Ladoga, Onega,
+  Balkhash, Victoria, ...) and, from the historical lakes, the Aral Sea of 1960. They get sea zones like
+  the oceans: inland seas, navigable by ships built in their harbours and by transports from their shores
+  (the Caspian Sea was water already). The five Great Lakes are joined by their rivers (`straits`).
+* **channels**: the Bosporus, the Dardanelles, the Suez and Panama canals, Gibraltar, the Øresund and
+  the Strait of Kerch as lines `widthPixels` (2.5, about 20 km) wide. The sea zones on both sides connect
+  through them, so fleets sail from the Mediterranean to the Black Sea, the Red Sea and the Pacific; land
+  units cannot walk across (a province on both banks, Istanbul, still holds both).
+
+`MapPackTests` checks it: from the mid Atlantic the Black Sea, the Sea of Marmara, the Red Sea, the Pacific
+off Panama, the Gulf of Finland and the Sea of Azov are reached by sea; Lake Superior, Lake Michigan, Baikal,
+the Aral Sea, Ladoga and the Caspian are inland seas, and Superior reaches Ontario.
+
 ## Ships and transports (as in the original)
 
 The rules are the original game's (checked against the decompiled original): a land unit enters a sea
@@ -111,7 +138,7 @@ zone only when it carries a **transport ship** (army card 2, the Transport card 
 or given by the navy medal from level 1 to every newly drafted land unit); at sea it is drawn as a
 transport. Warships are built in an own **harbour**: a sea area of type `port`. The original's 48 port
 areas are all sea areas; the export therefore marks the sea zone off every port city (its longest
-shared border) as a harbour (171 on the world map), with the port icon on that coast and tax 2. Like
+shared border) as a harbour (180 on the world map), with the port icon on that coast and tax 2. Like
 many units of the original conquests, starting units on a coast come with a transport ship. The AI
 buys transport cards, embarks and lands with the original logic: after four rounds of WORLD 1939 it has
 about 270 transports and 70 warships at sea (`Tests/world_autoplay.expect`).
@@ -128,8 +155,25 @@ The game (`Game/MapScene/MapMesh.cs`) keeps the triangles in one vertex buffer a
 buffer; an area's colour follows its owner, a border is drawn as a national border when the owners on its
 two sides differ and as a province border otherwise; only the strips in view are drawn, in two draw calls.
 Selection, fights and the new-round flash draw single areas or one country's areas (an index buffer per
-owner change) on top. The world map: 914 839 vertices, 897 138 triangles, 40 469 border chains; textures at
-the start of WORLD 1939 104 MB (215 MB with tiles and masks before), 12 to 15 draw calls per frame.
+owner change) on top. Each copy of a wrapping map draws its background clipped to the map, so the copies
+left and right of the seam never cover each other.
+
+## The look of the map
+
+`classicExport.terrain` makes the export draw a terrain picture (`Tools/MapTerrainExport.cs`), 7200 x 2160
+pixels in 8 x 4 tiles (`terrain2_<n>.webp`, uploaded as RGB565, loaded when first seen):
+
+* **land**: Natural Earth II with shaded relief (green lowlands, brown and grey mountains with their light
+  and shadow, sand deserts, white ice), graded towards parchment (`parchmentMix`);
+* **water**: a gradient from shallow water at the coast to deep ocean (`shallow`, `deep`, `depthPixels`),
+  faint wave lines following the coast (`waveLines`) and a pale foam edge; lakes and channels alike.
+
+The game draws the picture, then the owners' colours over it at `ownerAlpha` (0.38, so the relief shows
+through; unowned land and the sea are not tinted), then a paper grain (`paper2.png`, a tile of 600 map
+units, fading in from zoom 0.12), then the borders twice: a soft stroke one pixel aside at 45 % and the
+sharp line (national borders dark, province borders light, coasts dark). The world map: about 900 000
+triangles, 40 000 border chains; textures at the start of WORLD 1939 106 MB (215 MB with the old tiles and
+masks), 18 draw calls per frame.
 
 ## Units, zoom and markers
 
@@ -137,9 +181,10 @@ The map has 100 map units per degree (36 000 x 10 800); Europe's provinces are a
 `areas.json` gives every area its `fit` radius and the map a `display` object (DATA_SCHEMA.md): the units,
 flag and buildings of an area smaller than `unitFitRadius` are scaled down to fit (never below
 `minUnitScale`; a unit moving in shrinks around itself, so its path stays true); the camera zooms in up to
-`maxZoom` (3); when the units would be smaller on screen than `markerZoom`, each army becomes a flag of
-constant size and buildings are left out, so nothing collapses into dots; flags stand only where armies
-or buildings are (`flags: "armies"`), the colours show the owners.
+`maxZoom` (3); below the camera zoom `markerZoom` every province's armies and buildings become one flag
+of nearly constant size on screen (a little smaller in a small province), the same threshold for every
+province, so nothing on screen vanishes or collapses into dots; flags stand only where armies or buildings
+are (`flags: "armies"`), the colours show the owners.
 
 ## The configuration (`Tools/map/natural-earth.json`)
 
@@ -149,13 +194,14 @@ or buildings are (`flags: "armies"`), the colours show the owners.
 | `raster.width` | 4500 (12.5 pixels per degree) |
 | `eras` | 1910-01-01, 1914-07-01, 1936-01-01, 1939-09-01, 1945-09-02, 1949-12-31 (CShapes), 2018 (`naturalearth`) |
 | `historicalBorders` | `file`, `minFragmentKm2` 1500, `minFragmentWidthPixels` 2, `fallback` |
+| `water` | `lakes` (file, `maxScalerank` 2), `historicLakes` (file, names: the Aral Sea), `channels` (name, path lon/lat, `widthPixels`) |
 | `homeUnits` | game country -> its CShapes units (capitals of every era) |
 | `regions` | `minIslandKm2` 1500, `islandSplitDegrees` 4, `islandClusterDegrees` 1, `maxPartDistanceDegrees` 25 |
 | `detail` | `defaultKm2` 22 000, `mergeBelow` 0.5, `splitAbove` 1.6; zones from 5 000 km2 (western and central Europe) to 60 000 (northern Canada); countries (Japan, Korea 5 000, Greenland 150 000) |
 | `sea` | `coastRadiusDegrees` 1.8, `oceanRadiusDegrees` 14, `growth` 0.9, `relaxIterations` 2, `minSeaPixels` 300 |
-| `straits` | Bosporus, Dardanelles, Gibraltar, Suez, Panama, Kiel, Øresund, Kerch, Bab-el-Mandeb |
+| `straits` | links between sea zones: Kiel Canal, Bab-el-Mandeb, the rivers between the Great Lakes (the others are channels) |
 | `cities`, `ports`, `airfields` | `minPopulation` 1 000 000, `largeCityPopulation` 5 000 000; `maxScalerank` 5 and 4 |
-| `classicExport` | `mapId` 2, `scale` 8 (map units per region raster pixel), `detailRaster` 2, `mesh` true, `meshSettings`, `areaTax` `area` (1 per 25 000 km2), `display`, `scenarios` |
+| `classicExport` | `mapId` 2, `scale` 8 (map units per region raster pixel), `detailRaster` 2, `mesh` true, `meshSettings`, `areaTax` `area` (1 per 25 000 km2), `terrain` (the look), `display`, `scenarios` |
 | `countries` | Natural Earth `ADM0_A3` -> game ids |
 
 ## The map pack (`assets/data/maps/natural-earth/`)
@@ -167,18 +213,19 @@ or buildings are (`flags: "armies"`), the colours show the owners.
 | `regions.raster` | the region of every pixel (deflate compressed uint16) |
 | `preview.png` | regions coloured by their 1939 unit |
 
-7 389 land regions, 1 125 sea zones, 161 capitals (5 of earlier eras), 229 ports, 150 airfields, 7 straits.
+7 327 land regions, 1 145 sea zones, 161 capitals (5 of earlier eras), 237 ports, 150 airfields, 9 strait links.
 
 ## Playing on the generated map
 
 | File | Read by | Content |
 |---|---|---|
 | `area2.bin` | `CScene.LoadAreaData` | per area: box, army, building and installation anchors, land or sea (36 000 x 10 800 map units) |
-| `adjion2.bin` | `CScene.LoadAdjoin` | up to 16 neighbours per area (straits and the seam included) |
+| `adjion2.bin` | `CScene.LoadAdjoin` | every neighbour of every area (version 2: "WCAJ", up to 17 here; the original's format keeps 16, which dropped the shortest borders of a coastal sea zone, straits first) |
 | `areamark2.raw` | `CAreaMark` | the area under every 8 x 8 block of map units (4500 x 1350 cells) |
 | `data/json/maps/2/areas.json` | `LoadAreaTax`, `MapDisplay` | type, tax and `fit` of every area (harbours: sea areas of type `port`), the `display` settings |
 | `map2.mesh` | `CMapMesh` | the areas as triangles and the borders as lines (12 MB) |
-| `conquest_10.xml`, `conquest_10.bin` | `LoadBattle` | WORLD 1939: 27 countries, 6 239 owned areas, armies in capitals and cities (transport ships on the coasts), 59 destroyers in harbours |
+| `terrain2_<n>.webp`, `paper2.png` | `CMapMesh` | the terrain picture (32 tiles) and the paper grain |
+| `conquest_10.xml`, `conquest_10.bin` | `LoadBattle` | WORLD 1939: 27 countries, 6 177 owned areas, armies in capitals and cities (transport ships on the coasts), 61 destroyers in harbours |
 | `data/json/conquests/conquests.json`, texts, `button_conquest10@2x.png` | the conquest menu | conquest 10 with `fogOfWar: false` and `leftRightWrap: true` |
 
 The mod is built into the package (`assets/build.json` `builtInMods`) and appears as **WORLD 1939** on the
@@ -193,16 +240,17 @@ s on the desktop (fixed step).
   synthetic world (a historical border, a sliver, a harbour, transports, the conquest options); the mesh
   covers every region exactly (a lake as a hole, an enclave) and the game reads it.
 * `Tests/Unit/CameraTests.cs`: the zoom limits and wrapping.
-* `Tests/world_menu` and `Tests/world_autoplay` (start, the seam, zoomed out, zoomed in, markers, four AI
-  rounds, the naval count `WRN` checked by `world_autoplay.expect`).
+* `Tests/world_menu` and `Tests/world_autoplay` (start, the seam, zoomed out, zoomed out at the seam,
+  zoomed in, markers, four AI rounds, the naval count `WRN` checked by `world_autoplay.expect`).
 
 ### Still to do
 
 * The menu texts of the world conquests are English in every language.
 * Only WORLD 1939 is a conquest; the other eras need only a `scenarios` entry.
 * Occupations are by whole province; CShapes has no wartime occupations.
-* 7 tiny regions have no outline in the mesh (smaller than the simplification): they can be picked but
+* A few tiny regions have no outline in the mesh (smaller than the simplification): they can be picked but
   are not drawn.
+* The terrain picture is 20 pixels per degree: soft when zoomed in far (the paper grain hides some of it).
 * Balance: start money, taxes and armies are simple rules of the export, not tuned by play.
 
 ---
@@ -217,8 +265,10 @@ s on the desktop (fixed step).
 * 一个**可玩的地图模组**（`mods/map-natural-earth/`：地图 2，由顶点缓冲绘制，附带征服 **WORLD 1939**）。
 
 这张底图是**所有时代共用的一张地图**：它的区域同时遵循 1910、1914、1936、1939、1945、1949 年和今天的
-边界，因此任何一年的剧本只需说明哪个区域归谁。它有 **7 389 个陆地省份**（与《文明时代 2》相当；1939 年
-奥地利约 15 个、捷克斯洛伐克约 10 个、波兰约 70 个）和 1 125 个海区。关闭或删除该模组即可完全恢复原样。
+边界，因此任何一年的剧本只需说明哪个区域归谁。它有 **7 327 个陆地省份**（与《文明时代 2》相当；1939 年
+奥地利约 15 个、捷克斯洛伐克约 10 个、波兰约 70 个）和 1 145 个海区（包括内海和运河）。地图采用《欧陆战争 4》
+和《世界征服者 3》的风格绘制：自然色彩和地形晕渲之上叠加半透明的归属色、纸张纹理，海洋带有深浅和沿岸波纹。
+关闭或删除该模组即可完全恢复原样。
 
 ## 运行
 
@@ -245,6 +295,8 @@ dotnet Tools\bin\Debug\net9.0\WC2.Tools.dll build-map --config Tools\map\natural
 | `ne_10m_populated_places.geojson` | Natural Earth | 省份的名称（省内最大的城镇） |
 | `ne_10m_ports.geojson` | Natural Earth | 港口（`scalerank`） |
 | `ne_10m_airports.geojson` | Natural Earth | 机场（`type`、`scalerank`） |
+| `ne_10m_lakes.geojson`、`ne_10m_lakes_historic.geojson` | Natural Earth | 大型湖泊（省份图层把它们当作陆地）和 1960 年的咸海 |
+| `ne2/NE2_50M_SR_W/NE2_50M_SR_W.tif` | Natural Earth II 带地形晕渲和水体，1:50m（公有领域） | 地形底图：自然色彩与地形起伏 |
 | `CShapes-2.0.geojson` | CShapes 2.0，苏黎世联邦理工学院（Schvitz、Rüegger、Girardin、Cederman、Weidmann、Gleditsch），CC BY-NC-SA 4.0，icr.ethz.ch/data/cshapes | 1886 年至 2019 年各国家和殖民地的边界，每个都带有日期、Gleditsch-Ward 代码（`gwcode`）和首都 |
 
 CShapes 的许可要求非商业使用、署名并以相同方式共享：地图包和地图模组由它派生，适用同样的条款（本游戏
@@ -252,8 +304,8 @@ CShapes 的许可要求非商业使用、署名并以相同方式共享：地图
 
 ## 底图的生成步骤
 
-1. **省份。** 边界范围内的每个 Natural Earth 省份被绘制到一张等距圆柱投影的栅格中（360 度共 4500 像素，
-   每度 12.5 像素），不做抗锯齿。
+1. **省份与水域。** 边界范围内的每个 Natural Earth 省份被绘制到一张等距圆柱投影的栅格中（360 度共 4500
+   像素，每度 12.5 像素），不做抗锯齿；然后从中挖出水域（`water`，见下文）：大型湖泊以及海峡和运河。
 2. **时代。** 对每个带 `date` 的时代，把当天有效的 CShapes 单元（国家和殖民地）绘制到各自的栅格中；时代
    `naturalearth`（今天）直接使用省份所属的国家。没有单元覆盖的陆地，使用其 Natural Earth 国家的
    `fallback` 单元，否则使用该省的主要单元，再否则使用最近的单元；在一个省份内部，属于其他单元、面积小于
@@ -271,7 +323,8 @@ CShapes 的许可要求非商业使用、署名并以相同方式共享：地图
    群岛……）；循环地图在接缝处拆分区域。
 6. **形状不规则的海区。** 种子间距随离岸距离增大（沿岸小海区、远洋大海区），在水中生长并松弛；足够大
    的湖泊有自己的海区；接缝是海区边界。
-7. **相邻关系**：循环地图上跨越接缝，另加 `straits`（博斯普鲁斯、直布罗陀、各运河……）。
+7. **相邻关系**：循环地图上跨越接缝，另加 `straits`（水道太窄、连通道也画不出的海区之间的连接：基尔运河、
+   曼德海峡、五大湖之间的河流）；不与任何区域相邻的区域（小湖中的岛屿）与水对岸最近的区域相连。
 8. **要素。** 今天的首都以及游戏中国家在其他时代的首都（`homeUnits`）、城市、港口（港口区域保持其陆地
    类型；它的港口是其外侧的海区，见下文）、机场。省份以其内最大的城镇命名，否则以其 Natural Earth 省份
    名加方位命名。
@@ -305,12 +358,27 @@ CShapes 的许可要求非商业使用、署名并以相同方式共享：地图
 历史国家交给最接近的游戏国家（WORLD 1939：奥地利和捷克斯洛伐克归德国，朝鲜和台湾归日本，殖民地归各自
 的帝国，蒙古归苏联，中国归中华民国 `tw`），或者保持无主。
 
+## 湖泊、海峡与运河
+
+省份图层把湖泊当作陆地，而几公里宽的海峡在 9 公里一像素的栅格中会被封住。因此 `water` 在两种分辨率（区域
+栅格和轮廓栅格）上、在其他步骤之前，把它们从省份中挖出：
+
+* **湖泊**：`maxScalerank` 不超过 2 的 Natural Earth 湖泊（五大湖、贝加尔湖、拉多加湖、奥涅加湖、巴尔喀什湖、
+  维多利亚湖……），以及历史湖泊中 1960 年的咸海。它们与海洋一样获得海区：内海，可由在其港口建造的舰船以及从
+  其沿岸出发的运输船航行（里海本来就是水域）。五大湖由各自之间的河流连接（`straits`）。
+* **通道**：博斯普鲁斯海峡、达达尼尔海峡、苏伊士运河和巴拿马运河、直布罗陀海峡、厄勒海峡和刻赤海峡，画成
+  `widthPixels`（2.5，约 20 公里）宽的线。两侧的海区通过它们相连，舰队可以从地中海驶入黑海、红海和太平洋；
+  陆军不能步行跨越（横跨两岸的省份，如伊斯坦布尔，仍同时拥有两岸）。
+
+`MapPackTests` 会检查这些：从大西洋中部出发，可以经海路到达黑海、马尔马拉海、红海、巴拿马外的太平洋、芬兰湾
+和亚速海；苏必利尔湖、密歇根湖、贝加尔湖、咸海、拉多加湖和里海是内海，并且苏必利尔湖可以到达安大略湖。
+
 ## 舰船与运输船（与原版一致）
 
 规则就是原版游戏的规则（已与反编译的原版核对）：陆军只有带着**运输船**（部队卡牌 2，即在卡牌商店购买的
 运输卡，或者海军勋章 1 级起给每个新征召的陆军部队）才能进入海区；在海上它显示为运输船。战舰在己方的
 **港口**建造：类型为 `port` 的海上地区。原版的 48 个港口地区全部是海上地区；因此导出时把每座港口城市外侧
-的海区（共享边界最长的那个）标记为港口（世界地图上共 171 个），港口图标画在那段海岸上，税收为 2。与原版
+的海区（共享边界最长的那个）标记为港口（世界地图上共 180 个），港口图标画在那段海岸上，税收为 2。与原版
 征服中的许多部队一样，沿海的初始部队带有运输船。AI 用原版逻辑购买运输卡、登船和登陆：WORLD 1939 进行
 四个回合后，海上约有 270 艘运输船和 70 艘战舰（见 `Tests/world_autoplay.expect`）。
 
@@ -323,17 +391,32 @@ LibTessDotNet（MIT）三角化。区域和边界按竖条（`chunkWidth`）存�
 
 游戏（`Game/MapScene/MapMesh.cs`）把三角形放在一个顶点缓冲中，把边界放在一个线条缓冲中；地区的颜色随
 归属变化，两侧归属不同的边界画成国界，否则画成省界；只绘制视野内的竖条，共两次绘制调用。选中、战斗和
-新回合闪烁在上面单独绘制某个地区或某个国家的全部地区（每次归属变化建一个索引缓冲）。世界地图：914 839 个
-顶点、897 138 个三角形、40 469 条边界链；WORLD 1939 开局时纹理占用 104 MB（之前使用贴图块和掩码时为
-215 MB），每帧 12 到 15 次绘制调用。
+新回合闪烁在上面单独绘制某个地区或某个国家的全部地区（每次归属变化建一个索引缓冲）。循环地图的每个副本都
+把背景裁剪到地图范围内绘制，因此接缝左右的副本不会互相覆盖。
+
+## 地图的外观
+
+`classicExport.terrain` 让导出绘制一张地形底图（`Tools/MapTerrainExport.cs`），7200 × 2160 像素，分成 8 × 4 块
+（`terrain2_<n>.webp`，以 RGB565 上传，首次可见时加载）：
+
+* **陆地**：带地形晕渲的 Natural Earth II（绿色低地、带光影的棕色和灰色山地、沙色沙漠、白色冰雪），向羊皮纸
+  色调调和（`parchmentMix`）；
+* **水域**：从海岸处的浅水到远洋深水的渐变（`shallow`、`deep`、`depthPixels`），沿海岸的淡淡波纹线
+  （`waveLines`）和浅色的浪花边；湖泊和通道相同。
+
+游戏先画这张底图，再以 `ownerAlpha`（0.38，让地形透出；无主陆地和海洋不着色）叠加归属色，然后是纸张纹理
+（`paper2.png`，每块 600 地图单位，从缩放 0.12 起渐显），最后把边界画两遍：偏移一个像素、45% 透明度的柔和描边，
+以及清晰的线条（国界深色、省界浅色、海岸线深色）。世界地图：约 90 万个三角形、4 万条边界链；WORLD 1939 开局
+时纹理占用 106 MB（旧的贴图块和掩码为 215 MB），每帧 18 次绘制调用。
 
 ## 部队、缩放与标记
 
 地图每度 100 个地图单位（36 000 × 10 800）；欧洲的省份约为 100 × 60 单位。`areas.json` 给每个地区一个
 `fit` 半径，并给地图一个 `display` 对象（见 DATA_SCHEMA.md）：小于 `unitFitRadius` 的地区，其部队、旗帜和
 建筑缩小到能放进地区（不小于 `minUnitScale`；正在移入的部队围绕自身缩小，因此移动路径保持正确）；镜头
-最多放大到 `maxZoom`（3）；当部队在屏幕上会小于 `markerZoom` 时，每支军队显示为固定大小的旗帜，不绘制
-建筑，因此不会缩成小点；只在有军队或建筑的地方插旗（`flags: "armies"`），颜色表示归属。
+最多放大到 `maxZoom`（3）；镜头缩放低于 `markerZoom` 时，每个省份的军队和建筑显示为一面在屏幕上大小几乎
+不变的旗帜（小省份略小），所有省份使用同一个阈值，因此屏幕上的东西不会消失或缩成小点；只在有军队或建筑的
+地方插旗（`flags: "armies"`），颜色表示归属。
 
 ## 配置（`Tools/map/natural-earth.json`）
 
@@ -343,13 +426,14 @@ LibTessDotNet（MIT）三角化。区域和边界按竖条（`chunkWidth`）存�
 | `raster.width` | 4500（每度 12.5 像素） |
 | `eras` | 1910-01-01、1914-07-01、1936-01-01、1939-09-01、1945-09-02、1949-12-31（CShapes），2018（`naturalearth`） |
 | `historicalBorders` | `file`、`minFragmentKm2` 1500、`minFragmentWidthPixels` 2、`fallback` |
+| `water` | `lakes`（文件，`maxScalerank` 2）、`historicLakes`（文件，名称：咸海）、`channels`（名称，经纬度路径，`widthPixels`） |
 | `homeUnits` | 游戏国家 → 它的 CShapes 单元（各时代的首都） |
 | `regions` | `minIslandKm2` 1500、`islandSplitDegrees` 4、`islandClusterDegrees` 1、`maxPartDistanceDegrees` 25 |
 | `detail` | `defaultKm2` 22 000、`mergeBelow` 0.5、`splitAbove` 1.6；区域范围从 5 000 km2（西欧和中欧）到 60 000（加拿大北部）；国家（日本、朝鲜半岛 5 000，格陵兰 150 000） |
 | `sea` | `coastRadiusDegrees` 1.8、`oceanRadiusDegrees` 14、`growth` 0.9、`relaxIterations` 2、`minSeaPixels` 300 |
-| `straits` | 博斯普鲁斯、达达尼尔、直布罗陀、苏伊士、巴拿马、基尔、厄勒海峡、刻赤、曼德海峡 |
+| `straits` | 海区之间的连接：基尔运河、曼德海峡、五大湖之间的河流（其余的是通道） |
 | `cities`、`ports`、`airfields` | `minPopulation` 1 000 000、`largeCityPopulation` 5 000 000；`maxScalerank` 分别为 5 和 4 |
-| `classicExport` | `mapId` 2、`scale` 8（每个区域栅格像素的地图单位）、`detailRaster` 2、`mesh` true、`meshSettings`、`areaTax` `area`（每 25 000 km2 为 1）、`display`、`scenarios` |
+| `classicExport` | `mapId` 2、`scale` 8（每个区域栅格像素的地图单位）、`detailRaster` 2、`mesh` true、`meshSettings`、`areaTax` `area`（每 25 000 km2 为 1）、`terrain`（外观）、`display`、`scenarios` |
 | `countries` | Natural Earth 的 `ADM0_A3` → 游戏 id |
 
 ## 地图包（`assets/data/maps/natural-earth/`）
@@ -361,18 +445,19 @@ LibTessDotNet（MIT）三角化。区域和边界按竖条（`chunkWidth`）存�
 | `regions.raster` | 每个像素所属的区域（deflate 压缩的 uint16） |
 | `preview.png` | 按 1939 年单元着色的区域 |
 
-7 389 个陆地区域、1 125 个海区、161 个首都（其中 5 个来自更早的时代）、229 个港口、150 个机场、7 条海峡连接。
+7 327 个陆地区域、1 145 个海区、161 个首都（其中 5 个来自更早的时代）、237 个港口、150 个机场、9 条海峡连接。
 
 ## 在生成的地图上游戏
 
 | 文件 | 读取者 | 内容 |
 |---|---|---|
 | `area2.bin` | `CScene.LoadAreaData` | 每个地区：范围、部队/建筑/设施锚点、陆地或海洋（36 000 × 10 800 地图单位） |
-| `adjion2.bin` | `CScene.LoadAdjoin` | 每个地区最多 16 个邻居（包括海峡和接缝） |
+| `adjion2.bin` | `CScene.LoadAdjoin` | 每个地区的全部邻居（版本 2："WCAJ"，这里最多 17 个；原版格式只保留 16 个，会丢掉沿海海区最短的边界，首先是海峡） |
 | `areamark2.raw` | `CAreaMark` | 每个 8 × 8 地图单位方块下的地区（4500 × 1350 个单元格） |
 | `data/json/maps/2/areas.json` | `LoadAreaTax`、`MapDisplay` | 每个地区的类型、税收和 `fit`（港口：类型为 `port` 的海上地区），以及 `display` 设置 |
 | `map2.mesh` | `CMapMesh` | 地区的三角形和边界线（12 MB） |
-| `conquest_10.xml`、`conquest_10.bin` | `LoadBattle` | WORLD 1939：27 个国家、6 239 个有归属的地区、首都和城市中的部队（沿海部队带运输船）、港口中的 59 艘驱逐舰 |
+| `terrain2_<n>.webp`、`paper2.png` | `CMapMesh` | 地形底图（32 块）和纸张纹理 |
+| `conquest_10.xml`、`conquest_10.bin` | `LoadBattle` | WORLD 1939：27 个国家、6 177 个有归属的地区、首都和城市中的部队（沿海部队带运输船）、港口中的 61 艘驱逐舰 |
 | `data/json/conquests/conquests.json`、文本、`button_conquest10@2x.png` | 征服菜单 | 征服 10，`fogOfWar: false`、`leftRightWrap: true` |
 
 该模组内置在游戏资源包中（`assets/build.json` 的 `builtInMods`），在征服列表第二页显示为 **WORLD 1939**，
@@ -385,13 +470,14 @@ LibTessDotNet（MIT）三角化。区域和边界按竖条（`chunkWidth`）存�
   覆盖、接缝、各时代的首都、马赛）；在合成小世界上运行的生成流程（一条历史边界、一个细碎片、一个港口、
   运输船、征服选项）；网格精确覆盖每个区域（湖泊为孔洞、一块飞地），并且游戏能读取它。
 * `Tests/Unit/CameraTests.cs`：缩放限制和左右循环。
-* `Tests/world_menu` 和 `Tests/world_autoplay`（开局、接缝、最大缩小、放大、标记、四轮 AI，以及由
-  `world_autoplay.expect` 检查的海军统计 `WRN`）。
+* `Tests/world_menu` 和 `Tests/world_autoplay`（开局、接缝、最大缩小、在接缝处最大缩小、放大、标记、四轮 AI，
+  以及由 `world_autoplay.expect` 检查的海军统计 `WRN`）。
 
 ### 待办
 
 * 世界征服的菜单文本在所有语言中都是英文。
 * 目前只有 WORLD 1939 是征服；其他时代只需一个 `scenarios` 条目。
 * 占领以整个省份为单位；CShapes 没有战时占领数据。
-* 网格中有 7 个极小的区域没有轮廓（小于简化精度）：可以选中，但不会绘制。
+* 网格中有少数极小的区域没有轮廓（小于简化精度）：可以选中，但不会绘制。
+* 地形底图为每度 20 像素：放大很多时显得柔和（纸张纹理遮住了一部分）。
 * 平衡：初始资金、税收和部队是导出时的简单规则，尚未经过实际游戏调整。

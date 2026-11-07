@@ -5,6 +5,13 @@ namespace WC2;
 /// <summary>Adjacency tables of the map (CSceneAdjacency.cpp).</summary>
 public sealed partial class CScene
 {
+    /// <summary>
+    /// Values per area in the adjacency tables: the neighbour count, then up to adjoinStride - 1
+    /// neighbours. 17 in the original's format (16 neighbours); a generated map with more neighbours
+    /// (thousands of small provinces along a coast) stores its own stride (adjion version 2).
+    /// </summary>
+    public int adjoinStride = 17;
+
     /// <summary>Legacy adjacency data check placeholder.</summary>
     public void CheckAdjacentData()
     {
@@ -13,20 +20,22 @@ public sealed partial class CScene
     /// <summary>Creates and clears the raw adjacency table.</summary>
     public void NewAdjoin()
     {
-        const int kAdjoinValuesPerArea = 17;
+        int kAdjoinValuesPerArea = adjoinStride;
         adjoinRaw = null;
         if (areaCount <= 0)
             return;
         adjoinRaw = new int[areaCount * kAdjoinValuesPerArea];
     }
 
-    /// <summary>Loads the map adjacency data (adjion&lt;mapId&gt;.bin: int count, then count * 17 ints).</summary>
+    /// <summary>
+    /// Loads the map adjacency data: adjion&lt;mapId&gt;.bin, the original's format (int count, then
+    /// count * 17 ints: neighbour count and 16 neighbours) or version 2 ("WCAJ", version, count, the
+    /// most neighbours per area, then count * (1 + most) ints).
+    /// </summary>
     public void LoadAdjoin(int mapId)
     {
-        const uint kAdjoinValuesPerArea = 17;
-        const uint kBytesPerArea = kAdjoinValuesPerArea * 4;
         const uint kMaxAreaCount = 0x1E00000;
-
+        adjoinStride = 17;
         string fileName = Sprintf("adjion%d.bin", mapId);
 
         var file = new ecFile();
@@ -39,6 +48,15 @@ public sealed partial class CScene
             file.Close();
             return;
         }
+        int stride = 17;
+        if (header[0] == 'W' && header[1] == 'C' && header[2] == 'A' && header[3] == 'J')
+        {
+            byte[] v2 = file.ReadBytes(12);
+            if (v2 == null || BinaryPrimitives.ReadInt32LittleEndian(v2) != 2) { file.Close(); return; }
+            header = v2.AsSpan(4, 4).ToArray();
+            stride = 1 + BinaryPrimitives.ReadInt32LittleEndian(v2.AsSpan(8, 4));
+            if (stride < 2 || stride > 1025) { file.Close(); return; }
+        }
         uint storedAreaCount = BinaryPrimitives.ReadUInt32LittleEndian(header);
         if (storedAreaCount > kMaxAreaCount)
         {
@@ -46,7 +64,7 @@ public sealed partial class CScene
             return;
         }
 
-        byte[] raw = file.ReadBytes((int)(storedAreaCount * kBytesPerArea));
+        byte[] raw = file.ReadBytes((int)(storedAreaCount * stride * 4));
         if (raw == null)
         {
             file.Close();
@@ -54,17 +72,18 @@ public sealed partial class CScene
         }
         file.Close();
 
-        int[] loadedAdjoinData = new int[storedAreaCount * kAdjoinValuesPerArea];
+        int[] loadedAdjoinData = new int[storedAreaCount * stride];
         for (int i = 0; i < loadedAdjoinData.Length; ++i)
             loadedAdjoinData[i] = BinaryPrimitives.ReadInt32LittleEndian(raw.AsSpan(i * 4, 4));
 
+        adjoinStride = stride;
         adjoinRaw = loadedAdjoinData;
     }
 
     /// <summary>Saves the map adjacency data (adjion&lt;mapId&gt;.bin).</summary>
     public void SaveAdjoin(int mapId)
     {
-        const int kAdjoinValuesPerArea = 17;
+        int kAdjoinValuesPerArea = adjoinStride;
 
         if (adjoinRaw == null || areaCount <= 0)
             return;
@@ -76,7 +95,15 @@ public sealed partial class CScene
             return;
 
         int storedAreaCount = areaCount;
-        file.WriteInt32(storedAreaCount);
+        if (kAdjoinValuesPerArea != 17)
+        {
+            // version 2 (more than 16 neighbours per area)
+            file.Write(new[] { (byte)'W', (byte)'C', (byte)'A', (byte)'J' }, 4u);
+            file.WriteInt32(2);
+            file.WriteInt32(storedAreaCount);
+            file.WriteInt32(kAdjoinValuesPerArea - 1);
+        }
+        else file.WriteInt32(storedAreaCount);
         int valueCount = storedAreaCount * kAdjoinValuesPerArea;
         for (int i = 0; i < valueCount; ++i)
             file.WriteInt32(i < adjoinRaw.Length ? adjoinRaw[i] : 0);
@@ -88,8 +115,8 @@ public sealed partial class CScene
     /// <param name="areasEnable">Optional area enable file name.</param>
     public void InitAreas(int mapId, string areasEnable)
     {
-        const int kAdjoinValuesPerArea = 17;
-        const int kMaxAdjacentAreas = 16;
+        int kAdjoinValuesPerArea = adjoinStride;
+        int kMaxAdjacentAreas = adjoinStride - 1;
 
         LoadAreaTax(mapId);
         if (areasEnable != null)
@@ -139,8 +166,8 @@ public sealed partial class CScene
     public void MakeAdjoin(int areaId1, int areaId2)
     {
         ClearDistanceCache();
-        const int kAdjoinValuesPerArea = 17;
-        const int kMaxAdjacentAreas = 16;
+        int kAdjoinValuesPerArea = adjoinStride;
+        int kMaxAdjacentAreas = adjoinStride - 1;
 
         if (adjoinRaw == null ||
             areaId1 < 0 || areaId2 < 0 ||
@@ -194,7 +221,7 @@ public sealed partial class CScene
 
         void RemoveOneDirection(int sourceId, int targetId)
         {
-            const int kValuesPerArea = 17;
+            int kValuesPerArea = adjoinStride;
             int dataBase = kValuesPerArea * sourceId;
             int count = adjoinRaw[dataBase];
 
@@ -218,7 +245,7 @@ public sealed partial class CScene
     /// <summary>Checks whether two areas are adjacent in the raw adjacency table.</summary>
     public bool IsAdjoin(int areaId1, int areaId2)
     {
-        const int kAdjoinValuesPerArea = 17;
+        int kAdjoinValuesPerArea = adjoinStride;
 
         if (adjoinRaw == null ||
             areaId1 < 0 || areaId2 < 0 ||
@@ -241,7 +268,7 @@ public sealed partial class CScene
     /// <summary>Number of adjacent areas of an area in the runtime adjacency table.</summary>
     public int GetNumAdjacentAreas(int areaId)
     {
-        const int kAdjoinValuesPerArea = 17;
+        int kAdjoinValuesPerArea = adjoinStride;
         if (adjoin == null || areaId < 0 || areaId >= areaCount)
             return 0;
         return adjoin[kAdjoinValuesPerArea * areaId];
@@ -250,8 +277,8 @@ public sealed partial class CScene
     /// <summary>Area id at the given position of the adjacency list of an area; -1 when invalid.</summary>
     public int GetAdjacentAreaID(int areaId, int index)
     {
-        const int kAdjoinValuesPerArea = 17;
-        const int kMaxAdjacentAreas = 16;
+        int kAdjoinValuesPerArea = adjoinStride;
+        int kMaxAdjacentAreas = adjoinStride - 1;
         if (adjoin == null ||
             areaId < 0 || areaId >= areaCount ||
             index < 0 || index >= kMaxAdjacentAreas)
@@ -281,7 +308,7 @@ public sealed partial class CScene
         if (adjoin == null || areaId1 < 0 || areaId1 >= areaCount)
             return false;
 
-        const int kAdjoinValuesPerArea = 17;
+        int kAdjoinValuesPerArea = adjoinStride;
         int baseIndex = kAdjoinValuesPerArea * areaId1;
         int adjacentCount = adjoin[baseIndex];
         for (int index = 0; index < adjacentCount; ++index)

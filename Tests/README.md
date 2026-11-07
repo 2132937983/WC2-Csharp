@@ -81,7 +81,7 @@ against the dumps (the AI tests).
 | `resource_cycle` | menu -> conquest -> menu twice: the same texture memory on every visit |
 | `ai_defends_marseille_classic`, `ai_defends_marseille_standard` | the test mod `mods/ai-marseille` (an Italian stack next to a weakly held Marseille): the standard AI reinforces and holds Marseille (`.expect`), the classic AI loses it |
 | `ai_standard_autoplay` | conquest 1 played by the standard AI for 16 rounds |
-| `world_menu`, `world_autoplay` | the generated world map, WORLD 1939 (`mods/map-natural-earth`, MAP_PIPELINE.md, 7 389 provinces drawn as a mesh): through the conquest menu (list, preview, game); as France with the seam at the Bering Strait, fully zoomed out (no black bars), fully zoomed in (units fitted to the provinces), the flag markers, four rounds of the standard AI and the naval count (`world_autoplay.expect`: harbours, transports and ships at sea) |
+| `world_menu`, `world_autoplay` | the generated world map, WORLD 1939 (`mods/map-natural-earth`, MAP_PIPELINE.md, 7 389 provinces drawn as a mesh): through the conquest menu (list, preview, game); as France with the seam at the Bering Strait, fully zoomed out (no black bars) and fully zoomed out at the seam (Asia left of America, no empty water), fully zoomed in (units fitted to the provinces), the flag markers, four rounds of the standard AI and the naval count (`world_autoplay.expect`: harbours, transports and ships at sea) |
 
 ## Unit tests (`Unit/`, `dotnet test Tests`)
 
@@ -91,7 +91,7 @@ against the dumps (the AI tests).
 | `HitTestTests.cs` | points off the screen never hit; only the visible part of an edge control hits; hidden and disabled controls refuse input |
 | `NoPurchaseTests.cs` | no purchase code, billing permission, purchase types or buy button |
 | `AiProfileTests.cs` | classic equals the original numbers; inheritance; the command line override |
-| `MapPackTests.cs` | the world base map (consistency, wrapping, the units of every era, historical borders splitting provinces, coverage up to the polar islands and over the date line, capitals of today and of earlier eras, Marseille); the pipeline and the classic export on a synthetic world with a historical border, a harbour and transports; the mesh covers every region exactly and the game reads it |
+| `MapPackTests.cs` | the world base map (consistency, wrapping, the units of every era, historical borders splitting provinces, coverage up to the polar islands and over the date line, capitals of today and of earlier eras, Marseille); the pipeline and the classic export on a synthetic world with a historical border, a harbour and transports; the mesh covers every region exactly and the game reads it; ships pass the straits and canals, the lakes are inland seas |
 | `CameraTests.cs` | zooming out stops when the map fills the screen; a wrapping map scrolls past its edges and the camera takes the short way over the seam |
 | `BuiltInModTests.cs` | mods built into the package mount and merge like folder mods, a folder mod replaces one with the same id, the world map is built in |
 
@@ -161,7 +161,7 @@ against the dumps (the AI tests).
 | `resource_cycle` | 菜单 -> 征服 -> 菜单，重复两次：每次进入时纹理内存都相同 |
 | `ai_defends_marseille_classic`、`ai_defends_marseille_standard` | 测试模组 `mods/ai-marseille`（一支意大利部队堆叠在防守薄弱的马赛旁边）：standard AI 会增援并守住马赛（`.expect`），classic AI 则会丢掉马赛 |
 | `ai_standard_autoplay` | 征服 1，由 standard AI 进行 16 个回合 |
-| `world_menu`、`world_autoplay` | 生成的世界地图 WORLD 1939（`mods/map-natural-earth`，MAP_PIPELINE.md，以网格绘制的 7 389 个省份）：通过征服菜单进入（列表、预览、游戏）；以法国开局，查看白令海峡处的接缝、最大缩小（没有黑边）、最大放大（部队缩放到省份内）、旗帜标记、standard AI 进行四个回合，以及海军统计（`world_autoplay.expect`：港口、海上的运输船和舰船） |
+| `world_menu`、`world_autoplay` | 生成的世界地图 WORLD 1939（`mods/map-natural-earth`，MAP_PIPELINE.md，以网格绘制的 7 389 个省份）：通过征服菜单进入（列表、预览、游戏）；以法国开局，查看白令海峡处的接缝、最大缩小（没有黑边）以及在接缝处最大缩小（亚洲在美洲左侧，没有空白海面）、最大放大（部队缩放到省份内）、旗帜标记、standard AI 进行四个回合，以及海军统计（`world_autoplay.expect`：港口、海上的运输船和舰船） |
 
 ## 单元测试（`Unit/`，`dotnet test Tests`）
 
@@ -171,6 +171,6 @@ against the dumps (the AI tests).
 | `HitTestTests.cs` | 屏幕外的点永远不会命中；边缘控件只有可见部分能被命中；隐藏和禁用的控件拒绝输入 |
 | `NoPurchaseTests.cs` | 不存在购买代码、计费权限、购买类型或购买按钮 |
 | `AiProfileTests.cs` | classic 与原版数值完全相同；继承；命令行覆盖 |
-| `MapPackTests.cs` | 世界底图（一致性、左右循环、各时代的单元、历史边界拆分省份、覆盖到北极群岛并跨越日期变更线、今天和早期时代的首都、马赛）；在一个带历史边界、港口和运输船的合成世界上测试生成流程和经典地图导出；网格精确覆盖每个区域，并且游戏能读取它 |
+| `MapPackTests.cs` | 世界底图（一致性、左右循环、各时代的单元、历史边界拆分省份、覆盖到北极群岛并跨越日期变更线、今天和早期时代的首都、马赛）；在一个带历史边界、港口和运输船的合成世界上测试生成流程和经典地图导出；网格精确覆盖每个区域，并且游戏能读取它；舰船能通过海峡和运河，湖泊是内海 |
 | `CameraTests.cs` | 缩小到地图填满屏幕时停止；循环地图可以越过边缘滚动，镜头跨越接缝走近路 |
 | `BuiltInModTests.cs` | 内置于游戏资源包中的模组与文件夹模组一样挂载和合并；文件夹模组会替换 id 相同的内置模组；世界地图是内置的 |
