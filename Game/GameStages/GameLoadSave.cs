@@ -100,6 +100,7 @@ public sealed partial class CGameManager
     public void RealLoadGame(string FileName)
     {
         ClearBattle();
+        ApplySceneOptions();
         g_Scene.Init(areasEnable, mapId);
         var pEcFile = new ecFile();
         string Path = GetDocumentPath(FileName);

@@ -57,7 +57,10 @@ public static class GameTestDriver
     /// </summary>
     public static void StartConquest(string scenarioFile, string countryId)
     {
-        g_GameManager.NewGame((int)CGameManager.CONQUEST, -1, 0, 1);
+        // conquest_N.xml is conquest N (its conquests.json entry: texts, fog of war, wrapping)
+        var number = System.Text.RegularExpressions.Regex.Match(scenarioFile, @"conquest_(\d+)\.xml", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        int level = number.Success ? int.Parse(number.Groups[1].Value) - 1 : 1;
+        g_GameManager.NewGame((int)CGameManager.CONQUEST, -1, 0, level);
         g_GameManager.battleFileName = scenarioFile;
         g_GameManager.SetConquestPlayerCountryID(countryId);
         Log($"Start conquest {scenarioFile} as {countryId}");

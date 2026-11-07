@@ -37,6 +37,11 @@ public sealed partial class CScene
     public float[] visibleCameraCenter = new float[2];
     public float visibleCameraScale;
     public bool visibleRenderAreaListValid;
+    /// <summary>
+    /// Conquest options (conquest JSON, DATA_SCHEMA.md#conquests), set before Init: leftRightWrap
+    /// makes the map repeat horizontally, fogOfWar hides the armies the player cannot see.
+    /// </summary>
+    public bool wrapX, fogOfWar;
 
     /// <summary>
     /// Constructs the map scene and initialises its dynamic resource references and animation timers.
@@ -197,6 +202,8 @@ public sealed partial class CScene
 
         InitAreaImage(mapId);
         camera.Init(topLeftPos[0], topLeftPos[1], size[0], size[1]);
+        camera.wrapX = wrapX;
+        fogVisible = null;
 
         bomber = new CBomber();
         bomber.Init();

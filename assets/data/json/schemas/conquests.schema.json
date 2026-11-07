@@ -25,6 +25,14 @@
           "centerY": {
             "type": "integer"
           },
+          "fogOfWar": {
+            "type": "boolean",
+            "description": "Hide the armies in areas the player's alliance cannot see (default false)."
+          },
+          "leftRightWrap": {
+            "type": "boolean",
+            "description": "The map repeats horizontally: the camera scrolls past the left and right edge (default false; the map must span the whole width, like the world map)."
+          },
           "flags": {
             "type": "array",
             "items": {

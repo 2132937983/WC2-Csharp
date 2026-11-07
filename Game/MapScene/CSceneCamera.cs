@@ -56,6 +56,12 @@ public sealed partial class CScene
             }
         }
 
+        if (wrapX)
+        {
+            // a wrapping map repeats with the full map width, whatever the enabled areas cover
+            x = 0.0f;
+            right = mapWidth;
+        }
         if (x < 0.0f) x = 0.0f;
         if (y < 0.0f) y = 0.0f;
         if (right > mapWidth) right = mapWidth;
@@ -118,9 +124,15 @@ public sealed partial class CScene
     public void ScreenToScene(ref float x, ref float y)
     {
         ecGraphics graphics = ecGraphics.Instance();
-        x = camera.centerPos[0] + (x - (float)graphics.screenW * 0.5f) / camera.scale;
+        x = camera.WrapPos(camera.centerPos[0] + (x - (float)graphics.screenW * 0.5f) / camera.scale);
         y = camera.centerPos[1] + (y - (float)graphics.screenH * 0.5f) / camera.scale;
     }
+
+    /// <summary>The shortest horizontal difference between two scene x (across the seam on a wrapping map).</summary>
+    public float WrapDx(float dx) => camera.WrapDelta(dx);
+
+    /// <summary>The copy of a scene x nearest to <paramref name="reference"/> (x itself on a map that does not wrap).</summary>
+    public float NearestCopyX(float x, float reference) => reference + camera.WrapDelta(x - reference);
 
     /// <summary>Area id under a screen position; 0xFFFF when there is none.</summary>
     public int ScreenToAreaID(float x, float y)
@@ -220,7 +232,7 @@ public sealed partial class CScene
 
         if (!firstVisible || !secondVisible)
         {
-            float centerX = (firstArea.info.armyPos[0] + secondArea.info.armyPos[0]) * 0.5f;
+            float centerX = firstArea.info.armyPos[0] + WrapDx(secondArea.info.armyPos[0] - firstArea.info.armyPos[0]) * 0.5f;
             float centerY = (firstArea.info.armyPos[1] + secondArea.info.armyPos[1]) * 0.5f;
             camera.MoveTo(centerX, centerY, true);
         }
@@ -241,7 +253,7 @@ public sealed partial class CScene
         if (firstArea == null || secondArea == null)
             return 0.0f;
 
-        float deltaX = firstArea.info.armyPos[0] - secondArea.info.armyPos[0];
+        float deltaX = WrapDx(firstArea.info.armyPos[0] - secondArea.info.armyPos[0]);
         float deltaY = firstArea.info.armyPos[1] - secondArea.info.armyPos[1];
         return deltaX * deltaX + deltaY * deltaY;
     }
@@ -388,6 +400,25 @@ public sealed partial class CScene
         float centerX = startArea.info.armyPos[0];
         float centerY = startArea.info.armyPos[1];
 
+        ++index.visitToken;
+        if (index.visitToken == 0)
+        {
+            for (int i = 0; i < index.visitMarks.Count; ++i)
+                index.visitMarks[i] = 0;
+            index.visitToken = 1;
+        }
+        var result = new List<int>();
+        // a wrapping map: the circle may reach over the seam, so the copies left and right are scanned too
+        float period = wrapX ? size[0] : 0.0f;
+        foreach (float shift in wrapX ? new[] { 0.0f, -period, period } : new[] { 0.0f })
+            ScanCircleBuckets(index, validAreaCount, centerX + shift, centerY, minDistanceSquare, maxDistance, maxDistanceSquare, maxInclusive, result);
+        return result;
+    }
+
+    /// <summary>One copy of the circle scan of GetAreasInCircleRange (the visit marks stay shared).</summary>
+    private void ScanCircleBuckets(CombatSpatialIndex index, int validAreaCount, float centerX, float centerY,
+                                   float minDistanceSquare, float maxDistance, float maxDistanceSquare, bool maxInclusive, List<int> result)
+    {
         int firstBucketX;
         int lastBucketX;
         int firstBucketY;
@@ -419,17 +450,9 @@ public sealed partial class CScene
         lastBucketX = Math.Min(lastBucketX, maxBucketX);
         lastBucketY = Math.Min(lastBucketY, maxBucketY);
         if (firstBucketX > lastBucketX || firstBucketY > lastBucketY)
-            return new List<int>();
+            return;
 
-        ++index.visitToken;
-        if (index.visitToken == 0)
-        {
-            for (int i = 0; i < index.visitMarks.Count; ++i)
-                index.visitMarks[i] = 0;
-            index.visitToken = 1;
-        }
         uint visitToken = index.visitToken;
-        var result = new List<int>();
 
         // Only walk the areas of these buckets, then apply the exact distance test.
         for (int bucketY = firstBucketY; bucketY <= lastBucketY; ++bucketY)
@@ -469,6 +492,5 @@ public sealed partial class CScene
                 }
             }
         }
-        return result;
     }
 }

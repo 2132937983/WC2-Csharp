@@ -146,8 +146,87 @@ public sealed partial class CScene
         visibleRenderAreaListValid = true;
     }
 
-    /// <summary>Renders the map scene in the fixed layer order.</summary>
+    /// <summary>Renders the map scene (every visible copy of a wrapping map).</summary>
     public void Render()
+    {
+        if (areaList.Count == 0)
+            return;
+        ForEachWrapCopy(RenderView);
+    }
+
+    /// <summary>
+    /// Runs <paramref name="draw"/> once per copy of the map inside the view. A map that does not wrap
+    /// has one copy; a wrapping map (leftRightWrap) shows the copies left and right of the seam: the
+    /// camera is moved by the map width for each, so everything drawn in scene coordinates (areas,
+    /// armies, effects, fight texts) appears in each copy. The camera is restored afterwards.
+    /// </summary>
+    public void ForEachWrapCopy(Action draw)
+    {
+        renderFrame++;   // the fog of war is worked out again once per frame
+        if (!wrapX || size[0] <= 0.0f)
+        {
+            draw();
+            return;
+        }
+        float center = camera.centerPos[0];
+        float period = size[0];
+        float halfWidth = camera.screenHalfSize[0] / camera.scale;
+        for (int copy = -1; copy <= 1; copy++)
+        {
+            float left = topLeftPos[0] + copy * period;
+            if (left + period < center - halfWidth || left > center + halfWidth)
+                continue;
+            camera.centerPos[0] = center - copy * period;
+            camera.Apply();
+            draw();
+        }
+        camera.centerPos[0] = center;
+        camera.Apply();
+    }
+
+    // fog of war: visibility of every area for the player's alliance, refreshed once per frame
+    private bool[] fogVisible;
+    private int fogFrame = -1, renderFrame;
+
+    /// <summary>
+    /// Fog of war (conquest JSON fogOfWar): an area is visible when the player's alliance owns it or
+    /// has an army in it, or when it touches such an area. Without fog every area is visible.
+    /// </summary>
+    public bool IsVisibleToPlayer(CArea area)
+    {
+        if (!fogOfWar || area == null || area.id < 0) return true;
+        int frame = renderFrame;
+        if (fogVisible == null || fogVisible.Length != areaCount || fogFrame != frame)
+        {
+            fogFrame = frame;
+            fogVisible ??= new bool[areaCount];
+            if (fogVisible.Length != areaCount) fogVisible = new bool[areaCount];
+            Array.Clear(fogVisible);
+            CCountry player = g_GameManager.GetPlayerCountry();
+            if (player == null) { Array.Fill(fogVisible, true); return true; }
+            int count = Math.Min(areaCount, areaList.Count);
+            for (int i = 0; i < count; i++)
+            {
+                CArea a = areaList[i];
+                if (a == null) continue;
+                bool own = a.country != null && a.country.alliance == player.alliance;
+                if (!own && a.armyCount > 0 && a.GetArmy(0)?.country is CCountry armyOwner)
+                    own = armyOwner.alliance == player.alliance;
+                if (!own) continue;
+                fogVisible[i] = true;
+                int neighbours = GetNumAdjacentAreas(i);
+                for (int n = 0; n < neighbours; n++)
+                {
+                    int other = GetAdjacentAreaID(i, n);
+                    if (other >= 0 && other < fogVisible.Length) fogVisible[other] = true;
+                }
+            }
+        }
+        return area.id >= fogVisible.Length || fogVisible[area.id];
+    }
+
+    /// <summary>Renders one copy of the map scene in the fixed layer order.</summary>
+    public void RenderView()
     {
         if (areaList.Count == 0)
             return;
@@ -233,7 +312,10 @@ public sealed partial class CScene
                                        0.0f, xFactor, 0.0f);
         }
 
-        background.RenderBox(camera, topLeftPos[0], topLeftPos[1], size[0], size[1]);
+        // the border box frames a map with edges; a wrapping map has none left and right, and the
+        // camera never shows anything above or below it
+        if (!wrapX)
+            background.RenderBox(camera, topLeftPos[0], topLeftPos[1], size[0], size[1]);
 
         for (int i = 0; i < visibleAreaCount; ++i)
             visibleRenderAreaList[i].area.RenderBuilding();
@@ -241,6 +323,9 @@ public sealed partial class CScene
         for (int i = 0; i < visibleAreaCount; ++i)
         {
             CArea RenderArea = visibleRenderAreaList[i].area;
+            // fog of war hides the armies of the areas the player cannot see
+            if (fogOfWar && !IsVisibleToPlayer(RenderArea))
+                continue;
             RenderArea.Render();
             if (RenderArea.targetType == 1)
             {

@@ -582,7 +582,7 @@ public sealed partial class CGameState
                 g_Scene.ScreenToScene(ref anchorX, ref anchorY);
                 var zoomResult = new PinchZoomResult();
                 if (CalculatePinchZoom(g_Scene.camera.centerPos[0], g_Scene.camera.centerPos[1], g_Scene.camera.scale,
-                                       anchorX, anchorY, oldDistance, newDistance, 0.0f, 0.0f, ref zoomResult))
+                                       anchorX, anchorY, oldDistance, newDistance, g_Scene.camera.MinScale(), 1.0f, ref zoomResult))
                 {
                     g_Scene.camera.SetPosAndScale(zoomResult.centerX, zoomResult.centerY, zoomResult.scale);
                 }
@@ -606,7 +606,7 @@ public sealed partial class CGameState
                 g_Scene.ScreenToScene(ref anchorX, ref anchorY);
                 var zoomResult = new PinchZoomResult();
                 if (CalculatePinchZoom(g_Scene.camera.centerPos[0], g_Scene.camera.centerPos[1], g_Scene.camera.scale,
-                                       anchorX, anchorY, oldDistance, newDistance, 0.0f, 0.0f, ref zoomResult))
+                                       anchorX, anchorY, oldDistance, newDistance, g_Scene.camera.MinScale(), 1.0f, ref zoomResult))
                 {
                     g_Scene.camera.SetPosAndScale(zoomResult.centerX, zoomResult.centerY, zoomResult.scale);
                 }

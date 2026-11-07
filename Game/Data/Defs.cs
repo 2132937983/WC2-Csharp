@@ -124,6 +124,10 @@ public sealed class ConquestDef
     public string name = "";
     public float centerX;
     public float centerY;
+    /// <summary>conquests.json fogOfWar: armies in areas the player cannot see are hidden.</summary>
+    public bool fogOfWar;
+    /// <summary>conquests.json leftRightWrap: the map repeats horizontally.</summary>
+    public bool leftRightWrap;
     public List<FlagInfo> flag = new();
 }
 

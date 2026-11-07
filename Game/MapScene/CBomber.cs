@@ -74,7 +74,8 @@ public sealed class CBomber
         this.targetAreaId = targetAreaId;
 
         CArea targetArea = g_Scene.GetArea(targetAreaId);
-        targetPos[0] = targetArea.info.armyPos[0];
+        // a wrapping map: the copy of the target nearest to the camera
+        targetPos[0] = g_Scene.NearestCopyX(targetArea.info.armyPos[0], g_Scene.camera.centerPos[0]);
         targetPos[1] = targetArea.info.armyPos[1];
         planePos[1] = targetPos[1];
 
@@ -130,7 +131,8 @@ public sealed class CBomber
         this.targetAreaId = targetAreaId;
 
         CArea targetArea = g_Scene.GetArea(targetAreaId);
-        targetPos[0] = targetArea.info.armyPos[0];
+        // a wrapping map: the copy of the target nearest to the camera
+        targetPos[0] = g_Scene.NearestCopyX(targetArea.info.armyPos[0], g_Scene.camera.centerPos[0]);
         targetPos[1] = targetArea.info.armyPos[1];
         planePos[1] = targetPos[1];
 

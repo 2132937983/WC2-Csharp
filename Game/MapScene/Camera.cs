@@ -57,6 +57,12 @@ public sealed class CCamera
     public float[] topLeftPos = new float[2];
     public float[] mapSize = new float[2];
     public float[] screenHalfSize = new float[2];
+    /// <summary>
+    /// Left-right wrapping (conquest JSON leftRightWrap): the scene repeats every mapSize[0] units
+    /// horizontally, so the camera never stops at the left or right edge and its x is kept inside
+    /// [topLeftPos[0], topLeftPos[0] + mapSize[0]).
+    /// </summary>
+    public bool wrapX;
 
     /// <summary>The original constructor does not initialise anything; the state comes from Init().</summary>
     public CCamera() { }
@@ -79,13 +85,23 @@ public sealed class CCamera
         screenHalfSize[1] = ecGraphics.Instance().screenH * 0.5f;
     }
 
+    /// <summary>
+    /// The smallest zoom: the map still covers the whole screen, so zooming out never shows the
+    /// black space around it. The original allowed zooming out until the whole map fitted (black
+    /// bars above and below a wide map); a wrapping map only needs to fill the screen height.
+    /// </summary>
+    public float MinScale()
+    {
+        float fWidth = (screenHalfSize[0] + screenHalfSize[0]) / mapSize[0];
+        float fHeight = (screenHalfSize[1] + screenHalfSize[1]) / mapSize[1];
+        float fMinScale = wrapX ? fHeight : Math.Max(fWidth, fHeight);
+        return Math.Min(fMinScale, 1.0f);
+    }
+
     /// <summary>Sets the camera pose: position and zoom.</summary>
     public void SetPosAndScale(float x, float y, float Scale)
     {
-        float fWidth = (screenHalfSize[0] + screenHalfSize[0]) / mapSize[0];
-        float fMinScale = (screenHalfSize[1] + screenHalfSize[1]) / mapSize[1];
-        if (fMinScale > fWidth)
-            fMinScale = fWidth;
+        float fMinScale = MinScale();
         if (Scale < fMinScale)
             Scale = fMinScale;
         if (Scale > 1.0f)
@@ -103,6 +119,11 @@ public sealed class CCamera
         bool bFixed = false;
         for (i = 0; i < 2; i++)
         {
+            if (i == 0 && wrapX)
+            {
+                centerPos[0] = WrapPos(centerPos[0]);
+                continue;
+            }
             float fMinPos = topLeftPos[i];
             float fMaxPos = fMinPos + mapSize[i];
             if (border)
@@ -143,6 +164,11 @@ public sealed class CCamera
             int i;
             for (i = 0; i < 2; i++)
             {
+                if (i == 0 && wrapX)
+                {
+                    speed[0] = 0.0f;
+                    continue;
+                }
                 float MinDistance = screenHalfSize[i] / scale;
                 float MinPos = topLeftPos[i] + MinDistance;
                 float MaxPos = topLeftPos[i] + mapSize[i] - MinDistance;
@@ -177,14 +203,20 @@ public sealed class CCamera
     public void MoveTo(float x, float y, bool border)
     {
         float[] SetSpeed = { 0.012f, 0.015f, 0.02f, 0.026f, 0.034f };
-        targetPos[0] = x;
+        // a wrapping map: fly to the copy of the target nearest to the camera
+        targetPos[0] = wrapX ? centerPos[0] + WrapDelta(x - centerPos[0]) : x;
         targetPos[1] = y;
         int i;
         for (i = 0; i < 2; i++)
         {
             float fMinPos = topLeftPos[i];
             float fMaxPos = fMinPos + mapSize[i];
-            if (border)
+            if (i == 0 && wrapX)
+            {
+                fMinPos = float.MinValue;
+                fMaxPos = float.MaxValue;
+            }
+            else if (border)
             {
                 float fMinDistance = screenHalfSize[i] / scale;
                 fMinPos += fMinDistance;
@@ -239,11 +271,39 @@ public sealed class CCamera
                 centerPos[i] += speed[i] * 30.0f * time;
             }
         }
+        if (wrapX)
+        {
+            // keep x inside the map; the target moves with it
+            float wrapped = WrapPos(centerPos[0]);
+            targetPos[0] += wrapped - centerPos[0];
+            centerPos[0] = wrapped;
+        }
         if (speed[0] == 0.0f && speed[1] == 0.0f)
         {
             isMoving = false;
             autoFixPos = false;
         }
+    }
+
+    /// <summary>A scene x moved into [topLeftPos[0], topLeftPos[0] + mapSize[0]) on a wrapping map.</summary>
+    public float WrapPos(float x)
+    {
+        if (!wrapX || mapSize[0] <= 0.0f) return x;
+        float period = mapSize[0];
+        float local = (x - topLeftPos[0]) % period;
+        if (local < 0.0f) local += period;
+        return topLeftPos[0] + local;
+    }
+
+    /// <summary>The shortest horizontal difference on a wrapping map (the plain difference otherwise).</summary>
+    public float WrapDelta(float dx)
+    {
+        if (!wrapX || mapSize[0] <= 0.0f) return dx;
+        float period = mapSize[0];
+        dx %= period;
+        if (dx > period * 0.5f) dx -= period;
+        else if (dx < -period * 0.5f) dx += period;
+        return dx;
     }
 
     public void Update(float deltaTimeS) => Upate(deltaTimeS);
@@ -278,6 +338,8 @@ public sealed class CCamera
     /// </summary>
     public bool IsRectInVisibleRegion(float x, float y, float w, float h)
     {
+        // a wrapping map: test the copy of the rectangle nearest to the camera
+        if (wrapX) x = centerPos[0] + WrapDelta(x + w * 0.5f - centerPos[0]) - w * 0.5f;
         float halfWidth = screenHalfSize[0] / scale;
         if (x < centerPos[0] - halfWidth ||
             x + w > centerPos[0] + halfWidth)

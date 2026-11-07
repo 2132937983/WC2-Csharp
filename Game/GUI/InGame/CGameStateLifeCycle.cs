@@ -565,16 +565,21 @@ public sealed partial class CGameState
     /// <summary>
     /// Renders the map, the global effects and the fight texts. The tablet layout always renders
     /// the map; the other layouts skip it while the buy card panel is visible, but the effects and
-    /// the fight texts are still drawn.
+    /// the fight texts are still drawn. A wrapping map draws all three once per visible copy.
     /// </summary>
     public override void Render()
     {
-        if (Layout.Tablet || (guiBuyCard.flags & SHOWN) == 0)
-            g_Scene.Render();
 
-        ecEffectManager.Instance().Render();
-        g_FightTextMgr.Render();
+        g_Scene.ForEachWrapCopy(renderLayers ??= () =>
+        {
+            if (Layout.Tablet || (guiBuyCard.flags & SHOWN) == 0)
+                g_Scene.RenderView();
+            ecEffectManager.Instance().Render();
+            g_FightTextMgr.Render();
+        });
     }
+
+    private Action renderLayers;
 
     /// <summary>
     /// Saves the level when the game goes to the background. Nothing is written once a battle

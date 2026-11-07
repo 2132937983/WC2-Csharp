@@ -214,6 +214,8 @@ public sealed partial class CObjectDef
             var conquest = new ConquestDef { name = name };
             if (c.TryDouble("centerX", out double v)) conquest.centerX = (float)v;
             if (c.TryDouble("centerY", out v)) conquest.centerY = (float)v;
+            conquest.fogOfWar = c.Bool("fogOfWar", false);
+            conquest.leftRightWrap = c.Bool("leftRightWrap", false);
             foreach (var f in c.Arr("flags").Objects()) conquest.flag.Add(ReadFlag(f));
             mapConquestList[name] = conquest;
         }

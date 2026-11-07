@@ -14,7 +14,8 @@ public sealed partial class CScene
         CArea targetArea = GetArea(targetAreaId);
         int startX = startArea.info.armyPos[0];
         int startY = startArea.info.armyPos[1];
-        int endX = targetArea.info.armyPos[0];
+        // a wrapping map: the arrow points at the copy of the target next to the start
+        int endX = (int)NearestCopyX(targetArea.info.armyPos[0], startX);
         int endY = targetArea.info.armyPos[1];
         int yDif = endY - startY;
         int xDif = endX - startX;

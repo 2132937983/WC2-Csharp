@@ -122,7 +122,7 @@ public sealed partial class CCountry
                 continue;
             }
 
-            float deltaX = (float)(targetArea.info.armyPos[0] - countryArea.info.constructionPos[0]);
+            float deltaX = g_Scene.WrapDx((float)(targetArea.info.armyPos[0] - countryArea.info.constructionPos[0]));
             float deltaY = (float)(targetArea.info.armyPos[1] - countryArea.info.constructionPos[1]);
             float distanceSquared = deltaX * deltaX + deltaY * deltaY;
             if (minimumDistanceSquared < 0.0f || distanceSquared < minimumDistanceSquared)
@@ -376,7 +376,7 @@ public sealed partial class CCountry
                     }
                     break;
                 }
-                if (StartArea.info.armyPos[0] >= TargetArea.info.armyPos[0])
+                if (g_Scene.WrapDx(StartArea.info.armyPos[0] - TargetArea.info.armyPos[0]) >= 0.0f)
                 {
                     StartArea.SetArmyDir(0, -1.0f);
                     TargetArea.SetArmyDir(0, 1.0f);

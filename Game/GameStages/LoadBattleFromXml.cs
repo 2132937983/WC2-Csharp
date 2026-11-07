@@ -483,6 +483,7 @@ public sealed partial class CGameManager
         if (BattleElement == null) return;
         if (BattleElement.QueryIntAttribute("map", out mapId) != TIXML_SUCCESS) mapId = 1;
         areasEnable = BattleElement.Attribute("areasenable") ?? "";
+        ApplySceneOptions();
         g_Scene.Init(areasEnable, mapId);
         for (TiXmlElement ListElement = BattleElement.FirstChildElement(); ListElement != null; ListElement = ListElement.NextSiblingElement())
         {
@@ -581,6 +582,7 @@ public sealed partial class CGameManager
         {
             areasEnable = FitBuffer(data.areasEnable, 32);
         }
+        ApplySceneOptions();
         g_Scene.Init(areasEnable, mapId);
 
         foreach (BattleScenarioCountryData countryData in data.countries)

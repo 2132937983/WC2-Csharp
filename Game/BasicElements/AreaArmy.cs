@@ -256,13 +256,14 @@ public sealed partial class CArea
         // reset on every move so a stale commander of a previous unit is never reused
         complainCommanderName = null;
         if (complainCommander != null) complainCommanderName = complainCommander;
-        movingInArmyOffset[0] = (float)(origin.info.armyPos[0] - info.armyPos[0]);
+        // the shortest way, also over the seam of a wrapping map
+        movingInArmyOffset[0] = g_Scene.WrapDx((float)(origin.info.armyPos[0] - info.armyPos[0]));
         movingInArmyOffset[1] = (float)(origin.info.armyPos[1] - info.armyPos[1]);
         movingInArmySpeed[0] = movingInArmyOffset[0] * (-4.0f);
         movingInArmySpeed[1] = movingInArmyOffset[1] * (-4.0f);
 
-        if (origin.info.armyPos[0] > info.armyPos[0]) armyIn.direction = -1.0f;
-        else if (origin.info.armyPos[0] < info.armyPos[0]) armyIn.direction = 1.0f;
+        if (movingInArmyOffset[0] > 0.0f) armyIn.direction = -1.0f;
+        else if (movingInArmyOffset[0] < 0.0f) armyIn.direction = 1.0f;
     }
 
     public int GetArmyIdx(CArmy armyIn)

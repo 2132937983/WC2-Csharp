@@ -347,6 +347,9 @@ public sealed partial class CScene
                 {
                     var Area = new CArea();
                     Area.Init(i, new AreaInfo(AREA_TYPE.NORMAL, 100, areaData[i].ArmyPos[0], areaData[i].ArmyPos[1]));
+                    // land or sea comes from the map data even for an area the table leaves out
+                    // (otherwise such a sea zone would be land and armies would walk onto it)
+                    Area.info.sea = areaData[i].Type == TERRAIN_TYPE.WATER_SEA;
                     areaList.Add(Area);
                 }
                 foreach (var entry in entries)

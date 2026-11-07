@@ -308,6 +308,21 @@ public sealed partial class CGameManager
         return null;
     }
 
+    /// <summary>The conquest being played (conquests.json "conquest N"); null in the other modes.</summary>
+    public ConquestDef CurrentConquestDef() =>
+        gameMode == CONQUEST ? CObjectDef.Instance().GetConquestDef(GetConquestKeyName(campaignLevelId)) : null;
+
+    /// <summary>
+    /// Hands the conquest's map options (fogOfWar, leftRightWrap) to the scene; called before every
+    /// g_Scene.Init (new game and loaded save alike). Other modes play without either.
+    /// </summary>
+    public void ApplySceneOptions()
+    {
+        ConquestDef conquest = CurrentConquestDef();
+        g_Scene.wrapX = conquest?.leftRightWrap ?? false;
+        g_Scene.fogOfWar = conquest?.fogOfWar ?? false;
+    }
+
     public CCountry GetPlayerCountry()
     {
         for (int i = currentCountryIndex; ;)
