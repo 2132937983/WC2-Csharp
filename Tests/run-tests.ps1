@@ -3,11 +3,12 @@
 # Usage: dotnet build Hosts/Desktop; .\Tests\run-tests.ps1 [-Filter conquest] [-Record] [-RecordShots] [-RealTime]
 #   -Record       store the dumps of this run as the new goldens (tests\golden\<script>\<dump>.json)
 #   -RecordShots  store this run's screenshots as the new reference screenshots (320 px wide JPEG)
+#   -Bin DIR      run the desktop build in DIR (dotnet build Hosts/Desktop -o DIR) instead of the usual bin folder
 #   -RealTime     run with the real clock instead of the deterministic mode (no golden comparison)
 # Deterministic mode: --seed $Seed --fixed-step and a fresh documents folder per script, so a script
 # replays the same game every time and the dumps can be compared byte for byte.
 # A script whose first line is "#! ARGS" gets ARGS on the command line (window size, layout).
-param([string]$Filter = "", [switch]$Record, [switch]$RecordShots, [switch]$RealTime, [int]$Seed = 20261106)
+param([string]$Filter = "", [switch]$Record, [switch]$RecordShots, [switch]$RealTime, [int]$Seed = 20261106, [string]$Bin = "")
 $ErrorActionPreference = 'Continue'
 $repo = Split-Path -Parent $PSScriptRoot
 $root = Join-Path $repo 'Hosts\Desktop'      # the desktop host project (dotnet run --project $root)
@@ -16,6 +17,11 @@ $golden = Join-Path $PSScriptRoot 'golden'
 $config = 'Debug'
 $tools = Join-Path $repo "Tools\bin\$config\net9.0\WC2.Tools.dll"
 $pack = Join-Path $root "bin\$config\net9.0\pack"
+# -Bin DIR: run a desktop build in another folder (dotnet build Hosts/Desktop -o DIR), e.g. while the game
+# itself runs from the usual bin folder and keeps its files locked
+if ($Bin) { $Bin = (Resolve-Path $Bin).Path; $pack = Join-Path $Bin 'pack' }
+# (the game is a GUI program: piping its output makes PowerShell wait for it to exit)
+function Invoke-Game { $list = @($args); if ($Bin) { & (Join-Path $Bin 'WC2.exe') $list | ForEach-Object { $_ } } else { & dotnet run --project $root --no-build -- $list | ForEach-Object { $_ } } }
 New-Item -ItemType Directory -Force $out | Out-Null
 $failures = 0
 
@@ -32,7 +38,7 @@ if (-not $Filter) {
 # audio self test: decodes every music file and loads every sound effect, output kept in tests/out/audio.txt
 Write-Host "== audio" -ForegroundColor Cyan
 $audioLog = Join-Path $out 'audio.txt'
-& dotnet run --project $root --no-build -- --test-audio | Out-File -Encoding utf8 $audioLog
+Invoke-Game --test-audio | Out-File -Encoding utf8 $audioLog
 $audioProblems = Select-String -Path $audioLog -Pattern 'FAILED|MISMATCH|, [1-9][0-9]* bad'
 if ($audioProblems) { $failures++; Write-Host "   problems:" -ForegroundColor Yellow; $audioProblems | ForEach-Object { Write-Host "   $($_.Line)" } }
 else { Write-Host "   ok ($((Select-String -Path $audioLog -Pattern '\.mp3 ').Count) music files, $((Select-String -Path $audioLog -Pattern 'wav effects').Line))" -ForegroundColor Green }
@@ -41,7 +47,7 @@ else { Write-Host "   ok ($((Select-String -Path $audioLog -Pattern '\.mp3 ').Co
 # converted from (an intentional data change shows up here; re-convert or accept it knowingly)
 Write-Host "== data" -ForegroundColor Cyan
 $dataLog = Join-Path $out 'verify-data.txt'
-& dotnet run --project $root --no-build -- --verify-data --no-mods | Out-File -Encoding utf8 $dataLog
+Invoke-Game --verify-data --no-mods | Out-File -Encoding utf8 $dataLog
 if (Select-String -Path $dataLog -Pattern 'verify-data: all identical' -Quiet) {
     Write-Host "   ok ($((Select-String -Path $dataLog -Pattern ': identical').Count) data types identical to the original)" -ForegroundColor Green
 }
@@ -71,7 +77,7 @@ Get-ChildItem (Join-Path $PSScriptRoot '*.txt') | Where-Object { $_.BaseName -li
     if (-not ($extra -contains '--mods')) { $extra += '--no-mods' }   # local mods (repository mods/ folder) must not change the results
     # the goldens were recorded with the original AI; scripts that test another profile say so with "#! --ai NAME"
     if (-not ($extra -contains '--ai')) { $extra += @('--ai', 'classic') }
-    & dotnet run --project $root --no-build -- @extra --exit-after 1500 --screenshot (Join-Path $runDir "$name.png") --script $_.FullName --log $log | Out-Null
+    Invoke-Game @extra --exit-after 1500 --screenshot (Join-Path $runDir "$name.png") --script $_.FullName --log $log | Out-Null
     $problems = @(Select-String -Path $log -Pattern 'failed|xception' | Where-Object { $_.Line -notmatch 'Sound missing' } | ForEach-Object { $_.Line })
     if (-not (Select-String -Path $log -Pattern 'Music playing' -Quiet)) { $problems += 'no "Music playing" line in the log' }
     # texstats LABEL: lines whose labels differ only by a trailing number (menu1, menu2) must report the

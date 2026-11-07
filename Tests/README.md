@@ -30,6 +30,7 @@
 .\Tests\run-tests.ps1 -Record         # store this run's dumps as the new goldens
 .\Tests\run-tests.ps1 -RecordShots    # store this run's screenshots as the new references
 .\Tests\run-tests.ps1 -RealTime       # real clock, no goldens (the old smoke-test behaviour)
+.\Tests\run-tests.ps1 -Bin DIR        # the desktop build in DIR (dotnet build Hosts/Desktop -o DIR), e.g. while the game runs
 ```
 
 Record new goldens only when a rule change is intended, and new reference screenshots only when a
@@ -91,7 +92,7 @@ against the dumps (the AI tests).
 | `HitTestTests.cs` | points off the screen never hit; only the visible part of an edge control hits; hidden and disabled controls refuse input |
 | `NoPurchaseTests.cs` | no purchase code, billing permission, purchase types or buy button |
 | `AiProfileTests.cs` | classic equals the original numbers; inheritance; the command line override |
-| `MapPackTests.cs` | the world base map (consistency, wrapping, the units of every era, historical borders splitting provinces, coverage up to the polar islands and over the date line, capitals of today and of earlier eras, Marseille); the pipeline and the classic export on a synthetic world with a historical border, a harbour and transports; the mesh covers every region exactly and the game reads it; ships pass the straits and canals, the lakes are inland seas |
+| `MapPackTests.cs` | the world base map (consistency, wrapping, the units of every era, historical borders splitting provinces, coverage up to the polar islands and over the date line, capitals of today and of earlier eras, Marseille); the pipeline and the classic export on a synthetic world with a historical border, a harbour and transports; the mesh covers every region exactly and the game reads it; ships pass the straits and canals, the lakes are inland seas; every province one landmass, the date line seamless; Memel and South Tyrol by era |
 | `CameraTests.cs` | zooming out stops when the map fills the screen; a wrapping map scrolls past its edges and the camera takes the short way over the seam |
 | `BuiltInModTests.cs` | mods built into the package mount and merge like folder mods, a folder mod replaces one with the same id, the world map is built in |
 
@@ -115,6 +116,7 @@ against the dumps (the AI tests).
 .\Tests\run-tests.ps1 -Record         # store this run's dumps as the new goldens
 .\Tests\run-tests.ps1 -RecordShots    # store this run's screenshots as the new references
 .\Tests\run-tests.ps1 -RealTime       # real clock, no goldens (the old smoke-test behaviour)
+.\Tests\run-tests.ps1 -Bin DIR        # the desktop build in DIR (dotnet build Hosts/Desktop -o DIR), e.g. while the game runs
 ```
 
 仅在有意修改规则时才录制新的基准（golden），仅在有意修改画面时才录制新的参考截图；并在提交说明中注明。截图和日志输出到 `out/`。
@@ -171,6 +173,6 @@ against the dumps (the AI tests).
 | `HitTestTests.cs` | 屏幕外的点永远不会命中；边缘控件只有可见部分能被命中；隐藏和禁用的控件拒绝输入 |
 | `NoPurchaseTests.cs` | 不存在购买代码、计费权限、购买类型或购买按钮 |
 | `AiProfileTests.cs` | classic 与原版数值完全相同；继承；命令行覆盖 |
-| `MapPackTests.cs` | 世界底图（一致性、左右循环、各时代的单元、历史边界拆分省份、覆盖到北极群岛并跨越日期变更线、今天和早期时代的首都、马赛）；在一个带历史边界、港口和运输船的合成世界上测试生成流程和经典地图导出；网格精确覆盖每个区域，并且游戏能读取它；舰船能通过海峡和运河，湖泊是内海 |
+| `MapPackTests.cs` | 世界底图（一致性、左右循环、各时代的单元、历史边界拆分省份、覆盖到北极群岛并跨越日期变更线、今天和早期时代的首都、马赛）；在一个带历史边界、港口和运输船的合成世界上测试生成流程和经典地图导出；网格精确覆盖每个区域，并且游戏能读取它；舰船能通过海峡和运河，湖泊是内海；每个省份都是一块完整的陆地，日期变更线处无缝；梅梅尔和南蒂罗尔的各时代归属 |
 | `CameraTests.cs` | 缩小到地图填满屏幕时停止；循环地图可以越过边缘滚动，镜头跨越接缝走近路 |
 | `BuiltInModTests.cs` | 内置于游戏资源包中的模组与文件夹模组一样挂载和合并；文件夹模组会替换 id 相同的内置模组；世界地图是内置的 |

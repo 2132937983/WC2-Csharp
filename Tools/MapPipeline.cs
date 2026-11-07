@@ -208,6 +208,20 @@ internal static partial class MapPipeline
                 }
                 int moved = FillAndClean(era.unit, raster, provinces, width, height, rowKm2, fallback,
                                          hist["minFragmentKm2"]?.GetValue<double>() ?? 4000, hist["minFragmentWidthPixels"]?.GetValue<int>() ?? 3);
+                // corrections of the source: a polygon held by another unit in the listed eras (CShapes draws
+                // the German Empire without the Memel Territory, and Memel Lithuanian in September 1939)
+                foreach (var fix in hist["corrections"]?.AsArray() ?? new JsonArray())
+                {
+                    if (!fix!["eras"]!.AsArray().Any(e => e!.GetValue<string>() == key)) continue;
+                    int u = UnitOf("gw:" + fix["unit"]!.GetValue<string>());
+                    var ring = fix["polygon"]!.AsArray().Select(v => v!.GetValue<double>()).ToArray();
+                    var mask = RasterizeRing(ring, west, north, pxPerDeg, width, height);
+                    int painted = 0;
+                    for (int i = 0; i < n; i++)
+                        if (mask[i] && raster[i] != 0) { era.unit[i] = u + 1; painted++; }
+                    units[u].eras.TryAdd(key, (fix["unitName"]?.GetValue<string>() ?? units[u].key, "", double.NaN, double.NaN));
+                    Console.WriteLine($"build-map: era {key}: {fix["name"]} ({painted} pixels) to gw:{fix["unit"]}");
+                }
                 Console.WriteLine($"build-map: era {key}: {era.unit.Where(v => v > 0).Distinct().Count()} units, {moved} pixels of small fragments joined their neighbours");
             }
             eras.Add(era);
@@ -404,18 +418,21 @@ internal static partial class MapPipeline
         }
         if (split.Count > 0) Console.WriteLine($"build-map: {split.Count} large groups cut into {cells} cells");
 
-        // ---- 5. far parts: island groups far from their region become regions of their own (tiny ones
-        // far away are left out); a wrapping map splits the regions that reach over the seam
+        // ---- 5. one landmass, one region: a region in several pieces (left behind by the era borders)
+        // keeps its largest; a piece of minPartKm2 becomes a region of its own, a smaller piece joins the
+        // land region it touches most, small islands stay with their coast
+        SeparatePieces(regionRaster, width, height, wrap, rowKm2, regions, rules["minPartKm2"]?.GetValue<double>() ?? 1500);
+        // far parts: island groups far from their region become regions of their own (tiny ones far away
+        // are left out); a region may reach over the seam of a wrapping map (-180 and 180 are one meridian)
         var partRules = rules;
         SplitFarParts(regionRaster, width, height, wrap, rowKm2, regions,
                       (partRules["islandSplitDegrees"]?.GetValue<double>() ?? 6) * pxPerDeg,
                       (partRules["islandClusterDegrees"]?.GetValue<double>() ?? 1.5) * pxPerDeg,
                       (partRules["maxPartDistanceDegrees"]?.GetValue<double>() ?? 25) * pxPerDeg,
                       minIslandKm2);
-        if (wrap) SplitAtSeam(regionRaster, width, height, regions);
 
         // ---- 6. sea zones of irregular shape
-        BuildSeaZones(regionRaster, width, height, pxPerDeg, config["sea"]!.AsObject(), regions);
+        BuildSeaZones(regionRaster, width, height, pxPerDeg, config["sea"]!.AsObject(), regions, wrap);
         // renumber: land first, then the sea zones that kept pixels
         var used = new bool[regions.Count + 1];
         foreach (int v in regionRaster) used[v] = true;
@@ -431,13 +448,27 @@ internal static partial class MapPipeline
         for (int i = 0; i < n; i++) regionRaster[i] = newId[regionRaster[i]];
         regions = final;
         foreach (var r in regions) { r.pixels = 0; r.areaKm2 = 0; r.sumX = 0; r.sumY = 0; }
+        // x is summed relative to the region's first pixel, the short way over the seam, so a region on
+        // both sides of the date line has its centre there and not in the middle of the map
+        var refX = new int[regions.Count];
         for (int i = 0; i < n; i++)
         {
             int v = regionRaster[i];
             if (v == 0) continue;
             var r = regions[v - 1];
-            r.pixels++; r.areaKm2 += rowKm2[i / width]; r.sumX += i % width; r.sumY += i / width;
+            int x = i % width;
+            if (r.pixels == 0) refX[v - 1] = x;
+            int dx = x - refX[v - 1];
+            if (wrap) { if (dx > width / 2) dx -= width; else if (dx < -width / 2) dx += width; }
+            r.pixels++; r.areaKm2 += rowKm2[i / width]; r.sumX += refX[v - 1] + dx; r.sumY += i / width;
         }
+        if (wrap)
+            foreach (var r in regions.Where(r => r.pixels > 0))
+            {
+                double cx = r.sumX / r.pixels;
+                double wrapped = ((cx % width) + width) % width;
+                r.sumX += (wrapped - cx) * r.pixels;
+            }
 
         // ---- 7. adjacency (over the seam on a wrapping map) and the straits the raster closes
         var border = Adjacency(regionRaster, width, height, regions.Count, wrap);
@@ -740,14 +771,13 @@ internal static partial class MapPipeline
                     {
                         // land here: the region of this province under the pixel, or next to it
                         if (candidates.Contains(lo)) value = lo;
-                        else value = Near(regionRaster, width, height, lx, ly, false, v => candidates.Contains(v));
+                        else value = Near(regionRaster, width, height, lx, ly, wrap, v => candidates.Contains(v));
                     }
                     if (value == 0)
                     {
                         // water here (or a left out island): the sea zone under the pixel or next to it
                         if (lo > 0 && regions[lo - 1].sea) value = lo;
-                        // (never from the other side of the seam: a region stays on one side)
-                        else value = Near(regionRaster, width, height, lx, ly, false, v => v > 0 && regions[v - 1].sea);
+                        else value = Near(regionRaster, width, height, lx, ly, wrap, v => v > 0 && regions[v - 1].sea);
                         if (value == 0) value = lo;
                     }
                     hi[y * hiW + x] = value;
@@ -935,6 +965,29 @@ internal static partial class MapPipeline
                 canvas.DrawPath(line, stroke);
             }
         };
+    }
+
+    /// <summary>A closed polygon (lon, lat pairs) drawn into a mask of the raster.</summary>
+    private static bool[] RasterizeRing(double[] ring, double west, double north, double pxPerDeg, int width, int height)
+    {
+        using var bitmap = new SKBitmap(new SKImageInfo(width, height, SKColorType.Alpha8, SKAlphaType.Premul));
+        using (var canvas = new SKCanvas(bitmap))
+        {
+            canvas.Clear(SKColors.Transparent);
+            using var path = new SKPath();
+            for (int k = 0; k + 1 < ring.Length; k += 2)
+            {
+                float x = (float)((ring[k] - west) * pxPerDeg), y = (float)((north - ring[k + 1]) * pxPerDeg);
+                if (k == 0) path.MoveTo(x, y); else path.LineTo(x, y);
+            }
+            path.Close();
+            using var paint = new SKPaint { IsAntialias = false, Color = SKColors.White, Style = SKPaintStyle.Fill };
+            canvas.DrawPath(path, paint);
+        }
+        var span = bitmap.GetPixelSpan();
+        var mask = new bool[width * height];
+        for (int i = 0; i < mask.Length; i++) mask[i] = span[i] != 0;
+        return mask;
     }
 
     /// <summary>
@@ -1233,39 +1286,87 @@ internal static partial class MapPipeline
         return cell;
     }
 
-    /// <summary>A wrapping map: a land region with pixels near both edges is split into its left and right half.</summary>
-    private static void SplitAtSeam(int[] raster, int width, int height, List<Region> regions)
+    /// <summary>
+    /// Every region one landmass: the connected pieces of a region (4-neighbourhood, over the seam of a
+    /// wrapping map) are found; the largest stays; a piece of minKm2 or more becomes a region of its own;
+    /// a smaller piece that touches other land joins the land region it shares the longest border with;
+    /// a small island stays with its region (far ones are handled by SplitFarParts).
+    /// </summary>
+    private static void SeparatePieces(int[] raster, int width, int height, bool wrap, double[] rowKm2, List<Region> regions, double minKm2)
     {
-        int count = regions.Count;
-        var minX = Enumerable.Repeat(int.MaxValue, count + 1).ToArray();
-        var maxX = new int[count + 1];
-        for (int i = 0; i < raster.Length; i++)
+        // a piece that joins a neighbour can leave another piece of that neighbour on its own: repeat
+        // until every region is one landmass (or islands)
+        int totalSplit = 0, totalJoined = 0;
+        for (int pass = 0; pass < 8; pass++)
         {
-            int v = raster[i];
-            if (v == 0) continue;
-            int x = i % width;
-            if (x < minX[v]) minX[v] = x;
-            if (x > maxX[v]) maxX[v] = x;
+            var (split, joined) = SeparatePiecesOnce(raster, width, height, wrap, rowKm2, regions, minKm2);
+            totalSplit += split; totalJoined += joined;
+            if (split + joined == 0) break;
         }
-        var right = new int[count + 1];
-        for (int v = 1; v <= count; v++)
+        Console.WriteLine($"build-map: regions in several pieces: {totalSplit} pieces became regions, {totalJoined} small pieces joined their neighbour");
+    }
+
+    private static (int split, int joined) SeparatePiecesOnce(int[] raster, int width, int height, bool wrap, double[] rowKm2, List<Region> regions, double minKm2)
+    {
+        int n = raster.Length;
+        var label = new int[n];
+        var pieces = new List<(int value, List<int> pixels, double km2)>();
+        var stack = new Stack<int>();
+        int Left(int i) { int x = i % width; return x > 0 ? i - 1 : wrap ? i + width - 1 : -1; }
+        int Right(int i) { int x = i % width; return x < width - 1 ? i + 1 : wrap ? i - width + 1 : -1; }
+        for (int i0 = 0; i0 < n; i0++)
         {
-            if (minX[v] >= width / 4 || maxX[v] < width * 3 / 4) continue;
-            var source = regions[v - 1];
-            var r = new Region
+            int v = raster[i0];
+            if (v == 0 || label[i0] != 0 || regions[v - 1].sea) continue;
+            var pixels = new List<int>();
+            double km2 = 0;
+            label[i0] = pieces.Count + 1; stack.Push(i0);
+            while (stack.Count > 0)
             {
-                id = regions.Count, country = source.country, name = source.name, signature = source.signature,
-                owners = source.owners, occupation = source.occupation, province = source.province,
-            };
-            r.provinces.AddRange(source.provinces);
-            regions.Add(r);
-            right[v] = r.id + 1;
+                int i = stack.Pop(); pixels.Add(i); km2 += rowKm2[i / width];
+                foreach (int j in new[] { Left(i), Right(i), i >= width ? i - width : -1, i + width < n ? i + width : -1 })
+                    if (j >= 0 && raster[j] == v && label[j] == 0) { label[j] = pieces.Count + 1; stack.Push(j); }
+            }
+            pieces.Add((v, pixels, km2));
         }
-        for (int i = 0; i < raster.Length; i++)
+        int split = 0, joined = 0;
+        foreach (var group in pieces.GroupBy(p => p.value).Where(g => g.Count() > 1).ToList())
         {
-            int v = raster[i];
-            if (v != 0 && v <= count && right[v] != 0 && i % width >= width / 2) raster[i] = right[v];
+            var source = regions[group.Key - 1];
+            var main = group.OrderByDescending(p => p.km2).First();
+            foreach (var piece in group.OrderByDescending(p => p.km2))
+            {
+                if (ReferenceEquals(piece.pixels, main.pixels)) continue;
+                // the land it touches (other regions)
+                var touch = new Dictionary<int, int>();
+                foreach (int i in piece.pixels)
+                    foreach (int j in new[] { Left(i), Right(i), i >= width ? i - width : -1, i + width < n ? i + width : -1 })
+                    {
+                        if (j < 0) continue;
+                        int o = raster[j];
+                        if (o != 0 && o != piece.value && !regions[o - 1].sea) touch[o] = touch.GetValueOrDefault(o) + 1;
+                    }
+                if (piece.km2 >= minKm2)
+                {
+                    var r = new Region
+                    {
+                        id = regions.Count, country = source.country, name = source.name, signature = source.signature,
+                        owners = source.owners, occupation = source.occupation, province = source.province,
+                    };
+                    r.provinces.AddRange(source.provinces);
+                    regions.Add(r);
+                    foreach (int i in piece.pixels) raster[i] = r.id + 1;
+                    split++;
+                }
+                else if (touch.Count > 0)
+                {
+                    int target = touch.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key).First().Key;
+                    foreach (int i in piece.pixels) raster[i] = target;
+                    joined++;
+                }
+            }
         }
+        return (split, joined);
     }
 
     /// <summary>
@@ -1276,9 +1377,10 @@ internal static partial class MapPipeline
     /// reaches get one when they have minSeaPixels; zones below minSeaPixels join the neighbour zone
     /// they share the longest border with. The seam of a wrapping map is a zone border.
     /// </summary>
-    private static void BuildSeaZones(int[] raster, int width, int height, double pxPerDeg, JsonObject cfg, List<Region> regions)
+    private static void BuildSeaZones(int[] raster, int width, int height, double pxPerDeg, JsonObject cfg, List<Region> regions, bool wrap = false)
     {
         int n = raster.Length;
+        int WrapX(int x) => wrap ? ((x % width) + width) % width : x;
         double rCoast = (cfg["coastRadiusDegrees"]?.GetValue<double>() ?? 1.4) * pxPerDeg;
         double rOcean = (cfg["oceanRadiusDegrees"]?.GetValue<double>() ?? 9) * pxPerDeg;
         double growth = cfg["growth"]?.GetValue<double>() ?? 0.6;
@@ -1287,34 +1389,10 @@ internal static partial class MapPipeline
         var water = new bool[n];
         for (int i = 0; i < n; i++) water[i] = raster[i] == 0;
 
-        // distance from the coast (chamfer 3-4, in pixels x 3)
-        var coast = new int[n];
+        // distance from the coast (chamfer 3-4, in pixels x 3); a wrapping map is padded with the other
+        // side's columns, so the distance reaches over the seam
         const int Inf = int.MaxValue / 4;
-        for (int i = 0; i < n; i++) coast[i] = water[i] ? Inf : 0;
-        for (int y = 0; y < height; y++)
-            for (int x = 0; x < width; x++)
-            {
-                int i = y * width + x;
-                if (coast[i] == 0) continue;
-                int d = coast[i];
-                if (x > 0) d = Math.Min(d, coast[i - 1] + 3);
-                if (y > 0) d = Math.Min(d, coast[i - width] + 3);
-                if (x > 0 && y > 0) d = Math.Min(d, coast[i - width - 1] + 4);
-                if (x + 1 < width && y > 0) d = Math.Min(d, coast[i - width + 1] + 4);
-                coast[i] = d;
-            }
-        for (int y = height - 1; y >= 0; y--)
-            for (int x = width - 1; x >= 0; x--)
-            {
-                int i = y * width + x;
-                if (coast[i] == 0) continue;
-                int d = coast[i];
-                if (x + 1 < width) d = Math.Min(d, coast[i + 1] + 3);
-                if (y + 1 < height) d = Math.Min(d, coast[i + width] + 3);
-                if (x + 1 < width && y + 1 < height) d = Math.Min(d, coast[i + width + 1] + 4);
-                if (x > 0 && y + 1 < height) d = Math.Min(d, coast[i + width - 1] + 4);
-                coast[i] = d;
-            }
+        var coast = ChamferDistance(water, width, height, wrap ? Math.Min(width, (int)(rOcean * 1.5) + 8) : 0);
         double Radius(int i) => Math.Min(rOcean, rCoast + growth * Math.Min(coast[i], Inf / 2) / 3.0);
 
         // seeds: candidates on a jittered grid, coast first, each kept when no seed lies within its radius
@@ -1342,12 +1420,17 @@ internal static partial class MapPipeline
             int cx = x / cell, cy = y / cell, rc = (int)Math.Ceiling(r / cell);
             bool free = true;
             for (int gy = Math.Max(0, cy - rc); gy <= Math.Min(gh - 1, cy + rc) && free; gy++)
-                for (int gx = Math.Max(0, cx - rc); gx <= Math.Min(gw - 1, cx + rc) && free; gx++)
+                for (int gx0 = cx - rc; gx0 <= cx + rc && free; gx0++)
+                {
+                    int gx = wrap ? ((gx0 % gw) + gw) % gw : gx0;
+                    if (gx < 0 || gx >= gw) continue;
                     foreach (int s in grid[gy * gw + gx] ?? (IEnumerable<int>)Array.Empty<int>())
                     {
                         int dx = s % width - x, dy = s / width - y;
+                        if (wrap) { if (dx > width / 2) dx -= width; else if (dx < -width / 2) dx += width; }
                         if (dx * dx + dy * dy < r * r) { free = false; break; }
                     }
+                }
             if (!free) continue;
             seeds.Add(i);
             (grid[cy * gw + cx] ??= new List<int>()).Add(i);
@@ -1371,7 +1454,7 @@ internal static partial class MapPipeline
                     for (int dx = -1; dx <= 1; dx++)
                     {
                         if (dx == 0 && dy == 0) continue;
-                        int nx = x + dx, ny = y + dy;
+                        int nx = WrapX(x + dx), ny = y + dy;
                         if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
                         int j = ny * width + nx;
                         if (!water[j]) continue;
@@ -1399,7 +1482,7 @@ internal static partial class MapPipeline
                 {
                     int i = st.Pop(); part.Add(i);
                     int x = i % width, y = i / width;
-                    foreach (int j in new[] { x > 0 ? i - 1 : -1, x < width - 1 ? i + 1 : -1, y > 0 ? i - width : -1, y < height - 1 ? i + width : -1 })
+                    foreach (int j in new[] { x > 0 ? i - 1 : wrap ? i + width - 1 : -1, x < width - 1 ? i + 1 : wrap ? i - width + 1 : -1, y > 0 ? i - width : -1, y < height - 1 ? i + width : -1 })
                         if (j >= 0 && water[j] && zone[j] == 0 && label[j] == 0) { label[j] = 1; st.Push(j); }
                 }
                 if (part.Count < minSeaPixels) continue;
@@ -1411,13 +1494,20 @@ internal static partial class MapPipeline
             if (it == iterations) break;
             // relax: every seed to the zone pixel nearest the zone's centre
             var sx = new double[seeds.Count + 1]; var sy = new double[seeds.Count + 1]; var cnt = new long[seeds.Count + 1];
-            for (int i = 0; i < n; i++) { int z = zone[i]; if (z == 0) continue; sx[z] += i % width; sy[z] += i / width; cnt[z]++; }
+            double Dx(int x, int z)
+            {
+                // x relative to the zone's seed, the short way over the seam
+                int d = x - seeds[z - 1] % width;
+                if (wrap) { if (d > width / 2) d -= width; else if (d < -width / 2) d += width; }
+                return d;
+            }
+            for (int i = 0; i < n; i++) { int z = zone[i]; if (z == 0) continue; sx[z] += Dx(i % width, z); sy[z] += i / width; cnt[z]++; }
             var best = new int[seeds.Count + 1]; var bestD = new double[seeds.Count + 1];
             Array.Fill(bestD, double.MaxValue);
             for (int i = 0; i < n; i++)
             {
                 int z = zone[i]; if (z == 0) continue;
-                double dx = i % width - sx[z] / cnt[z], dy = i / width - sy[z] / cnt[z], d = dx * dx + dy * dy;
+                double dx = Dx(i % width, z) - sx[z] / cnt[z], dy = i / width - sy[z] / cnt[z], d = dx * dx + dy * dy;
                 if (d < bestD[z]) { bestD[z] = d; best[z] = i; }
             }
             for (int s = 0; s < seeds.Count; s++) if (cnt[s + 1] > 0) seeds[s] = best[s + 1];
@@ -1427,7 +1517,7 @@ internal static partial class MapPipeline
         int first = regions.Count;
         var size = new long[seeds.Count + 1];
         for (int i = 0; i < n; i++) size[zone[i]]++;
-        var zoneBorder = Adjacency(zone, width, height, seeds.Count, false);
+        var zoneBorder = Adjacency(zone, width, height, seeds.Count, wrap);
         var redirect = Enumerable.Range(0, seeds.Count + 1).ToArray();
         int Resolve(int v) { while (redirect[v] != v) v = redirect[v]; return v; }
         foreach (int z in Enumerable.Range(1, seeds.Count).OrderBy(z => size[z]).ThenBy(z => z))
@@ -1449,6 +1539,52 @@ internal static partial class MapPipeline
         for (int i = 0; i < n; i++)
             if (water[i] && zone[i] != 0) raster[i] = regionOf[Resolve(zone[i])];
         Console.WriteLine($"build-map: {regions.Count - first} sea zones from {seeds.Count} seeds");
+    }
+
+    /// <summary>
+    /// Chamfer (3-4) distance of every pixel from the nearest pixel that is not <paramref name="far"/>
+    /// (0 there), in pixels x 3. With <paramref name="pad"/> columns of the other side added left and right,
+    /// the distance reaches over the seam of a wrapping map.
+    /// </summary>
+    internal static int[] ChamferDistance(bool[] far, int width, int height, int pad)
+    {
+        const int Inf = int.MaxValue / 4;
+        int pw = width + 2 * pad;
+        var d = new int[pw * height];
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < pw; x++)
+            {
+                int sx = ((x - pad) % width + width) % width;
+                d[y * pw + x] = far[y * width + sx] ? Inf : 0;
+            }
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < pw; x++)
+            {
+                int i = y * pw + x;
+                if (d[i] == 0) continue;
+                int v = d[i];
+                if (x > 0) v = Math.Min(v, d[i - 1] + 3);
+                if (y > 0) v = Math.Min(v, d[i - pw] + 3);
+                if (x > 0 && y > 0) v = Math.Min(v, d[i - pw - 1] + 4);
+                if (x + 1 < pw && y > 0) v = Math.Min(v, d[i - pw + 1] + 4);
+                d[i] = v;
+            }
+        for (int y = height - 1; y >= 0; y--)
+            for (int x = pw - 1; x >= 0; x--)
+            {
+                int i = y * pw + x;
+                if (d[i] == 0) continue;
+                int v = d[i];
+                if (x + 1 < pw) v = Math.Min(v, d[i + 1] + 3);
+                if (y + 1 < height) v = Math.Min(v, d[i + pw] + 3);
+                if (x + 1 < pw && y + 1 < height) v = Math.Min(v, d[i + pw + 1] + 4);
+                if (x > 0 && y + 1 < height) v = Math.Min(v, d[i + pw - 1] + 4);
+                d[i] = v;
+            }
+        if (pad == 0) return d;
+        var result = new int[width * height];
+        for (int y = 0; y < height; y++) Array.Copy(d, y * pw + pad, result, y * width, width);
+        return result;
     }
 
     private static JsonObject WithoutKey(JsonObject o, string key)

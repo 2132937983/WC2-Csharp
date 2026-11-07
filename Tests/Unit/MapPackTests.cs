@@ -92,6 +92,73 @@ public class MapPackTests
     }
 
     [Fact]
+    public void EveryProvinceIsOneLandmassAndTheDateLineIsSeamless()
+    {
+        var pack = LoadPack();
+        int w = pack.width, h = pack.height;
+        // the region of every pixel, read through RegionAt at the pixel centres
+        var raster = new int[w * h];
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+                raster[y * w + x] = (pack.RegionAt(pack.west + (x + 0.5) / pack.pixelsPerDegree, pack.north - (y + 0.5) / pack.pixelsPerDegree)?.id ?? -1) + 1;
+        // a land region in several pieces may have more only as islands: a second piece never touches other land
+        var label = new int[w * h];
+        var largest = new Dictionary<int, int>();
+        var pieces = new List<(int region, int size, bool touchesLand)>();
+        var stack = new Stack<int>();
+        for (int i0 = 0; i0 < raster.Length; i0++)
+        {
+            int v = raster[i0];
+            if (v == 0 || label[i0] != 0 || pack.regions[v - 1].sea) continue;
+            int size = 0; bool touches = false;
+            label[i0] = pieces.Count + 1; stack.Push(i0);
+            while (stack.Count > 0)
+            {
+                int i = stack.Pop(); size++;
+                int x = i % w;
+                foreach (int j in new[] { x > 0 ? i - 1 : i + w - 1, x < w - 1 ? i + 1 : i - w + 1, i >= w ? i - w : -1, i + w < raster.Length ? i + w : -1 })
+                {
+                    if (j < 0) continue;
+                    int o = raster[j];
+                    if (o == v) { if (label[j] == 0) { label[j] = pieces.Count + 1; stack.Push(j); } }
+                    else if (o != 0 && !pack.regions[o - 1].sea) touches = true;
+                }
+            }
+            pieces.Add((v - 1, size, touches));
+        }
+        var bad = pieces.GroupBy(p => p.region)
+            .SelectMany(g => g.OrderByDescending(p => p.size).Skip(1))
+            .Where(p => p.touchesLand && p.size > 2)
+            .Select(p => pack.regions[p.region].name).Distinct().ToList();
+        Assert.True(bad.Count == 0, "provinces in several pieces on land: " + string.Join(", ", bad.Take(10)));
+        // over the date line every row joins neighbours (or the same region)
+        for (int y = 0; y < h; y++)
+        {
+            int left = raster[y * w], right = raster[y * w + w - 1];
+            if (left != 0 && right != 0 && left != right) Assert.Contains(left - 1, pack.regions[right - 1].neighbours);
+        }
+    }
+
+    [Theory]
+    // corrections of the historical source: the Memel Territory was German until 1920 and again from
+    // March 1939 (Telsiai beyond its old border was Russian, then Lithuanian); South Tyrol was
+    // Austro-Hungarian until 1919 (Innsbruck beyond the Brenner stayed Austrian)
+    [InlineData(21.15, 55.72, "1914", "gw:255", 22.25, 55.98, "gw:365")]
+    [InlineData(21.15, 55.72, "1936", "gw:368", 22.25, 55.98, "gw:368")]
+    [InlineData(21.15, 55.72, "1939", "gw:255", 22.25, 55.98, "gw:368")]
+    [InlineData(11.35, 46.50, "1914", "gw:300", 11.40, 47.26, "gw:300")]
+    [InlineData(11.35, 46.50, "1939", "gw:325", 11.40, 47.26, "gw:305")]
+    public void MemelAndSouthTyrolFollowTheirHistory(double lon, double lat, string era, string unit, double otherLon, double otherLat, string otherUnit)
+    {
+        var pack = LoadPack();
+        var region = pack.LandRegionNear(lon, lat);
+        var other = pack.LandRegionNear(otherLon, otherLat);
+        Assert.Equal(unit, region.owners[era]);
+        Assert.Equal(otherUnit, other.owners[era]);
+        Assert.NotEqual(region.id, other.id);   // provinces of their own across the old border
+    }
+
+    [Fact]
     public void HistoricalBordersSplitTodaysProvinces()
     {
         // Lviv was Austrian in 1914, Polish in 1939 and Soviet in 1945; Krakow was Austrian in 1914 and

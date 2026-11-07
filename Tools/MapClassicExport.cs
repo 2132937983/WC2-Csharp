@@ -103,6 +103,18 @@ internal static partial class MapPipeline
             if (v == 0) continue;
             if (dist[i] > best[v - 1]) { best[v - 1] = dist[i]; anchor[v - 1] = (i % width, i / width); }
         }
+        // a region over the seam of a wrapping map (pixels at both ends): its box is the whole width
+        if (wrap)
+        {
+            var nearLeft = new bool[n]; var nearRight = new bool[n];
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width / 8; x++) { int v = raster[y * width + x]; if (v > 0) nearLeft[v - 1] = true; }
+                for (int x = width - width / 8; x < width; x++) { int v = raster[y * width + x]; if (v > 0) nearRight[v - 1] = true; }
+            }
+            for (int r = 0; r < n; r++)
+                if (nearLeft[r] && nearRight[r] && maxX[r] - minX[r] > width / 2) { minX[r] = 0; maxX[r] = width - 1; }
+        }
         var missing = Enumerable.Range(0, n).Where(r => minX[r] == int.MaxValue).ToList();
         if (missing.Count > 0) throw new ToolException($"regions without pixels at map resolution: {string.Join(", ", missing.Take(10))}");
 

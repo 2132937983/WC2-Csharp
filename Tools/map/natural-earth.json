@@ -31,7 +31,17 @@
     "file": "CShapes-2.0.geojson",
     "minFragmentKm2": 1500,
     "minFragmentWidthPixels": 2,
-    "fallback": { "GRL": "390", "SJM": "385", "HKG": "200", "KWT": "200" }
+    "fallback": { "GRL": "390", "SJM": "385", "HKG": "200", "KWT": "200" },
+    // corrections of the source: CShapes draws the German Empire without the Memel Territory (north of the
+    // Neman, German until 1920) and Memel Lithuanian on 1 September 1939 (annexed by Germany in March 1939)
+    "corrections": [
+      {
+        "name": "Memel Territory", "unit": "255", "eras": ["1910", "1914", "1939"],
+        "polygon": [21.06, 55.88, 21.25, 55.88, 21.32, 55.78, 21.35, 55.68, 21.45, 55.60, 21.55, 55.47, 21.65, 55.38,
+                    21.80, 55.28, 22.05, 55.17, 22.35, 55.12, 22.62, 55.08, 22.40, 55.06, 22.10, 55.07, 21.88, 55.09,
+                    21.60, 55.17, 21.40, 55.27, 21.25, 55.32, 20.95, 55.27, 20.98, 55.50, 21.05, 55.72]
+      }
+    ]
   },
   // The CShapes units that are the game's countries at home: their capitals of every era become
   // capital areas (Saint Petersburg, Nanking, Bonn, ...).
@@ -50,7 +60,8 @@
   // islands are left out. Island groups farther than islandSplitDegrees from their region's main body
   // (parts closer than islandClusterDegrees form a group) become regions of their own; small ones
   // farther than maxPartDistanceDegrees are left out.
-  "regions": { "minIslandKm2": 1500, "islandSplitDegrees": 4, "islandClusterDegrees": 1.0, "maxPartDistanceDegrees": 25 },
+  // minPartKm2: a region in several pieces keeps its largest; a piece this large becomes a region of its own
+  "regions": { "minIslandKm2": 1500, "minPartKm2": 1500, "islandSplitDegrees": 4, "islandClusterDegrees": 1.0, "maxPartDistanceDegrees": 25 },
 
   // Target region areas (km2): a country first, then the first zone containing the part, then the
   // default. Finest where the wars of the game are fought (Europe, East Asia), coarse in deserts, the

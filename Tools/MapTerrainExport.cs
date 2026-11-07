@@ -91,34 +91,13 @@ internal static class MapTerrainExport
                 int v = raster[sy * width + sx];
                 land[y * outW + x] = v > 0 && !seaOf[v - 1];
             }
-        // distance from the land (chamfer 3-4, pixels x 3), the water's depth
+        // distance from the land (chamfer 3-4, pixels x 3), the water's depth; over the seam on a
+        // wrapping map (the shading continues across the date line)
         const int Inf = int.MaxValue / 4;
-        var dist = new int[outW * outH];
-        for (int i = 0; i < dist.Length; i++) dist[i] = land[i] ? 0 : Inf;
-        for (int y = 0; y < outH; y++)
-            for (int x = 0; x < outW; x++)
-            {
-                int i = y * outW + x;
-                if (dist[i] == 0) continue;
-                int d = dist[i];
-                if (x > 0) d = Math.Min(d, dist[i - 1] + 3);
-                if (y > 0) d = Math.Min(d, dist[i - outW] + 3);
-                if (x > 0 && y > 0) d = Math.Min(d, dist[i - outW - 1] + 4);
-                if (x + 1 < outW && y > 0) d = Math.Min(d, dist[i - outW + 1] + 4);
-                dist[i] = d;
-            }
-        for (int y = outH - 1; y >= 0; y--)
-            for (int x = outW - 1; x >= 0; x--)
-            {
-                int i = y * outW + x;
-                if (dist[i] == 0) continue;
-                int d = dist[i];
-                if (x + 1 < outW) d = Math.Min(d, dist[i + 1] + 3);
-                if (y + 1 < outH) d = Math.Min(d, dist[i + outW] + 3);
-                if (x + 1 < outW && y + 1 < outH) d = Math.Min(d, dist[i + outW + 1] + 4);
-                if (x > 0 && y + 1 < outH) d = Math.Min(d, dist[i + outW - 1] + 4);
-                dist[i] = d;
-            }
+        bool wrapMap = config["wrap"]?.GetValue<bool>() ?? false;
+        var water = new bool[land.Length];
+        for (int i = 0; i < land.Length; i++) water[i] = !land[i];
+        var dist = MapPipeline.ChamferDistance(water, outW, outH, wrapMap ? (int)Math.Min(outW, depthPixels * 2 + 8) : 0);
 
         static byte B(double v) => (byte)Math.Clamp((int)Math.Round(v), 0, 255);
         static double Smooth(double t) { t = Math.Clamp(t, 0, 1); return t * t * (3 - 2 * t); }

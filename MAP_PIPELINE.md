@@ -59,7 +59,10 @@ mod are derived from it and carry the same terms (the game earns nothing; see `m
    into a raster of their own; the era `naturalearth` (today) takes the province's country. Land no unit
    covers takes the `fallback` unit of its Natural Earth country, else the province's main unit, else the
    nearest; inside a province, a fragment of another unit smaller than `minFragmentKm2` or nowhere
-   `minFragmentWidthPixels` thick (two sources tracing one border apart) joins its neighbour.
+   `minFragmentWidthPixels` thick (two sources tracing one border apart) joins its neighbour. Then the
+   `corrections` repaint what the source has wrong: a polygon held by another unit in the listed eras
+   (the Memel Territory, German until 1920 and again from March 1939, which CShapes draws Russian and
+   Lithuanian).
 3. **Signatures.** A pixel's signature is its unit in every era plus the occupation zone a scenario gives
    its province (`provinceOwners`). A province splits into parts of one signature each.
 4. **Regions of the right size.** Every part has a target area from `detail`: its country, else the first
@@ -69,12 +72,16 @@ mod are derived from it and carry the same terms (the game earns nothing; see `m
    target is cut into cells of about the target area: seeds by farthest point sampling, grown through the
    group (a cell never crosses the group's edge, so every era's border stays) and relaxed three times. What
    stays below `minIslandKm2` joins a land neighbour (an enclave) or is left out (an island).
-5. **Islands and the seam.** Island groups farther than `islandSplitDegrees` from their region become
-   regions of their own when large enough (Novaya Zemlya, the Kurils, ...); a wrapping map splits regions at
-   the seam.
+5. **One landmass, one province.** A region left in several pieces by the era borders keeps its largest;
+   a piece of `minPartKm2` becomes a province of its own, a smaller piece that touches other land joins the
+   province it shares the longest border with (repeated until nothing changes); small islands stay with
+   their coast. Island groups farther than `islandSplitDegrees` from their region become regions of their
+   own when large enough (Novaya Zemlya, the Kurils, ...).
 6. **Sea zones of irregular shape.** Seeds spaced by the distance from the coast (small zones along the
    coasts, large ones in the open ocean), grown through the water and relaxed; lakes large enough get a
-   zone; the seam is a zone border.
+   zone. On a wrapping map -180 and 180 degrees are one meridian: distances, seeds, growth and relaxing
+   reach over it, so sea zones (and land regions such as Vanua Levu) lie across the date line without a
+   seam, and the ocean's shading continues there.
 7. **Adjacency** over the seam on a wrapping map, plus `straits` (links between sea zones where the
    water is too narrow even for a channel: the Kiel Canal, Bab-el-Mandeb, the rivers between the Great
    Lakes); a region left touching nothing (an island in a small lake) is linked to the nearest region
@@ -193,10 +200,10 @@ are (`flags: "armies"`), the colours show the owners.
 | `bounds`, `wrap` | west -180, east 180 (wrapping), north 82, south -26 |
 | `raster.width` | 4500 (12.5 pixels per degree) |
 | `eras` | 1910-01-01, 1914-07-01, 1936-01-01, 1939-09-01, 1945-09-02, 1949-12-31 (CShapes), 2018 (`naturalearth`) |
-| `historicalBorders` | `file`, `minFragmentKm2` 1500, `minFragmentWidthPixels` 2, `fallback` |
+| `historicalBorders` | `file`, `minFragmentKm2` 1500, `minFragmentWidthPixels` 2, `fallback`, `corrections` (name, `unit`, `eras`, `polygon` lon/lat: the Memel Territory) |
 | `water` | `lakes` (file, `maxScalerank` 2), `historicLakes` (file, names: the Aral Sea), `channels` (name, path lon/lat, `widthPixels`) |
 | `homeUnits` | game country -> its CShapes units (capitals of every era) |
-| `regions` | `minIslandKm2` 1500, `islandSplitDegrees` 4, `islandClusterDegrees` 1, `maxPartDistanceDegrees` 25 |
+| `regions` | `minIslandKm2` 1500, `minPartKm2` 1500, `islandSplitDegrees` 4, `islandClusterDegrees` 1, `maxPartDistanceDegrees` 25 |
 | `detail` | `defaultKm2` 22 000, `mergeBelow` 0.5, `splitAbove` 1.6; zones from 5 000 km2 (western and central Europe) to 60 000 (northern Canada); countries (Japan, Korea 5 000, Greenland 150 000) |
 | `sea` | `coastRadiusDegrees` 1.8, `oceanRadiusDegrees` 14, `growth` 0.9, `relaxIterations` 2, `minSeaPixels` 300 |
 | `straits` | links between sea zones: Kiel Canal, Bab-el-Mandeb, the rivers between the Great Lakes (the others are channels) |
@@ -310,7 +317,8 @@ CShapes 的许可要求非商业使用、署名并以相同方式共享：地图
    `naturalearth`（今天）直接使用省份所属的国家。没有单元覆盖的陆地，使用其 Natural Earth 国家的
    `fallback` 单元，否则使用该省的主要单元，再否则使用最近的单元；在一个省份内部，属于其他单元、面积小于
    `minFragmentKm2` 或任何地方都没有 `minFragmentWidthPixels` 那么厚的碎片（两个数据源描绘同一条边界时的
-   偏差）并入相邻碎片。
+   偏差）并入相邻碎片。随后用 `corrections` 修正数据源的错误：某个多边形在所列时代属于另一个单元（梅梅尔地区
+   在 1920 年前以及 1939 年 3 月起属于德国，而 CShapes 把它画成俄国和立陶宛）。
 3. **签名。** 一个像素的签名是它在每个时代所属的单元，再加上剧本给其省份指定的占领区（`provinceOwners`）。
    一个省份被拆分为若干部分，每部分只有一种签名。
 4. **大小合适的区域。** 每个部分都从 `detail` 得到一个目标面积：先看其国家，否则看包含它的第一个区域
@@ -319,10 +327,12 @@ CShapes 的许可要求非商业使用、署名并以相同方式共享：地图
    超过目标面积 `splitAbove` 倍的组被切成面积约等于目标的单元：用最远点采样放置种子，在组内生长（单元
    不会越过组的边缘，因此每个时代的边界都保留），并松弛三次。仍小于 `minIslandKm2` 的部分并入相邻陆地
    （飞地）或被舍弃（岛屿）。
-5. **岛屿与接缝。** 距离所属区域超过 `islandSplitDegrees` 的岛群在足够大时成为独立区域（新地岛、千岛
-   群岛……）；循环地图在接缝处拆分区域。
+5. **一块陆地，一个省份。** 被各时代边界分成几块的区域保留最大的一块；达到 `minPartKm2` 的块成为独立省份，
+   较小且与其他陆地相接的块并入共享边界最长的省份（反复进行直到不再变化）；小岛仍属于其海岸的省份。距离所属
+   区域超过 `islandSplitDegrees` 的岛群在足够大时成为独立区域（新地岛、千岛群岛……）。
 6. **形状不规则的海区。** 种子间距随离岸距离增大（沿岸小海区、远洋大海区），在水中生长并松弛；足够大
-   的湖泊有自己的海区；接缝是海区边界。
+   的湖泊有自己的海区。在循环地图上 -180 度和 180 度是同一条经线：距离、种子、生长和松弛都跨越它进行，因此
+   海区（以及瓦努阿岛等陆地区域）横跨日期变更线而没有接缝，海洋的深浅也在那里连续。
 7. **相邻关系**：循环地图上跨越接缝，另加 `straits`（水道太窄、连通道也画不出的海区之间的连接：基尔运河、
    曼德海峡、五大湖之间的河流）；不与任何区域相邻的区域（小湖中的岛屿）与水对岸最近的区域相连。
 8. **要素。** 今天的首都以及游戏中国家在其他时代的首都（`homeUnits`）、城市、港口（港口区域保持其陆地
@@ -425,10 +435,10 @@ LibTessDotNet（MIT）三角化。区域和边界按竖条（`chunkWidth`）存�
 | `bounds`、`wrap` | 西 -180、东 180（左右循环），北 82，南 -26 |
 | `raster.width` | 4500（每度 12.5 像素） |
 | `eras` | 1910-01-01、1914-07-01、1936-01-01、1939-09-01、1945-09-02、1949-12-31（CShapes），2018（`naturalearth`） |
-| `historicalBorders` | `file`、`minFragmentKm2` 1500、`minFragmentWidthPixels` 2、`fallback` |
+| `historicalBorders` | `file`、`minFragmentKm2` 1500、`minFragmentWidthPixels` 2、`fallback`、`corrections`（名称、`unit`、`eras`、经纬度 `polygon`：梅梅尔地区） |
 | `water` | `lakes`（文件，`maxScalerank` 2）、`historicLakes`（文件，名称：咸海）、`channels`（名称，经纬度路径，`widthPixels`） |
 | `homeUnits` | 游戏国家 → 它的 CShapes 单元（各时代的首都） |
-| `regions` | `minIslandKm2` 1500、`islandSplitDegrees` 4、`islandClusterDegrees` 1、`maxPartDistanceDegrees` 25 |
+| `regions` | `minIslandKm2` 1500、`minPartKm2` 1500、`islandSplitDegrees` 4、`islandClusterDegrees` 1、`maxPartDistanceDegrees` 25 |
 | `detail` | `defaultKm2` 22 000、`mergeBelow` 0.5、`splitAbove` 1.6；区域范围从 5 000 km2（西欧和中欧）到 60 000（加拿大北部）；国家（日本、朝鲜半岛 5 000，格陵兰 150 000） |
 | `sea` | `coastRadiusDegrees` 1.8、`oceanRadiusDegrees` 14、`growth` 0.9、`relaxIterations` 2、`minSeaPixels` 300 |
 | `straits` | 海区之间的连接：基尔运河、曼德海峡、五大湖之间的河流（其余的是通道） |

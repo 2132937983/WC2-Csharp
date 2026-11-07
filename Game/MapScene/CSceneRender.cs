@@ -455,7 +455,7 @@ public sealed partial class CScene
         if (newRoundFlashing && g_GameManager.GetCurCountry() is CCountry current)
             mapMesh.RenderCountry(current, WithAlpha(0xFFFFFFFFu, (flashTimer - 0.5f) * 0.8f));
         if (areaSelected != null && areaSelected.id >= 0)
-            mapMesh.RenderRegion(areaSelected.id, WithAlpha(areaSelected.country?.ColorRGBA ?? 0xFF0000FFu, flashTimer * 0.75f));
+            mapMesh.RenderRegion(areaSelected.id, WithAlpha(areaSelected.country?.ColorRGBA ?? 0xFF0000FFu, flashTimer * (areaSelected.info.sea ? 0.35f : 0.75f)));
         foreach (int i in fightFlashAreaId)
             if (i >= 0 && i < areaCount) mapMesh.RenderRegion(i, WithAlpha(0xFF8080FFu, flashTimer * 0.75f));
     }
