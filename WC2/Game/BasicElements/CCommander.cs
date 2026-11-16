@@ -311,6 +311,15 @@ public sealed partial class CCountry
         return 8;
     }
 
-    /// <summary>Whether the commander card can be used: the commander is dead and the cool-down is over.</summary>
-    public bool CanUseCommander() => !commanderAlive && commanderTurn == 0;
+    /// <summary>Whether the commander card is off cool-down and its country-wide conditions pass.</summary>
+    public bool CanUseCommander(CardDef card)
+    {
+        if (commanderTurn > 0) return false;
+        if (card?.effects?.Count > 0)
+            return CardConditionEvaluator.CanMeetSourceConditions(this, card);
+        return !commanderAlive;
+    }
+
+    public bool CanUseCommander() =>
+        CanUseCommander(CObjectDef.Instance().GetCardDef(COMMANDER_CARD, this));
 }

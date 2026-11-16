@@ -73,13 +73,13 @@ public sealed partial class CActionAssist
             if (navy)
             {
                 basicConstructionCheck =
-                    curCountry.CheckCardTargetArea(CObjectDef.Instance().GetCardDef(DESTROYER_CARD), areaId);
+                    curCountry.CheckCardTargetArea(CObjectDef.Instance().GetCardDef(DESTROYER_CARD, curCountry), areaId);
             }
             else
             {
                 basicConstructionCheck =
-                    curCountry.CheckCardTargetArea(CObjectDef.Instance().GetCardDef(INFANTRY_CARD), areaId) ||
-                    curCountry.CheckCardTargetArea(CObjectDef.Instance().GetCardDef(ARTILLERY_CARD), areaId);
+                    curCountry.CheckCardTargetArea(CObjectDef.Instance().GetCardDef(INFANTRY_CARD, curCountry), areaId) ||
+                    curCountry.CheckCardTargetArea(CObjectDef.Instance().GetCardDef(ARTILLERY_CARD, curCountry), areaId);
             }
             if (basicConstructionCheck)
             {
@@ -102,7 +102,7 @@ public sealed partial class CActionAssist
         }
         CARD_ID draftType = CObjectDef.TurnIntToRealCardId(draftId);
 
-        CardDef tgtCard = CObjectDef.Instance().GetCardDef(draftType);
+        CardDef tgtCard = CObjectDef.Instance().GetCardDef(draftType, curCountry);
         if (tgtCard == null) return false;
         actionNode.cardId = draftType;
         actionNode.actionType = ActionNode.CARD_NODE;
@@ -145,6 +145,7 @@ public sealed partial class CActionAssist
     /// <returns>whether a card was chosen</returns>
     public bool purChaseFortCard()
     {
+        CCountry curCountry = CActionAI.Instance().currentCountry;
         CARD_ID selectedFortCardId;
         int choice = GetAIRand() % 100;
         // choose first so that even the anti-aircraft gun gets a chance
@@ -164,9 +165,14 @@ public sealed partial class CActionAssist
         {
             selectedFortCardId = ANTIAIRCRAFT_CARD;
         }
+        CardDef selectedFortCard = CObjectDef.Instance().GetCardDef(selectedFortCardId, curCountry);
+        if (selectedFortCard == null || selectedFortCard.effects.Count != 1 ||
+            selectedFortCard.effects[0] is not AreaStructureEffectDef installationEffect ||
+            installationEffect.slot != AreaStructureSlot.Installation)
+            return false;
+        INSTALLATION_TYPE selectedInstallation = installationEffect.installation;
         int globalBenifit = -1;
         int cardUsingAreaId = -1;
-        CCountry curCountry = CActionAI.Instance().currentCountry;
         foreach (int areaId in curCountry.areaIdList)
         {
             CArea area = g_Scene.GetArea(areaId);
@@ -176,14 +182,14 @@ public sealed partial class CActionAssist
             if (areaArmyCnt == 0) continue;
 
             int benefit = 4 * area.GetCityLevel() + 10 * areaArmyCnt + 5 * area.GetIndustryLevel();
-            switch (selectedFortCardId)
+            switch (selectedInstallation)
             {
-                case ENTRENCHMENT_CARD:
+                case ENTRENCHMENT:
                     // 2010: hp sum of the surrounding enemies, hence the division
                     // (could be refined, e.g. more value against non-tank units)
                     benefit += getNeighbor(areaId, 2010, 1, 1) / 10;
                     break;
-                case LAND_FORT_CARD:
+                case FORT:
                     // navy around: forts counter navy twice, more value
                     if (getNeighbor(areaId, 2070, 1, 1) != -1)
                     {
@@ -195,7 +201,7 @@ public sealed partial class CActionAssist
                         benefit += 50;
                     }
                     break;
-                case ANTIAIRCRAFT_CARD:
+                case ANTIAIRCRAFT:
                     // what is an anti-aircraft gun worth?
                     break;
                 default:
@@ -208,9 +214,8 @@ public sealed partial class CActionAssist
             }
             if (globalBenifit < benefit)
             {
-                CardDef cardDef = CObjectDef.Instance().GetCardDef(selectedFortCardId);
-                if (isBuyCard(cardDef) &&
-                    curCountry.CheckCardTargetArea(cardDef, areaId))
+                if (isBuyCard(selectedFortCard) &&
+                    curCountry.CheckCardTargetArea(selectedFortCard, areaId))
                 {
                     globalBenifit = benefit;
                     cardUsingAreaId = areaId;
@@ -219,8 +224,6 @@ public sealed partial class CActionAssist
         }
 
         if (cardUsingAreaId == -1) return false;
-        CardDef tgtCard = CObjectDef.Instance().GetCardDef(selectedFortCardId);
-        if (tgtCard == null) return false;
         actionNode.cardId = selectedFortCardId;
         actionNode.actionType = ActionNode.CARD_NODE;
         actionNode.startAreaId = cardUsingAreaId;
@@ -251,6 +254,12 @@ public sealed partial class CActionAssist
             selectedConstructionCardId = INDUSTRY_CARD;
         }
         if (!g_NationInfo.canUseCard[(int)selectedConstructionCardId]) return false;
+        CardDef selectedConstructionCard = CObjectDef.Instance().GetCardDef(selectedConstructionCardId, curCountry);
+        if (selectedConstructionCard == null ||
+            selectedConstructionCard.effects.Count != 1 ||
+            selectedConstructionCard.effects[0] is not AreaStructureEffectDef constructionEffect)
+            return false;
+        CONSTRUCTION_TYPE selectedConstruction = constructionEffect.structure;
 
         int globalBenefit = -1;
         int selectedAreaId = -1;
@@ -259,7 +268,7 @@ public sealed partial class CActionAssist
             CArea area = g_Scene.GetArea(areaId);
             if (area.info.sea) continue;
             int localBenefit = 0;
-            if (selectedConstructionCardId == AIRPORT_CARD)
+            if (selectedConstruction == AIRPORT)
             {
                 // airports only on empty land
                 if (area.info.constructionType != NO_CONSTRUCTION) continue;
@@ -272,7 +281,7 @@ public sealed partial class CActionAssist
                     localBenefit = 0;
                 }
             }
-            else if (selectedConstructionCardId == INDUSTRY_CARD)
+            else if (selectedConstruction == INDUSTRY)
             {
                 // existing construction on the area?
                 if (area.info.constructionType != NO_CONSTRUCTION)
@@ -341,7 +350,7 @@ public sealed partial class CActionAssist
                 }
             }
             // added coefficient to stop the AI from building airports in capitals
-            int coe = selectedConstructionCardId == AIRPORT_CARD ? -1 : 1;
+            int coe = selectedConstruction == AIRPORT ? -1 : 1;
             switch (area.info.areaType)
             {
                 case CAPITAL:
@@ -358,9 +367,8 @@ public sealed partial class CActionAssist
             }
             if (globalBenefit < localBenefit)
             {
-                CardDef carddef = CObjectDef.Instance().GetCardDef(selectedConstructionCardId);
-
-                if (isBuyCard(carddef) && curCountry.CheckCardTargetArea(carddef, areaId))
+                if (isBuyCard(selectedConstructionCard) &&
+                    curCountry.CheckCardTargetArea(selectedConstructionCard, areaId))
                 {
                     globalBenefit = localBenefit;
                     selectedAreaId = areaId;
@@ -369,8 +377,6 @@ public sealed partial class CActionAssist
         }
 
         if (selectedAreaId == -1) return false;
-        CardDef constructionCard = CObjectDef.Instance().GetCardDef(selectedConstructionCardId);
-        if (constructionCard == null) return false;
         actionNode.cardId = selectedConstructionCardId;
         actionNode.actionType = ActionNode.CARD_NODE;
         actionNode.startAreaId = selectedAreaId;
@@ -464,7 +470,7 @@ public sealed partial class CActionAssist
                 // update area and card choice
                 if (normalAirAtkBenefit < localBenefit)
                 {
-                    CardDef card = CObjectDef.Instance().GetCardDef(curSuitableCardId);
+                    CardDef card = CObjectDef.Instance().GetCardDef(curSuitableCardId, curCountry);
                     // willing and able to air strike / bomb
                     if (isBuyCard(card) && curCountry.CheckCardTargetArea(card, neighbourId))
                     {
@@ -511,7 +517,7 @@ public sealed partial class CActionAssist
                     localBenefit += 6 * neighbour.GetCityLevel() + 8 * neighbour.GetIndustryLevel();
                     if (nuclearBombBenefit < localBenefit)
                     {
-                        CardDef card = CObjectDef.Instance().GetCardDef(NUCLEAR_BOMB_CARD);
+                        CardDef card = CObjectDef.Instance().GetCardDef(NUCLEAR_BOMB_CARD, curCountry);
                         if (isBuyCard(card) && curCountry.CheckCardTargetArea(card, neighbourId))
                         {
                             nuclearBombBenefit = localBenefit;
@@ -556,7 +562,7 @@ public sealed partial class CActionAssist
                 localBenefit += 40 * neighbour.GetCityLevel() + 80 * neighbour.GetIndustryLevel();
                 if (airbourneBenefit < localBenefit)
                 {
-                    CardDef card = CObjectDef.Instance().GetCardDef(AIRBORNE_FORCE_CARD);
+                    CardDef card = CObjectDef.Instance().GetCardDef(AIRBORNE_FORCE_CARD, curCountry);
                     if (isBuyCard(card) && curCountry.CheckCardTargetArea(card, neighbourId))
                     {
                         airTargetAreaId = neighbourId;
@@ -569,7 +575,7 @@ public sealed partial class CActionAssist
 
         if (airCardId == INVALID_CARD) return false;
         if (airTargetAreaId == -1) return false;
-        CardDef airCard = CObjectDef.Instance().GetCardDef(airCardId);
+        CardDef airCard = CObjectDef.Instance().GetCardDef(airCardId, curCountry);
         if (airCard == null) return false;
 
         actionNode.cardId = airCardId;
@@ -618,7 +624,7 @@ public sealed partial class CActionAssist
             }
             if (atkBenefit > globalBenefit && g_NationInfo.canUseCard[(int)ASSAULT_ART_CARD])
             {
-                CardDef card = CObjectDef.Instance().GetCardDef(ASSAULT_ART_CARD);
+                CardDef card = CObjectDef.Instance().GetCardDef(ASSAULT_ART_CARD, curCountry);
                 if (isBuyCard(card) && curCountry.CheckCardTargetArmy(card, areaId, 0))
                 {
                     globalBenefit = atkBenefit;
@@ -636,7 +642,7 @@ public sealed partial class CActionAssist
             }
             if (defendBenefit > globalBenefit && g_NationInfo.canUseCard[(int)DEFEND_ART_CARD])
             {
-                CardDef card = CObjectDef.Instance().GetCardDef(DEFEND_ART_CARD);
+                CardDef card = CObjectDef.Instance().GetCardDef(DEFEND_ART_CARD, curCountry);
                 if (isBuyCard(card) && curCountry.CheckCardTargetArmy(card, areaId, 0))
                 {
                     globalBenefit = defendBenefit;
@@ -651,7 +657,7 @@ public sealed partial class CActionAssist
                 carrierBenefit += 3 * totalSeaAreaCount;
             if (carrierBenefit > globalBenefit && g_NationInfo.canUseCard[(int)CARRIER_CARD])
             {
-                CardDef card = CObjectDef.Instance().GetCardDef(CARRIER_CARD);
+                CardDef card = CObjectDef.Instance().GetCardDef(CARRIER_CARD, curCountry);
                 if (isBuyCard(card) && curCountry.CheckCardTargetArmy(card, areaId, 0))
                 {
                     globalBenefit = carrierBenefit;
@@ -665,7 +671,7 @@ public sealed partial class CActionAssist
                 cmdBenefit *= 3;
             if (cmdBenefit > globalBenefit && g_NationInfo.canUseCard[(int)COMMANDER_CARD])
             {
-                CardDef card = CObjectDef.Instance().GetCardDef(COMMANDER_CARD);
+                CardDef card = CObjectDef.Instance().GetCardDef(COMMANDER_CARD, curCountry);
                 if (isBuyCard(card) && curCountry.CheckCardTargetArmy(card, areaId, 0))
                 {
                     globalBenefit = cmdBenefit;
@@ -675,7 +681,7 @@ public sealed partial class CActionAssist
             }
         }
         if (selectedCardId == INVALID_CARD) return false;
-        CardDef troop = CObjectDef.Instance().GetCardDef(selectedCardId);
+        CardDef troop = CObjectDef.Instance().GetCardDef(selectedCardId, curCountry);
         if (troop == null) return false;
         actionNode.cardId = selectedCardId;
         actionNode.actionType = ActionNode.CARD_NODE;

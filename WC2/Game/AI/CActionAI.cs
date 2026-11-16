@@ -90,25 +90,11 @@ public sealed partial class CActionAI
     /// <returns>whether the card can be used</returns>
     public bool detectCards(CARD_ID cardId)
     {
-        CardDef cardDef = CObjectDef.Instance().GetCardDef(cardId);
+        CardDef cardDef = CObjectDef.Instance().GetCardDef(cardId, currentCountry);
         if (cardDef == null) return false;
 
-        // unlocked (tech requirement)?
-        CCountry curCountry = currentCountry;
-        bool unlockedCard = curCountry.IsCardUnlock(cardDef);
-        if (!unlockedCard) return false;
-
-        // economy at turn start: if it cannot be used now it cannot be used later either
-        if (cardDef.price > curCountry.money || cardDef.industry > curCountry.industry) return false;
-
-        // the commander needs a special check
-        if (cardId == COMMANDER_CARD)
-        {
-            return currentCountry.CanUseCommander();
-        }
-
-        // every card may have a cool down now
-        return currentCountry.GetCardRounds(cardId) == 0 && unlockedCard;
+        // This includes scaled resource costs and special research / commander availability.
+        return currentCountry.CanBuyCard(cardDef);
     }
 
     /// <summary>Refreshes the g_NationInfo statistics.</summary>

@@ -130,6 +130,8 @@
 	<string>使用指挥官后部队的能力会增加。指挥官军衔等级\n将决定指挥官的能力。</string>
 	<key>Supply Line Intro</key>
 	<string>对我方单个地区内所有受损部队完成补给。\n[3个回合使用1次]</string>
+	<key>De Supply Line Intro</key>
+	<string>诸君，随我接战，战至最后一刻，自刎归天！\n[1个回合使用1次]</string>
 	<key>Ace Forces Intro</key>
 	<string>指定一支部队给予晋升一级的奖励。\n[1个回合使用1次]</string>
 	

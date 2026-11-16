@@ -102,7 +102,7 @@ or was corrected towards the original on 2026-11-05 (`audit/README.md` lists bot
 | Camera (zoom limit, 82 px margin, dt easing), data-driven selection circles and the two-hop artillery rule, carrier strikes through the payload, bomber jitter stream, `CScene.Update` only animates running areas, `InitAreaImage` generalised | original | redesign | kept | intentional redesign, C# kept | `Scene.md` |
 | AI: +40 player-target bonus keyed on the target, `sortArmyToFront`, draft order by card price, unit-type bonus → `AddAiDamageTendency`, ALLY targets skipped, cooldown on every card, draft placement with artillery and airport penalty | original | redesign | kept | intentional redesign, C# kept | `AI.md` B1-B13 |
 | AI: signed `getMaxId`, `currentCountryIndex` reset, `getMedal` thresholds and stream, `getAiPercent` counting, `TypeAdd` table, integer coefficient cast, 0x3000 score formula, card bit masks, `calcAreaArmyHp(area,false)`, random bands, bomber → air-strike fallback, industry weights, tactics bands | original | mistakes | corrected | identical (after correction) | `AI.md`; `audit/README.md` |
-| Scenario alliance letters | `a/b/c` → 1/2/3, anything else NEUTRAL | 26 letters, `'d'` → NEUTRAL, **`'n'` → 14** (a 14th belligerent alliance; 15 shipped neutral countries in `battle_allies7/8`, `battle_axis2/3`, `battle_nato1/2`, `battle_wto3`, `conquest_4/7` took turns and could be attacked) | inherited the defect; **fixed 2026-11-05**: `a/b/c` → 1/2/3, everything else NEUTRAL (the remake's writer also emits `"n"` for neutral, so exports round-trip again) | bug in C++ remake inherited → fixed in C# | `D\CGameManager.c` `LoadBattle`; `D\GetBattleBelligerentList.c:71-84`; `R\gameStagesBehaviors\LoadBattleFromXml.cpp:21-29`; `G\GameStages\LoadBattleFromXml.cs` `ParseAlliance` |
+| Scenario alliance letters | `a/b/c` → 1/2/3, anything else NEUTRAL | 26 letters, `'d'` → NEUTRAL, **`'n'` → 14** (a 14th belligerent alliance; 15 shipped countries in `battle_allies7/8`, `battle_axis2/3`, `battle_nato1/2`, `battle_wto3`, `conquest_4/7` use it) | aligned to the C++ remake on 2026-11-12: 26 letters, `'d'` → NEUTRAL, `'n'` → 14 | intentional C++ remake extension, restored in C# | `D\CGameManager.c` `LoadBattle`; `D\GetBattleBelligerentList.c:71-84`; `R\gameStagesBehaviors\LoadBattleFromXml.cpp:21-29`; `G\GameStages\LoadBattleFromXml.cs` `ParseAlliance` |
 | Unlock-all campaigns (`GetNumPlayedBatttles` returns `SERIES_MAX` = 20) | returns `campaignProgress[series]` | dev/cheat choice | kept | intentional redesign, C# kept (one-line revert if the progression is wanted) | `R\supports\CampaignSize.cpp:155-161`; `G\BasicElements\CCommander.cs:290` |
 | Commander auto-save on medal change (anti file-cheat), `GUIDefeated.autoCloseTimer`, `SkipMode`, `CombatSpatialIndex`, `CanContainArmy`, `calcAreaArmyHp`, elite infantry (id 15, card 28), real bomber (id 16, data only), card tabs, per-country card prices/tech | absent / fixed | remake additions | all present | identical to the remake | `threeway_gamecode.md` §3 |
 
@@ -187,9 +187,9 @@ by the prebuilt `easytech.jar`).
 
 Every rule the remake moved into data is consumed by the C# with the same semantics
 (`threeway_data.md` §3: traits, profiles, damage/weapon rules, result rules, AI bonus, navy flag,
-defeat types, card tables, dialogue defaults, options layout, conquest numbering). Two places were
-changed *towards the original*: the `cross-entrenchment` trait data and legacy default, and the
-alliance letter rule (`'n'` neutral).
+defeat types, card tables, dialogue defaults, options layout, conquest numbering). The
+`cross-entrenchment` trait data and legacy default were changed *towards the original*. The alliance
+letter rule follows the C++ remake's 26-alliance extension, including `'n'` as alliance 14.
 
 **2.5 Dev hooks**
 
@@ -236,7 +236,7 @@ alliance letter rule (`'n'` neutral).
 | Experience thresholds and navy factor | changed table, factor removed | kept |
 | One flat card table | per-country card prices/tech, draft order by price, elite infantry card | kept |
 | 15 fixed unit ids, nine-country art | registry with dynamic ids, 34-country art probe, custom images | kept |
-| a/b/c alliances, else neutral | 26 letters (`'n'` became alliance 14) | corrected to the original rule |
+| a/b/c alliances, else neutral | 26 letters (`'n'` is alliance 14) | kept/aligned to the C++ remake |
 | land/army defeat | + `core` | kept |
 | Tech level clamp, sea start movement, dialogue uninitialised | unclamped, 0, defaults | kept |
 | Encirclement, ships per sea area, `BeConquestedBy`, income cap, medal payment, neutral turn handling | redesigned | kept |
@@ -266,8 +266,8 @@ remake's `font_tool.py`, the remake's dead Java debug activities and `patch.aar`
 logo screen; layout buckets and tablet layout on Android; HD content for the tablet layout; tablet UI
 atlas list; frame-step cap; pause/waiting flags with the darkened frame; back-key semantics
 (`CallNativeExit`); foreground volume re-application; Android `onPause/onResume` hooks; immersive
-full-screen window, cutout handling; launcher icons and localised label; display version; neutral
-alliance letter; `game.xml` export location; battle-background atlas names; pinned package versions;
+full-screen window, cutout handling; launcher icons and localised label; display version; extended
+alliance letters; `game.xml` export location; battle-background atlas names; pinned package versions;
 build script. Still open in this category: none known.
 
 **Platform-replaced, behaviour-equivalent**: rendering backend, screen fitting (letterbox instead of
@@ -327,7 +327,7 @@ versionName 1.3.8):
 |---|---|---|---|
 | 1 | Tutorial overlay ported from the binary | `G\GUI\InGame\GUITutorails.cs`, `tests\tutorial.txt`, `tests\ipad_tutorial.txt` | `D\GUITutorails.c`; screenshots `T1..T4`, `P1..P2` |
 | 2 | Logo state made faithful | `G\GUI\States\CLogoState.cs` | `D\CLogoState.c` |
-| 3 | Alliance letter `'n'` (and every non-a/b/c letter) = NEUTRAL | `G\GameStages\LoadBattleFromXml.cs` | `D\CGameManager.c`, `D\GetBattleBelligerentList.c:71-84` |
+| 3 | C++ remake alliance letters restored: `a..z` map to 1..26, with `'d'` reserved as NEUTRAL | `G\GameStages\LoadBattleFromXml.cs` | `R\gameStagesBehaviors\LoadBattleFromXml.cpp:21-29` |
 | 4 | Layout buckets + tablet layout, HD content everywhere | `G\Supports\ecGame.cs` `SelectLayout`, `WC2\Program.cs`, `A\MainActivity.cs` | `D\jni.c:842-882` |
 | 5 | Tablet UI atlas list | `G\Supports\ecGame.cs` `LoadGlobalGuiAtlases` | `D\CLogoState.c:104-166` |
 | 6 | Frame step cap 0.05 s | `WC2\Host\WC2Game.cs` | `D\jni.c:926-942` |

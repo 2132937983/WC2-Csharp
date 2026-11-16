@@ -91,6 +91,19 @@ public static partial class armydef_internal
         return assignedId;
     }
 
+    public static bool TryResolveArmyTypeId(string name, out int id) =>
+        g_armyTypeIds.TryGetValue(name ?? "", out id);
+
+    /// <summary>Resolves either a registered army type name or its registered numeric id.</summary>
+    public static bool TryResolveArmyTypeReference(string value, out int id)
+    {
+        id = -1;
+        if (string.IsNullOrEmpty(value)) return false;
+        if (g_armyTypeIds.TryGetValue(value, out id)) return true;
+        if (!int.TryParse(value, out id) || id < 0) return false;
+        return g_armyTypeNames.ContainsKey(id);
+    }
+
     /// <summary>Registered name of an id, or "" when unknown.</summary>
     public static string GetArmyTypeName(int id)
     {
@@ -263,18 +276,31 @@ public static partial class armydef_internal
 
     public static COMBAT_AIRSTRIKE_PAYLOAD ParseAirstrikePayload(string value, COMBAT_AIRSTRIKE_PAYLOAD fallback)
     {
-        if (value == null) return fallback;
+        return TryParseAirstrikePayload(value, out COMBAT_AIRSTRIKE_PAYLOAD payload)
+            ? payload : fallback;
+    }
+
+    public static bool TryParseAirstrikePayload(string value, out COMBAT_AIRSTRIKE_PAYLOAD payload)
+    {
+        payload = default;
+        if (value == null) return false;
         if (ParseIntegerText(value, out long numericValue) &&
             numericValue >= (long)COMBAT_AIRSTRIKE_PAYLOAD_AIRSTRIKE &&
             numericValue <= (long)COMBAT_AIRSTRIKE_PAYLOAD_NUCLEAR)
         {
-            return (COMBAT_AIRSTRIKE_PAYLOAD)numericValue;
+            payload = (COMBAT_AIRSTRIKE_PAYLOAD)numericValue;
+            return true;
         }
         // air strike or fighter (alias)
-        if (value == "airstrike" || value == "fighter") return COMBAT_AIRSTRIKE_PAYLOAD_AIRSTRIKE;
-        if (value == "bomber") return COMBAT_AIRSTRIKE_PAYLOAD_BOMBER;
-        if (value == "nuclear" || value == "nuclearbomb") return COMBAT_AIRSTRIKE_PAYLOAD_NUCLEAR;
-        return fallback;
+        if (value == "airstrike" || value == "fighter")
+            payload = COMBAT_AIRSTRIKE_PAYLOAD_AIRSTRIKE;
+        else if (value == "bomb" || value == "bomber")
+            payload = COMBAT_AIRSTRIKE_PAYLOAD_BOMBER;
+        else if (value == "nuclear" || value == "nuclearbomb")
+            payload = COMBAT_AIRSTRIKE_PAYLOAD_NUCLEAR;
+        else
+            return false;
+        return true;
     }
 
     /// <summary>Parses an action cost attribute; -1 means "clear the movement".</summary>

@@ -80,7 +80,7 @@
 		</army>
 
 		<army type="artillery" unit-type="3" strength="50" movement="2" minatk="1" maxatk="9" weapon-type="1">
-		<combat traits="cannot-occupy" ai-no-counter-bonus="200">
+		<combat traits="cannot-occupy cross-entrenchment" ai-no-counter-bonus="200">
                   		<attack mode="0" engagement="1">
                       			<range shape="graph"
                             			min="0"
@@ -90,7 +90,7 @@
 		</army>
 
 		<army type="rocket" unit-type="3" strength="35" movement="2" minatk="2" maxatk="10">
-			<combat traits="cannot-occupy">
+			<combat traits="cannot-occupy cross-entrenchment">
                   		<attack mode="1" engagement="1">
                       			<range shape="graph"
                             			min="1500"
@@ -131,7 +131,7 @@
 			</combat>
 		</army>
 		<army type="destroyer" unit-type="4" navy="true" strength="180" movement="2" minatk="3" maxatk="10">
-			<combat traits="recv_fort_second_counter">
+			<combat traits="recv_fort_second_counter  cross-entrenchment">
                   		<attack mode="0" engagement="0">
                       			<range shape="graph"
                             			min="0"
@@ -140,7 +140,7 @@
 			</combat>
 		</army>
 		<army type="cruiser" unit-type="4" navy="true" strength="290" movement="2" minatk="4" maxatk="12">
-			<combat traits="recv_fort_second_counter">
+			<combat traits="recv_fort_second_counter cross-entrenchment">
                   		<attack mode="0" engagement="0">
                       			<range shape="graph"
                             			min="0"
@@ -155,7 +155,7 @@
 				movement="1"
 				minatk="6"
 				maxatk="14">
-			<combat  traits="recv_fort_second_counter">
+			<combat  traits="recv_fort_second_counter cross-entrenchment">
 				<result construction-level-degrade="1" construction-level-chance="30"/>
                   		<attack mode="0" engagement="0">
                       			<range shape="graph"
@@ -166,7 +166,7 @@
 		</army>
 
 		<army type="aircraftcarrier" unit-type="4" navy="true" strength="280" movement="1" minatk="3" maxatk="8">
-			<combat  traits="recv_fort_second_counter">
+			<combat  traits="recv_fort_second_counter cross-entrenchment">
 					<attack mode="2" payload="1" attack-cost="1">
               				<range shape="circle"
                      				min="0"

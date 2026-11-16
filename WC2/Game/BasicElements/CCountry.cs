@@ -330,8 +330,8 @@ public sealed partial class CCountry
     public void DoAction()
     {
         actionTimer = 0.0f;
-        CArea StartArea = g_Scene.GetArea(action.startAreaId);
-        CArea TargetArea = g_Scene.GetArea(action.targetAreaId);
+        CArea StartArea = action.startAreaId >= 0 ? g_Scene.GetArea(action.startAreaId) : null;
+        CArea TargetArea = action.targetAreaId >= 0 ? g_Scene.GetArea(action.targetAreaId) : null;
         switch (action.actionType)
         {
             case CountryAction.MOVE_ACTION:
@@ -421,9 +421,17 @@ public sealed partial class CCountry
 
             case CountryAction.CARD_ACTION:
             {
-                CardDef Def = CObjectDef.Instance().GetCardDef(action.cardId);
+                CardDef Def = CObjectDef.Instance().GetCardDef(action.cardId, this);
                 // card branches
-                if (action.cardId == AIRBORNE_FORCE_CARD)
+                bool xmlAirMission = Def?.effects.Any(effect =>
+                    effect is StrategicStrikeEffectDef or AirborneDeployEffectDef) == true;
+                if (xmlAirMission)
+                {
+                    // Validate before take-off. The locked mission is committed on arrival.
+                    if (CanBuyCard(Def) && CheckCardTargetArea(Def, action.targetAreaId))
+                        g_Scene.CardAirMission(this, Def, action.targetAreaId);
+                }
+                else if (action.cardId == AIRBORNE_FORCE_CARD)
                 {
                     g_Scene.Airborne(action.targetAreaId);
                 }
@@ -436,7 +444,8 @@ public sealed partial class CCountry
                 else
                 {
                     // ordinary cards
-                    UseCard(CObjectDef.Instance().GetCardDef(action.cardId), action.targetAreaId, action.armyIndex);
+                    UseCard(CObjectDef.Instance().GetCardDef(action.cardId, this),
+                        action.targetAreaId, action.armyIndex);
                 }
                 break;
             }
@@ -603,11 +612,12 @@ public sealed partial class CCountry
     /// <summary>The commander died: sets the respawn turns and the retreat dialogue (single player).</summary>
     public void CommanderDie()
     {
-        commanderAlive = false;
+        commanderAlive = CardConditionEvaluator.CountCountryBuff(this, UnitBuffKind.Commander) > 0;
 
         if (!ai)
         {
-            commanderTurn = GetCommanderAbility(GetCommanderLevel()).coolDown;
+            if (commanderTurn == 0)
+                commanderTurn = GetCommanderAbility(GetCommanderLevel()).coolDown;
             if (g_GameManager.gameMode == CGameManager.MULTIPLAYER) return;
 
             int variant = (int)(lrand48() % 5);
@@ -617,7 +627,7 @@ public sealed partial class CCountry
             return;
         }
 
-        commanderTurn = 5;
+        if (commanderTurn == 0) commanderTurn = 5;
         if (g_GameManager.gameMode == CGameManager.MULTIPLAYER) return;
 
         string commanderName = GetCommanderName();
@@ -765,7 +775,7 @@ public sealed partial class CCountry
     public void TurnEnd()
     {
         // commander cool-down
-        if (!commanderAlive && commanderTurn > 0) commanderTurn -= 1;
+        if (commanderTurn > 0) commanderTurn -= 1;
         // card cool-downs
         for (int i = 0; i < cardRound.Length; i++)
         {
@@ -775,7 +785,7 @@ public sealed partial class CCountry
         // card usage counters; this feature still needs UI work, better not use it yet
         for (int cardId = (int)INFANTRY_CARD; cardId < VALID_CARD_COUNT; cardId++)
         {
-            CardDef card = CObjectDef.Instance().GetCardDef((CARD_ID)cardId);
+            CardDef card = CObjectDef.Instance().GetCardDef((CARD_ID)cardId, this);
             if (card == null) continue;
 
             // round 0 refills the uses every turn, a positive round does not;

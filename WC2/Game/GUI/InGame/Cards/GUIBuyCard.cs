@@ -289,6 +289,7 @@ public sealed class GUIBuyCard : GUIElement
                 if (card_tmp == null) continue; // the list skipped cards without a definition too
                 int money_here = Country.GetCardPrice(card_tmp);
                 int industry_here = Country.GetCardIndustry(card_tmp);
+                ResearchEffectDef research = card_tmp.effects.OfType<ResearchEffectDef>().FirstOrDefault();
                 GUICard GUI_tmp = cardListGui[(int)card_tmp.type].GetCard(serial);
                 serial++;
                 if (GUI_tmp != null)
@@ -323,13 +324,14 @@ public sealed class GUIBuyCard : GUIElement
                         GUI_tmp.notGrey = false;
                         GUI_tmp.SetIndustryColor(0xFF000080u);
                     }
-                    if (card_tmp.id == RESEARCH_CARD)
+                    if (research != null || card_tmp.id == RESEARCH_CARD)
                     {
-                        // the research card cools down with the country techTurn, and is free but unusable at max level
+                        // Research progress uses the country's techTurn instead of the normal card cool-down.
                         GUI_tmp.coolDown = Country.techTurn;
                         if (GUI_tmp.coolDown > 0)
                             GUI_tmp.notGrey = false;
-                        if (Country.tech >= 5)
+                        int maximumLevel = research?.maxLevel ?? 5;
+                        if (Country.tech >= maximumLevel)
                         {
                             GUI_tmp.notGrey = false;
                             GUI_tmp.SetPrice(0);
@@ -342,24 +344,17 @@ public sealed class GUIBuyCard : GUIElement
                         }
                         GUI_tmp.researchLevel = Country.tech;
                     }
-                    else if (card_tmp.id == COMMANDER_CARD)
+                    else if (card_tmp.commanderCooldown || card_tmp.id == COMMANDER_CARD)
                     {
-                        // the commander card uses "commander alive / revive cool down" instead of the normal cardRound
-                        if (Country.CanUseCommander())
+                        // Commander use does not start a cool-down; losing one does.
+                        if (Country.CanUseCommander(card_tmp))
                         {
                             GUI_tmp.coolDown = 0;
                         }
                         else
                         {
-                            if (Country.commanderAlive)
-                            {
-                                GUI_tmp.coolDown = 0;
-                                GUI_tmp.notGrey = false;
-                            }
-                            else
-                            {
-                                GUI_tmp.coolDown = Country.commanderTurn;
-                            }
+                            GUI_tmp.coolDown = Country.commanderTurn;
+                            GUI_tmp.notGrey = false;
                         }
                     }
                     if (GUI_tmp.coolDown > 0)
@@ -528,7 +523,8 @@ public sealed class GUIBuyCard : GUIElement
                                 g_PlayerManager.SendPacketToAllPlayers(action, 0);
                         }
 
-                        if (selectedCard.id == RESEARCH_CARD)
+                        if (selectedCard.effects.OfType<ResearchEffectDef>().Any() ||
+                            selectedCard.id == RESEARCH_CARD)
                             ResetCardState();
                         else
                             Hide();

@@ -24,6 +24,8 @@ public sealed class CBomber
     // Air strikes launched by a unit no longer use the CFight type 4 marker.
     public bool unitAirstrike;
     public int airStrikePayload;
+    private CCountry cardSourceCountry;
+    private CardDef missionCard;
 
     /// <summary>Constructs the bomber animation controller and initialises its image references.</summary>
     public CBomber()
@@ -33,6 +35,8 @@ public sealed class CBomber
         x10Image = null;
         unitAirstrike = false;
         airStrikePayload = (int)COMBAT_AIRSTRIKE_PAYLOAD_AIRSTRIKE;
+        cardSourceCountry = null;
+        missionCard = null;
     }
 
     /// <summary>Destructor equivalent: releases the image objects held by the animation.</summary>
@@ -60,6 +64,8 @@ public sealed class CBomber
         airStrikeFireCount = 0;
         unitAirstrike = false;
         airStrikePayload = (int)COMBAT_AIRSTRIKE_PAYLOAD_AIRSTRIKE;
+        cardSourceCountry = null;
+        missionCard = null;
     }
 
     /// <summary>
@@ -71,6 +77,8 @@ public sealed class CBomber
     /// <param name="actionType">Air strike action type.</param>
     public void BombArea(int targetAreaId, int actionType)
     {
+        cardSourceCountry = null;
+        missionCard = null;
         this.targetAreaId = targetAreaId;
 
         CArea targetArea = g_Scene.GetArea(targetAreaId);
@@ -127,6 +135,8 @@ public sealed class CBomber
     /// </summary>
     public void Airborne(int targetAreaId)
     {
+        cardSourceCountry = null;
+        missionCard = null;
         this.targetAreaId = targetAreaId;
 
         CArea targetArea = g_Scene.GetArea(targetAreaId);
@@ -156,6 +166,22 @@ public sealed class CBomber
         planeXPosLimit = viewRightLimit;
         if (planeXPosLimit < targetLimit)
             planeXPosLimit = targetLimit;
+    }
+
+    /// <summary>Starts a card animation while retaining its acting country and parsed definition.</summary>
+    public void CardMission(CCountry sourceCountry, CardDef card, int targetAreaId)
+    {
+        if (card?.effects.OfType<AirborneDeployEffectDef>().Any() == true)
+            Airborne(targetAreaId);
+        else
+        {
+            StrategicStrikeEffectDef strike = card?.effects
+                .OfType<StrategicStrikeEffectDef>().FirstOrDefault();
+            if (strike == null) return;
+            BombArea(targetAreaId, (int)strike.payload);
+        }
+        cardSourceCountry = sourceCountry;
+        missionCard = card;
     }
 
     /// <summary>True while the plane is flying or has arrived and the hit effect is still pending.</summary>
@@ -252,7 +278,18 @@ public sealed class CBomber
         effectTimer = 0.0f;
         planeArrived = false;
         effectComplete = true;
-        // Only after the visual effect query the acting country and convert the animation type to the rule action.
+        // A card mission retains the exact country and parsed definition that were validated at take-off.
+        if (missionCard != null && cardSourceCountry != null)
+        {
+            CardDef card = missionCard;
+            CCountry sourceCountry = cardSourceCountry;
+            missionCard = null;
+            cardSourceCountry = null;
+            sourceCountry.UseCard(card, targetAreaId, 0);
+            return;
+        }
+
+        // Legacy missions query the acting country and convert the animation type to the old card action.
         CCountry currentCountry = g_GameManager.GetCurCountry();
         if (currentCountry != null)
         {

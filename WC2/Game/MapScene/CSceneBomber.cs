@@ -3,6 +3,11 @@ namespace WC2;
 /// <summary>Bomber forwarding (CSceneBomber.cpp).</summary>
 public sealed partial class CScene
 {
+    public void CardAirMission(CCountry sourceCountry, CardDef card, int targetAreaId)
+    {
+        bomber?.CardMission(sourceCountry, card, targetAreaId);
+    }
+
     /// <summary>Forwards an airborne command to the bomber.</summary>
     public void Airborne(int targetAreaId)
     {

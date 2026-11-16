@@ -70,6 +70,7 @@ public static class DebugTools
                 }
             Console.WriteLine("cards parsed: " + n);
         }
+        TestCardEffects();
         var table = new ecStringTable();
         table.Load("stringtable_cn.xml");
         Console.WriteLine("stringtable_cn entries: " + table.table.Count + "  Infantry=" + table.GetString("Infantry") + "  conquest name 1=" + table.GetString("conquest name 1"));
@@ -77,6 +78,187 @@ public static class DebugTools
         loc.Load("Localizable.strings");
         Console.WriteLine("Localizable language=" + loc.GetString("language") + " stringtable=" + loc.GetString("stringtable"));
     }
+
+    private static void TestCardEffects()
+    {
+        CObjectDef definitions = CObjectDef.Instance();
+        definitions.LoadArmyDef();
+        definitions.LoadCardDef();
+
+        CardDef infantry = definitions.GetNewCardDef(INFANTRY_CARD, "others");
+        CardDef airstrike = definitions.GetNewCardDef(AIR_STRIKE_CARD, "others");
+        CardDef bomber = definitions.GetNewCardDef(BOMBER_CARD, "others");
+        CardDef airborne = definitions.GetNewCardDef(AIRBORNE_FORCE_CARD, "others");
+        CardDef nuclear = definitions.GetNewCardDef(NUCLEAR_BOMB_CARD, "others");
+        CardDef city = definitions.GetNewCardDef(CITY_CARD, "others");
+        CardDef industry = definitions.GetNewCardDef(INDUSTRY_CARD, "others");
+        CardDef airport = definitions.GetNewCardDef(AIRPORT_CARD, "others");
+        CardDef fort = definitions.GetNewCardDef(LAND_FORT_CARD, "others");
+        CardDef entrenchment = definitions.GetNewCardDef(ENTRENCHMENT_CARD, "others");
+        CardDef antiaircraft = definitions.GetNewCardDef(ANTIAIRCRAFT_CARD, "others");
+        CardDef radar = definitions.GetNewCardDef(RADAR_CARD, "others");
+        CardDef carrier = definitions.GetNewCardDef(CARRIER_CARD, "others");
+        CardDef assault = definitions.GetNewCardDef(ASSAULT_ART_CARD, "others");
+        CardDef defence = definitions.GetNewCardDef(DEFEND_ART_CARD, "others");
+        CardDef commander = definitions.GetNewCardDef(COMMANDER_CARD, "others");
+        CardDef research = definitions.GetNewCardDef(RESEARCH_CARD, "others");
+        CardDef supplyLine = definitions.GetNewCardDef(SUPPLY_LINE_CARD, "others");
+        CardDef aceForces = definitions.GetNewCardDef(ACE_FORCES_CARD, "others");
+        RequireEffect<DraftArmyEffectDef>(infantry, "infantry", effect =>
+            effect.armyTypeId == (int)INFANTRY);
+        RequireEffect<StrategicStrikeEffectDef>(airstrike, "airstrike", effect =>
+            effect.payload == COMBAT_AIRSTRIKE_PAYLOAD_AIRSTRIKE);
+        RequireEffect<StrategicStrikeEffectDef>(bomber, "bomber", effect =>
+            effect.payload == COMBAT_AIRSTRIKE_PAYLOAD_BOMBER);
+        RequireEffect<AirborneDeployEffectDef>(airborne, "airborne-force", effect =>
+            effect.armyTypeId == (int)INFANTRY && effect.capture);
+        RequireEffect<StrategicStrikeEffectDef>(nuclear, "nuclear-bomb", effect =>
+            effect.payload == COMBAT_AIRSTRIKE_PAYLOAD_NUCLEAR);
+        RequireConstructionEffect(city, "city", CITY);
+        RequireConstructionEffect(industry, "industry", INDUSTRY);
+        RequireConstructionEffect(airport, "airport", AIRPORT);
+        RequireInstallationEffect(fort, "land-fort", FORT);
+        RequireInstallationEffect(entrenchment, "entrenchment", ENTRENCHMENT);
+        RequireInstallationEffect(antiaircraft, "antiaircraft", ANTIAIRCRAFT);
+        RequireInstallationEffect(radar, "radar", RADAR);
+        RequireUnitBuffEffect(carrier, "carrier", UnitBuffKind.Carrier, UnitBuffTarget.SelectedArmy);
+        RequireUnitBuffEffect(assault, "assault-art", UnitBuffKind.Assault, UnitBuffTarget.SelectedArmy);
+        RequireUnitBuffEffect(defence, "defend-art", UnitBuffKind.Defence, UnitBuffTarget.SelectedArmy);
+        if (commander == null || !commander.commanderPriceScaling || !commander.commanderCooldown)
+            throw new InvalidOperationException("commander pricing/cooldown modes were not loaded");
+        RequireEffect<ResearchEffectDef>(research, "research", effect =>
+            effect.turns == 3 && effect.maxLevel == 5);
+        RequireEffect<ArmyHealthEffectDef>(supplyLine, "supply-line", effect =>
+            effect.target == ArmyEffectTarget.AllArmies && effect.IsPercent && effect.Amount == 100);
+        RequireEffect<ArmyLevelEffectDef>(aceForces, "ace-forces", effect =>
+            effect.target == ArmyEffectTarget.FrontArmy && effect.levels == 1);
+
+        var country = new CCountry();
+        var capital = NewTestArea(country, CAPITAL);
+        CardEffectResult result = CardEffectExecutor.Apply(NewTestContext(country, city, capital));
+        if (!result.Success || capital.info.constructionType != CITY ||
+            capital.info.constructionLevel != MAX_CITY_LEVEL)
+            throw new InvalidOperationException("city effect did not preserve the capital default level");
+
+        if (CardEffectExecutor.CanApply(NewTestContext(country, airport, capital), out _))
+            throw new InvalidOperationException("airport effect accepted an area with a different construction");
+
+        var plain = NewTestArea(country, NORMAL);
+        result = CardEffectExecutor.Apply(NewTestContext(country, industry, plain));
+        if (!result.Success || plain.info.constructionType != INDUSTRY || plain.info.constructionLevel != 1)
+            throw new InvalidOperationException("industry effect did not construct level one on plain land");
+
+        var maximize = new CardDef { key = "test-maximize" };
+        maximize.effects.Add(new AreaStructureEffectDef
+        {
+            type = "area-structure",
+            structure = INDUSTRY,
+            operation = CardEffectOperation.Adjust,
+            toMaximum = true,
+        });
+        result = CardEffectExecutor.Apply(NewTestContext(country, maximize, plain));
+        if (!result.Success || plain.info.constructionLevel != MAX_INDUSTRY_LEVEL)
+            throw new InvalidOperationException("+inf did not maximize the construction level");
+
+        var clear = new CardDef { key = "test-clear" };
+        clear.effects.Add(new AreaStructureEffectDef
+        {
+            type = "area-structure",
+            operation = CardEffectOperation.Clear,
+        });
+        result = CardEffectExecutor.Apply(NewTestContext(country, clear, plain));
+        if (!result.Success || plain.info.constructionType != NO_CONSTRUCTION || plain.info.constructionLevel != 0)
+            throw new InvalidOperationException("clear did not remove the construction");
+
+        result = CardEffectExecutor.Apply(NewTestContext(country, fort, plain));
+        if (!result.Success || plain.installationType != FORT)
+            throw new InvalidOperationException("fort effect did not set the installation");
+        if (CardEffectExecutor.CanApply(NewTestContext(country, radar, plain), out _))
+            throw new InvalidOperationException("installation effect accepted an occupied installation slot");
+
+        var clearInstallation = new CardDef { key = "test-clear-installation" };
+        clearInstallation.effects.Add(new AreaStructureEffectDef
+        {
+            type = "area-structure",
+            slot = AreaStructureSlot.Installation,
+            operation = CardEffectOperation.Clear,
+        });
+        result = CardEffectExecutor.Apply(NewTestContext(country, clearInstallation, plain));
+        if (!result.Success || plain.installationType != NO_INSTALLATION)
+            throw new InvalidOperationException("installation clear did not remove the installation");
+
+        plain.armyCount = 1;
+        plain.army[0] = new CArmy
+        {
+            basicAbilities = new ArmyDef { hp = 100 },
+            country = country,
+            hp = 100,
+            maxHp = 100,
+        };
+        result = CardEffectExecutor.Apply(NewTestContext(country, assault, plain, 0));
+        if (!result.Success || !plain.army[0].HasCard(ASSAULT))
+            throw new InvalidOperationException("assault effect did not add the unit buff");
+        if (CardEffectExecutor.CanApply(NewTestContext(country, assault, plain, 0), out _))
+            throw new InvalidOperationException("unit-buff accepted a duplicate buff");
+
+        Console.WriteLine("card effects: XML parser and basic handlers ok");
+    }
+
+    private static void RequireEffect<TEffect>(
+        CardDef card, string expectedKey, Func<TEffect, bool> validate)
+        where TEffect : CardEffectDef
+    {
+        if (card == null || card.key != expectedKey || card.effects.Count != 1 ||
+            card.effects[0] is not TEffect effect || !validate(effect))
+            throw new InvalidOperationException($"card '{expectedKey}' did not load its expected effect");
+    }
+
+    private static void RequireConstructionEffect(
+        CardDef card, string expectedKey, CONSTRUCTION_TYPE expectedStructure)
+    {
+        if (card == null || card.key != expectedKey || card.effects.Count != 1 ||
+            card.effects[0] is not AreaStructureEffectDef effect ||
+            effect.structure != expectedStructure || effect.operation != CardEffectOperation.Adjust ||
+            effect.levelDelta != 1 || card.presentation?.sound != "build")
+            throw new InvalidOperationException($"card '{expectedKey}' did not load its construction effect");
+    }
+
+    private static void RequireInstallationEffect(
+        CardDef card, string expectedKey, INSTALLATION_TYPE expectedInstallation)
+    {
+        if (card == null || card.key != expectedKey || card.effects.Count != 1 ||
+            card.effects[0] is not AreaStructureEffectDef effect ||
+            effect.slot != AreaStructureSlot.Installation || effect.installation != expectedInstallation ||
+            effect.operation != CardEffectOperation.Set || card.presentation?.sound != "build")
+            throw new InvalidOperationException($"card '{expectedKey}' did not load its installation effect");
+    }
+
+    private static void RequireUnitBuffEffect(
+        CardDef card, string expectedKey, UnitBuffKind expectedBuff, UnitBuffTarget expectedTarget)
+    {
+        if (card == null || card.key != expectedKey || card.effects.Count != 1 ||
+            card.effects[0] is not UnitBuffEffectDef effect || effect.buff != expectedBuff ||
+            effect.target != expectedTarget || card.presentation?.sound != "buff")
+            throw new InvalidOperationException($"card '{expectedKey}' did not load its unit buff effect");
+    }
+
+    private static CArea NewTestArea(CCountry country, AREA_TYPE areaType)
+    {
+        var area = new CArea();
+        area.Init(1, new AreaInfo(areaType, 0));
+        area.country = country;
+        return area;
+    }
+
+    private static CardEffectContext NewTestContext(
+        CCountry country, CardDef card, CArea area, int armyIndex = -1) => new()
+    {
+        sourceCountry = country,
+        card = card,
+        targetArea = area,
+        targetAreaId = area.id,
+        targetArmyIndex = armyIndex,
+    };
 
     /// <summary>
     /// Decodes every MP3 of the assets with the music decoder used by the game, prints format and

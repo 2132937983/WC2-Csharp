@@ -454,14 +454,11 @@ public sealed partial class CArea
         if (armyIndex < armyCount && army[armyIndex] != null && army[armyIndex].LostStrength(damage))
         {
             CArmy theArmy = army[armyIndex];
-            // the unit carried the commander
-            if ((theArmy.cards & 8) != 0)
-            {
-                // the commander dies
-                country?.CommanderDie();
-            }
+            bool commanderDied = (theArmy.cards & 8) != 0;
             // remove the unit from the area
             RemoveArmy(theArmy);
+            // Count the remaining commanders only after the dead unit has left the map.
+            if (commanderDied) country?.CommanderDie();
             if (info.sea && armyCount == 0)
             {
                 if (country != null)

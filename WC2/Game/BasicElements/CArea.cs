@@ -190,6 +190,12 @@ public sealed partial class CArea
         return industryLevel;
     }
 
+    public int GetAirportLevel() => info.constructionType == AIRPORT
+        ? Math.Max(1, info.constructionLevel) : 0;
+
+    /// <summary>Legacy ports are an area type and therefore expose level 1.</summary>
+    public int GetPortLevel() => info.areaType == PORT ? 1 : 0;
+
     /// <summary>Raw tax income of the area (before the tax rate).</summary>
     public int GetRealTax() => 5 * GetCityLevel() + info.tax;
 

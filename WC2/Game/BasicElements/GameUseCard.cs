@@ -3,24 +3,36 @@ namespace WC2;
 /// <summary>Card usage and card target checks of a country (GameUseCard.cpp).</summary>
 public sealed partial class CCountry
 {
-    /// <summary>Industry price of a card (research and commander are handled separately).</summary>
+    /// <summary>Industry price of a card, including XML-defined technology growth.</summary>
     public int GetCardIndustry(CardDef card)
     {
-        int cardIndustry = card.industry;
-        if (card.id == RESEARCH_CARD) return cardIndustry * tech;
-        return cardIndustry;
+        CardResourceCostDef cost = card.costs.FirstOrDefault(
+            item => item.resource == CardResourceType.Industry);
+        if (cost != null) return GetScaledResourceCost(cost);
+        if (card.id == RESEARCH_CARD) return card.industry * tech;
+        return card.industry;
     }
 
     /// <summary>Whether the industry suffices for the card.</summary>
     public bool IsEnoughIndustry(CardDef card) => GetCardIndustry(card) <= industry;
 
-    /// <summary>Money price of a card (research and commander are handled separately).</summary>
+    /// <summary>Money price of a card, including XML-defined technology growth.</summary>
     public int GetCardPrice(CardDef card)
     {
-        int cardMoney = card.price;
-        if (card.id == RESEARCH_CARD) return cardMoney * tech;
-        else if (card.id == COMMANDER_CARD) return cardMoney + 5 * GetCommanderLevel();
+        CardResourceCostDef cost = card.costs.FirstOrDefault(
+            item => item.resource == CardResourceType.Money);
+        int cardMoney = cost != null ? GetScaledResourceCost(cost) : card.price;
+        if (cost == null && card.id == RESEARCH_CARD) return cardMoney * tech;
+        if (card.commanderPriceScaling || card.id == COMMANDER_CARD)
+            return cardMoney + 5 * GetCommanderLevel();
         return cardMoney;
+    }
+
+    private int GetScaledResourceCost(CardResourceCostDef cost)
+    {
+        long value = (long)cost.baseAmount +
+            (long)cost.growthPerTechLevel * Math.Max(0, tech - 1);
+        return (int)Math.Clamp(value, int.MinValue, int.MaxValue);
     }
 
     /// <summary>Whether the money suffices for the card.</summary>
@@ -43,18 +55,29 @@ public sealed partial class CCountry
         // locked card
         if (!IsCardUnlock(cardDef)) return;
         // card still cooling down
-        if (GetCardRounds(cardDef.id) > 0) return;
+        bool isResearch = cardDef.effects.OfType<ResearchEffectDef>().Any();
+        if (!isResearch && GetCardRounds(cardDef.id) > 0) return;
 
         // target area or null
         CArea targetArea = targetAreaId >= 0 ? g_Scene.GetArea(targetAreaId) : null;
         if (cardDef.type == ARMY_TYPE_CARD || cardDef.type == NAVY_TYPE_CARD)
         {
-            // invalid target
-            if (!CheckCardTargetArea(cardDef, targetAreaId)) return;
-            // obviously unusable
             if (targetArea == null) return;
-            CArmy pArmy = targetArea.DraftArmy(cardDef.relatedArmyId);
+            CArmy pArmy;
+            if (cardDef.effects.Count > 0)
+            {
+                CardEffectResult result = CardEffectExecutor.Apply(
+                    CreateCardEffectContext(cardDef, targetAreaId, armyIndex));
+                if (!result.Success) return;
+                pArmy = targetArea.armyDrafting;
+            }
+            else
+            {
+                if (!CheckCardTargetArea(cardDef, targetAreaId)) return;
+                pArmy = targetArea.DraftArmy(cardDef.relatedArmyId);
+            }
             if (pArmy == null) return;
+            int draftedArmyType = pArmy.basicAbilities.id;
             // navy medal bonus
             int NavyMedalLevel = GetWarMedalLevel(NAVY_MEDAL);
             if (NavyMedalLevel > 0)
@@ -62,14 +85,14 @@ public sealed partial class CCountry
                 // land units get a transport ship
                 if (cardDef.type == ARMY_TYPE_CARD) pArmy.AddCard(CARRIER);
                 if ((NavyMedalLevel > 1 &&
-                     (cardDef.id == DESTROYER_CARD || cardDef.id == CRUISER_CARD)) ||
+                     (draftedArmyType == (int)DESTROYER || draftedArmyType == (int)CRUISER)) ||
                     (NavyMedalLevel > 2 &&
-                     (cardDef.id == BATTLE_SHIP_CARD || cardDef.id == AIRCRAFT_CARRIER_CARD)))
+                     (draftedArmyType == (int)BATTLESHIP || draftedArmyType == (int)AIRCRAFT_CARRIER)))
                     pArmy.Upgrade();
             }
 
             // infantry medal bonus
-            if (cardDef.id == INFANTRY_CARD)
+            if (draftedArmyType == (int)INFANTRY)
             {
                 int InfantryMedalLevel = GetWarMedalLevel(INFANTRY_MEDAL);
                 if (InfantryMedalLevel > 0)
@@ -91,12 +114,12 @@ public sealed partial class CCountry
             int ArtilleryMedalLevel = GetWarMedalLevel(ARTILLERY_MEDAL);
             if (ArtilleryMedalLevel > 0)
             {
-                if (cardDef.id == ARTILLERY_CARD) pArmy.Upgrade();
+                if (draftedArmyType == (int)ARTILLERY) pArmy.Upgrade();
                 if (ArtilleryMedalLevel > 1)
                 {
-                    if (cardDef.id == ROCKET_CARD) pArmy.Upgrade();
+                    if (draftedArmyType == (int)ROCKET) pArmy.Upgrade();
                     if (ArtilleryMedalLevel > 2 &&
-                        (cardDef.id == ARTILLERY_CARD || cardDef.id == ROCKET_CARD))
+                        (draftedArmyType == (int)ARTILLERY || draftedArmyType == (int)ROCKET))
                         pArmy.AddCard(DEFENCE);
                 }
             }
@@ -105,11 +128,11 @@ public sealed partial class CCountry
             int ArmourMedalLevel = GetWarMedalLevel(ARMOUR_MEDAL);
             if (ArmourMedalLevel > 0)
             {
-                if (cardDef.id == ARMOUR_CARD) pArmy.Upgrade();
+                if (draftedArmyType == (int)PANZER) pArmy.Upgrade();
                 if (ArmourMedalLevel > 1)
                 {
-                    if (cardDef.id == TANK_CARD) pArmy.Upgrade();
-                    if (ArmourMedalLevel > 2 && cardDef.id == HEAVY_TANK_CARD) pArmy.Upgrade();
+                    if (draftedArmyType == (int)TANK) pArmy.Upgrade();
+                    if (ArmourMedalLevel > 2 && draftedArmyType == (int)HEAVY_TANK) pArmy.Upgrade();
                 }
             }
         }
@@ -117,38 +140,59 @@ public sealed partial class CCountry
         {
             if (!CheckCardTargetArea(cardDef, targetAreaId)) return;
             if (targetArea == null) return;
-            switch (cardDef.id)
+            if (cardDef.effects.Count > 0)
             {
-                case CITY_CARD:
-                    targetArea.Construct((int)CITY);
-                    break;
-                case INDUSTRY_CARD:
-                    targetArea.Construct((int)INDUSTRY);
-                    break;
-                case AIRPORT_CARD:
-                    targetArea.Construct((int)AIRPORT);
-                    break;
-                case LAND_FORT_CARD:
-                    targetArea.installationType = FORT;
-                    break;
-                case ENTRENCHMENT_CARD:
-                    targetArea.installationType = ENTRENCHMENT;
-                    break;
-                case ANTIAIRCRAFT_CARD:
-                    targetArea.installationType = ANTIAIRCRAFT;
-                    break;
-                case RADAR_CARD:
-                    targetArea.installationType = RADAR;
-                    break;
-                default:
-                    return;
+                CardEffectResult result = CardEffectExecutor.Apply(CreateCardEffectContext(cardDef, targetAreaId, armyIndex));
+                if (!result.Success) return;
             }
-            g_SoundRes.PlayCharSE(BUILD_WAV);
+            else
+            {
+                switch (cardDef.id)
+                {
+                    case CITY_CARD:
+                        targetArea.Construct((int)CITY);
+                        break;
+                    case INDUSTRY_CARD:
+                        targetArea.Construct((int)INDUSTRY);
+                        break;
+                    case AIRPORT_CARD:
+                        targetArea.Construct((int)AIRPORT);
+                        break;
+                    case LAND_FORT_CARD:
+                        targetArea.installationType = FORT;
+                        break;
+                    case ENTRENCHMENT_CARD:
+                        targetArea.installationType = ENTRENCHMENT;
+                        break;
+                    case ANTIAIRCRAFT_CARD:
+                        targetArea.installationType = ANTIAIRCRAFT;
+                        break;
+                    case RADAR_CARD:
+                        targetArea.installationType = RADAR;
+                        break;
+                    default:
+                        return;
+                }
+            }
+            if (cardDef.presentation?.sound == "build" || cardDef.effects.Count == 0)
+                g_SoundRes.PlayCharSE(BUILD_WAV);
         }
         else if (cardDef.type == STRATEGY_TYPE_CARD)
         {
             // strategy cards
-            if (cardDef.id == RESEARCH_CARD)
+            if (cardDef.effects.Count > 0)
+            {
+                CardEffectResult result = CardEffectExecutor.Apply(
+                    CreateCardEffectContext(cardDef, targetAreaId, armyIndex));
+                if (!result.Success) return;
+                switch (cardDef.presentation?.sound)
+                {
+                    case "buff": g_SoundRes.PlayCharSE(BUFF_WAV); break;
+                    case "supply": g_SoundRes.PlayCharSE(SUPPLY_WAV); break;
+                    case "level-up": g_SoundRes.PlayCharSE(LV_UP_WAV); break;
+                }
+            }
+            else if (cardDef.id == RESEARCH_CARD)
             {
                 if (tech > 4 || techTurn > 0) return;
                 g_SoundRes.PlayCharSE(LV_UP_WAV);
@@ -228,7 +272,13 @@ public sealed partial class CCountry
         {
             if (targetArea == null) return;
             if (!CheckCardTargetArea(cardDef, targetAreaId)) return;
-            if (cardDef.id == AIRBORNE_FORCE_CARD)
+            if (cardDef.effects.Count > 0)
+            {
+                CardEffectResult result = CardEffectExecutor.Apply(
+                    CreateCardEffectContext(cardDef, targetAreaId, armyIndex));
+                if (!result.Success) return;
+            }
+            else if (cardDef.id == AIRBORNE_FORCE_CARD)
             {
                 // airborne card
                 CCountry targetCountry = targetArea.country;
@@ -249,21 +299,21 @@ public sealed partial class CCountry
             }
             // air force medal > 2 allows unlimited air force cards (except airborne), see postCardUsage
         }
-        postCardUsage(cardDef);
+        postCardUsage(cardDef, CardPrice, CardIndustry);
     }
 
     /// <summary>The common bookkeeping after a card was used.</summary>
-    public void postCardUsage(CardDef cardDef)
+    public void postCardUsage(CardDef cardDef, int cardPrice, int cardIndustry)
     {
-        // pay money and industry at the same scaled cost that CanBuyCard checked
-        // (research: base x tech, commander: base + 5 x level), as the original UseCard does
-        money -= GetCardPrice(cardDef);
-        industry -= GetCardIndustry(cardDef);
+        // Use the price captured before applying effects; immediate research may change tech.
+        money -= cardPrice;
+        industry -= cardIndustry;
 
         // usage count of this turn
         cardTimes[(int)cardDef.id]++;
+        if (cardDef.effects.OfType<ResearchEffectDef>().Any()) return;
         // the commander cool-down is driven by commanderTurn, not by the card use
-        if (cardDef.id == COMMANDER_CARD) return;
+        if (cardDef.commanderCooldown || cardDef.id == COMMANDER_CARD) return;
 
         // cool-down update
         int newRound = cardDef.round;
@@ -284,7 +334,9 @@ public sealed partial class CCountry
         }
 
         // non airborne air force cards: free of cool-down with a high air force medal
-        if (cardDef.type == AIR_FORCE_TYPE_CARD && cardDef.id != AIRBORNE_FORCE_CARD)
+        bool isAirborneDeploy = cardDef.effects.OfType<AirborneDeployEffectDef>().Any();
+        if (cardDef.type == AIR_FORCE_TYPE_CARD &&
+            !isAirborneDeploy && cardDef.id != AIRBORNE_FORCE_CARD)
         {
             newRound = GetWarMedalLevel(AIR_FORCE_MEDAL) > 2 ? 0 : newRound;
         }
@@ -308,6 +360,9 @@ public sealed partial class CCountry
         int card_ID = (int)cardDef.id;
         if (cardDef.type == NAVY_TYPE_CARD)
         {
+            if (cardDef.effects.Count > 0)
+                return CardEffectExecutor.CanApply(
+                    CreateCardEffectContext(cardDef, areaId, -1), out _);
             // navy: own port at sea (the "not sea" case is reserved for land ships, if ever)
             if (area.country != this || area.info.areaType != PORT || !area.info.sea)
             {
@@ -318,6 +373,9 @@ public sealed partial class CCountry
 
         if (cardDef.type == AIR_FORCE_TYPE_CARD)
         {
+            if (cardDef.effects.Count > 0)
+                return CardEffectExecutor.CanApply(
+                    CreateCardEffectContext(cardDef, areaId, -1), out _);
             // air force: an airport is required
             if (GetNumAirport() <= 0)
             {
@@ -355,6 +413,12 @@ public sealed partial class CCountry
         }
         if (cardDef.type == DEVELOPMENT_TYPE_CARD)
         {
+            if (cardDef.effects.Count > 0)
+            {
+                return CardEffectExecutor.CanApply(
+                    CreateCardEffectContext(cardDef, areaId, -1), out _);
+            }
+
             // development: own land only
             if (area.country != this) return false;
 
@@ -375,6 +439,13 @@ public sealed partial class CCountry
         if (cardDef.type == STRATEGY_TYPE_CARD)
         {
             // strategy
+            if (cardDef.effects.Count > 0)
+            {
+                // Area target arrows follow the top unit. A selected-army card validates the
+                // actual sidebar selection separately in CheckCardTargetArmy / UseCard.
+                return CardEffectExecutor.CanApply(
+                    CreateCardEffectContext(cardDef, areaId, 0), out _);
+            }
             if (card_ID == (int)RESEARCH_CARD)
             {
                 return false;
@@ -442,6 +513,9 @@ public sealed partial class CCountry
 
         if (cardDef.type == ARMY_TYPE_CARD)
         {
+            if (cardDef.effects.Count > 0)
+                return CardEffectExecutor.CanApply(
+                    CreateCardEffectContext(cardDef, areaId, -1), out _);
             if (area.armyCount >= AREA_RENDER_ARMY_LIMIT) return false;
             if (area.info.sea) return false;
             if (area.country != this) return false;
@@ -450,6 +524,15 @@ public sealed partial class CCountry
 
         return false;
     }
+
+    private CardEffectContext CreateCardEffectContext(CardDef card, int areaId, int armyIndex) => new()
+    {
+        sourceCountry = this,
+        card = card,
+        targetArea = areaId >= 0 ? g_Scene.GetArea(areaId) : null,
+        targetAreaId = areaId,
+        targetArmyIndex = armyIndex,
+    };
 
     /// <summary>Whether a unit enhancement card can be used on the unit.</summary>
     /// <param name="cardDef">the card</param>
@@ -467,6 +550,12 @@ public sealed partial class CCountry
         CArmy targetArmy = pArea.GetArmy(armyIndex);
         if (targetArmy == null) return false;
 
+        if (cardDef.effects.Count > 0)
+        {
+            return CardEffectExecutor.CanApply(
+                CreateCardEffectContext(cardDef, areaId, armyIndex), out _);
+        }
+
         switch (cardDef.id)
         {
             case CARRIER_CARD:
@@ -477,7 +566,7 @@ public sealed partial class CCountry
             case DEFEND_ART_CARD:
                 return (targetArmy.cards & 2) == 0;
             case COMMANDER_CARD:
-                return CanUseCommander() && (targetArmy.cards & 8) == 0;
+                return CanUseCommander(cardDef) && (targetArmy.cards & 8) == 0;
             default:
                 return false;
         }
@@ -524,15 +613,27 @@ public sealed partial class CCountry
 
     public bool CanBuyCard(CardDef Card)
     {
+        if (Card == null) return false;
+        ResearchEffectDef research = Card.effects.OfType<ResearchEffectDef>().FirstOrDefault();
         // locked card
         if (!IsCardUnlock(Card)
             // or the commander card while the commander is in use
-            || ((Card.id == COMMANDER_CARD) && !CanUseCommander()))
+            || ((Card.commanderCooldown || Card.id == COMMANDER_CARD) && !CanUseCommander(Card)))
         {
             return false;
         }
         // the research card at tech > 4 or while researching
-        if (Card.id == RESEARCH_CARD)
+        if (research != null)
+        {
+            if (!CardEffectExecutor.CanApply(new CardEffectContext
+                {
+                    sourceCountry = this,
+                    card = Card,
+                    targetAreaId = -1,
+                    targetArmyIndex = -1,
+                }, out _)) return false;
+        }
+        else if (Card.id == RESEARCH_CARD)
         {
             if ((tech > 4) || (techTurn > 0)) return false;
         }
@@ -553,7 +654,8 @@ public sealed partial class CCountry
         {
             CARD_ID cardId = card.id;
             // airborne uses the green arrow, air strike and bombing the yellow one
-            int targetType = cardId == AIRBORNE_FORCE_CARD ? 1 : 2;
+            int targetType = card.effects.OfType<AirborneDeployEffectDef>().Any() ||
+                cardId == AIRBORNE_FORCE_CARD ? 1 : 2;
             // the arrow type still follows the card id, the candidates come from the airport radius query;
             // CheckCardTargetArea remains the final id / country / unit check
             var candidateIds = new HashSet<int>();

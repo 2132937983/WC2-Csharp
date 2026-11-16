@@ -365,8 +365,14 @@ public class DeprecatedCardDef
 /// <summary>Card definition from carddef.xml (per country).</summary>
 public class CardDef : DeprecatedCardDef
 {
+    public string key = "";
     public int relatedArmyId;
     public int maxTimes;
+    public readonly List<CardEffectDef> effects = new();
+    public CardPresentationDef presentation;
+    public bool commanderPriceScaling;
+    public bool commanderCooldown;
+    public readonly List<CardResourceCostDef> costs = new();
 
     // The following helpers are currently unused (CardDefs.cpp keeps SetCardRound, GetCardMaxTimes,
     // CheckIfTimesFull and DealWithCardRoundAndTimes commented out; they are ported from that code).
@@ -411,6 +417,19 @@ public class CardDef : DeprecatedCardDef
     }
 
     public void PlusTimesCount(CCountry country_in) => country_in.cardTimes[(int)id]++;
+}
+
+public enum CardResourceType
+{
+    Money,
+    Industry,
+}
+
+public sealed class CardResourceCostDef
+{
+    public CardResourceType resource;
+    public int baseAmount;
+    public int growthPerTechLevel;
 }
 
 public sealed class ToNewCardDef

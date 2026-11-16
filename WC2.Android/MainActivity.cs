@@ -52,7 +52,12 @@ public class MainActivity : AndroidGameActivity
 
         string assetsDir = Path.Combine(FilesDir.AbsolutePath, "game");
         string docsDir = Path.Combine(FilesDir.AbsolutePath, "documents");
-        try { AssetExtractor.EnsureExtracted(Assets, "game", assetsDir, PackageManager.GetPackageInfo(PackageName, 0).VersionCode.ToString()); }
+        try
+        {
+            var packageInfo = PackageManager.GetPackageInfo(PackageName, 0);
+            string assetVersion = $"{packageInfo.VersionCode}:{packageInfo.LastUpdateTime}";
+            AssetExtractor.EnsureExtracted(Assets, "game", assetsDir, assetVersion);
+        }
         catch (Exception ex) { Globals.Log("Asset extraction failed: " + ex); }
 
         // the window covers the notch: set before the window is measured or attached

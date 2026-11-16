@@ -90,7 +90,19 @@ public sealed partial class CFight
                     // the airport radius is in map units; convert to the 1000 = one step scale
                     attackMaxRange = startArmy.country.AirstrikeRadius() * 10.0f;
                 }
-                engagementDistance = Math.Min(attackMaxRange, (float)topologicalDistance * 1000.0f);
+                if (attack.range.shape == COMBAT_RANGE_CIRCLE)
+                {
+                    // The attacker's circle range was already validated when the target was selected.
+                    // A graph counter must use the real topology distance rather than being capped by
+                    // the attacker's map-coordinate radius, otherwise distant targets counter by mistake.
+                    engagementDistance = (float)topologicalDistance * 1000.0f;
+                }
+                else
+                {
+                    // When both sides use graph ranges, keep the engagement inside the attacker's
+                    // configured maximum range, matching the C++ remake.
+                    engagementDistance = Math.Min(attackMaxRange, (float)topologicalDistance * 1000.0f);
+                }
             }
             else
             {

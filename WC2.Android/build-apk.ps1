@@ -23,6 +23,10 @@ $props = @()
 if ($AndroidSdk) { $props += "-p:AndroidSdkDirectory=$AndroidSdk" }
 if ($JavaSdk) { $props += "-p:JavaSdkDirectory=$JavaSdk" }
 
+Write-Host "== dotnet clean -c $Configuration $project" -ForegroundColor Cyan
+& dotnet clean $project -c $Configuration @props
+if ($LASTEXITCODE -ne 0) { throw "dotnet clean failed with exit code $LASTEXITCODE" }
+
 Write-Host "== dotnet build -c $Configuration $project" -ForegroundColor Cyan
 & dotnet build $project -c $Configuration @props
 if ($LASTEXITCODE -ne 0) { throw "dotnet build failed with exit code $LASTEXITCODE" }

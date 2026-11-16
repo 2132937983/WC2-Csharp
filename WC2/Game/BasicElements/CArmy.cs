@@ -153,6 +153,28 @@ public sealed partial class CArmy
         }
     }
 
+    /// <summary>Adjusts levels; sbyte extrema mean minimum/maximum level.</summary>
+    public void AdjustLevel(sbyte levels)
+    {
+        if (levels == sbyte.MaxValue)
+        {
+            while (level < MAX_ARMY_LEVEL) Upgrade();
+            return;
+        }
+        if (levels > 0)
+        {
+            int count = levels;
+            while (count-- > 0 && level < MAX_ARMY_LEVEL) Upgrade();
+            return;
+        }
+
+        int targetLevel = levels == sbyte.MinValue ? 0 : Math.Max(0, level + levels);
+        if (targetLevel == level) return;
+        level = targetLevel;
+        // Downgrading grants no healing and never preserves HP above the new maximum.
+        ResetMaxStrength(true);
+    }
+
     /// <summary>Sets the morale.</summary>
     public void SetMorale(int Morale)
     {
