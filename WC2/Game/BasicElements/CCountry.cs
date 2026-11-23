@@ -612,7 +612,7 @@ public sealed partial class CCountry
     /// <summary>The commander died: sets the respawn turns and the retreat dialogue (single player).</summary>
     public void CommanderDie()
     {
-        commanderAlive = CardConditionEvaluator.CountCountryBuff(this, UnitBuffKind.Commander) > 0;
+        commanderAlive = CardConditionEvaluator.CountCountryBuff(this, UnitBuffKind.COMMANDER) > 0;
 
         if (!ai)
         {

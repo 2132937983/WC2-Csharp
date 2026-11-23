@@ -147,50 +147,9 @@ public static partial class armydef_internal
         return EncodeDamageRate(value, percentValue);
     }
 
-    public static bool ParseIntegerText(string text, out long result)
-    {
-        result = 0;
-        if (string.IsNullOrEmpty(text)) return false;
-        if (!StrToL(text, 0, out long value, out int end) || end != text.Length) return false;
-        result = value;
-        return true;
-    }
-
-    public static bool ParseUInt8Text(string text, out byte result)
-    {
-        result = 0;
-        if (string.IsNullOrEmpty(text)) return false;
-        if (!StrToUL(text, 0, out ulong value, out int end) || end != text.Length || value > 255u) return false;
-        result = (byte)value;
-        return true;
-    }
-
-    public static bool ParseUInt8Attribute(TiXmlElement element, string name, out byte result)
-    {
-        result = 0;
-        if (element == null || name == null) return false;
-        return ParseUInt8Text(element.Attribute(name), out result);
-    }
-
-    public static bool ParseUInt16Text(string text, out ushort result)
-    {
-        result = 0;
-        if (string.IsNullOrEmpty(text)) return false;
-        if (!StrToUL(text, 0, out ulong value, out int end) || end != text.Length || value > 65535u) return false;
-        result = (ushort)value;
-        return true;
-    }
-
-    public static bool ParseUInt16Attribute(TiXmlElement element, string name, out ushort result)
-    {
-        result = 0;
-        if (element == null || name == null) return false;
-        return ParseUInt16Text(element.Attribute(name), out result);
-    }
-
     public static byte ParseCombatUnitType(string text, byte fallback)
     {
-        if (!ParseUInt8Text(text, out byte parsed) || parsed > 254u) return fallback;
+        if (!XmlValueParser.ParseUInt8Text(text, out byte parsed) || parsed > 254u) return fallback;
         return parsed;
     }
 
@@ -257,7 +216,7 @@ public static partial class armydef_internal
     {
         if (value == null) return fallback;
         // numbers are allowed: 0 close, 1 projectile / harassment, 2 air strike
-        if (ParseIntegerText(value, out long numericValue) &&
+        if (XmlValueParser.ParseIntegerText(value, out long numericValue) &&
             numericValue >= (long)COMBAT_ATTACK_DIRECT &&
             numericValue <= (long)COMBAT_ATTACK_AIRSTRIKE)
         {
@@ -284,7 +243,7 @@ public static partial class armydef_internal
     {
         payload = default;
         if (value == null) return false;
-        if (ParseIntegerText(value, out long numericValue) &&
+        if (XmlValueParser.ParseIntegerText(value, out long numericValue) &&
             numericValue >= (long)COMBAT_AIRSTRIKE_PAYLOAD_AIRSTRIKE &&
             numericValue <= (long)COMBAT_AIRSTRIKE_PAYLOAD_NUCLEAR)
         {
@@ -315,7 +274,7 @@ public static partial class armydef_internal
             result = -1;
             return true;
         }
-        if (!ParseIntegerText(text, out long parsed)) return false;
+        if (!XmlValueParser.ParseIntegerText(text, out long parsed)) return false;
         // there is no "free air strike"; 0 and negative values mean inf, i.e. clear the movement
         result = parsed <= 0
             ? -1
@@ -334,7 +293,7 @@ public static partial class armydef_internal
     public static COMBAT_ENGAGEMENT_MODE ParseEngagementMode(string value, COMBAT_ENGAGEMENT_MODE fallback)
     {
         if (value == null) return fallback;
-        if (ParseIntegerText(value, out long numericValue) &&
+        if (XmlValueParser.ParseIntegerText(value, out long numericValue) &&
             numericValue >= (long)COMBAT_ENGAGEMENT_CLOSE &&
             numericValue <= (long)COMBAT_ENGAGEMENT_PROJECTILE)
         {

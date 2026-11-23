@@ -80,10 +80,10 @@
 		</card>
 		<card key="carrier" name="Carrier" legacy-id="22" type="strategy" price="40" industry="0" round="0" tech="1" image="card_carrier.png" intro="Carrier Intro">
 			<effects>
-				<effect type="unit-buff" buff="carrier" target="selected-army">
+				<effect type="buff-army" operation="add-buff" buff="carrier" target="selected">
 					<conditions>
 						<target-army>
-							<condition property="domain" operator="not-equal" value="navy"/>
+							<condition property="navy" operator="equal" value="false"/>
 							<condition property="buff" operator="lacks" value="carrier"/>
 						</target-army>
 					</conditions>
@@ -93,7 +93,7 @@
 		</card>
 		<card key="assault-art" name="Assault Art" legacy-id="23" type="strategy" price="30" industry="0" round="0" tech="1" image="card_assaultart.png" intro="Assault Art Intro">
 			<effects>
-				<effect type="unit-buff" buff="assault" target="selected-army">
+				<effect type="buff-army" operation="add-buff" buff="assault" target="selected">
 					<conditions>
 						<target-army><condition property="buff" operator="lacks" value="assault"/></target-army>
 					</conditions>
@@ -103,7 +103,7 @@
 		</card>
 		<card key="defend-art" name="Defend Art" legacy-id="24" type="strategy" price="35" industry="0" round="0" tech="1" image="card_defendart.png" intro="Defend Art Intro">
 			<effects>
-				<effect type="unit-buff" buff="defence" target="selected-army">
+				<effect type="buff-army" operation="add-buff" buff="defence" target="selected">
 					<conditions>
 						<target-army><condition property="buff" operator="lacks" value="defence"/></target-army>
 					</conditions>
@@ -113,7 +113,7 @@
 		</card>
 		<card key="commander" name="Commander" legacy-id="25" type="strategy" price="10" price-scaling="commander-level" industry="0" round="0" cooldown-mode="commander" tech="1" image="card_commander.png" intro="Commander Intro">
 			<effects>
-				<effect type="unit-buff" buff="commander" target="front-army">
+				<effect type="buff-army" operation="add-buff" buff="commander" target="front">
 					<conditions>
 						<all>
 							<target-army>
@@ -130,12 +130,12 @@
 		</card>
 		<card key="supply-line" name="Supply Line" legacy-id="26" type="strategy" price="180" industry="80" round="3" tech="1" image="card_supplyline.png" intro="Supply Line Intro">
 			<effects>
-				<effect type="army-health" target="all-armies" amount="+100%">
+				<effect type="buff-army" operation="health" target="all" amount="+100%">
 					<conditions>
 						<target-area>
-							<armies match="any">
+							<army target="any">
 								<condition property="health" operator="less-than" value="max"/>
-							</armies>
+							</army>
 						</target-area>
 					</conditions>
 				</effect>
@@ -144,7 +144,7 @@
 		</card>
 		<card key="ace-forces" name="Ace Forces" legacy-id="27" type="strategy" price="80" industry="40" round="1" tech="3" image="card_aceforce.png" intro="Ace Forces Intro">
 			<effects>
-				<effect type="army-level" target="front-army" levels="+1">
+				<effect type="buff-army" operation="level" target="front" levels="+1">
 					<conditions>
 						<target-army><condition property="level" operator="less-than" value="max"/></target-army>
 					</conditions>
@@ -175,7 +175,7 @@
 		</card>
 
 		<card key="ace-forces" name="Ace Forces" legacy-id="27" type="strategy" price="120" industry="20" round="1" tech="3" image="card_aceforce.png" intro="Ace Forces Intro">
-			<effects><effect type="army-level" target="front-army" levels="+2"/></effects>
+			<effects><effect type="buff-army" operation="level" target="front" levels="+2"/></effects>
 			<presentation sound="level-up"/>
 		</card>
 	</country>
@@ -187,10 +187,6 @@
 		<card key="industry" name="Industry" legacy-id="15" type="development" price="40" industry="10" round="0" tech="1" image="card_industry.png" intro="Industry Intro">
 			<effects><effect type="area-structure" slot="construction" structure="industry" operation="adjust" amount="+1" initial-level="area-default"/></effects>
 			<presentation sound="build"/>
-		</card>
-
-		<card key="airborne-force" name="Airborne Force" legacy-id="12" type="airforce" price="200" industry="100" round="2" tech="3" image="card_airborneforce.png" intro="Airborne Force Intro">
-			<effects><effect type="airborne-deploy" unit="4" occupation="capture"/></effects>
 		</card>
 	</country>
 </cards>

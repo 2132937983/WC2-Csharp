@@ -168,7 +168,7 @@ public sealed partial class CActionAssist
         CardDef selectedFortCard = CObjectDef.Instance().GetCardDef(selectedFortCardId, curCountry);
         if (selectedFortCard == null || selectedFortCard.effects.Count != 1 ||
             selectedFortCard.effects[0] is not AreaStructureEffectDef installationEffect ||
-            installationEffect.slot != AreaStructureSlot.Installation)
+            installationEffect.slot != AreaStructureSlot.INSTALLATION)
             return false;
         INSTALLATION_TYPE selectedInstallation = installationEffect.installation;
         int globalBenifit = -1;

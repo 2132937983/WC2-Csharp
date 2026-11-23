@@ -157,9 +157,9 @@ public static partial class armydef_internal
         if (rangeElement == null) return;
         range.shape = ParseRangeShape(rangeElement.Attribute("shape"), range.shape);
 
-        if (ParseUInt16Attribute(rangeElement, "min", out ushort minValue)) range.minRange = minValue;
-        if (ParseUInt16Attribute(rangeElement, "max", out ushort maxValue)) range.maxRange = maxValue;
-        if (ParseUInt16Attribute(rangeElement, "radius", out ushort radiusValue))
+        if (XmlValueParser.ParseUInt16Attribute(rangeElement, "min", out ushort minValue)) range.minRange = minValue;
+        if (XmlValueParser.ParseUInt16Attribute(rangeElement, "max", out ushort maxValue)) range.maxRange = maxValue;
+        if (XmlValueParser.ParseUInt16Attribute(rangeElement, "radius", out ushort radiusValue))
         {
             range.maxRange = radiusValue;
             range.shape = COMBAT_RANGE_CIRCLE;
@@ -247,13 +247,13 @@ public static partial class armydef_internal
              weaponElement != null;
              weaponElement = weaponElement.NextSiblingElement("weapon"))
         {
-            if (!ParseUInt8Attribute(weaponElement, "type", out byte weaponType) || weaponType == 0 || weaponType > 32)
+            if (!XmlValueParser.ParseUInt8Attribute(weaponElement, "type", out byte weaponType) || weaponType == 0 || weaponType > 32)
                 continue;
             for (TiXmlElement armorElement = weaponElement.FirstChildElement("armor");
                  armorElement != null;
                  armorElement = armorElement.NextSiblingElement("armor"))
             {
-                if (!ParseUInt8Attribute(armorElement, "type", out byte armorType) || armorType == 0) continue;
+                if (!XmlValueParser.ParseUInt8Attribute(armorElement, "type", out byte armorType) || armorType == 0) continue;
                 rules[MakeWeaponArmorRuleKey(weaponType, armorType)] = ParseDamageRate(armorElement.Attribute("rate"));
             }
         }

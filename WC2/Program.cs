@@ -1,4 +1,4 @@
-﻿using WC2;
+using WC2;
 
 // Command line: WC2 [--ipad] [--width N] [--height N] [--assets PATH] [--lang xx]
 //               [--exit-after SEC] [--screenshot PATH] [--screenshot-every SEC] [--script FILE] [--log FILE]

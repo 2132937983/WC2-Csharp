@@ -9,6 +9,7 @@ public sealed partial class CCountry
         CardResourceCostDef cost = card.costs.FirstOrDefault(
             item => item.resource == CardResourceType.Industry);
         if (cost != null) return GetScaledResourceCost(cost);
+        // fall back
         if (card.id == RESEARCH_CARD) return card.industry * tech;
         return card.industry;
     }
@@ -23,11 +24,13 @@ public sealed partial class CCountry
             item => item.resource == CardResourceType.Money);
         int cardMoney = cost != null ? GetScaledResourceCost(cost) : card.price;
         if (cost == null && card.id == RESEARCH_CARD) return cardMoney * tech;
+        // 指挥官造价目前还不能定制
         if (card.commanderPriceScaling || card.id == COMMANDER_CARD)
             return cardMoney + 5 * GetCommanderLevel();
         return cardMoney;
     }
 
+    // 可变价格
     private int GetScaledResourceCost(CardResourceCostDef cost)
     {
         long value = (long)cost.baseAmount +
@@ -364,6 +367,7 @@ public sealed partial class CCountry
                 return CardEffectExecutor.CanApply(
                     CreateCardEffectContext(cardDef, areaId, -1), out _);
             // navy: own port at sea (the "not sea" case is reserved for land ships, if ever)
+            // fall back检查——适用于没有应用card effect的版本
             if (area.country != this || area.info.areaType != PORT || !area.info.sea)
             {
                 return false;
@@ -377,6 +381,7 @@ public sealed partial class CCountry
                 return CardEffectExecutor.CanApply(
                     CreateCardEffectContext(cardDef, areaId, -1), out _);
             // air force: an airport is required
+            // fall back检查——适用于没有应用card effect的版本
             if (GetNumAirport() <= 0)
             {
                 return false;
@@ -441,7 +446,7 @@ public sealed partial class CCountry
             // strategy
             if (cardDef.effects.Count > 0)
             {
-                // Area target arrows follow the top unit. A selected-army card validates the
+                // Area target arrows follow the top unit. A target="selected" card validates the
                 // actual sidebar selection separately in CheckCardTargetArmy / UseCard.
                 return CardEffectExecutor.CanApply(
                     CreateCardEffectContext(cardDef, areaId, 0), out _);
@@ -516,6 +521,7 @@ public sealed partial class CCountry
             if (cardDef.effects.Count > 0)
                 return CardEffectExecutor.CanApply(
                     CreateCardEffectContext(cardDef, areaId, -1), out _);
+            // fall back到传统的招募检查
             if (area.armyCount >= AREA_RENDER_ARMY_LIMIT) return false;
             if (area.info.sea) return false;
             if (area.country != this) return false;
@@ -556,6 +562,7 @@ public sealed partial class CCountry
                 CreateCardEffectContext(cardDef, areaId, armyIndex), out _);
         }
 
+        // fall back处理
         switch (cardDef.id)
         {
             case CARRIER_CARD:

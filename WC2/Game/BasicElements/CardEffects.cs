@@ -2,41 +2,35 @@ namespace WC2;
 
 public enum CardEffectOperation
 {
-    Set,
-    Adjust,
-    Clear,
+    SET,
+    ADJUST,
+    CLEAR,
 }
 
 public enum AreaStructureSlot
 {
-    Construction,
-    Installation,
+    CONSTRUCTION,
+    INSTALLATION,
 }
 
 public enum ConstructionInitialLevel
 {
-    AreaDefault,
+    AREA_DEFAULT,
 }
 
 public enum UnitBuffKind
 {
-    Assault,
-    Defence,
-    Carrier,
-    Commander,
+    ASSAULT,
+    DEFENCE,
+    CARRIER,
+    COMMANDER,
 }
 
-public enum UnitBuffTarget
+public enum BuffArmyTarget
 {
-    SelectedArmy,
-    FrontArmy,
-}
-
-public enum ArmyEffectTarget
-{
-    SelectedArmy,
-    FrontArmy,
-    AllArmies,
+    SELECTED,
+    FRONT,
+    ALL,
 }
 
 public abstract class CardEffectDef
@@ -52,9 +46,9 @@ public abstract class CardConditionDef
 
 public enum CardConditionGroupMode
 {
-    All,
-    Any,
-    Not,
+    ALL,
+    ANY,
+    NOT,
 }
 
 public sealed class CardConditionGroupDef : CardConditionDef
@@ -63,24 +57,31 @@ public sealed class CardConditionGroupDef : CardConditionDef
     public readonly List<CardConditionDef> children = new();
 }
 
-public sealed class TargetAreaArmiesConditionDef : CardConditionDef
+public enum TargetAreaArmyMode
 {
-    public bool matchAll;
+    FRONT,
+    ANY,
+    ALL,
+}
+
+public sealed class TargetAreaArmyConditionDef : CardConditionDef
+{
+    public TargetAreaArmyMode mode;
     public readonly List<CardConditionDef> children = new();
 }
 
 public enum NumericConditionOperator
 {
-    LessThan,
-    LessThanOrEqual,
-    Equal,
-    GreaterThanOrEqual,
-    GreaterThan,
+    LESS_THAN,
+    LESS_THAN_OR_EQUAL,
+    EQUAL,
+    GREATER_THAN_OR_EQUAL,
+    GREATER_THAN,
 }
 
-public sealed class TargetArmyDomainConditionDef : CardConditionDef
+public sealed class TargetArmyNavyConditionDef : CardConditionDef
 {
-    public bool mustBeNavy;
+    public bool expected;
 }
 
 public sealed class TargetArmyBuffConditionDef : CardConditionDef
@@ -96,9 +97,9 @@ public sealed class TargetArmyLevelConditionDef : CardConditionDef
     public bool valueIsMaximum;
 }
 
-public sealed class TargetArmyTypeConditionDef : CardConditionDef
+public sealed class TargetArmyIdConditionDef : CardConditionDef
 {
-    public int armyTypeId;
+    public int armyId;
     public bool mustEqual;
 }
 
@@ -108,7 +109,7 @@ public sealed class TargetArmyUnitTypeConditionDef : CardConditionDef
     public bool mustEqual;
 }
 
-public enum AreaLevelKind { City, Industry, Airport, Port }
+public enum AreaLevelKind { CITY, INDUSTRY, AIRPORT, PORT }
 
 public sealed class TargetAreaLevelConditionDef : CardConditionDef
 {
@@ -139,20 +140,23 @@ public sealed class AreaStructureEffectDef : CardEffectDef
     public CardEffectOperation operation;
     public int levelDelta;
     public bool toMaximum;
-    public ConstructionInitialLevel initialLevel = ConstructionInitialLevel.AreaDefault;
+    public ConstructionInitialLevel initialLevel = ConstructionInitialLevel.AREA_DEFAULT;
 }
 
-public sealed class UnitBuffEffectDef : CardEffectDef
+public abstract class BuffArmyEffectDef : CardEffectDef
+{
+    public BuffArmyTarget target;
+}
+
+public sealed class UnitBuffEffectDef : BuffArmyEffectDef
 {
     public UnitBuffKind buff;
-    public UnitBuffTarget target;
 }
 
-public sealed class ArmyHealthEffectDef : CardEffectDef
+public sealed class ArmyHealthEffectDef : BuffArmyEffectDef
 {
     // Bit 15 selects percent-of-max-HP; bits 0..14 are a signed 15-bit amount.
     public ushort packedAmount;
-    public ArmyEffectTarget target;
 
     public bool IsPercent => (packedAmount & 0x8000) != 0;
     public int Amount
@@ -165,12 +169,11 @@ public sealed class ArmyHealthEffectDef : CardEffectDef
     }
 }
 
-public sealed class ArmyLevelEffectDef : CardEffectDef
+public sealed class ArmyLevelEffectDef : BuffArmyEffectDef
 {
     public const sbyte ToMinimum = sbyte.MinValue;
     public const sbyte ToMaximum = sbyte.MaxValue;
     public sbyte levels;
-    public ArmyEffectTarget target;
 }
 
 public sealed class ResearchEffectDef : CardEffectDef
@@ -236,9 +239,7 @@ public static class CardEffectRegistry
         new(StringComparer.OrdinalIgnoreCase)
         {
             ["area-structure"] = new AreaStructureEffectHandler(),
-            ["unit-buff"] = new UnitBuffEffectHandler(),
-            ["army-health"] = new ArmyHealthEffectHandler(),
-            ["army-level"] = new ArmyLevelEffectHandler(),
+            ["buff-army"] = new BuffArmyEffectHandler(),
             ["research"] = new ResearchEffectHandler(),
             ["draft-army"] = new DraftArmyEffectHandler(),
             ["strategic-strike"] = new StrategicStrikeEffectHandler(),
@@ -247,6 +248,41 @@ public static class CardEffectRegistry
 
     public static bool TryGet(string type, out ICardEffectHandler handler) =>
         s_handlers.TryGetValue(type ?? "", out handler);
+}
+
+public sealed class BuffArmyEffectHandler : ICardEffectHandler
+{
+    private static readonly UnitBuffEffectHandler s_buffHandler = new();
+    private static readonly ArmyHealthEffectHandler s_healthHandler = new();
+    private static readonly ArmyLevelEffectHandler s_levelHandler = new();
+
+    public bool CanApply(CardEffectContext context, CardEffectDef effect, out string errorCode) =>
+        GetHandler(effect).CanApply(context, effect, out errorCode);
+
+    public CardEffectResult Apply(CardEffectContext context, CardEffectDef effect) =>
+        GetHandler(effect).Apply(context, effect);
+
+    private static ICardEffectHandler GetHandler(CardEffectDef effect) => effect switch
+    {
+        UnitBuffEffectDef => s_buffHandler,
+        ArmyHealthEffectDef => s_healthHandler,
+        ArmyLevelEffectDef => s_levelHandler,
+        _ => InvalidBuffArmyEffectHandler.Instance,
+    };
+
+    private sealed class InvalidBuffArmyEffectHandler : ICardEffectHandler
+    {
+        public static readonly InvalidBuffArmyEffectHandler Instance = new();
+
+        public bool CanApply(CardEffectContext context, CardEffectDef effect, out string errorCode)
+        {
+            errorCode = "invalid-effect-definition";
+            return false;
+        }
+
+        public CardEffectResult Apply(CardEffectContext context, CardEffectDef effect) =>
+            CardEffectResult.Fail("invalid-effect-definition");
+    }
 }
 
 public static class AirCardTargetRules
@@ -267,6 +303,7 @@ public static class AirCardTargetRules
     }
 }
 
+// 空袭/轰炸/核弹的应用效果
 public sealed class StrategicStrikeEffectHandler : ICardEffectHandler
 {
     public bool CanApply(CardEffectContext context, CardEffectDef effect, out string errorCode)
@@ -274,7 +311,9 @@ public sealed class StrategicStrikeEffectHandler : ICardEffectHandler
         if (effect is not StrategicStrikeEffectDef)
         { errorCode = "invalid-effect-definition"; return false; }
         if (!AirCardTargetRules.ValidateCommon(context, out CArea area, out errorCode)) return false;
+        // 不能打击自己
         if (area.country == context.sourceCountry) { errorCode = "target-is-friendly"; return false; }
+        // 不能轰炸滚木
         if (area.armyCount <= 0) { errorCode = "target-has-no-army"; return false; }
         return true;
     }
@@ -290,6 +329,7 @@ public sealed class StrategicStrikeEffectHandler : ICardEffectHandler
     }
 }
 
+// 空降/召唤类的效果
 public sealed class AirborneDeployEffectHandler : ICardEffectHandler
 {
     public bool CanApply(CardEffectContext context, CardEffectDef effect, out string errorCode)
@@ -331,6 +371,7 @@ public sealed class AirborneDeployEffectHandler : ICardEffectHandler
     }
 }
 
+// 单位招募相关的effect handler
 public sealed class DraftArmyEffectHandler : ICardEffectHandler
 {
     public bool CanApply(CardEffectContext context, CardEffectDef effect, out string errorCode)
@@ -352,6 +393,7 @@ public sealed class DraftArmyEffectHandler : ICardEffectHandler
         bool navyCard = context.card.type == NAVY_TYPE_CARD;
         if (navyCard != armyDef.IsNavy())
         { errorCode = "card-army-domain-mismatch"; return false; }
+        // 海军特化检查：必须在港口、必须足够容纳海军
         if (navyCard)
         {
             if (!area.info.sea || area.GetPortLevel() <= 0)
@@ -385,12 +427,14 @@ public static class CardEffectExecutor
 
         foreach (CardEffectDef effect in context.card.effects)
         {
+            // 先检查通用条件
             if (!CardConditionEvaluator.CanApply(context, effect, out errorCode)) return false;
             if (!CardEffectRegistry.TryGet(effect.type, out ICardEffectHandler handler))
             {
                 errorCode = "unknown-effect";
                 return false;
             }
+            // 再检查effect的默认条件
             if (!handler.CanApply(context, effect, out errorCode)) return false;
         }
         return true;
@@ -428,13 +472,13 @@ public static class CardConditionEvaluator
         foreach (CardEffectDef effect in card.effects)
         foreach (CardConditionDef condition in effect.conditions)
         {
-            if (EvaluateWithoutTarget(condition, country) == PartialConditionResult.False)
+            if (EvaluateWithoutTarget(condition, country) == PartialConditionResult.FALSE)
                 return false;
         }
         return true;
     }
 
-    private enum PartialConditionResult { False, True, Unknown }
+    private enum PartialConditionResult { FALSE, TRUE, UNKNOWN }
 
     private static bool Evaluate(
         CardConditionDef condition, CardEffectContext context, CardEffectDef effect,
@@ -446,12 +490,12 @@ public static class CardConditionEvaluator
         {
             case CardConditionGroupDef group:
                 return EvaluateGroup(group, context, effect, armyOverride, out errorCode);
-            case TargetAreaArmiesConditionDef armies:
-                return EvaluateAreaArmies(armies, context, effect, out errorCode);
-            case TargetArmyDomainConditionDef domain:
+            case TargetAreaArmyConditionDef areaArmy:
+                return EvaluateAreaArmy(areaArmy, context, effect, out errorCode);
+            case TargetArmyNavyConditionDef navy:
                 if (army == null) { errorCode = "missing-target-army"; return false; }
-                if (army.IsNavy() != domain.mustBeNavy)
-                { errorCode = "target-army-domain-mismatch"; return false; }
+                if (army.IsNavy() != navy.expected)
+                { errorCode = "target-army-navy-mismatch"; return false; }
                 return true;
             case TargetArmyBuffConditionDef armyBuff:
                 if (army == null) { errorCode = "missing-target-army"; return false; }
@@ -464,10 +508,10 @@ public static class CardConditionEvaluator
                 if (!CompareNumber(army.level, level.operation, expectedLevel))
                 { errorCode = "target-army-level-limit"; return false; }
                 return true;
-            case TargetArmyTypeConditionDef armyType:
+            case TargetArmyIdConditionDef armyId:
                 if (army?.basicAbilities == null) { errorCode = "missing-target-army"; return false; }
-                if ((army.basicAbilities.id == armyType.armyTypeId) != armyType.mustEqual)
-                { errorCode = "target-army-type-mismatch"; return false; }
+                if ((army.basicAbilities.id == armyId.armyId) != armyId.mustEqual)
+                { errorCode = "target-army-id-mismatch"; return false; }
                 return true;
             case TargetArmyUnitTypeConditionDef unitType:
                 if (army?.basicAbilities == null) { errorCode = "missing-target-army"; return false; }
@@ -499,19 +543,20 @@ public static class CardConditionEvaluator
         }
     }
 
+    // 这是为了支持简单的布尔逻辑
     private static bool EvaluateGroup(
         CardConditionGroupDef group, CardEffectContext context, CardEffectDef effect,
         CArmy armyOverride, out string errorCode)
     {
         errorCode = "";
-        if (group.mode == CardConditionGroupMode.Not)
+        if (group.mode == CardConditionGroupMode.NOT)
         {
             bool result = Evaluate(group.children[0], context, effect, armyOverride, out _);
             if (!result) return true;
             errorCode = "condition-not-failed";
             return false;
         }
-        if (group.mode == CardConditionGroupMode.All)
+        if (group.mode == CardConditionGroupMode.ALL)
         {
             foreach (CardConditionDef child in group.children)
                 if (!Evaluate(child, context, effect, armyOverride, out errorCode)) return false;
@@ -524,8 +569,9 @@ public static class CardConditionEvaluator
         return false;
     }
 
-    private static bool EvaluateAreaArmies(
-        TargetAreaArmiesConditionDef armies, CardEffectContext context, CardEffectDef effect,
+    // 地块上的单位是否符合条件
+    private static bool EvaluateAreaArmy(
+        TargetAreaArmyConditionDef areaArmy, CardEffectContext context, CardEffectDef effect,
         out string errorCode)
     {
         errorCode = "";
@@ -533,76 +579,90 @@ public static class CardConditionEvaluator
         if (area == null) { errorCode = "missing-target-area"; return false; }
         if (area.armyCount <= 0) { errorCode = "missing-target-army"; return false; }
 
+        if (areaArmy.mode == TargetAreaArmyMode.FRONT)
+        {
+            CArmy frontArmy = area.GetArmy(0);
+            foreach (CardConditionDef child in areaArmy.children)
+                if (!Evaluate(child, context, effect, frontArmy, out errorCode)) return false;
+            return true;
+        }
+
         for (int index = 0; index < area.armyCount; ++index)
         {
             CArmy army = area.GetArmy(index);
             bool matches = true;
-            foreach (CardConditionDef child in armies.children)
+            foreach (CardConditionDef child in areaArmy.children)
             {
                 if (!Evaluate(child, context, effect, army, out _))
                 { matches = false; break; }
             }
-            if (!armies.matchAll && matches) return true;
-            if (armies.matchAll && !matches)
+            if (areaArmy.mode == TargetAreaArmyMode.ANY && matches) return true;
+            if (areaArmy.mode == TargetAreaArmyMode.ALL && !matches)
             { errorCode = "target-area-army-condition-failed"; return false; }
         }
-        if (armies.matchAll) return true;
+        if (areaArmy.mode == TargetAreaArmyMode.ALL) return true;
         errorCode = "target-area-no-matching-army";
         return false;
     }
 
+    // 数字比较
     private static bool CompareNumber(int actual, NumericConditionOperator operation, int expected) =>
         operation switch
         {
-            NumericConditionOperator.LessThan => actual < expected,
-            NumericConditionOperator.LessThanOrEqual => actual <= expected,
-            NumericConditionOperator.Equal => actual == expected,
-            NumericConditionOperator.GreaterThanOrEqual => actual >= expected,
-            NumericConditionOperator.GreaterThan => actual > expected,
+            NumericConditionOperator.LESS_THAN => actual < expected,
+            NumericConditionOperator.LESS_THAN_OR_EQUAL => actual <= expected,
+            NumericConditionOperator.EQUAL => actual == expected,
+            NumericConditionOperator.GREATER_THAN_OR_EQUAL => actual >= expected,
+            NumericConditionOperator.GREATER_THAN => actual > expected,
             _ => false,
         };
 
+    // 获取地块的建筑等级
+    // 这里给机场和港口做了兼容，方便未来修改
     private static int GetAreaLevel(CArea area, AreaLevelKind kind) => kind switch
     {
-        AreaLevelKind.City => area.GetCityLevel(),
-        AreaLevelKind.Industry => area.GetIndustryLevel(),
-        AreaLevelKind.Airport => area.GetAirportLevel(),
-        AreaLevelKind.Port => area.GetPortLevel(),
+        AreaLevelKind.CITY => area.GetCityLevel(),
+        AreaLevelKind.INDUSTRY => area.GetIndustryLevel(),
+        AreaLevelKind.AIRPORT => area.GetAirportLevel(),
+        AreaLevelKind.PORT => area.GetPortLevel(),
         _ => 0,
     };
 
+    // 评估不取目标的用卡条件（比如国家的指挥官数量）
     private static PartialConditionResult EvaluateWithoutTarget(
         CardConditionDef condition, CCountry country)
     {
         if (condition is SourceCountryBuffCountConditionDef count)
             return CountCountryBuff(country, count.buff) < count.lessThan
-                ? PartialConditionResult.True : PartialConditionResult.False;
+                ? PartialConditionResult.TRUE : PartialConditionResult.FALSE;
         if (condition is not CardConditionGroupDef group)
-            return PartialConditionResult.Unknown;
+            return PartialConditionResult.UNKNOWN;
 
-        if (group.mode == CardConditionGroupMode.Not)
+        if (group.mode == CardConditionGroupMode.NOT)
         {
             PartialConditionResult child = EvaluateWithoutTarget(group.children[0], country);
-            return child == PartialConditionResult.True ? PartialConditionResult.False :
-                child == PartialConditionResult.False ? PartialConditionResult.True :
-                PartialConditionResult.Unknown;
+            return child == PartialConditionResult.TRUE ? PartialConditionResult.FALSE :
+                child == PartialConditionResult.FALSE ? PartialConditionResult.TRUE :
+                PartialConditionResult.UNKNOWN;
         }
 
         bool sawUnknown = false;
         foreach (CardConditionDef child in group.children)
         {
             PartialConditionResult result = EvaluateWithoutTarget(child, country);
-            if (group.mode == CardConditionGroupMode.All && result == PartialConditionResult.False)
-                return PartialConditionResult.False;
-            if (group.mode == CardConditionGroupMode.Any && result == PartialConditionResult.True)
-                return PartialConditionResult.True;
-            if (result == PartialConditionResult.Unknown) sawUnknown = true;
+            if (group.mode == CardConditionGroupMode.ALL && result == PartialConditionResult.FALSE)
+                return PartialConditionResult.FALSE;
+            if (group.mode == CardConditionGroupMode.ANY && result == PartialConditionResult.TRUE)
+                return PartialConditionResult.TRUE;
+            if (result == PartialConditionResult.UNKNOWN) sawUnknown = true;
         }
-        if (sawUnknown) return PartialConditionResult.Unknown;
-        return group.mode == CardConditionGroupMode.All
-            ? PartialConditionResult.True : PartialConditionResult.False;
+        if (sawUnknown) return PartialConditionResult.UNKNOWN;
+        return group.mode == CardConditionGroupMode.ALL
+            ? PartialConditionResult.TRUE : PartialConditionResult.FALSE;
     }
 
+    // 计算国家的某种单位buff数量
+    // 目前是和卡牌对齐，未来可以引入新的buff
     public static int CountCountryBuff(CCountry country, UnitBuffKind buff)
     {
         int count = 0;
@@ -622,9 +682,7 @@ public static class CardConditionEvaluator
         if (context?.targetArea == null) return null;
         int armyIndex = effect switch
         {
-            UnitBuffEffectDef unitBuff when unitBuff.target == UnitBuffTarget.FrontArmy => 0,
-            ArmyHealthEffectDef health when health.target == ArmyEffectTarget.FrontArmy => 0,
-            ArmyLevelEffectDef level when level.target == ArmyEffectTarget.FrontArmy => 0,
+            BuffArmyEffectDef buffArmy when buffArmy.target == BuffArmyTarget.FRONT => 0,
             _ => context.targetArmyIndex,
         };
         return context.targetArea.GetArmy(armyIndex);
@@ -632,12 +690,40 @@ public static class CardConditionEvaluator
 
     internal static ARMY_CARD ToArmyCard(UnitBuffKind buff) => buff switch
     {
-        UnitBuffKind.Assault => ASSAULT,
-        UnitBuffKind.Defence => DEFENCE,
-        UnitBuffKind.Carrier => CARRIER,
-        UnitBuffKind.Commander => COMMANDER,
+        UnitBuffKind.ASSAULT => ASSAULT,
+        UnitBuffKind.DEFENCE => DEFENCE,
+        UnitBuffKind.CARRIER => CARRIER,
+        UnitBuffKind.COMMANDER => COMMANDER,
         _ => throw new ArgumentOutOfRangeException(nameof(buff)),
     };
+}
+
+internal static class BuffArmyTargetResolver
+{
+    public static bool TryValidateArea(
+        CardEffectContext context, out CArea area, out string errorCode)
+    {
+        area = context?.targetArea;
+        errorCode = "";
+        if (area == null) { errorCode = "missing-target-area"; return false; }
+        if (!area.info.enable) { errorCode = "target-disabled"; return false; }
+        if (area.country != context.sourceCountry)
+        { errorCode = "target-wrong-owner"; return false; }
+        if (area.armyCount <= 0) { errorCode = "missing-target-army"; return false; }
+        return true;
+    }
+
+    // all vs sselected vs front
+    public static IEnumerable<int> GetArmyIndices(
+        CArea area, int selectedIndex, BuffArmyTarget target)
+    {
+        if (target == BuffArmyTarget.ALL)
+        {
+            for (int index = 0; index < area.armyCount; ++index) yield return index;
+            yield break;
+        }
+        yield return target == BuffArmyTarget.FRONT ? 0 : selectedIndex;
+    }
 }
 
 public sealed class UnitBuffEffectHandler : ICardEffectHandler
@@ -650,30 +736,18 @@ public sealed class UnitBuffEffectHandler : ICardEffectHandler
             errorCode = "invalid-effect-definition";
             return false;
         }
-        if (context.targetArea == null)
-        {
-            errorCode = "missing-target-area";
+        if (!BuffArmyTargetResolver.TryValidateArea(context, out CArea area, out errorCode))
             return false;
-        }
-        if (!context.targetArea.info.enable)
-        {
-            errorCode = "target-disabled";
-            return false;
-        }
-        if (context.targetArea.country != context.sourceCountry)
-        {
-            errorCode = "target-wrong-owner";
-            return false;
-        }
 
-        int armyIndex = buffEffect.target == UnitBuffTarget.FrontArmy ? 0 : context.targetArmyIndex;
-        CArmy army = context.targetArea.GetArmy(armyIndex);
-        if (army == null)
+        bool hasArmy = BuffArmyTargetResolver.GetArmyIndices(
+            area, context.targetArmyIndex, buffEffect.target)
+            .Any(index => area.GetArmy(index) != null);
+        if (!hasArmy)
         {
             errorCode = "missing-target-army";
             return false;
         }
-        if (buffEffect.buff == UnitBuffKind.Commander && context.sourceCountry.commanderTurn > 0)
+        if (buffEffect.buff == UnitBuffKind.COMMANDER && context.sourceCountry.commanderTurn > 0)
         {
             errorCode = "commander-cooling-down";
             return false;
@@ -686,17 +760,26 @@ public sealed class UnitBuffEffectHandler : ICardEffectHandler
         if (!CanApply(context, effect, out string errorCode)) return CardEffectResult.Fail(errorCode);
 
         var buffEffect = (UnitBuffEffectDef)effect;
-        int armyIndex = buffEffect.target == UnitBuffTarget.FrontArmy ? 0 : context.targetArmyIndex;
-        CArmy army = context.targetArea.GetArmy(armyIndex);
-        army.AddCard(CardConditionEvaluator.ToArmyCard(buffEffect.buff));
+        List<int> indices = BuffArmyTargetResolver.GetArmyIndices(
+            context.targetArea, context.targetArmyIndex, buffEffect.target).ToList();
+        foreach (int index in indices)
+        {
+            CArmy army = context.targetArea.GetArmy(index);
+            if (army == null) continue;
+            army.AddCard(CardConditionEvaluator.ToArmyCard(buffEffect.buff));
 
-        if (buffEffect.buff == UnitBuffKind.Commander)
+            if (buffEffect.buff == UnitBuffKind.COMMANDER)
+            {
+                CommanderAbility ability = GetCommanderAbility(context.sourceCountry.GetCommanderLevel());
+                army.AddStrength(ability.armyAbility.instantRecovery);
+                army.ResetMaxStrength(false);
+            }
+        }
+
+        if (buffEffect.buff == UnitBuffKind.COMMANDER)
         {
             CCountry country = context.sourceCountry;
             country.commanderAlive = true;
-            CommanderAbility ability = GetCommanderAbility(country.GetCommanderLevel());
-            army.AddStrength(ability.armyAbility.instantRecovery);
-            army.ResetMaxStrength(false);
 
             if (country.ai && g_GameManager.gameMode != CGameManager.MULTIPLAYER)
             {
@@ -721,9 +804,11 @@ public sealed class ArmyHealthEffectHandler : ICardEffectHandler
         errorCode = "";
         if (effect is not ArmyHealthEffectDef health)
         { errorCode = "invalid-effect-definition"; return false; }
-        if (!TryValidateArmyTarget(context, out CArea area, out errorCode)) return false;
+        if (!BuffArmyTargetResolver.TryValidateArea(context, out CArea area, out errorCode)) return false;
 
-        foreach (int index in GetArmyIndices(area, context.targetArmyIndex, health.target))
+        // hp的默认条件
+        foreach (int index in BuffArmyTargetResolver.GetArmyIndices(
+                     area, context.targetArmyIndex, health.target))
         {
             CArmy army = area.GetArmy(index);
             if (army == null) continue;
@@ -739,7 +824,8 @@ public sealed class ArmyHealthEffectHandler : ICardEffectHandler
         if (!CanApply(context, effect, out string errorCode)) return CardEffectResult.Fail(errorCode);
         var health = (ArmyHealthEffectDef)effect;
         CArea area = context.targetArea;
-        List<int> indices = GetArmyIndices(area, context.targetArmyIndex, health.target).ToList();
+        List<int> indices = BuffArmyTargetResolver.GetArmyIndices(
+            area, context.targetArmyIndex, health.target).ToList();
         // Removing a dead unit shifts the stack, so damage is applied from the back.
         if (health.Amount < 0) indices.Reverse();
         foreach (int index in indices)
@@ -755,29 +841,6 @@ public sealed class ArmyHealthEffectHandler : ICardEffectHandler
         return CardEffectResult.Ok();
     }
 
-    internal static bool TryValidateArmyTarget(
-        CardEffectContext context, out CArea area, out string errorCode)
-    {
-        area = context?.targetArea;
-        errorCode = "";
-        if (area == null) { errorCode = "missing-target-area"; return false; }
-        if (!area.info.enable) { errorCode = "target-disabled"; return false; }
-        if (area.country != context.sourceCountry)
-        { errorCode = "target-wrong-owner"; return false; }
-        if (area.armyCount <= 0) { errorCode = "missing-target-army"; return false; }
-        return true;
-    }
-
-    internal static IEnumerable<int> GetArmyIndices(
-        CArea area, int selectedIndex, ArmyEffectTarget target)
-    {
-        if (target == ArmyEffectTarget.AllArmies)
-        {
-            for (int index = 0; index < area.armyCount; ++index) yield return index;
-            yield break;
-        }
-        yield return target == ArmyEffectTarget.FrontArmy ? 0 : selectedIndex;
-    }
 }
 
 public sealed class ArmyLevelEffectHandler : ICardEffectHandler
@@ -787,10 +850,10 @@ public sealed class ArmyLevelEffectHandler : ICardEffectHandler
         errorCode = "";
         if (effect is not ArmyLevelEffectDef levelEffect)
         { errorCode = "invalid-effect-definition"; return false; }
-        if (!ArmyHealthEffectHandler.TryValidateArmyTarget(context, out CArea area, out errorCode))
+        if (!BuffArmyTargetResolver.TryValidateArea(context, out CArea area, out errorCode))
             return false;
 
-        foreach (int index in ArmyHealthEffectHandler.GetArmyIndices(
+        foreach (int index in BuffArmyTargetResolver.GetArmyIndices(
                      area, context.targetArmyIndex, levelEffect.target))
         {
             CArmy army = area.GetArmy(index);
@@ -807,7 +870,7 @@ public sealed class ArmyLevelEffectHandler : ICardEffectHandler
         if (!CanApply(context, effect, out string errorCode)) return CardEffectResult.Fail(errorCode);
         var levelEffect = (ArmyLevelEffectDef)effect;
         CArea area = context.targetArea;
-        foreach (int index in ArmyHealthEffectHandler.GetArmyIndices(
+        foreach (int index in BuffArmyTargetResolver.GetArmyIndices(
                      area, context.targetArmyIndex, levelEffect.target))
             area.GetArmy(index)?.AdjustLevel(levelEffect.levels);
         return CardEffectResult.Ok();
@@ -834,6 +897,7 @@ public sealed class ResearchEffectHandler : ICardEffectHandler
     {
         if (!CanApply(context, effect, out string errorCode)) return CardEffectResult.Fail(errorCode);
         var research = (ResearchEffectDef)effect;
+        // 支持升科技立即生效
         if (research.turns == 0) context.sourceCountry.tech++;
         else context.sourceCountry.techTurn = research.turns;
         return CardEffectResult.Ok();
@@ -873,10 +937,10 @@ public sealed class AreaStructureEffectHandler : ICardEffectHandler
             return false;
         }
 
-        if (structureEffect.slot == AreaStructureSlot.Installation)
+        if (structureEffect.slot == AreaStructureSlot.INSTALLATION)
             return CanApplyInstallation(area, structureEffect, out errorCode);
 
-        if (structureEffect.operation == CardEffectOperation.Clear)
+        if (structureEffect.operation == CardEffectOperation.CLEAR)
         {
             if (area.info.constructionType == NO_CONSTRUCTION)
             {
@@ -939,14 +1003,14 @@ public sealed class AreaStructureEffectHandler : ICardEffectHandler
 
         var structureEffect = (AreaStructureEffectDef)effect;
         CArea area = context.targetArea;
-        if (structureEffect.slot == AreaStructureSlot.Installation)
+        if (structureEffect.slot == AreaStructureSlot.INSTALLATION)
         {
-            area.installationType = structureEffect.operation == CardEffectOperation.Clear
+            area.installationType = structureEffect.operation == CardEffectOperation.CLEAR
                 ? NO_INSTALLATION
                 : structureEffect.installation;
             return CardEffectResult.Ok();
         }
-        if (structureEffect.operation == CardEffectOperation.Clear)
+        if (structureEffect.operation == CardEffectOperation.CLEAR)
         {
             area.DestroyConstruction();
             return CardEffectResult.Ok();
@@ -985,7 +1049,7 @@ public sealed class AreaStructureEffectHandler : ICardEffectHandler
         CArea area, AreaStructureEffectDef effect, out string errorCode)
     {
         errorCode = "";
-        if (effect.operation == CardEffectOperation.Set)
+        if (effect.operation == CardEffectOperation.SET)
         {
             if (effect.installation == NO_INSTALLATION)
             {
@@ -999,7 +1063,7 @@ public sealed class AreaStructureEffectHandler : ICardEffectHandler
             }
             return true;
         }
-        if (effect.operation == CardEffectOperation.Clear)
+        if (effect.operation == CardEffectOperation.CLEAR)
         {
             if (area.installationType == NO_INSTALLATION)
             {

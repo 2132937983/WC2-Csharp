@@ -19,6 +19,7 @@ public sealed partial class CObjectDef
 
     private static readonly List<CARD_ID> s_emptyTroopCardList = new();
 
+    // 用于ai用卡的排序
     private struct CardSortInfo
     {
         public CARD_ID id;
@@ -51,15 +52,9 @@ public sealed partial class CObjectDef
         if (card.effects.OfType<ResearchEffectDef>().Any()) return 0;
         if (card.effects.OfType<DraftArmyEffectDef>().Any()) return 1;
         if (card.effects.Any(effect => effect is StrategicStrikeEffectDef or AirborneDeployEffectDef)) return 1;
-        UnitBuffEffectDef unitBuff = card.effects.OfType<UnitBuffEffectDef>().FirstOrDefault();
-        if (unitBuff != null)
-            return unitBuff.target == UnitBuffTarget.SelectedArmy ? 5 : 1;
-        ArmyHealthEffectDef armyHealth = card.effects.OfType<ArmyHealthEffectDef>().FirstOrDefault();
-        if (armyHealth != null)
-            return armyHealth.target == ArmyEffectTarget.SelectedArmy ? 5 : 1;
-        ArmyLevelEffectDef armyLevel = card.effects.OfType<ArmyLevelEffectDef>().FirstOrDefault();
-        if (armyLevel != null)
-            return armyLevel.target == ArmyEffectTarget.SelectedArmy ? 5 : 1;
+        BuffArmyEffectDef buffArmy = card.effects.OfType<BuffArmyEffectDef>().FirstOrDefault();
+        if (buffArmy != null)
+            return buffArmy.target == BuffArmyTarget.SELECTED ? 5 : 1;
 
         CARD_ID cardId = card.id;
         if (cardId == RESEARCH_CARD) return 0;
@@ -157,6 +152,8 @@ public sealed partial class CObjectDef
         RebuildTroopCardLists();
     }
 
+    // 解析卡牌开销字段
+    // 支持配置不同的研发增长开销
     private static void ParseCardCosts(TiXmlElement cardElement, CardDef card, string countryName)
     {
         TiXmlElement costsElement = cardElement.FirstChildElement("costs");
@@ -175,6 +172,8 @@ public sealed partial class CObjectDef
             };
             if (!seen.Add(resource))
                 throw CardConfigError(countryName, card, $"duplicate cost resource '{resource}'");
+            // growth 是针对tech的
+            // 目前只支持(tech-1)作为唯一的growth乘系数
             if (element.QueryIntAttribute("base", out int baseAmount) != TIXML_SUCCESS)
                 throw CardConfigError(countryName, card, $"cost resource '{resource}' requires base");
             if (element.QueryIntAttribute("growth", out int growth) != TIXML_SUCCESS) growth = 0;
@@ -191,6 +190,7 @@ public sealed partial class CObjectDef
             throw CardConfigError(countryName, card, "costs cannot be empty");
     }
 
+    // 解析卡牌效果
     private static void ParseCardEffects(TiXmlElement cardElement, CardDef card, string countryName)
     {
         TiXmlElement effectsElement = cardElement.FirstChildElement("effects");
@@ -203,12 +203,8 @@ public sealed partial class CObjectDef
                 string type = effectElement.Attribute("type");
                 if (string.Equals(type, "area-structure", StringComparison.OrdinalIgnoreCase))
                     card.effects.Add(ParseAreaStructureEffect(effectElement, countryName, card));
-                else if (string.Equals(type, "unit-buff", StringComparison.OrdinalIgnoreCase))
-                    card.effects.Add(ParseUnitBuffEffect(effectElement, countryName, card));
-                else if (string.Equals(type, "army-health", StringComparison.OrdinalIgnoreCase))
-                    card.effects.Add(ParseArmyHealthEffect(effectElement, countryName, card));
-                else if (string.Equals(type, "army-level", StringComparison.OrdinalIgnoreCase))
-                    card.effects.Add(ParseArmyLevelEffect(effectElement, countryName, card));
+                else if (string.Equals(type, "buff-army", StringComparison.OrdinalIgnoreCase))
+                    card.effects.Add(ParseBuffArmyEffect(effectElement, countryName, card));
                 else if (string.Equals(type, "research", StringComparison.OrdinalIgnoreCase))
                     card.effects.Add(ParseResearchEffect(effectElement, countryName, card));
                 else if (string.Equals(type, "draft-army", StringComparison.OrdinalIgnoreCase))
@@ -222,6 +218,7 @@ public sealed partial class CObjectDef
             }
         }
 
+        // 和展示（目前只有音效）相关的卡牌效果
         TiXmlElement presentationElement = cardElement.FirstChildElement("presentation");
         if (presentationElement != null)
         {
@@ -236,13 +233,13 @@ public sealed partial class CObjectDef
         }
 
         bool hasCommanderEffect = card.effects.OfType<UnitBuffEffectDef>()
-            .Any(effect => effect.buff == UnitBuffKind.Commander);
+            .Any(effect => effect.buff == UnitBuffKind.COMMANDER);
         if (hasCommanderEffect && (!card.commanderPriceScaling || !card.commanderCooldown))
             throw CardConfigError(countryName, card,
-                "commander unit-buff requires price-scaling='commander-level' and cooldown-mode='commander'");
+                "commander buff-army requires price-scaling='commander-level' and cooldown-mode='commander'");
         if (!hasCommanderEffect && (card.commanderPriceScaling || card.commanderCooldown))
             throw CardConfigError(countryName, card,
-                "commander price/cooldown attributes require a commander unit-buff");
+                "commander price/cooldown attributes require a commander buff-army effect");
 
         int researchEffectCount = card.effects.Count(effect => effect is ResearchEffectDef);
         if (researchEffectCount > 1)
@@ -267,31 +264,41 @@ public sealed partial class CObjectDef
                 "an airforce mission card must contain exactly one air mission effect");
     }
 
+    private static CardEffectDef ParseBuffArmyEffect(
+        TiXmlElement element, string countryName, CardDef card)
+    {
+        // buff目前分为三种；增加固定buff（攻防、运输船、指挥官）、回血和升级
+        return element.Attribute("operation")?.ToLowerInvariant() switch
+        {
+            "add-buff" => ParseUnitBuffEffect(element, countryName, card),
+            "health" => ParseArmyHealthEffect(element, countryName, card),
+            "level" => ParseArmyLevelEffect(element, countryName, card),
+            string value => throw CardConfigError(countryName, card,
+                $"invalid buff-army operation '{value}'"),
+            null => throw CardConfigError(countryName, card, "buff-army requires operation"),
+        };
+    }
+
     private static UnitBuffEffectDef ParseUnitBuffEffect(
         TiXmlElement element, string countryName, CardDef card)
     {
+        // 增加固定buff；目前只支持几种类别
         UnitBuffKind buff = element.Attribute("buff")?.ToLowerInvariant() switch
         {
-            "carrier" => UnitBuffKind.Carrier,
-            "assault" => UnitBuffKind.Assault,
-            "defence" => UnitBuffKind.Defence,
-            "commander" => UnitBuffKind.Commander,
+            "carrier" => UnitBuffKind.CARRIER,
+            "assault" => UnitBuffKind.ASSAULT,
+            "defence" => UnitBuffKind.DEFENCE,
+            "commander" => UnitBuffKind.COMMANDER,
             string value => throw CardConfigError(countryName, card, $"invalid unit buff '{value}'"),
-            null => throw CardConfigError(countryName, card, "unit-buff requires buff"),
-        };
-        UnitBuffTarget target = element.Attribute("target")?.ToLowerInvariant() switch
-        {
-            "selected-army" => UnitBuffTarget.SelectedArmy,
-            "front-army" => UnitBuffTarget.FrontArmy,
-            string value => throw CardConfigError(countryName, card, $"invalid unit-buff target '{value}'"),
-            null => throw CardConfigError(countryName, card, "unit-buff requires target"),
+            null => throw CardConfigError(countryName, card, "buff-army add-buff requires buff"),
         };
         var effect = new UnitBuffEffectDef
         {
-            type = "unit-buff",
+            type = "buff-army",
             buff = buff,
-            target = target,
+            target = ParseBuffArmyTarget(element.Attribute("target"), countryName, card),
         };
+        // 统一的条件解析函数
         ParseEffectConditions(element, effect, countryName, card);
         return effect;
     }
@@ -299,18 +306,19 @@ public sealed partial class CObjectDef
     private static ArmyHealthEffectDef ParseArmyHealthEffect(
         TiXmlElement element, string countryName, CardDef card)
     {
+        // 回血量：支持绝对值和百分比
         string amountText = element.Attribute("amount");
         bool percent = amountText?.EndsWith("%", StringComparison.Ordinal) == true;
         string numberText = percent ? amountText.Substring(0, amountText.Length - 1) : amountText;
         if (!int.TryParse(numberText, out int amount) || amount == 0 ||
             amount < -16384 || amount > 16383)
             throw CardConfigError(countryName, card,
-                $"invalid army-health amount '{amountText}' (expected -16384..16383, optionally followed by %)");
+                $"invalid buff-army health amount '{amountText}' (expected -16384..16383, optionally followed by %)");
 
         var effect = new ArmyHealthEffectDef
         {
-            type = "army-health",
-            target = ParseArmyEffectTarget(element.Attribute("target"), countryName, card),
+            type = "buff-army",
+            target = ParseBuffArmyTarget(element.Attribute("target"), countryName, card),
             packedAmount = (ushort)((amount & 0x7fff) | (percent ? 0x8000 : 0)),
         };
         ParseEffectConditions(element, effect, countryName, card);
@@ -320,6 +328,7 @@ public sealed partial class CObjectDef
     private static ArmyLevelEffectDef ParseArmyLevelEffect(
         TiXmlElement element, string countryName, CardDef card)
     {
+        //等级；+-inf就是直接满级/消除所有等级
         string levelsText = element.Attribute("levels")?.ToLowerInvariant();
         sbyte levels;
         if (levelsText == "+inf") levels = ArmyLevelEffectDef.ToMaximum;
@@ -327,37 +336,39 @@ public sealed partial class CObjectDef
         else if (!sbyte.TryParse(levelsText, out levels) || levels == 0 ||
                  levels == sbyte.MinValue || levels == sbyte.MaxValue)
             throw CardConfigError(countryName, card,
-                $"invalid army-level levels '{levelsText}' (expected -127..-1, +1..+126, +inf or -inf)");
+                $"invalid buff-army level value '{levelsText}' (expected -127..-1, +1..+126, +inf or -inf)");
 
         var effect = new ArmyLevelEffectDef
         {
-            type = "army-level",
-            target = ParseArmyEffectTarget(element.Attribute("target"), countryName, card),
+            type = "buff-army",
+            target = ParseBuffArmyTarget(element.Attribute("target"), countryName, card),
             levels = levels,
         };
         ParseEffectConditions(element, effect, countryName, card);
         return effect;
     }
 
+    // 研发类的效果
+    // 研发卡牌的冷却不跟一般的冷却走
     private static ResearchEffectDef ParseResearchEffect(
         TiXmlElement element, string countryName, CardDef card)
     {
-        if (element.QueryIntAttribute("turns", out int turns) != TIXML_SUCCESS ||
-            turns < 0 || turns > byte.MaxValue)
+        if (!XmlValueParser.ParseUInt8Attribute(element, "turns", out byte turns))
             throw CardConfigError(countryName, card, "research turns must be 0..255");
-        if (element.QueryIntAttribute("max-level", out int maxLevel) != TIXML_SUCCESS ||
-            maxLevel < 1 || maxLevel > byte.MaxValue)
+        if (!XmlValueParser.ParseUInt8Attribute(element, "max-level", out byte maxLevel) || maxLevel == 0)
             throw CardConfigError(countryName, card, "research max-level must be 1..255");
         var effect = new ResearchEffectDef
         {
             type = "research",
-            turns = (byte)turns,
-            maxLevel = (byte)maxLevel,
+            turns = turns,
+            maxLevel = maxLevel,
         };
         ParseEffectConditions(element, effect, countryName, card);
         return effect;
     }
 
+    // 招募（非伞兵）
+    // 招募是跟id走的
     private static DraftArmyEffectDef ParseDraftArmyEffect(
         TiXmlElement element, string countryName, CardDef card)
     {
@@ -372,6 +383,8 @@ public sealed partial class CObjectDef
         return effect;
     }
 
+    // 空袭卡（不包括空降）
+    // 这里沿用了armydef定义中的payload
     private static StrategicStrikeEffectDef ParseStrategicStrikeEffect(
         TiXmlElement element, string countryName, CardDef card)
     {
@@ -387,6 +400,9 @@ public sealed partial class CObjectDef
         return effect;
     }
 
+    // 解析空降
+    // 可以空降任何单位——这样可以拿去做特招
+    // none的意思是“空降但不占领”，感觉以后可以拿来做一些特殊的整活能力
     private static AirborneDeployEffectDef ParseAirborneDeployEffect(
         TiXmlElement element, string countryName, CardDef card)
     {
@@ -406,15 +422,19 @@ public sealed partial class CObjectDef
         return effect;
     }
 
-    private static ArmyEffectTarget ParseArmyEffectTarget(
+    // 目前只支持3种target： selected：选中的单位
+    // front： 前置单位（也就是说，你用这张卡时点击侧边栏，会发生切换置顶单位的动作）
+    // all：所有单位
+    private static BuffArmyTarget ParseBuffArmyTarget(
         string value, string countryName, CardDef card) => value?.ToLowerInvariant() switch
         {
-            "selected-army" => ArmyEffectTarget.SelectedArmy,
-            "front-army" => ArmyEffectTarget.FrontArmy,
-            "all-armies" => ArmyEffectTarget.AllArmies,
-            _ => throw CardConfigError(countryName, card, $"invalid army effect target '{value}'"),
+            "selected" => BuffArmyTarget.SELECTED,
+            "front" => BuffArmyTarget.FRONT,
+            "all" => BuffArmyTarget.ALL,
+            _ => throw CardConfigError(countryName, card, $"invalid buff-army target '{value}'"),
         };
 
+    //解析用卡条件
     private static void ParseEffectConditions(
         TiXmlElement effectElement, CardEffectDef effect, string countryName, CardDef card)
     {
@@ -426,7 +446,7 @@ public sealed partial class CObjectDef
             effect.conditions.Add(ParseConditionNode(element, null, countryName, card));
     }
 
-    private enum CardConditionScope { TargetArmy, TargetArea, SourceCountry }
+    private enum CardConditionScope { TARGET_ARMY, TARGET_AREA, SOURCE_COUNTRY }
 
     private static CardConditionDef ParseConditionNode(
         TiXmlElement element, CardConditionScope? scope, string countryName, CardDef card)
@@ -434,60 +454,58 @@ public sealed partial class CObjectDef
         string nodeName = element.Value()?.ToLowerInvariant();
         if (nodeName == "condition")
         {
-            if (scope != null)
-                return ParseScopedCondition(element, scope.Value, countryName, card);
-
-            // Legacy flat condition names remain readable while carddef.xml migrates.
-            string type = element.Attribute("type")?.ToLowerInvariant();
-            return type switch
-            {
-                "target-not-navy" => new TargetArmyDomainConditionDef
-                {
-                    type = type,
-                    mustBeNavy = false,
-                },
-                "target-lacks-buff" => new TargetArmyBuffConditionDef
-                {
-                    type = type,
-                    buff = ParseUnitBuffKind(element.Attribute("buff"), countryName, card),
-                    mustHave = false,
-                },
-                "source-buff-count" => ParseSourceBuffCountCondition(element, countryName, card),
-                _ => throw CardConfigError(countryName, card, $"unknown condition type '{type}'"),
-            };
+            // 条件必须嵌套在目标域内
+            if (scope == null)
+                throw CardConfigError(countryName, card,
+                    "condition requires a target-army, target-area or source-country scope");
+            // 解析真正的确定条件
+            return ParseScopedCondition(element, scope.Value, countryName, card);
         }
 
-        if (nodeName == "armies" && scope == CardConditionScope.TargetArea)
+        // 如果父级是target-area
+        if (nodeName == "army" && scope == CardConditionScope.TARGET_AREA)
         {
-            string match = element.Attribute("match")?.ToLowerInvariant() ?? "any";
-            if (match != "any" && match != "all")
-                throw CardConfigError(countryName, card, $"invalid armies match '{match}'");
-            var armies = new TargetAreaArmiesConditionDef
+            // 对于地块上的单位，支持三种匹配模式：all：所有，any：任意，front：顶部
+            string target = element.Attribute("target")?.ToLowerInvariant();
+            TargetAreaArmyMode areaArmyMode = target switch
             {
-                type = "target-area-armies",
-                matchAll = match == "all",
+                "front" => TargetAreaArmyMode.FRONT,
+                "any" => TargetAreaArmyMode.ANY,
+                "all" => TargetAreaArmyMode.ALL,
+                _ => throw CardConfigError(countryName, card,
+                    $"invalid target-area army target '{target}'"),
+            };
+            if (element.Attribute("match") != null)
+                throw CardConfigError(countryName, card,
+                    "target-area army uses target='front|any|all'; match is not supported");
+            var areaArmy = new TargetAreaArmyConditionDef
+            {
+                type = "target-area-army",
+                mode = areaArmyMode,
             };
             for (TiXmlElement child = element.FirstChildElement();
                  child != null; child = child.NextSiblingElement())
-                armies.children.Add(ParseConditionNode(
-                    child, CardConditionScope.TargetArmy, countryName, card));
-            if (armies.children.Count == 0)
-                throw CardConfigError(countryName, card, "armies condition cannot be empty");
-            return armies;
+                 // 进一步解析底层条件
+                areaArmy.children.Add(ParseConditionNode(
+                    child, CardConditionScope.TARGET_ARMY, countryName, card));
+            if (areaArmy.children.Count == 0)
+                throw CardConfigError(countryName, card, "target-area army condition cannot be empty");
+            return areaArmy;
         }
 
+        // 目前的三类基本范围
         if (nodeName == "target-army" || nodeName == "target-area" || nodeName == "source-country")
         {
             CardConditionScope childScope = nodeName switch
             {
-                "target-army" => CardConditionScope.TargetArmy,
-                "target-area" => CardConditionScope.TargetArea,
-                _ => CardConditionScope.SourceCountry,
+                "target-army" => CardConditionScope.TARGET_ARMY,
+                "target-area" => CardConditionScope.TARGET_AREA,
+                _ => CardConditionScope.SOURCE_COUNTRY,
             };
             var scopedGroup = new CardConditionGroupDef
             {
                 type = nodeName,
-                mode = CardConditionGroupMode.All,
+                mode = CardConditionGroupMode.ALL,
             };
             for (TiXmlElement child = element.FirstChildElement();
                  child != null; child = child.NextSiblingElement())
@@ -497,11 +515,13 @@ public sealed partial class CObjectDef
             return scopedGroup;
         }
 
+        // 底层条件解析
+        //与或非
         CardConditionGroupMode mode = nodeName switch
         {
-            "all" => CardConditionGroupMode.All,
-            "any" => CardConditionGroupMode.Any,
-            "not" => CardConditionGroupMode.Not,
+            "all" => CardConditionGroupMode.ALL,
+            "any" => CardConditionGroupMode.ANY,
+            "not" => CardConditionGroupMode.NOT,
             _ => throw CardConfigError(countryName, card, $"unknown condition node '{nodeName}'"),
         };
         var group = new CardConditionGroupDef { type = nodeName, mode = mode };
@@ -511,26 +531,30 @@ public sealed partial class CObjectDef
 
         if (group.children.Count == 0)
             throw CardConfigError(countryName, card, $"condition group '{nodeName}' cannot be empty");
-        if (mode == CardConditionGroupMode.Not && group.children.Count != 1)
+        if (mode == CardConditionGroupMode.NOT && group.children.Count != 1)
             throw CardConfigError(countryName, card, "condition group 'not' requires exactly one child");
         return group;
     }
 
+    // 解析实际的条件
+    // 上面那个函数主要是解析条件域
     private static CardConditionDef ParseScopedCondition(
         TiXmlElement element, CardConditionScope scope, string countryName, CardDef card)
     {
         string property = element.Attribute("property")?.ToLowerInvariant();
         string operation = element.Attribute("operator")?.ToLowerInvariant();
         string value = element.Attribute("value")?.ToLowerInvariant();
-        if (scope == CardConditionScope.TargetArmy)
+        if (scope == CardConditionScope.TARGET_ARMY)
         {
-            if (property == "domain" && (operation == "equal" || operation == "not-equal") &&
-                value == "navy")
-                return new TargetArmyDomainConditionDef
+            // 这个和armydef的属性强绑定
+            if (property == "navy" && (operation == "equal" || operation == "not-equal") &&
+                (value == "true" || value == "false"))
+                return new TargetArmyNavyConditionDef
                 {
-                    type = "target-army-domain",
-                    mustBeNavy = operation == "equal",
+                    type = "target-army-navy",
+                    expected = (value == "true") == (operation == "equal"),
                 };
+            // 是否有攻/防/运输船等
             if (property == "buff" && (operation == "has" || operation == "lacks"))
                 return new TargetArmyBuffConditionDef
                 {
@@ -538,6 +562,7 @@ public sealed partial class CObjectDef
                     buff = ParseUnitBuffKind(value, countryName, card),
                     mustHave = operation == "has",
                 };
+            // 单位等级检查
             if (property == "level")
                 return new TargetArmyLevelConditionDef
                 {
@@ -546,37 +571,42 @@ public sealed partial class CObjectDef
                     valueIsMaximum = value == "max",
                     value = value == "max" ? 0 : ParseConditionInt(value, "level", countryName, card),
                 };
-            if (property == "army-type" && (operation == "equal" || operation == "not-equal"))
-                return new TargetArmyTypeConditionDef
+            // Concrete ArmyDef id; unlike unit-type, this identifies one registered army definition.
+            // 针对的是infantry、artillery这些id，可以填名称，也可以填数字id
+            if (property == "army-id" && (operation == "equal" || operation == "not-equal"))
+                return new TargetArmyIdConditionDef
                 {
-                    type = "target-army-type",
-                    armyTypeId = armydef_internal.TryResolveArmyTypeReference(value, out int armyTypeId)
-                        ? armyTypeId
-                        : throw CardConfigError(countryName, card, $"unknown army type '{value}'"),
+                    type = "target-army-id",
+                    armyId = armydef_internal.TryResolveArmyTypeReference(value, out int armyId)
+                        ? armyId
+                        : throw CardConfigError(countryName, card, $"unknown army id '{value}'"),
                     mustEqual = operation == "equal",
                 };
+            // unit-type：定义的单位属性
             if (property == "unit-type" && (operation == "equal" || operation == "not-equal") &&
-                byte.TryParse(value, out byte unitType))
+                XmlValueParser.ParseUInt8Text(value, out byte unitType))
                 return new TargetArmyUnitTypeConditionDef
                 {
                     type = "target-army-unit-type",
                     unitType = unitType,
                     mustEqual = operation == "equal",
                 };
+            // 生命值
             if (property == "health")
                 return ParseArmyHealthCondition(operation, value, countryName, card);
             throw CardConfigError(countryName, card,
                 $"invalid target-army condition property='{property}' operator='{operation}' value='{value}'");
         }
 
-        if (scope == CardConditionScope.TargetArea)
+        // 地块条件
+        if (scope == CardConditionScope.TARGET_AREA)
         {
             AreaLevelKind? kind = property switch
             {
-                "city-level" => AreaLevelKind.City,
-                "industry-level" => AreaLevelKind.Industry,
-                "airport-level" => AreaLevelKind.Airport,
-                "port-level" => AreaLevelKind.Port,
+                "city-level" => AreaLevelKind.CITY,
+                "industry-level" => AreaLevelKind.INDUSTRY,
+                "airport-level" => AreaLevelKind.AIRPORT,
+                "port-level" => AreaLevelKind.PORT,
                 _ => null,
             };
             if (kind.HasValue)
@@ -591,6 +621,7 @@ public sealed partial class CObjectDef
                 $"invalid target-area condition property='{property}' operator='{operation}' value='{value}'");
         }
 
+        // 国家数据统计——针对指挥官
         if (property == "buff-count" && operation == "less-than")
         {
             if (!int.TryParse(value, out int lessThan) || lessThan < 1)
@@ -610,11 +641,11 @@ public sealed partial class CObjectDef
     private static NumericConditionOperator ParseNumericConditionOperator(
         string value, string countryName, CardDef card) => value switch
         {
-            "less-than" => NumericConditionOperator.LessThan,
-            "less-than-or-equal" => NumericConditionOperator.LessThanOrEqual,
-            "equal" => NumericConditionOperator.Equal,
-            "greater-than-or-equal" => NumericConditionOperator.GreaterThanOrEqual,
-            "greater-than" => NumericConditionOperator.GreaterThan,
+            "less-than" => NumericConditionOperator.LESS_THAN,
+            "less-than-or-equal" => NumericConditionOperator.LESS_THAN_OR_EQUAL,
+            "equal" => NumericConditionOperator.EQUAL,
+            "greater-than-or-equal" => NumericConditionOperator.GREATER_THAN_OR_EQUAL,
+            "greater-than" => NumericConditionOperator.GREATER_THAN,
             _ => throw CardConfigError(countryName, card, $"invalid numeric operator '{value}'"),
         };
 
@@ -631,11 +662,11 @@ public sealed partial class CObjectDef
     {
         NumericConditionOperator operation = operationText switch
         {
-            "less-than" => NumericConditionOperator.LessThan,
-            "less-than-or-equal" => NumericConditionOperator.LessThanOrEqual,
-            "equal" => NumericConditionOperator.Equal,
-            "greater-than-or-equal" => NumericConditionOperator.GreaterThanOrEqual,
-            "greater-than" => NumericConditionOperator.GreaterThan,
+            "less-than" => NumericConditionOperator.LESS_THAN,
+            "less-than-or-equal" => NumericConditionOperator.LESS_THAN_OR_EQUAL,
+            "equal" => NumericConditionOperator.EQUAL,
+            "greater-than-or-equal" => NumericConditionOperator.GREATER_THAN_OR_EQUAL,
+            "greater-than" => NumericConditionOperator.GREATER_THAN,
             _ => throw CardConfigError(countryName, card,
                 $"invalid health operator '{operationText}'"),
         };
@@ -650,6 +681,7 @@ public sealed partial class CObjectDef
             return condition;
         }
 
+        // 设置回血百分比还是数值
         condition.valueIsPercent = valueText?.EndsWith("%", StringComparison.Ordinal) == true;
         string numberText = condition.valueIsPercent
             ? valueText.Substring(0, valueText.Length - 1) : valueText;
@@ -658,30 +690,17 @@ public sealed partial class CObjectDef
         return condition;
     }
 
-    private static SourceCountryBuffCountConditionDef ParseSourceBuffCountCondition(
-        TiXmlElement element, string countryName, CardDef card)
-    {
-        if (element.QueryIntAttribute("less-than", out int lessThan) != TIXML_SUCCESS || lessThan < 1)
-            throw CardConfigError(countryName, card,
-                "source-buff-count requires a positive less-than value");
-        return new SourceCountryBuffCountConditionDef
-        {
-            type = "source-buff-count",
-            buff = ParseUnitBuffKind(element.Attribute("buff"), countryName, card),
-            lessThan = lessThan,
-        };
-    }
-
     private static UnitBuffKind ParseUnitBuffKind(string value, string countryName, CardDef card) =>
         value?.ToLowerInvariant() switch
         {
-            "carrier" => UnitBuffKind.Carrier,
-            "assault" => UnitBuffKind.Assault,
-            "defence" => UnitBuffKind.Defence,
-            "commander" => UnitBuffKind.Commander,
+            "carrier" => UnitBuffKind.CARRIER,
+            "assault" => UnitBuffKind.ASSAULT,
+            "defence" => UnitBuffKind.DEFENCE,
+            "commander" => UnitBuffKind.COMMANDER,
             _ => throw CardConfigError(countryName, card, $"invalid condition buff '{value}'"),
         };
 
+    // 地块建设/工事效果解析
     private static AreaStructureEffectDef ParseAreaStructureEffect(
         TiXmlElement element, string countryName, CardDef card)
     {
@@ -690,10 +709,10 @@ public sealed partial class CObjectDef
         var effect = new AreaStructureEffectDef { type = "area-structure" };
         if (string.Equals(slot, "installation", StringComparison.OrdinalIgnoreCase))
         {
-            effect.slot = AreaStructureSlot.Installation;
+            effect.slot = AreaStructureSlot.INSTALLATION;
             if (string.Equals(operationText, "set", StringComparison.OrdinalIgnoreCase))
             {
-                effect.operation = CardEffectOperation.Set;
+                effect.operation = CardEffectOperation.SET;
                 effect.installation = ParseInstallationType(
                     element.Attribute("structure"), countryName, card);
                 if (element.Attribute("amount") != null || element.Attribute("initial-level") != null)
@@ -702,7 +721,7 @@ public sealed partial class CObjectDef
             }
             if (string.Equals(operationText, "clear", StringComparison.OrdinalIgnoreCase))
             {
-                effect.operation = CardEffectOperation.Clear;
+                effect.operation = CardEffectOperation.CLEAR;
                 if (element.Attribute("structure") != null || element.Attribute("amount") != null ||
                     element.Attribute("initial-level") != null)
                     throw CardConfigError(countryName, card, "installation clear cannot specify structure, amount or initial-level");
@@ -713,18 +732,19 @@ public sealed partial class CObjectDef
         if (!string.Equals(slot, "construction", StringComparison.OrdinalIgnoreCase))
             throw CardConfigError(countryName, card, $"invalid area-structure slot '{slot}'");
 
-        effect.slot = AreaStructureSlot.Construction;
+        effect.slot = AreaStructureSlot.CONSTRUCTION;
         if (string.Equals(operationText, "clear", StringComparison.OrdinalIgnoreCase))
         {
-            effect.operation = CardEffectOperation.Clear;
+            effect.operation = CardEffectOperation.CLEAR;
             if (element.Attribute("structure") != null || element.Attribute("amount") != null)
                 throw CardConfigError(countryName, card, "clear cannot specify structure or amount");
             return effect;
         }
+        // 调整等级
         if (!string.Equals(operationText, "adjust", StringComparison.OrdinalIgnoreCase))
             throw CardConfigError(countryName, card, $"unsupported construction operation '{operationText}'");
 
-        effect.operation = CardEffectOperation.Adjust;
+        effect.operation = CardEffectOperation.ADJUST;
         effect.structure = ParseConstructionType(element.Attribute("structure"), countryName, card);
         string initialLevel = element.Attribute("initial-level") ?? "area-default";
         if (!string.Equals(initialLevel, "area-default", StringComparison.OrdinalIgnoreCase))
@@ -737,7 +757,7 @@ public sealed partial class CObjectDef
         }
         else if (amount == "-inf")
         {
-            effect.operation = CardEffectOperation.Clear;
+            effect.operation = CardEffectOperation.CLEAR;
         }
         else if (!int.TryParse(amount, out effect.levelDelta) || effect.levelDelta == 0)
         {

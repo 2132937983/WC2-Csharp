@@ -27,7 +27,7 @@
 
 ### 2.1 XML 保存声明，不保存 C# 方法名
 
-推荐：
+推荐（`operation` 可省略，默认就是 `adjust`）：
 
 ```xml
 <effect type="area-structure"
@@ -345,22 +345,16 @@ AreaStructureOperation:
 
 #### 摧毁建筑
 
-规范写法：
+建设槽清除使用 `amount="-inf"`；`operation` 可省略：
 
 ```xml
 <effect type="area-structure"
         slot="construction"
-        operation="clear" />
-```
-
-兼容简写：
-
-```xml
-<effect type="area-structure"
-        slot="construction"
-        operation="adjust"
+        structure="city"
         amount="-inf" />
 ```
+
+建设槽不支持 `operation="clear"`；`clear` 仅用于无等级的 installation 槽。
 
 加载器应把 `-inf` 规范化为 `clear`，运行时不保存“无穷大整数”。`+inf` 解析为 `ToMaximum = true`。
 

@@ -88,7 +88,7 @@ public sealed partial class CObjectDef
                                 }
                                 tmp_army_def.armorType = 0;
                                 tmp_army_def.weaponType = ParseWeaponTypeMask(ArmyListElement.Attribute("weapon-type"));
-                                if (ParseUInt8Attribute(ArmyListElement, "armor-type", out byte armorType))
+                                if (XmlValueParser.ParseUInt8Attribute(ArmyListElement, "armor-type", out byte armorType))
                                     tmp_army_def.armorType = armorType;
                                 int hp, max_attack, movement, min_attack;
                                 if (ArmyListElement.QueryIntAttribute("strength", out hp) != TIXML_SUCCESS) hp = 0;

@@ -121,17 +121,19 @@ public static class DebugTools
         RequireInstallationEffect(entrenchment, "entrenchment", ENTRENCHMENT);
         RequireInstallationEffect(antiaircraft, "antiaircraft", ANTIAIRCRAFT);
         RequireInstallationEffect(radar, "radar", RADAR);
-        RequireUnitBuffEffect(carrier, "carrier", UnitBuffKind.Carrier, UnitBuffTarget.SelectedArmy);
-        RequireUnitBuffEffect(assault, "assault-art", UnitBuffKind.Assault, UnitBuffTarget.SelectedArmy);
-        RequireUnitBuffEffect(defence, "defend-art", UnitBuffKind.Defence, UnitBuffTarget.SelectedArmy);
+        RequireUnitBuffEffect(carrier, "carrier", UnitBuffKind.CARRIER, BuffArmyTarget.SELECTED);
+        RequireUnitBuffEffect(assault, "assault-art", UnitBuffKind.ASSAULT, BuffArmyTarget.SELECTED);
+        RequireUnitBuffEffect(defence, "defend-art", UnitBuffKind.DEFENCE, BuffArmyTarget.SELECTED);
         if (commander == null || !commander.commanderPriceScaling || !commander.commanderCooldown)
             throw new InvalidOperationException("commander pricing/cooldown modes were not loaded");
         RequireEffect<ResearchEffectDef>(research, "research", effect =>
             effect.turns == 3 && effect.maxLevel == 5);
         RequireEffect<ArmyHealthEffectDef>(supplyLine, "supply-line", effect =>
-            effect.target == ArmyEffectTarget.AllArmies && effect.IsPercent && effect.Amount == 100);
+            effect.type == "buff-army" && effect.target == BuffArmyTarget.ALL &&
+            effect.IsPercent && effect.Amount == 100);
         RequireEffect<ArmyLevelEffectDef>(aceForces, "ace-forces", effect =>
-            effect.target == ArmyEffectTarget.FrontArmy && effect.levels == 1);
+            effect.type == "buff-army" && effect.target == BuffArmyTarget.FRONT &&
+            effect.levels == 1);
 
         var country = new CCountry();
         var capital = NewTestArea(country, CAPITAL);
@@ -153,7 +155,7 @@ public static class DebugTools
         {
             type = "area-structure",
             structure = INDUSTRY,
-            operation = CardEffectOperation.Adjust,
+            operation = CardEffectOperation.ADJUST,
             toMaximum = true,
         });
         result = CardEffectExecutor.Apply(NewTestContext(country, maximize, plain));
@@ -164,7 +166,9 @@ public static class DebugTools
         clear.effects.Add(new AreaStructureEffectDef
         {
             type = "area-structure",
-            operation = CardEffectOperation.Clear,
+            operation = CardEffectOperation.ADJUST,
+            structure = INDUSTRY,
+            levelDelta = -MAX_INDUSTRY_LEVEL,
         });
         result = CardEffectExecutor.Apply(NewTestContext(country, clear, plain));
         if (!result.Success || plain.info.constructionType != NO_CONSTRUCTION || plain.info.constructionLevel != 0)
@@ -180,8 +184,8 @@ public static class DebugTools
         clearInstallation.effects.Add(new AreaStructureEffectDef
         {
             type = "area-structure",
-            slot = AreaStructureSlot.Installation,
-            operation = CardEffectOperation.Clear,
+            slot = AreaStructureSlot.INSTALLATION,
+            operation = CardEffectOperation.CLEAR,
         });
         result = CardEffectExecutor.Apply(NewTestContext(country, clearInstallation, plain));
         if (!result.Success || plain.installationType != NO_INSTALLATION)
@@ -199,7 +203,7 @@ public static class DebugTools
         if (!result.Success || !plain.army[0].HasCard(ASSAULT))
             throw new InvalidOperationException("assault effect did not add the unit buff");
         if (CardEffectExecutor.CanApply(NewTestContext(country, assault, plain, 0), out _))
-            throw new InvalidOperationException("unit-buff accepted a duplicate buff");
+            throw new InvalidOperationException("buff-army accepted a duplicate buff");
 
         Console.WriteLine("card effects: XML parser and basic handlers ok");
     }
@@ -218,7 +222,7 @@ public static class DebugTools
     {
         if (card == null || card.key != expectedKey || card.effects.Count != 1 ||
             card.effects[0] is not AreaStructureEffectDef effect ||
-            effect.structure != expectedStructure || effect.operation != CardEffectOperation.Adjust ||
+            effect.structure != expectedStructure || effect.operation != CardEffectOperation.ADJUST ||
             effect.levelDelta != 1 || card.presentation?.sound != "build")
             throw new InvalidOperationException($"card '{expectedKey}' did not load its construction effect");
     }
@@ -228,17 +232,18 @@ public static class DebugTools
     {
         if (card == null || card.key != expectedKey || card.effects.Count != 1 ||
             card.effects[0] is not AreaStructureEffectDef effect ||
-            effect.slot != AreaStructureSlot.Installation || effect.installation != expectedInstallation ||
-            effect.operation != CardEffectOperation.Set || card.presentation?.sound != "build")
+            effect.slot != AreaStructureSlot.INSTALLATION || effect.installation != expectedInstallation ||
+            effect.operation != CardEffectOperation.SET || card.presentation?.sound != "build")
             throw new InvalidOperationException($"card '{expectedKey}' did not load its installation effect");
     }
 
     private static void RequireUnitBuffEffect(
-        CardDef card, string expectedKey, UnitBuffKind expectedBuff, UnitBuffTarget expectedTarget)
+        CardDef card, string expectedKey, UnitBuffKind expectedBuff, BuffArmyTarget expectedTarget)
     {
         if (card == null || card.key != expectedKey || card.effects.Count != 1 ||
             card.effects[0] is not UnitBuffEffectDef effect || effect.buff != expectedBuff ||
-            effect.target != expectedTarget || card.presentation?.sound != "buff")
+            effect.type != "buff-army" || effect.target != expectedTarget ||
+            card.presentation?.sound != "buff")
             throw new InvalidOperationException($"card '{expectedKey}' did not load its unit buff effect");
     }
 
