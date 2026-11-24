@@ -659,12 +659,10 @@ public sealed partial class CCountry
 
         if (cardType == AIR_FORCE_TYPE_CARD)
         {
-            CARD_ID cardId = card.id;
             // airborne uses the green arrow, air strike and bombing the yellow one
-            int targetType = card.effects.OfType<AirborneDeployEffectDef>().Any() ||
-                cardId == AIRBORNE_FORCE_CARD ? 1 : 2;
-            // the arrow type still follows the card id, the candidates come from the airport radius query;
-            // CheckCardTargetArea remains the final id / country / unit check
+            int targetType = card.effects.OfType<AirborneDeployEffectDef>().Any() ? 1 : 2;
+            // Candidates come from the airport radius query; CheckCardTargetArea remains the
+            // final card-definition and condition check.
             var candidateIds = new HashSet<int>();
             foreach (int airportAreaId in areaIdList)
             {

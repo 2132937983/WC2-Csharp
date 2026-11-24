@@ -79,7 +79,7 @@ public sealed class CNationInfo
     public int money;
     public int industry;
     public int tech;
-    public bool[] canUseCard = new bool[(int)CARD_ID.VALID_CARD_COUNT + 10];
+    public Dictionary<string, bool> canUseCard = new();
 }
 
 public sealed class CommanderData
@@ -372,6 +372,8 @@ public class CardDef : DeprecatedCardDef
     public CardPresentationDef presentation;
     public bool commanderPriceScaling;
     public bool commanderCooldown;
+    public int aiWeight;
+    public string aiRole = "";
     public readonly List<CardResourceCostDef> costs = new();
 
     // The following helpers are currently unused (CardDefs.cpp keeps SetCardRound, GetCardMaxTimes,

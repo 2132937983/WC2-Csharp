@@ -1,8 +1,37 @@
 namespace WC2;
 
+public enum AICardCategory { Unsupported, AirStrike, Fortification, UnitBuff, Construction, DraftLand, DraftNavy }
+
 /// <summary>AI main decision loop (CActionAI.cpp).</summary>
 public sealed partial class CActionAI
 {
+    private static AICardCategory ClassifyCard(CardDef card)
+    {
+        if (card == null) return AICardCategory.Unsupported;
+        switch (card.aiRole?.ToLowerInvariant())
+        {
+            case "air-strike": return AICardCategory.AirStrike;
+            case "fortification": return AICardCategory.Fortification;
+            case "unit-buff": return AICardCategory.UnitBuff;
+            case "construction": return AICardCategory.Construction;
+            case "draft-land": return AICardCategory.DraftLand;
+            case "draft-navy": return AICardCategory.DraftNavy;
+        }
+        foreach (CardEffectDef effect in card.effects)
+        {
+            if (effect is StrategicStrikeEffectDef or AirborneDeployEffectDef)
+                return AICardCategory.AirStrike;
+            if (effect is AreaStructureEffectDef structure)
+            {
+                if (structure.slot == AreaStructureSlot.INSTALLATION) return AICardCategory.Fortification;
+                if (structure.slot == AreaStructureSlot.CONSTRUCTION) return AICardCategory.Construction;
+            }
+            if (effect is BuffArmyEffectDef) return AICardCategory.UnitBuff;
+            if (effect is DraftArmyEffectDef)
+                return card.type == NAVY_TYPE_CARD ? AICardCategory.DraftNavy : AICardCategory.DraftLand;
+        }
+        return AICardCategory.Unsupported;
+    }
     private static CActionAI _instance;
     public static CActionAI Instance() => _instance ??= new CActionAI();
 
@@ -88,9 +117,8 @@ public sealed partial class CActionAI
     /// </summary>
     /// <param name="cardId">card id</param>
     /// <returns>whether the card can be used</returns>
-    public bool detectCards(CARD_ID cardId)
+    public bool detectCards(CardDef cardDef)
     {
-        CardDef cardDef = CObjectDef.Instance().GetCardDef(cardId, currentCountry);
         if (cardDef == null) return false;
 
         // This includes scaled resource costs and special research / commander availability.
@@ -104,10 +132,9 @@ public sealed partial class CActionAI
         g_NationInfo.money = country.money;
         g_NationInfo.industry = country.industry;
         g_NationInfo.tech = country.tech;
-        for (int cardId = (int)INFANTRY_CARD; cardId < VALID_CARD_COUNT; cardId++)
-        {
-            g_NationInfo.canUseCard[cardId] = detectCards(CObjectDef.TurnIntToRealCardId(cardId));
-        }
+        g_NationInfo.canUseCard.Clear();
+        foreach (CardDef card in CObjectDef.Instance().GetCardDefs(country))
+            g_NationInfo.canUseCard[card.key] = detectCards(card);
     }
 
     /// <summary>
@@ -149,38 +176,36 @@ public sealed partial class CActionAI
             // basic situation of the country, including usable cards
             analyseCompositePower();
 
-            // pick a card category at random; the lowest card id of the category stands for it
+            // Pick a category directly; no card ID is used as a category sentinel.
             int choice = GetAIRand() % 100;
-            CARD_ID cardId;
+            AICardCategory category;
             if (choice > 92)
             {
-                // installation cards
-                cardId = LAND_FORT_CARD;
+                category = AICardCategory.Fortification;
             }
             else if (choice > 79)
             {
-                cardId = AIR_STRIKE_CARD;
+                category = AICardCategory.AirStrike;
             }
             else if (choice > 72)
             {
-                // construction cards
-                cardId = CITY_CARD;
+                category = AICardCategory.Construction;
             }
             else if (choice > 59)
             {
-                cardId = ASSAULT_ART_CARD;
+                category = AICardCategory.UnitBuff;
             }
             else if (choice > 49)
             {
-                cardId = DESTROYER_CARD;
+                category = AICardCategory.DraftNavy;
             }
             else
             {
-                cardId = INFANTRY_CARD;
+                category = AICardCategory.DraftLand;
             }
 
             // try to buy a card
-            purChaseCard(cardId);
+            purChaseCard(category);
             // try to move a unit to the top
             sortArmyToFront();
             // try to move or attack
@@ -381,7 +406,7 @@ public sealed partial class CActionAI
     /// </summary>
     /// <param name="card">card id standing for a category</param>
     /// <returns>whether a card is used (the return value is actually unused)</returns>
-    public bool purChaseCard(CARD_ID card)
+    public bool purChaseCard(AICardCategory category)
     {
         bool willUseCard;
         string aiCardUsingStr;
@@ -392,31 +417,30 @@ public sealed partial class CActionAI
         CCountry country = currentCountry;
         if (country.money < turnBeginMoneyQuarter || country.industry < turnBeginIndustryQuarter)
             return false;
-        aiCardUsingStr = Sprintf("--PurChaseCard AI[%d]---\n", (int)card);
-
+        aiCardUsingStr = Sprintf("--PurChaseCard AI[%d]---\n", (int)category);
         // category specific checks
-        if (card == AIR_STRIKE_CARD)
+        if (category == AICardCategory.AirStrike)
         {
             willUseCard = CActionAssist.Instance().purChaseAirStrikeCard();
         }
-        else if (card == LAND_FORT_CARD)
+        else if (category == AICardCategory.Fortification)
         {
             willUseCard = CActionAssist.Instance().purChaseFortCard();
         }
-        else if (card == ASSAULT_ART_CARD)
+        else if (category == AICardCategory.UnitBuff)
         {
             // unit enhancement tactics cards
             willUseCard = CActionAssist.Instance().purChaseCardsCard();
         }
-        else if (card == CITY_CARD)
+        else if (category == AICardCategory.Construction)
         {
             // construction cards
             willUseCard = CActionAssist.Instance().purChaseConstructCard();
         }
-        else if (card == INFANTRY_CARD || card == DESTROYER_CARD)
+        else if (category == AICardCategory.DraftLand || category == AICardCategory.DraftNavy)
         {
             // unit cards
-            willUseCard = CActionAssist.Instance().purChaseDraftCard(card == DESTROYER_CARD);
+            willUseCard = CActionAssist.Instance().purChaseDraftCard(category == AICardCategory.DraftNavy);
         }
         else
         {

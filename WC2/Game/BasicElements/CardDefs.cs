@@ -124,6 +124,10 @@ public sealed partial class CObjectDef
                                 tmp_card_def.tech = Tech;
                                 tmp_card_def.relatedArmyId = RelatedArmyId;
                                 tmp_card_def.maxTimes = MaxTimes;
+                                if (CardListElement.QueryIntAttribute("ai-weight", out int aiWeight) != TIXML_SUCCESS)
+                                    aiWeight = 0;
+                                tmp_card_def.aiWeight = aiWeight;
+                                tmp_card_def.aiRole = CardListElement.Attribute("ai-role") ?? "";
                                 string priceScaling = CardListElement.Attribute("price-scaling");
                                 if (priceScaling != null && priceScaling != "commander-level")
                                     throw CardConfigError(CountryName, tmp_card_def, $"unknown price-scaling '{priceScaling}'");
@@ -883,6 +887,18 @@ public sealed partial class CObjectDef
     {
         CCountry country_now = g_GameManager.GetCurCountry();
         return GetCardDef(cardId, country_now);
+    }
+
+    /// <summary>Returns the effective card definitions for a country, including fallback cards.</summary>
+    public IEnumerable<CardDef> GetCardDefs(CCountry country)
+    {
+        var cards = new Dictionary<int, CardDef>();
+        if (country != null && mapNewCardDef.TryGetValue(country.name, out ToNewCardDef own) && own != null)
+            foreach (var entry in own.mapCarddef) cards[entry.Key] = entry.Value;
+        if (mapNewCardDef.TryGetValue("others", out ToNewCardDef fallback) && fallback != null)
+            foreach (var entry in fallback.mapCarddef)
+                if (!cards.ContainsKey(entry.Key)) cards[entry.Key] = entry.Value;
+        return cards.Values;
     }
 
     public static CARD_ID TurnIntToRealCardId(int num_in)
