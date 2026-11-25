@@ -85,3 +85,7 @@ captures/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Python bytecode/cache
+__pycache__/
+*.py[cod]
