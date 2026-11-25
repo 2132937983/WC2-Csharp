@@ -17,30 +17,14 @@ public sealed partial class CObjectDef
         new() { RESEARCH_CARD, CARRIER_CARD, ASSAULT_ART_CARD, DEFEND_ART_CARD, COMMANDER_CARD, SUPPLY_LINE_CARD, ACE_FORCES_CARD },
     };
 
-    private static readonly List<CARD_ID> s_emptyTroopCardList = new();
-
-    // 用于ai用卡的排序
-    private struct CardSortInfo
-    {
-        public CARD_ID id;
-        public int price;
-        public int industry;
-        public int tech;
-    }
-
     /// <summary>
-    /// Releases the XML card definitions and the per country card tables.
-    /// Every card belongs to the country table that defined it.
+    /// Releases global card definitions and per-country tab configuration.
     /// </summary>
     public void ReleaseCardDef()
     {
-        foreach (var countryEntry in mapNewCardDef)
-        {
-            ToNewCardDef countryCards = countryEntry.Value;
-            if (countryCards == null) continue;
-            countryCards.mapCarddef.Clear();
-        }
-        mapNewCardDef.Clear();
+        cardDefsById.Clear();
+        cardDefsByKey.Clear();
+        countryCardTabs.Clear();
     }
 
     /// <summary>
@@ -69,20 +53,29 @@ public sealed partial class CObjectDef
         ReleaseCardDef();
         if (Xml.LoadFile(TIXML_ENCODING_UNKNOWN))
         {
-            TiXmlElement XmlElement = Xml.FirstChildElement("cards");
-            if (XmlElement != null)
+            TiXmlElement root = Xml.FirstChildElement("cards");
+            if (root != null)
             {
-                for (TiXmlElement ListElement = XmlElement.FirstChildElement();
-                     ListElement != null; ListElement = ListElement.NextSiblingElement())
+                TiXmlElement countriesElement = root.FirstChildElement("countries");
+                for (TiXmlElement countryElement = countriesElement?.FirstChildElement("country");
+                     countryElement != null; countryElement = countryElement.NextSiblingElement("country"))
                 {
-                    // "call" only to keep it apart from the card name; deserves a better name
-                    string CountryName = ListElement.Attribute("call");
-                    if (CountryName != null)
-                    {
-                        InitCountryCardDefMap(CountryName);
-                        for (TiXmlElement CardListElement = ListElement.FirstChildElement();
+                    string countryName = countryElement.Attribute("call");
+                    if (string.IsNullOrWhiteSpace(countryName))
+                        throw new InvalidDataException("carddef.xml: country requires call");
+                    InitCountryCardTabs(countryName);
+                    TiXmlElement cardTabsElement = countryElement.FirstChildElement("cardtabs");
+                    if (cardTabsElement != null)
+                        ParseCardTabs(cardTabsElement, countryCardTabs[countryName], countryName);
+                }
+
+                TiXmlElement definitionsElement = root.FirstChildElement("definitions");
+                if (definitionsElement == null)
+                    throw new InvalidDataException("carddef.xml: missing definitions");
+                const string definitionContext = "global";
+                for (TiXmlElement CardListElement = definitionsElement.FirstChildElement("card");
                              CardListElement != null;
-                             CardListElement = CardListElement.NextSiblingElement())
+                             CardListElement = CardListElement.NextSiblingElement("card"))
                         {
                             string CardName = CardListElement.Attribute("name");
                             if (CardName != null)
@@ -130,10 +123,10 @@ public sealed partial class CObjectDef
                                 tmp_card_def.aiRole = CardListElement.Attribute("ai-role") ?? "";
                                 string priceScaling = CardListElement.Attribute("price-scaling");
                                 if (priceScaling != null && priceScaling != "commander-level")
-                                    throw CardConfigError(CountryName, tmp_card_def, $"unknown price-scaling '{priceScaling}'");
+                                    throw CardConfigError(definitionContext, tmp_card_def, $"unknown price-scaling '{priceScaling}'");
                                 string cooldownMode = CardListElement.Attribute("cooldown-mode");
                                 if (cooldownMode != null && cooldownMode != "commander")
-                                    throw CardConfigError(CountryName, tmp_card_def, $"unknown cooldown-mode '{cooldownMode}'");
+                                    throw CardConfigError(definitionContext, tmp_card_def, $"unknown cooldown-mode '{cooldownMode}'");
                                 tmp_card_def.commanderPriceScaling = priceScaling == "commander-level";
                                 tmp_card_def.commanderCooldown = cooldownMode == "commander";
                                 string Image = CardListElement.Attribute("image");
@@ -143,17 +136,13 @@ public sealed partial class CObjectDef
                                 // the original tests Image here (sic); a missing intro falls back to the default text
                                 if (Image != null) tmp_card_def.intro = Intro ?? "Infantry Intro";
                                 else tmp_card_def.intro = "Infantry Intro";
-                                ParseCardCosts(CardListElement, tmp_card_def, CountryName);
-                                ParseCardEffects(CardListElement, tmp_card_def, CountryName);
-                                string tmp_char = CountryName;
-                                AddNewCardDefToMap(tmp_card_def, tmp_char);
+                                ParseCardCosts(CardListElement, tmp_card_def, definitionContext);
+                                ParseCardEffects(CardListElement, tmp_card_def, definitionContext);
+                                AddCardDef(tmp_card_def);
                             }
                         }
-                    }
-                }
             }
         }
-        RebuildTroopCardLists();
     }
 
     // 解析卡牌开销字段
@@ -792,113 +781,106 @@ public sealed partial class CObjectDef
     private static InvalidDataException CardConfigError(string countryName, CardDef card, string message) =>
         new($"carddef.xml: country={countryName} card={card.key}: {message}");
 
-    public void InitCountryCardDefMap(string countryName)
+    private void InitCountryCardTabs(string countryName)
     {
         if (countryName == null) return;
-        if (mapNewCardDef.ContainsKey(countryName)) return;
-        mapNewCardDef[countryName] = new ToNewCardDef();
+        if (countryCardTabs.ContainsKey(countryName)) return;
+        countryCardTabs[countryName] = new CountryCardTabs();
     }
 
-    public void AddNewCardDefToMap(CardDef cardDef, string countryName)
+    private void AddCardDef(CardDef cardDef)
     {
         if (cardDef == null) return;
-
-        if (!mapNewCardDef.TryGetValue(countryName, out ToNewCardDef countryCards) || countryCards == null)
-        {
-            countryCards = new ToNewCardDef();
-            mapNewCardDef[countryName] = countryCards;
-        }
-
-        // replaces an existing card of the same id
-        countryCards.mapCarddef[(int)cardDef.id] = cardDef;
-    }
-
-    public CardDef GetNewCardDef(CARD_ID cardDefID, string CountryName)
-    {
-        if (CountryName != null &&
-            mapNewCardDef.TryGetValue(CountryName, out ToNewCardDef countryCards) && countryCards != null)
-        {
-            if (countryCards.mapCarddef.TryGetValue((int)cardDefID, out CardDef card)) return card;
-        }
-
-        if (!mapNewCardDef.TryGetValue("others", out ToNewCardDef defaultCards) || defaultCards == null) return null;
-
-        if (!defaultCards.mapCarddef.TryGetValue((int)cardDefID, out CardDef defaultCard)) return null;
-
-        return defaultCard;
-    }
-
-    /// <summary>
-    /// Builds the AI drafting priority (by price) of every country.
-    /// A country table only holds overrides, missing cards still fall back to "others" via GetNewCardDef.
-    /// </summary>
-    public void RebuildTroopCardLists()
-    {
-        foreach (var countryEntry in mapNewCardDef)
-        {
-            ToNewCardDef countryCards = countryEntry.Value;
-            if (countryCards == null) continue;
-
-            for (int category = 0; category < 2; ++category)
-            {
-                var cards = new List<CardSortInfo>(AllCardTab[category].Count);
-
-                foreach (CARD_ID cardId in AllCardTab[category])
-                {
-                    CardDef cardDef = GetNewCardDef(cardId, countryEntry.Key);
-                    if (cardDef == null) continue;
-
-                    cards.Add(new CardSortInfo { id = cardId, price = cardDef.price, industry = cardDef.industry, tech = cardDef.tech });
-                }
-
-                cards.Sort((left, right) =>
-                {
-                    if (left.price != right.price) return right.price.CompareTo(left.price);
-                    if (left.industry != right.industry) return right.industry.CompareTo(left.industry);
-                    return right.tech.CompareTo(left.tech);
-                });
-
-                List<CARD_ID> order = countryCards.troopOrder[category];
-                order.Clear();
-                foreach (CardSortInfo card in cards) order.Add(card.id);
-            }
-        }
-    }
-
-    /// <summary>The read-only drafting order held by CObjectDef; without a country table the default one is used.</summary>
-    public List<CARD_ID> GetTroopCardList(string countryName, bool navy)
-    {
-        ToNewCardDef countryCards = null;
-        if (countryName == null || !mapNewCardDef.TryGetValue(countryName, out countryCards) || countryCards == null)
-            mapNewCardDef.TryGetValue("others", out countryCards);
-
-        if (countryCards != null) return countryCards.troopOrder[navy ? 1 : 0];
-
-        return s_emptyTroopCardList;
-    }
-
-    public CardDef GetCardDef(CARD_ID cardId, CCountry country)
-    {
-        if (country == null) return GetNewCardDef(cardId, "others");
-        return GetNewCardDef(cardId, country.name);
+        if (string.IsNullOrWhiteSpace(cardDef.key))
+            throw CardConfigError("global", cardDef, "card requires key");
+        if ((int)cardDef.id < 0 || (int)cardDef.id >= 128)
+            throw CardConfigError("global", cardDef, "card id must be between 0 and 127");
+        if (cardDefsByKey.ContainsKey(cardDef.key))
+            throw CardConfigError("global", cardDef, $"duplicate card key '{cardDef.key}'");
+        if (cardDefsById.ContainsKey((int)cardDef.id))
+            throw CardConfigError("global", cardDef, $"duplicate card id '{(int)cardDef.id}'");
+        cardDefsByKey.Add(cardDef.key, cardDef);
+        cardDefsById.Add((int)cardDef.id, cardDef);
     }
 
     public CardDef GetCardDef(CARD_ID cardId)
     {
-        CCountry country_now = g_GameManager.GetCurCountry();
-        return GetCardDef(cardId, country_now);
+        return cardDefsById.GetValueOrDefault((int)cardId);
     }
 
-    /// <summary>Returns the effective card definitions for a country, including fallback cards.</summary>
+    public CardDef GetCardDef(string key) =>
+        key != null ? cardDefsByKey.GetValueOrDefault(key) : null;
+
+    /// <summary>Returns only cards available through the country's effective tabs.</summary>
     public IEnumerable<CardDef> GetCardDefs(CCountry country)
     {
-        var cards = new Dictionary<int, CardDef>();
-        if (country != null && mapNewCardDef.TryGetValue(country.name, out ToNewCardDef own) && own != null)
-            foreach (var entry in own.mapCarddef) cards[entry.Key] = entry.Value;
-        if (mapNewCardDef.TryGetValue("others", out ToNewCardDef fallback) && fallback != null)
-            foreach (var entry in fallback.mapCarddef)
-                if (!cards.ContainsKey(entry.Key)) cards[entry.Key] = entry.Value;
-        return cards.Values;
+        return GetCardTab(country).SelectMany(tab => tab)
+            .Distinct().Select(GetCardDef).Where(card => card != null);
+    }
+
+    /// <summary>Builds the five display tabs for a country from its effective CardDefs.</summary>
+    public List<CARD_ID>[] GetCardTab(CCountry country)
+    {
+        var result = new List<CARD_ID>[5];
+        for (int i = 0; i < result.Length; i++) result[i] = new List<CARD_ID>();
+
+        CountryCardTabs ownTabs = null;
+        CountryCardTabs fallbackTabs = null;
+        if (country != null) countryCardTabs.TryGetValue(country.name, out ownTabs);
+        countryCardTabs.TryGetValue("others", out fallbackTabs);
+
+        for (int tab = 0; tab < AllCardTab.Length; tab++)
+        {
+            CountryCardTabs tabOwner = ownTabs != null && ownTabs.hasCardTab[tab]
+                ? ownTabs : fallbackTabs;
+            if (tabOwner != null && tabOwner.hasCardTab[tab])
+            {
+                foreach (string reference in tabOwner.cardTabEntries[tab])
+                {
+                    CardDef card = int.TryParse(reference, out int id)
+                        ? cardDefsById.GetValueOrDefault(id)
+                        : GetCardDef(reference);
+                    if (card == null)
+                        throw new InvalidDataException($"carddef.xml: country={country?.name ?? "others"} references unknown card '{reference}'");
+                    if (card != null && !result[tab].Contains(card.id)) result[tab].Add(card.id);
+                }
+                continue;
+            }
+            foreach (CARD_ID cardId in AllCardTab[tab])
+                if (cardDefsById.ContainsKey((int)cardId)) result[tab].Add(cardId);
+        }
+        return result;
+    }
+
+    private static int ParseCardTabIndex(string value, string countryName)
+    {
+        if (int.TryParse(value, out int index) && index >= 0 && index < 5) return index;
+        return value?.ToLowerInvariant() switch
+        {
+            "land" or "army" => 0,
+            "navy" => 1,
+            "airforce" or "air" => 2,
+            "development" or "develop" => 3,
+            "strategy" => 4,
+            _ => throw new InvalidOperationException($"country '{countryName}' has invalid cardtab '{value}'"),
+        };
+    }
+
+    private static void ParseCardTabs(TiXmlElement cardTabsElement, CountryCardTabs cardTable, string countryName)
+    {
+        for (TiXmlElement tabElement = cardTabsElement.FirstChildElement("cardtab");
+             tabElement != null; tabElement = tabElement.NextSiblingElement("cardtab"))
+        {
+            int tab = ParseCardTabIndex(tabElement.Attribute("tab"), countryName);
+            cardTable.hasCardTab[tab] = true;
+            for (TiXmlElement cardElement = tabElement.FirstChildElement("card");
+                 cardElement != null; cardElement = cardElement.NextSiblingElement("card"))
+            {
+                string reference = cardElement.Attribute("key") ?? cardElement.Attribute("id");
+                if (!string.IsNullOrWhiteSpace(reference))
+                    cardTable.cardTabEntries[tab].Add(reference);
+            }
+        }
     }
 
     public static CARD_ID TurnIntToRealCardId(int num_in)

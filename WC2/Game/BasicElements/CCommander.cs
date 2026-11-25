@@ -321,5 +321,5 @@ public sealed partial class CCountry
     }
 
     public bool CanUseCommander() =>
-        CanUseCommander(CObjectDef.Instance().GetCardDef(COMMANDER_CARD, this));
+        CanUseCommander(CObjectDef.Instance().GetCardDef(COMMANDER_CARD));
 }

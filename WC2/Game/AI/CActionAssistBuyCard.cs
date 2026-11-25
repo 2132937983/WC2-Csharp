@@ -118,7 +118,7 @@ public sealed partial class CActionAssist
         }
         CARD_ID draftType = CObjectDef.TurnIntToRealCardId(draftId);
 
-        CardDef tgtCard = CObjectDef.Instance().GetCardDef(draftType, curCountry);
+        CardDef tgtCard = CObjectDef.Instance().GetCardDef(draftType);
         if (tgtCard == null) return false;
         actionNode.cardId = draftType;
         actionNode.actionType = ActionNode.CARD_NODE;
@@ -487,7 +487,7 @@ public sealed partial class CActionAssist
                 // update area and card choice
                 if (normalAirAtkBenefit < localBenefit)
                 {
-                    CardDef card = CObjectDef.Instance().GetCardDef(curSuitableCardId, curCountry);
+                    CardDef card = CObjectDef.Instance().GetCardDef(curSuitableCardId);
                     // willing and able to air strike / bomb
                     if (isBuyCard(card) && curCountry.CheckCardTargetArea(card, neighbourId))
                     {
@@ -592,7 +592,7 @@ public sealed partial class CActionAssist
 
         if (airCardId == INVALID_CARD) return false;
         if (airTargetAreaId == -1) return false;
-        CardDef airCard = CObjectDef.Instance().GetCardDef(airCardId, curCountry);
+        CardDef airCard = CObjectDef.Instance().GetCardDef(airCardId);
         if (airCard == null) return false;
 
         actionNode.cardId = airCardId;
@@ -698,7 +698,7 @@ public sealed partial class CActionAssist
             }
         }
         if (selectedCardId == INVALID_CARD) return false;
-        CardDef troop = CObjectDef.Instance().GetCardDef(selectedCardId, curCountry);
+        CardDef troop = CObjectDef.Instance().GetCardDef(selectedCardId);
         if (troop == null) return false;
         actionNode.cardId = selectedCardId;
         actionNode.actionType = ActionNode.CARD_NODE;

@@ -434,11 +434,10 @@ public sealed class CardResourceCostDef
     public int growthPerTechLevel;
 }
 
-public sealed class ToNewCardDef
+public sealed class CountryCardTabs
 {
-    public Dictionary<int, CardDef> mapCarddef = new();
-    /// <summary>[0] land troop card order, [1] navy troop card order.</summary>
-    public List<CARD_ID>[] troopOrder = { new(), new() };
+    public readonly List<string>[] cardTabEntries = { new(), new(), new(), new(), new() };
+    public readonly bool[] hasCardTab = new bool[5];
 }
 
 // ---- army definitions ----------------------------------------------------------------------

@@ -25,7 +25,9 @@ public sealed partial class CObjectDef
     public Dictionary<string, GeneralPhoto> mapGeneralPhotos = new();
     public Dictionary<string, BattleDef> mapBattleDef = new();
     public Dictionary<string, ConquestDef> mapConquestList = new();
-    public Dictionary<string, ToNewCardDef> mapNewCardDef = new();
+    public Dictionary<int, CardDef> cardDefsById = new();
+    public Dictionary<string, CardDef> cardDefsByKey = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, CountryCardTabs> countryCardTabs = new(StringComparer.OrdinalIgnoreCase);
     /// <summary>Weapon/armor damage multipliers keyed by MakeWeaponArmorRuleKey, value = rate * 1000.</summary>
     public Dictionary<ushort, ushort> weaponArmorDamageRates = new();
 

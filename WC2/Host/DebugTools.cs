@@ -85,25 +85,25 @@ public static class DebugTools
         definitions.LoadArmyDef();
         definitions.LoadCardDef();
 
-        CardDef infantry = definitions.GetNewCardDef(INFANTRY_CARD, "others");
-        CardDef airstrike = definitions.GetNewCardDef(AIR_STRIKE_CARD, "others");
-        CardDef bomber = definitions.GetNewCardDef(BOMBER_CARD, "others");
-        CardDef airborne = definitions.GetNewCardDef(AIRBORNE_FORCE_CARD, "others");
-        CardDef nuclear = definitions.GetNewCardDef(NUCLEAR_BOMB_CARD, "others");
-        CardDef city = definitions.GetNewCardDef(CITY_CARD, "others");
-        CardDef industry = definitions.GetNewCardDef(INDUSTRY_CARD, "others");
-        CardDef airport = definitions.GetNewCardDef(AIRPORT_CARD, "others");
-        CardDef fort = definitions.GetNewCardDef(LAND_FORT_CARD, "others");
-        CardDef entrenchment = definitions.GetNewCardDef(ENTRENCHMENT_CARD, "others");
-        CardDef antiaircraft = definitions.GetNewCardDef(ANTIAIRCRAFT_CARD, "others");
-        CardDef radar = definitions.GetNewCardDef(RADAR_CARD, "others");
-        CardDef carrier = definitions.GetNewCardDef(CARRIER_CARD, "others");
-        CardDef assault = definitions.GetNewCardDef(ASSAULT_ART_CARD, "others");
-        CardDef defence = definitions.GetNewCardDef(DEFEND_ART_CARD, "others");
-        CardDef commander = definitions.GetNewCardDef(COMMANDER_CARD, "others");
-        CardDef research = definitions.GetNewCardDef(RESEARCH_CARD, "others");
-        CardDef supplyLine = definitions.GetNewCardDef(SUPPLY_LINE_CARD, "others");
-        CardDef aceForces = definitions.GetNewCardDef(ACE_FORCES_CARD, "others");
+        CardDef infantry = definitions.GetCardDef(INFANTRY_CARD);
+        CardDef airstrike = definitions.GetCardDef(AIR_STRIKE_CARD);
+        CardDef bomber = definitions.GetCardDef(BOMBER_CARD);
+        CardDef airborne = definitions.GetCardDef(AIRBORNE_FORCE_CARD);
+        CardDef nuclear = definitions.GetCardDef(NUCLEAR_BOMB_CARD);
+        CardDef city = definitions.GetCardDef(CITY_CARD);
+        CardDef industry = definitions.GetCardDef(INDUSTRY_CARD);
+        CardDef airport = definitions.GetCardDef(AIRPORT_CARD);
+        CardDef fort = definitions.GetCardDef(LAND_FORT_CARD);
+        CardDef entrenchment = definitions.GetCardDef(ENTRENCHMENT_CARD);
+        CardDef antiaircraft = definitions.GetCardDef(ANTIAIRCRAFT_CARD);
+        CardDef radar = definitions.GetCardDef(RADAR_CARD);
+        CardDef carrier = definitions.GetCardDef(CARRIER_CARD);
+        CardDef assault = definitions.GetCardDef(ASSAULT_ART_CARD);
+        CardDef defence = definitions.GetCardDef(DEFEND_ART_CARD);
+        CardDef commander = definitions.GetCardDef(COMMANDER_CARD);
+        CardDef research = definitions.GetCardDef(RESEARCH_CARD);
+        CardDef supplyLine = definitions.GetCardDef(SUPPLY_LINE_CARD);
+        CardDef aceForces = definitions.GetCardDef(ACE_FORCES_CARD);
         RequireEffect<DraftArmyEffectDef>(infantry, "infantry", effect =>
             effect.armyTypeId == (int)INFANTRY);
         RequireEffect<StrategicStrikeEffectDef>(airstrike, "airstrike", effect =>

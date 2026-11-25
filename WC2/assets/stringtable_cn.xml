@@ -69,6 +69,8 @@
 
 	<key>Infantry Intro</key>
 	<string>最容易组建的部队，战场上的主力军。</string>
+	<key>Cn Infantry Intro</key>
+	<string>经过战火锤炼的人民军队。</string>
 	<key>Armour Intro</key>
 	<string>装甲车拥有最优越的机动性，它的大口径机枪可以\n有效的杀伤步兵。</string>
 	<key>Artillery Intro</key>

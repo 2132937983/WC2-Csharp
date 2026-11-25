@@ -21,11 +21,21 @@ public sealed class GUICardList : GUIElement
 
     public GUICardList() { }
 
+    public override void Dispose()
+    {
+        if (IsDisposed) return;
+        base.Dispose();
+        guiCard.Clear();
+        selectedItem = -1;
+        touched = false;
+        touchMoved = false;
+    }
+
     /// <summary>
     /// Initializes the horizontal card list of a tab. The x of each card accumulates cardWidth;
     /// the touch inertia fields are used by the scrolling logic.
     /// </summary>
-    public void Init(in GUIRect Rect, int Tab)
+    public void Init(in GUIRect Rect, int Tab, List<CARD_ID> cardIds = null)
     {
         rect.x = Rect.x;
         rect.y = Rect.y;
@@ -40,7 +50,7 @@ public sealed class GUICardList : GUIElement
             cardWidth = 110.0f;
 
         // enum entries without a CardDef are skipped, no GUI is created for unimplemented cards
-        var cardIds = GUICardTab.AllCardTab[Tab];
+        cardIds ??= GUICardTab.AllCardTab[Tab];
         for (int i = 0; i < cardIds.Count; i++)
         {
             CARD_ID cardId = cardIds[i];

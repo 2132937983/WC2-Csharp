@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cards>
-	<country call="others">
+	<definitions>
 		<card key="infantry" name="Infantry" legacy-id="0" type="army" price="75" industry="0" round="0" tech="1" image="card_infantry.png" intro="Infantry Intro">
 			<effects><effect type="draft-army" unit="infantry"><conditions><target-area><condition property="city-level" operator="greater-than" value="2"/></target-area></conditions></effect></effects>
 		</card>
@@ -152,10 +152,7 @@
 			</effects>
 			<presentation sound="level-up"/>
 		</card>
-        </country>
-
-       <country call="cn">
-		<card key="infantry" name="Infantry" legacy-id="0" type="army" price="50" industry="-5" round="0" tech="1" image="card_infantry.png" intro="Infantry Intro">
+		<card key="cn-infantry" name="Infantry" id="29" type="army" price="50" industry="-5" round="0" tech="1" image="card_armour.png" intro="Cn Infantry Intro">
 			<effects>
 				<effect type="draft-army" unit="infantry">
 				<conditions>
@@ -174,19 +171,50 @@
 			</effects>
 		</card>
 
-		<card key="ace-forces" name="Ace Forces" legacy-id="27" type="strategy" price="120" industry="20" round="1" tech="3" image="card_aceforce.png" intro="Ace Forces Intro">
+		<card key="cn-ace-forces" name="Ace Forces" id="30" type="strategy" price="120" industry="20" round="1" tech="3" image="card_aceforce.png" intro="Ace Forces Intro">
 			<effects><effect type="buff-army" operation="level" target="front" levels="+2"/></effects>
 			<presentation sound="level-up"/>
 		</card>
-	</country>
-
-       <country call="de">
-		<card name="De Elite Infantry" id="28" type="army" price="120" industry="60" round="0" tech="3" relatedArmyId="15"  image="card_infantry.png" intro="De Elite Infantry Intro"/>
-        </country>
-	<country call="ru">
-		<card key="industry" name="Industry" legacy-id="15" type="development" price="40" industry="10" round="0" tech="1" image="card_industry.png" intro="Industry Intro">
+		<card key="de-elite-infantry" name="De Elite Infantry" id="31" type="army" price="120" industry="60" round="0" tech="3" relatedArmyId="15" image="card_infantry.png" intro="De Elite Infantry Intro">
+			<effects>
+			<effect type="draft-army" unit="eliteinfantry">
+			<conditions>
+				<target-area>
+					<any>
+					<condition property="city-level" operator="greater-than-or-equal" value="3"/>
+					<condition property="industry-level" operator="greater-than" value="1"/>
+					</any>
+				</target-area>
+				</conditions>
+				</effect>
+				</effects>
+		</card>
+		<card key="ru-industry" name="Industry" id="32" type="development" price="40" industry="10" round="0" tech="1" image="card_industry.png" intro="Industry Intro">
 			<effects><effect type="area-structure" slot="construction" structure="industry" operation="adjust" amount="+1" initial-level="area-default"/></effects>
 			<presentation sound="build"/>
 		</card>
-	</country>
+	</definitions>
+	<countries>
+		<country call="others">
+			<cardtabs>
+				<cardtab tab="land"><card key="infantry"/><card key="armour"/><card key="artillery"/><card key="rocket"/><card key="tank"/><card key="heavy-tank"/><card key="elite-infantry"/></cardtab>
+				<cardtab tab="navy"><card key="destroyer"/><card key="cruiser"/><card key="battleship"/><card key="aircraft-carrier"/></cardtab>
+				<cardtab tab="airforce"><card key="airstrike"/><card key="bomber"/><card key="airborne-force"/><card key="nuclear-bomb"/></cardtab>
+				<cardtab tab="development"><card key="city"/><card key="industry"/><card key="airport"/><card key="land-fort"/><card key="entrenchment"/><card key="antiaircraft"/><card key="radar"/></cardtab>
+				<cardtab tab="strategy"><card key="research"/><card key="carrier"/><card key="assault-art"/><card key="defend-art"/><card key="commander"/><card key="supply-line"/><card key="ace-forces"/></cardtab>
+			</cardtabs>
+		</country>
+		<country call="cn">
+			<cardtabs>
+				<cardtab tab="land"><card key="cn-infantry"/><card key="armour"/><card key="artillery"/><card key="rocket"/><card key="tank"/><card key="elite-infantry"/></cardtab>
+				<cardtab tab="strategy"><card key="research"/><card key="carrier"/><card key="assault-art"/><card key="defend-art"/><card key="commander"/><card key="supply-line"/><card key="cn-ace-forces"/></cardtab>
+			</cardtabs>
+		</country>
+		<country call="de">
+			<cardtabs><cardtab tab="land"><card key="infantry"/><card key="armour"/><card key="artillery"/><card key="rocket"/><card key="tank"/><card key="heavy-tank"/><card key="de-elite-infantry"/></cardtab></cardtabs>
+		</country>
+		<country call="ru">
+			<cardtabs><cardtab tab="development"><card key="city"/><card key="ru-industry"/><card key="airport"/><card key="land-fort"/><card key="entrenchment"/><card key="antiaircraft"/><card key="radar"/></cardtab></cardtabs>
+		</country>
+	</countries>
 </cards>

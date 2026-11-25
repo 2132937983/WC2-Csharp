@@ -23,6 +23,9 @@ public sealed class GUIBuyCard : GUIElement
     public readonly ecText nameText = new();
     public readonly ecText introText = new();
     public GUICardList[] cardListGui = new GUICardList[5];
+    public List<CARD_ID>[] cardTabLists;
+    private CCountry boundCountry;
+    private GUIRect cardListRect;
     public int xD8;
     public int selCardId = -1;
     public int xE0;
@@ -146,6 +149,8 @@ public sealed class GUIBuyCard : GUIElement
         }
         // the tab bar sits above the card lists; the switch events go through the GUI event chain
         cardTab = new GUICardTab();
+        boundCountry = g_GameManager.GetPlayerCountry();
+        cardTabLists = CObjectDef.Instance().GetCardTab(boundCountry);
         tmp_rect.h = rect.h;
         tmp_rect.w = rect.w;
         tmp_rect.x = 0.0f;
@@ -164,7 +169,8 @@ public sealed class GUIBuyCard : GUIElement
             tmp_rect.h = 150.0f;
             tmp_rect.y = tmp_float_y;
             tmp_rect.w = tmp_float_w;
-            cardListGui[i].Init(tmp_rect, i);
+            cardListRect = tmp_rect;
+            cardListGui[i].Init(tmp_rect, i, cardTabLists[i]);
             AddChild(cardListGui[i], false);
             if (i > 0)
                 cardListGui[i].Hide();
@@ -275,12 +281,14 @@ public sealed class GUIBuyCard : GUIElement
         CCountry Country = g_GameManager.GetPlayerCountry();
 
         if (Country == null) return;
+        BindCountry(Country);
 
         if (Country.ai)
             // the buy page only serves humans; the AI buys through its own strategy
             return;
-        foreach (var tabList in GUICardTab.AllCardTab)
+        for (int tab = 0; tab < cardTabLists.Length; tab++)
         {
+            List<CARD_ID> tabList = cardTabLists[tab];
             // serial is the index inside the tab, not the global CARD_ID
             int serial = 0;
             foreach (CARD_ID pre_ID in tabList)
@@ -290,7 +298,7 @@ public sealed class GUIBuyCard : GUIElement
                 int money_here = Country.GetCardPrice(card_tmp);
                 int industry_here = Country.GetCardIndustry(card_tmp);
                 ResearchEffectDef research = card_tmp.effects.OfType<ResearchEffectDef>().FirstOrDefault();
-                GUICard GUI_tmp = cardListGui[(int)card_tmp.type].GetCard(serial);
+                GUICard GUI_tmp = cardListGui[tab].GetCard(serial);
                 serial++;
                 if (GUI_tmp != null)
                 {
@@ -328,8 +336,6 @@ public sealed class GUIBuyCard : GUIElement
                     {
                         // Research progress uses the country's techTurn instead of the normal card cool-down.
                         GUI_tmp.coolDown = Country.techTurn;
-                        if (GUI_tmp.coolDown > 0)
-                            GUI_tmp.notGrey = false;
                         int maximumLevel = research?.maxLevel ?? 5;
                         if (Country.tech >= maximumLevel)
                         {
@@ -369,6 +375,30 @@ public sealed class GUIBuyCard : GUIElement
             buttonOk.SetEnable(false);
     }
 
+    /// <summary>Rebuilds the five card-list GUI trees when the local player country changes.</summary>
+    public void BindCountry(CCountry country)
+    {
+        if (country == null || ReferenceEquals(boundCountry, country)) return;
+
+        boundCountry = country;
+        cardTabLists = CObjectDef.Instance().GetCardTab(country);
+        selCardId = -1;
+        cardCanTarget = false;
+        cardTargetArmy = false;
+        nameText.SetText("");
+        introText.SetText("");
+        buttonOk.SetEnable(false);
+
+        for (int tab = 0; tab < cardListGui.Length; tab++)
+        {
+            if (cardListGui[tab] != null) FreeChild(cardListGui[tab]);
+            cardListGui[tab] = new GUICardList();
+            cardListGui[tab].Init(cardListRect, tab, cardTabLists[tab]);
+            AddChild(cardListGui[tab], false);
+            if (tab != cardTab.selectedTab) cardListGui[tab].Hide();
+        }
+    }
+
     /// <summary>Draws the background, the board, the card description and the card name.</summary>
     public override void OnRender()
     {
@@ -397,7 +427,7 @@ public sealed class GUIBuyCard : GUIElement
         introText.SetText("");
         nameText.SetText("");
         // the card id is the single selection state; SetSelCardIntro fills the texts from it
-        var tabList = GUICardTab.AllCardTab[CardTab];
+        var tabList = cardTabLists[CardTab];
         selCardId = Index >= 0 && Index < tabList.Count ? (int)tabList[Index] : -1;
         SetSelCardIntro();
         if (GetSelCard() != null && CanBuySelCard())

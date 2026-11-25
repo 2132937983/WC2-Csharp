@@ -37,8 +37,9 @@ public sealed partial class CCountry
     public int[] warMedal = new int[6];
     public bool borrowedLoan;
     public CPlayer player;
-    public int[] cardRound = new int[VALID_CARD_COUNT + 10];
-    public int[] cardTimes = new int[VALID_CARD_COUNT + 10];
+    // SaveCountryInfo already reserves 128 card slots; flat card IDs use that compatibility range.
+    public int[] cardRound = new int[128];
+    public int[] cardTimes = new int[128];
     /// <summary>Kill statistics of custom unit types, so dynamic ids never index the fixed array.</summary>
     public Dictionary<int, int> destroyCountByArmyType = new();
 
@@ -315,11 +316,11 @@ public sealed partial class CCountry
     /// <summary>Initialises every card cool-down of the country (may move to a card file later).</summary>
     public void InitCountryCardRound()
     {
-        foreach (List<CARD_ID> i in CObjectDef.AllCardTab)
+        foreach (List<CARD_ID> i in CObjectDef.Instance().GetCardTab(this))
         {
             foreach (CARD_ID cardId in i)
             {
-                CardDef card = CObjectDef.Instance().GetCardDef(cardId, this);
+                CardDef card = CObjectDef.Instance().GetCardDef(cardId);
                 if (card != null) cardRound[(int)cardId] = card.round;
                 else cardRound[(int)cardId] = 0;
             }
@@ -421,7 +422,7 @@ public sealed partial class CCountry
 
             case CountryAction.CARD_ACTION:
             {
-                CardDef Def = CObjectDef.Instance().GetCardDef(action.cardId, this);
+                CardDef Def = CObjectDef.Instance().GetCardDef(action.cardId);
                 // card branches
                 bool xmlAirMission = Def?.effects.Any(effect =>
                     effect is StrategicStrikeEffectDef or AirborneDeployEffectDef) == true;
@@ -444,7 +445,7 @@ public sealed partial class CCountry
                 else
                 {
                     // ordinary cards
-                    UseCard(CObjectDef.Instance().GetCardDef(action.cardId, this),
+                    UseCard(CObjectDef.Instance().GetCardDef(action.cardId),
                         action.targetAreaId, action.armyIndex);
                 }
                 break;
@@ -734,15 +735,11 @@ public sealed partial class CCountry
     }
 
     /// <summary>
-    /// Card table of this country, falling back to "others". The original left this commented out
-    /// ("of little use"); ported from that commented code.
+    /// Global card table. Country availability is defined by GetCardTab instead.
     /// </summary>
     public Dictionary<int, CardDef> GetThisCountryNewCardDefMap()
     {
-        var map = CObjectDef.Instance().mapNewCardDef;
-        if (map.TryGetValue(name, out ToNewCardDef own) && own != null) return own.mapCarddef;
-        if (map.TryGetValue("others", out ToNewCardDef others) && others != null) return others.mapCarddef;
-        return new Dictionary<int, CardDef>();
+        return CObjectDef.Instance().cardDefsById;
     }
 
     // ---- GameTurnBegin.cpp ---------------------------------------------------------------
@@ -783,10 +780,9 @@ public sealed partial class CCountry
         }
 
         // card usage counters; this feature still needs UI work, better not use it yet
-        for (int cardId = (int)INFANTRY_CARD; cardId < VALID_CARD_COUNT; cardId++)
+        foreach (CardDef card in CObjectDef.Instance().GetCardDefs(this))
         {
-            CardDef card = CObjectDef.Instance().GetCardDef((CARD_ID)cardId, this);
-            if (card == null) continue;
+            int cardId = (int)card.id;
 
             // round 0 refills the uses every turn, a positive round does not;
             // round 1 and 0 behave slightly differently

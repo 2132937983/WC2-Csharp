@@ -34,10 +34,19 @@ public sealed class GUICard : GUIElement
     public override void Dispose()
     {
         if (IsDisposed) return;
+        cardDef = null;
+        imageCardShadow = null;
+        imageCardCommon = null;
         imageCard = null;
         imageMarkTime = null;
         imageMarkTechRequest = null;
         for (int i = 0; i < imageTechnology.Length; i++) imageTechnology[i] = null;
+        textPrice.SetText("");
+        textIndustry.SetText("");
+        textAttack.SetText("");
+        textHp.SetText("");
+        textMovement.SetText("");
+        textCoolDown.SetText("");
         base.Dispose();
     }
 
