@@ -1,12 +1,5 @@
 namespace WC2;
 
-/// <summary>Resolved unit image, so the render frame does not query ArmyDef repeatedly.</summary>
-public sealed class CGameResArmyRenderCacheEntry
-{
-    public ecImage image;
-    public bool resolved;
-}
-
 /// <summary>In-game shared images: units, bases, flags, buildings, cards (CGameRes.cpp).</summary>
 public sealed class CGameRes
 {
@@ -52,10 +45,8 @@ public sealed class CGameRes
     public ecTextureRes textureResBattlebg = new();
     public ecTextureRes textureResFlag = new();
     public ecText imageMovementText;
-    public Dictionary<int, Dictionary<string, ecImage>> imageArmies = new();
+    public Dictionary<int, ecImage> imageArmies = new();
     public Dictionary<int, ecImage> imageMarkCarriersNew = new();
-    /// <summary>Runtime cache: army type + country to unit image and navy flag.</summary>
-    public Dictionary<int, Dictionary<string, CGameResArmyRenderCacheEntry>> armyRenderCache = new();
 
     // Country ids that may own dedicated unit art / flags in the resource pack; "others" is the fallback key.
     public static readonly List<string> country_list = new()
@@ -105,7 +96,6 @@ public sealed class CGameRes
         imageHeavytank.Clear();
         imageCountryMedal.Clear();
         imageFlag.Clear();
-        armyRenderCache.Clear();
     }
 
     // ------------------------------------------------------------------------------------
@@ -233,7 +223,7 @@ public sealed class CGameRes
     public void RenderUIArmy(string CountryName, float x, float y, int ArmyType, bool sea, int HP, int MaxHP,
                              int Movement, int Cards, int Level)
     {
-        ecImage ArmyImage = GetArmyImage(CountryName, ArmyType, false);
+        ecImage ArmyImage = GetArmyImage(ArmyType, false);
         if (ArmyImage != null)
         {
             ArmyImage.SetColor(0xFFFFFFFF, -1);
@@ -267,25 +257,14 @@ public sealed class CGameRes
         }
     }
 
-    private static Dictionary<string, ecImage> ArmyImagesOf(Dictionary<int, Dictionary<string, ecImage>> map, int armyId)
-    {
-        if (!map.TryGetValue(armyId, out var byCountry))
-        {
-            byCountry = new Dictionary<string, ecImage>();
-            map[armyId] = byCountry;
-        }
-        return byCountry;
-    }
-
     /// <summary>
     /// Loads the textures, icons and effects shared by the battle map and the GUI and builds the
-    /// army id to country image index. Resolution and wide mode select the xml packs; callers
+    /// flat army id to image index. Resolution and wide mode select the xml packs; callers
     /// must Release before loading again.
     /// </summary>
     public void Load()
     {
         // Drop the old unit image cache on reload so it cannot reference old definitions or textures.
-        armyRenderCache.Clear();
         // army and cardtex supply most in-level HUD images; the second argument is the hd handling.
         if (g_contenscalefactor == 2.0f)
         {
@@ -306,12 +285,6 @@ public sealed class CGameRes
             {
                 string army_pic_name = armytype_pic_pair.Value;
                 int armyId = armytype_pic_pair.Key;
-                foreach (string country_name in country_list)
-                {
-                    ecImage imageSrc = textureResArmy.GetImageByFormat("%s_%s.png", army_pic_name, country_name);
-                    if (imageSrc != null)
-                        ArmyImagesOf(imageArmies, armyId)[country_name] = imageSrc;
-                }
                 // Land units only: the carrier mark applies to land units, navy needs no overlay.
                 if (i == 0)
                 {
@@ -322,74 +295,21 @@ public sealed class CGameRes
             }
         }
 
-        // Custom army types added in armydef.xml look for their art by type name by default:
-        // <army type="super_tank"> maps to super_tank_<country>.png. Built-in types are already
-        // covered by the legacy mapping above; this only adds ids missing from imageArmies.
+        // A flat ArmyDef owns one exact atlas image. Country no longer participates in lookup.
         CObjectDef objectDef = CObjectDef.Instance();
-        // Two passes so the others defaults are written first and the country overrides last,
-        // independent of the country name ordering of the map.
-        for (int pass = 0; pass < 2; ++pass)
+        foreach (KeyValuePair<int, ArmyDef> armyEntry in objectDef.armyDefsById)
         {
-            foreach (KeyValuePair<string, ArmyDefList> countryEntry in objectDef.mapArmyDefList)
-            {
-                string countryName = countryEntry.Key;
-                bool isDefaultCountry = countryName == "others";
-                if ((pass == 0) != isDefaultCountry)
-                    continue;
-                ArmyDefList armyList = countryEntry.Value;
-                if (armyList == null)
-                    continue;
-                foreach (KeyValuePair<int, ArmyDef> armyEntry in armyList.def)
-                {
-                    int armyId = armyEntry.Key;
-                    ArmyDef armyDef = armyEntry.Value;
-                    if (armyDef == null)
-                        continue;
-                    // armydef.xml only stores the base name of the unit image; the atlas
-                    // coordinates still come from the <Image> entries of army.xml / army_hd.xml.
-                    string armyName = armydef_internal.GetArmyTypeImageName(armyId) ?? "";
-                    string overrideName = armyDef.imageName;
-                    if (!string.IsNullOrEmpty(overrideName))
-                        armyName = overrideName;
-                    if (string.IsNullOrEmpty(armyName))
-                        armyName = armyDef.name ?? "";
-                    if (string.IsNullOrEmpty(armyName))
-                        continue;
-                    bool imageCountryIndependent = armydef_internal.IsArmyTypeImageCountryIndependent(armyId);
-                    if (armyDef.hasImageCountryIndependent)
-                        imageCountryIndependent = armyDef.imageCountryIndependent;
-                    // others is the default definition: its image fills the fallback slot of every country.
-                    // A country definition only writes its own slot so it cannot pollute other countries.
-                    if (imageCountryIndependent)
-                    {
-                        string imageKey = countryName == "others" ? "others" : countryName;
-                        ecImage image = textureResArmy.GetImageByFormat("%s.png", armyName);
-                        if (image != null)
-                            ArmyImagesOf(imageArmies, armyId)[imageKey] = image;
-                    }
-                    else if (countryName == "others")
-                    {
-                        foreach (string targetCountry in country_list)
-                        {
-                            ecImage image = textureResArmy.GetImageByFormat("%s_%s.png", armyName, targetCountry);
-                            // Without an others specific image, the plain image is the shared fallback of every country.
-                            if (image == null && targetCountry == "others")
-                                image = textureResArmy.GetImageByFormat("%s.png", armyName);
-                            if (image != null)
-                                ArmyImagesOf(imageArmies, armyId)[targetCountry] = image;
-                        }
-                    }
-                    else
-                    {
-                        ecImage image = textureResArmy.GetImageByFormat("%s_%s.png", armyName, countryName);
-                        // Missing country image: fall back to the country independent image.
-                        if (image == null)
-                            image = textureResArmy.GetImageByFormat("%s.png", armyName);
-                        if (image != null)
-                            ArmyImagesOf(imageArmies, armyId)[countryName] = image;
-                    }
-                }
-            }
+            int armyId = armyEntry.Key;
+            ArmyDef armyDef = armyEntry.Value;
+            if (armyDef == null || string.IsNullOrEmpty(armyDef.imageName)) continue;
+            ecImage image = textureResArmy.GetImageByFormat("%s.png", armyDef.imageName);
+            if (image == null) continue;
+            imageArmies[armyId] = image;
+
+            if (!imageMarkCarriersNew.ContainsKey(armyId) &&
+                armydef_internal.TryResolveArmyTypeId(armyDef.armyType, out int baseArmyId) &&
+                imageMarkCarriersNew.TryGetValue(baseArmyId, out ecImage carrierMark))
+                imageMarkCarriersNew[armyId] = carrierMark;
         }
 
         foreach (string country_name in country_list)
@@ -616,16 +536,16 @@ public sealed class CGameRes
     /// Renders a map unit: alliance base, country/type art and the transport ship marks of land
     /// units at sea. direction is the +-1 horizontal mirror factor.
     /// </summary>
-    public void RenderArmy(string countryName, int alliance, int armyCount, float x, float y,
+    public void RenderArmy(int alliance, int armyCount, float x, float y,
                            int armyType, uint color, bool sea, float direction)
     {
-        ArmyDef army = CObjectDef.Instance().GetArmyDef(armyType, countryName);
+        ArmyDef army = CObjectDef.Instance().GetArmyDef(armyType);
         bool isNavy = army != null && army.IsNavy();
-        RenderArmyWithNavy(countryName, alliance, armyCount, x, y, armyType, color, sea, isNavy, direction);
+        RenderArmyWithNavy(alliance, armyCount, x, y, armyType, color, sea, isNavy, direction);
     }
 
     /// <summary>Renders a map unit with the navy flag already resolved by the caller.</summary>
-    public void RenderArmyWithNavy(string countryName, int alliance, int armyCount,
+    public void RenderArmyWithNavy(int alliance, int armyCount,
                                    float x, float y, int armyType, uint color,
                                    bool sea, bool isNavy, float direction)
     {
@@ -633,7 +553,7 @@ public sealed class CGameRes
         // The transport ship replacement of land units at sea is decided by the isNavy of the caller.
         ecImage army_image = sea && !isNavy
             ? imageCarrier
-            : GetArmyImage(countryName, armyType, false);
+            : GetArmyImage(armyType, false);
         if (army_image != null)
         {
             uint allianceColor = GetAllianceColor(alliance);
@@ -664,7 +584,7 @@ public sealed class CGameRes
     /// </summary>
     public void RenderUIAttackArmy(string CountryName, float x, float y, int ArmyType, int HP, int MaxHP, int Movement, int Cards, int Level, int CommonType, bool AI)
     {
-        ecImage ArmyImage = GetArmyImage(CountryName, ArmyType, false);
+        ecImage ArmyImage = GetArmyImage(ArmyType, false);
         if (ArmyImage != null)
         {
             ArmyImage.SetColor(0xFFFFFFFF, -1);
@@ -706,7 +626,7 @@ public sealed class CGameRes
     /// </summary>
     public void RenderUIDefendArmy(string CountryName, float x, float y, int ArmyType, int HP, int MaxHP, int Movement, int Cards, int Level, int CommonType, bool AI)
     {
-        ecImage ArmyImage = GetArmyImage(CountryName, ArmyType, false);
+        ecImage ArmyImage = GetArmyImage(ArmyType, false);
         if (ArmyImage != null)
         {
             ArmyImage.SetColor(0xFFFFFFFF, -1);
@@ -755,7 +675,6 @@ public sealed class CGameRes
     /// </summary>
     public void Release()
     {
-        armyRenderCache.Clear();
         // Stop every effect still referencing the resources, then release the definitions and textures.
         ecEffectManager.Instance().RemoveAll();
         ReleaseAllEffectRes();
@@ -786,12 +705,7 @@ public sealed class CGameRes
         for (int i = 0; i < imageArmyNe.Length; ++i)
             imageArmyNe[i] = null;
 
-        foreach (KeyValuePair<int, Dictionary<string, ecImage>> ecImageListPair in imageArmies)
-        {
-            // imageArmies is the main two level map: army id to country id to image.
-            killAllEcImages(ecImageListPair.Value);
-            ecImageListPair.Value.Clear();
-        }
+        killAllEcImages(imageArmies);
         imageArmies.Clear();
 
         killAllEcImages(imageMarkCarriersNew);
@@ -845,51 +759,13 @@ public sealed class CGameRes
     }
 
     /// <summary>
-    /// Finds the unit art. Land units at sea always return the transport ship; otherwise the
-    /// country image wins and others is the fallback. Returns null when the type has no resources.
+    /// Finds the flat unit art. Land units at sea always return the transport ship.
     /// </summary>
-    public ecImage GetArmyImage(string countryName, int armyType, bool sea)
+    public ecImage GetArmyImage(int armyType, bool sea)
     {
-        string countryKey = countryName ?? "";
-        if (!armyRenderCache.TryGetValue(armyType, out Dictionary<string, CGameResArmyRenderCacheEntry> cacheByArmy))
-        {
-            cacheByArmy = new Dictionary<string, CGameResArmyRenderCacheEntry>();
-            armyRenderCache[armyType] = cacheByArmy;
-        }
-        if (cacheByArmy.TryGetValue(countryKey, out CGameResArmyRenderCacheEntry cached) && cached.resolved)
-        {
-            if (!sea)
-                return cached.image;
-            ArmyDef cachedArmy = CObjectDef.Instance().GetArmyDef(armyType, countryName);
-            return cachedArmy != null && !cachedArmy.IsNavy() ? imageCarrier : cached.image;
-        }
-
-        // The definition is queried only the first time a type + country pair shows up; later calls reuse the cache.
-        ArmyDef army = CObjectDef.Instance().GetArmyDef(armyType, countryName);
-        var entry = new CGameResArmyRenderCacheEntry { image = null, resolved = false };
-        if (army != null)
-        {
-            entry.resolved = true;
-            // The definition decides whether the unit is navy; enum ranges alone would break custom types.
-            if (imageArmies.TryGetValue(armyType, out Dictionary<string, ecImage> armyCountryRscs))
-            {
-                if (armyCountryRscs.TryGetValue(countryKey, out ecImage countryImage))
-                {
-                    entry.image = countryImage;
-                }
-                else if (armyCountryRscs.TryGetValue("others", out ecImage fallbackImage))
-                {
-                    // Load guarantees country_list contains others, the shared fallback of missing country art.
-                    entry.image = fallbackImage;
-                }
-            }
-        }
-        cacheByArmy[countryKey] = entry;
-        if (!entry.resolved)
-            return null;
-        if (!sea)
-            return entry.image;
-        return army != null && !army.IsNavy() ? imageCarrier : entry.image;
+        ArmyDef army = CObjectDef.Instance().GetArmyDef(armyType);
+        if (army == null || !imageArmies.TryGetValue(armyType, out ecImage image)) return null;
+        return sea && !army.IsNavy() ? imageCarrier : image;
     }
 
     private static readonly float[] COMMANDER_OFFSET = { 10.0f, 13.0f, 15.0f, 17.0f };

@@ -38,7 +38,7 @@ public sealed partial class CActionAssist
 
         float unitRate = GetCombatDamageRate(
             attacker.basicAbilities.combat,
-            target.basicAbilities.unitType,
+            target.basicAbilities,
             COMBAT_DAMAGE_ATTACK);
         float weaponRate = GetWeaponArmorDamageRate(
             CObjectDef.Instance().weaponArmorDamageRates,

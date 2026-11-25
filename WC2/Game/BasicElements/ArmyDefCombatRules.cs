@@ -18,16 +18,35 @@ public static partial class armydef_internal
         profile.attackCost = 1;
     }
 
-    public static void AddDamageRule(ArmyCombatRules rules, byte phaseMask, byte targetType, ushort rate)
+    public static void AddDamageRule(ArmyCombatRules rules, byte phaseMask,
+        ArmyDamageTargetKind targetKind, string target, ushort rate)
     {
-        if (rules == null || targetType == ARMY_UNIT_TYPE_UNSPECIFIED) return;
+        if (rules == null || string.IsNullOrWhiteSpace(target)) return;
         if ((phaseMask & COMBAT_DAMAGE_ATTACK) != 0)
         {
-            rules.damageRates[MakeDamageRuleKey(COMBAT_DAMAGE_ATTACK, targetType)] = rate;
+            SetDamageRule(rules.attackDamageRates, targetKind, target, rate);
         }
         if ((phaseMask & COMBAT_DAMAGE_COUNTER) != 0)
         {
-            rules.damageRates[MakeDamageRuleKey(COMBAT_DAMAGE_COUNTER, targetType)] = rate;
+            SetDamageRule(rules.counterDamageRates, targetKind, target, rate);
+        }
+    }
+
+    private static void SetDamageRule(ArmyCombatDamageRates rates,
+        ArmyDamageTargetKind targetKind, string target, ushort rate)
+    {
+        switch (targetKind)
+        {
+            case ArmyDamageTargetKind.UNIT_TYPE:
+                rates.unitTypes[target] = rate;
+                break;
+            case ArmyDamageTargetKind.ARMY_TYPE:
+                rates.armyTypes[target] = rate;
+                break;
+            case ArmyDamageTargetKind.ARMY_ID:
+                if (TryResolveArmyTypeReference(target, out int armyId))
+                    rates.armyIds[armyId] = rate;
+                break;
         }
     }
 
@@ -35,23 +54,27 @@ public static partial class armydef_internal
     private static void SetLegacyDamageRules(ArmyDef armyDef)
     {
         ushort legacyRate = EncodeDamageRate(1.3, false);
-        // XML type convention: 1 infantry, 2 armour, 3 artillery, 4 navy.
         // Old rule: armour deals bonus damage to everything, everything deals bonus damage to infantry.
         // Both conditions merge into one rate so a double hit is not 1.69.
-        for (byte targetType = 1; targetType <= 4; ++targetType)
+        if (armyDef.unitType == "armor")
         {
-            if (armyDef.unitType == 2 || targetType == 1)
+            foreach (string targetUnitType in CObjectDef.Instance().unitTypes)
             {
-                AddDamageRule(armyDef.combat, COMBAT_DAMAGE_ATTACK | COMBAT_DAMAGE_COUNTER, targetType, legacyRate);
+                AddDamageRule(armyDef.combat,
+                    COMBAT_DAMAGE_ATTACK | COMBAT_DAMAGE_COUNTER,
+                    ArmyDamageTargetKind.UNIT_TYPE, targetUnitType, legacyRate);
             }
         }
+        else
+            AddDamageRule(armyDef.combat,
+                COMBAT_DAMAGE_ATTACK | COMBAT_DAMAGE_COUNTER,
+                ArmyDamageTargetKind.UNIT_TYPE, "infantry", legacyRate);
     }
 
     /// <summary>Writes the original compatible default combat rules.</summary>
     /// <param name="armyDef">unit definition</param>
     /// <param name="useLegacyDefaults">enable the original compatible rules</param>
-    /// <param name="unitType">combat class (armour, infantry, ...; separate from the id)</param>
-    public static void SetLegacyCombatRules(ArmyDef armyDef, bool useLegacyDefaults, byte unitType)
+    public static void SetLegacyCombatRules(ArmyDef armyDef, bool useLegacyDefaults)
     {
         SetDefaultCombatProfile(armyDef.combat.attack);
         armyDef.combat.counter = armyDef.combat.attack.Clone();
@@ -62,18 +85,18 @@ public static partial class armydef_internal
         armyDef.combat.constructionLevelDegradeChance = 0;
         armyDef.combat.movementRestoreAfterKill = 0;
         armyDef.combat.aiNoCounterBonus = 300;
-        armyDef.unitType = unitType;
         // the navy flag is independent; without an explicit value the old XML rule applies
         armyDef.hasExplicitNavy = false;
         armyDef.isNavy =
             useLegacyDefaults &&
-            armyDef.id >= (int)DESTROYER && armyDef.id <= (int)AIRCRAFT_CARRIER;
-        armyDef.combat.damageRates.Clear();
+            armyDef.armyType is "destroyer" or "cruiser" or "battleship" or "aircraftcarrier";
+        armyDef.combat.attackDamageRates.Clear();
+        armyDef.combat.counterDamageRates.Clear();
 
         if (!useLegacyDefaults) return;
 
         // these defaults only serve old XML files without a combat node
-        if (armyDef.id == (int)ROCKET)
+        if (armyDef.armyType == "rocket")
         {
             armyDef.combat.traits |= ARMY_COMBAT_TRAIT_CANNOT_OCCUPY;
             armyDef.combat.attack.mode = COMBAT_ATTACK_PROJECTILE;
@@ -83,7 +106,7 @@ public static partial class armydef_internal
             armyDef.combat.attack.range.maxRange = 2000;
             armyDef.combat.counter = armyDef.combat.attack.Clone();
         }
-        else if (armyDef.id == (int)AIRCRAFT_CARRIER)
+        else if (armyDef.armyType == "aircraftcarrier")
         {
             armyDef.combat.attack.mode = COMBAT_ATTACK_AIRSTRIKE;
             armyDef.combat.attack.payloadType = COMBAT_AIRSTRIKE_PAYLOAD_AIRSTRIKE;
@@ -97,15 +120,12 @@ public static partial class armydef_internal
             // an air strike unit never counters with an air strike; the counter starts from the close defaults
             SetDefaultCombatProfile(armyDef.combat.counter);
         }
-        else if (armyDef.id == (int)AIRSTRIKE_ARMY ||
-                 armyDef.id == (int)BOMBER_ARMY ||
-                 armyDef.id == (int)AIRBORNE_ARMY ||
-                 armyDef.id == (int)NUCLEAR_BOMB_ARMY)
+        else if (armyDef.armyType is "airstrike" or "bomber" or "airborne" or "nuclearbomb")
         {
             armyDef.combat.attack.mode = COMBAT_ATTACK_AIRSTRIKE;
-            if (armyDef.id == (int)BOMBER_ARMY)
+            if (armyDef.armyType == "bomber")
                 armyDef.combat.attack.payloadType = COMBAT_AIRSTRIKE_PAYLOAD_BOMBER;
-            else if (armyDef.id == (int)NUCLEAR_BOMB_ARMY)
+            else if (armyDef.armyType == "nuclearbomb")
                 armyDef.combat.attack.payloadType = COMBAT_AIRSTRIKE_PAYLOAD_NUCLEAR;
             else
                 armyDef.combat.attack.payloadType = COMBAT_AIRSTRIKE_PAYLOAD_AIRSTRIKE;
@@ -120,30 +140,30 @@ public static partial class armydef_internal
 
         // Keep the legacy fallback in sync with the explicit others entries:
         // infantry, panzer, and tank use a short graph range (0..100).
-        if (armyDef.id == (int)INFANTRY || armyDef.id == (int)PANZER || armyDef.id == (int)TANK)
+        if (armyDef.armyType is "infantry" or "panzer" or "tank")
         {
             armyDef.combat.attack.range.maxRange = 100;
             armyDef.combat.counter.range.maxRange = 100;
         }
 
         // the original numeric traits; the actual combat still runs on the old logic
-        if (armyDef.id == (int)ARTILLERY)
+        if (armyDef.armyType == "artillery")
         {
             // the original artillery never enters the target area after a kill
             armyDef.combat.traits |= ARMY_COMBAT_TRAIT_CANNOT_OCCUPY;
         }
-        if (armyDef.id == (int)BATTLESHIP)
+        if (armyDef.armyType == "battleship")
         {
             armyDef.combat.constructionLevelDegrade = 1;
             armyDef.combat.constructionLevelDegradeChance = 30;
         }
         // original rule: only tanks and heavy tanks keep their movement when attacking an
         // entrenchment; every other unit (artillery, rockets and ships included) loses it all
-        if (armyDef.id == (int)TANK || armyDef.id == (int)HEAVY_TANK)
+        if (armyDef.armyType is "tank" or "heavytank")
         {
             armyDef.combat.traits |= ARMY_COMBAT_TRAIT_CROSS_ENTRENCHMENT;
         }
-        if (armyDef.id == (int)TANK || armyDef.id == (int)HEAVY_TANK)
+        if (armyDef.armyType is "tank" or "heavytank")
         {
             // the original refunds the one movement point of the attack after a kill
             armyDef.combat.movementRestoreAfterKill = 1;
@@ -225,15 +245,45 @@ public static partial class armydef_internal
              damageElement != null;
              damageElement = damageElement.NextSiblingElement("damage"))
         {
-            string targetText = damageElement.Attribute("target");
-            if (string.IsNullOrEmpty(targetText)) continue;
-            if (!StrToUL(targetText, 0, out ulong targetValue, out int targetEnd) ||
-                targetEnd != targetText.Length || targetValue > 254u)
-                continue;
-            byte targetType = (byte)targetValue;
+            string targetUnitType = damageElement.Attribute("target-unit-type");
+            string targetArmyType = damageElement.Attribute("target-army-type");
+            string targetArmyId = damageElement.Attribute("target-army-id");
+            int targetCount = (targetUnitType != null ? 1 : 0) +
+                (targetArmyType != null ? 1 : 0) + (targetArmyId != null ? 1 : 0);
+            if (targetCount != 1)
+                throw new InvalidDataException(
+                    $"armydef.xml: damage in '{armyDef.name}' requires exactly one target classification");
+
+            ArmyDamageTargetKind targetKind;
+            string target;
+            if (targetUnitType != null)
+            {
+                targetKind = ArmyDamageTargetKind.UNIT_TYPE;
+                target = targetUnitType;
+                if (!CObjectDef.Instance().unitTypes.Contains(target))
+                    throw new InvalidDataException(
+                        $"armydef.xml: unknown damage target unit-type '{target}' in '{armyDef.name}'");
+            }
+            else if (targetArmyType != null)
+            {
+                targetKind = ArmyDamageTargetKind.ARMY_TYPE;
+                target = targetArmyType;
+                if (!CObjectDef.Instance().armyTypeUnitTypes.ContainsKey(target))
+                    throw new InvalidDataException(
+                        $"armydef.xml: unknown damage target army-type '{target}' in '{armyDef.name}'");
+            }
+            else
+            {
+                targetKind = ArmyDamageTargetKind.ARMY_ID;
+                target = targetArmyId;
+                if (!TryResolveArmyTypeReference(target, out _))
+                    throw new InvalidDataException(
+                        $"armydef.xml: unknown damage target army-id '{target}' in '{armyDef.name}'");
+            }
             byte phaseMask = ParseDamagePhaseMask(damageElement.Attribute("phase"), inheritedPhase);
             if (phaseMask == 0) continue;
-            AddDamageRule(armyDef.combat, phaseMask, targetType, ParseDamageRate(damageElement.Attribute("rate")));
+            AddDamageRule(armyDef.combat, phaseMask, targetKind, target,
+                ParseDamageRate(damageElement.Attribute("rate")));
         }
     }
 
@@ -364,11 +414,17 @@ public static partial class armydef_internal
 /// <summary>Combat rule queries from ArmyDef.h (ArmyDefCombatRules.cpp).</summary>
 public static partial class ArmyDefFunctions
 {
-    /// <summary>Conditional damage rate of a unit against a target type in the given phase.</summary>
-    public static float GetCombatDamageRate(ArmyCombatRules rules, byte targetType, byte phase)
+    /// <summary>Most specific matching rate: army-id, then army-type, then unit-type.</summary>
+    public static float GetCombatDamageRate(ArmyCombatRules rules, ArmyDef target, byte phase)
     {
-        if (targetType == ARMY_UNIT_TYPE_UNSPECIFIED) return 1.0f;
-        if (!rules.damageRates.TryGetValue(MakeDamageRuleKey(phase, targetType), out ushort code)) return 1.0f;
+        if (target == null) return 1.0f;
+        ArmyCombatDamageRates rates = phase == COMBAT_DAMAGE_COUNTER
+            ? rules.counterDamageRates : rules.attackDamageRates;
+        ushort code;
+        if (!rates.armyIds.TryGetValue(target.id, out code) &&
+            !rates.armyTypes.TryGetValue(target.armyType, out code) &&
+            !rates.unitTypes.TryGetValue(target.unitType, out code))
+            return 1.0f;
         if (code == DAMAGE_RATE_INFINITY) return float.PositiveInfinity;
         return code / 1000.0f;
     }
@@ -400,18 +456,33 @@ public static partial class ArmyDefFunctions
     }
 
     /// <summary>Sets a damage rate (reserved for tech bonuses etc.).</summary>
-    public static void SetCombatDamageRate(ArmyCombatRules rules, byte phase, byte targetType, double value, bool percentValue = false)
+    public static void SetCombatDamageRate(ArmyCombatRules rules, byte phase,
+        ArmyDamageTargetKind targetKind, string target, double value, bool percentValue = false)
     {
-        if (rules == null) return;
-        if (targetType == ARMY_UNIT_TYPE_UNSPECIFIED) return;
-        rules.damageRates[MakeDamageRuleKey(phase, targetType)] = armydef_internal.EncodeDamageRate(value, percentValue);
+        if (rules == null || string.IsNullOrWhiteSpace(target)) return;
+        armydef_internal.AddDamageRule(rules, phase, targetKind, target,
+            armydef_internal.EncodeDamageRate(value, percentValue));
     }
 
     /// <summary>Clears a damage rate (reserved for tech bonuses etc.).</summary>
-    public static void ClearCombatDamageRate(ArmyCombatRules rules, byte phase, byte targetType)
+    public static void ClearCombatDamageRate(ArmyCombatRules rules, byte phase,
+        ArmyDamageTargetKind targetKind, string target)
     {
-        if (rules == null) return;
-        if (targetType == ARMY_UNIT_TYPE_UNSPECIFIED) return;
-        rules.damageRates.Remove(MakeDamageRuleKey(phase, targetType));
+        if (rules == null || string.IsNullOrWhiteSpace(target)) return;
+        ArmyCombatDamageRates rates = phase == COMBAT_DAMAGE_COUNTER
+            ? rules.counterDamageRates : rules.attackDamageRates;
+        switch (targetKind)
+        {
+            case ArmyDamageTargetKind.UNIT_TYPE:
+                rates.unitTypes.Remove(target);
+                break;
+            case ArmyDamageTargetKind.ARMY_TYPE:
+                rates.armyTypes.Remove(target);
+                break;
+            case ArmyDamageTargetKind.ARMY_ID:
+                if (armydef_internal.TryResolveArmyTypeReference(target, out int armyId))
+                    rates.armyIds.Remove(armyId);
+                break;
+        }
     }
 }

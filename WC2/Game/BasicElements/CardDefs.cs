@@ -386,9 +386,15 @@ public sealed partial class CObjectDef
                 out COMBAT_AIRSTRIKE_PAYLOAD payload))
             throw CardConfigError(countryName, card,
                 $"unknown strike payload '{payloadText}'");
+        string unit = element.Attribute("unit")?.ToLowerInvariant();
+        if (!armydef_internal.TryResolveArmyTypeReference(unit, out int armyTypeId))
+            throw CardConfigError(countryName, card, $"unknown strike army type '{unit}'");
         if (card.type != AIR_FORCE_TYPE_CARD)
             throw CardConfigError(countryName, card, "strategic-strike requires an airforce card");
-        var effect = new StrategicStrikeEffectDef { type = "strategic-strike", payload = payload };
+        var effect = new StrategicStrikeEffectDef
+        {
+            type = "strategic-strike", payload = payload, armyTypeId = armyTypeId,
+        };
         ParseEffectConditions(element, effect, countryName, card);
         return effect;
     }
@@ -576,12 +582,22 @@ public sealed partial class CObjectDef
                     mustEqual = operation == "equal",
                 };
             // unit-type：定义的单位属性
-            if (property == "unit-type" && (operation == "equal" || operation == "not-equal") &&
-                XmlValueParser.ParseUInt8Text(value, out byte unitType))
+            if (property == "army-type" && (operation == "equal" || operation == "not-equal"))
+                return new TargetArmyArmyTypeConditionDef
+                {
+                    type = "target-army-army-type",
+                    armyType = Instance().armyTypeUnitTypes.ContainsKey(value)
+                        ? value
+                        : throw CardConfigError(countryName, card, $"unknown army-type '{value}'"),
+                    mustEqual = operation == "equal",
+                };
+            if (property == "unit-type" && (operation == "equal" || operation == "not-equal"))
                 return new TargetArmyUnitTypeConditionDef
                 {
                     type = "target-army-unit-type",
-                    unitType = unitType,
+                    unitType = Instance().unitTypes.Contains(value)
+                        ? value
+                        : throw CardConfigError(countryName, card, $"unknown unit-type '{value}'"),
                     mustEqual = operation == "equal",
                 };
             // 生命值

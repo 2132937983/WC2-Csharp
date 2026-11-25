@@ -80,7 +80,7 @@ public sealed partial class CCountry
                 pArmy = targetArea.DraftArmy(cardDef.relatedArmyId);
             }
             if (pArmy == null) return;
-            int draftedArmyType = pArmy.basicAbilities.id;
+            string draftedArmyType = pArmy.basicAbilities.armyType;
             // navy medal bonus
             int NavyMedalLevel = GetWarMedalLevel(NAVY_MEDAL);
             if (NavyMedalLevel > 0)
@@ -88,14 +88,14 @@ public sealed partial class CCountry
                 // land units get a transport ship
                 if (cardDef.type == ARMY_TYPE_CARD) pArmy.AddCard(CARRIER);
                 if ((NavyMedalLevel > 1 &&
-                     (draftedArmyType == (int)DESTROYER || draftedArmyType == (int)CRUISER)) ||
+                     (draftedArmyType == "destroyer" || draftedArmyType == "cruiser")) ||
                     (NavyMedalLevel > 2 &&
-                     (draftedArmyType == (int)BATTLESHIP || draftedArmyType == (int)AIRCRAFT_CARRIER)))
+                     (draftedArmyType == "battleship" || draftedArmyType == "aircraftcarrier")))
                     pArmy.Upgrade();
             }
 
             // infantry medal bonus
-            if (draftedArmyType == (int)INFANTRY)
+            if (draftedArmyType == "infantry")
             {
                 int InfantryMedalLevel = GetWarMedalLevel(INFANTRY_MEDAL);
                 if (InfantryMedalLevel > 0)
@@ -117,12 +117,12 @@ public sealed partial class CCountry
             int ArtilleryMedalLevel = GetWarMedalLevel(ARTILLERY_MEDAL);
             if (ArtilleryMedalLevel > 0)
             {
-                if (draftedArmyType == (int)ARTILLERY) pArmy.Upgrade();
+                if (draftedArmyType == "artillery") pArmy.Upgrade();
                 if (ArtilleryMedalLevel > 1)
                 {
-                    if (draftedArmyType == (int)ROCKET) pArmy.Upgrade();
+                    if (draftedArmyType == "rocket") pArmy.Upgrade();
                     if (ArtilleryMedalLevel > 2 &&
-                        (draftedArmyType == (int)ARTILLERY || draftedArmyType == (int)ROCKET))
+                        (draftedArmyType == "artillery" || draftedArmyType == "rocket"))
                         pArmy.AddCard(DEFENCE);
                 }
             }
@@ -131,11 +131,11 @@ public sealed partial class CCountry
             int ArmourMedalLevel = GetWarMedalLevel(ARMOUR_MEDAL);
             if (ArmourMedalLevel > 0)
             {
-                if (draftedArmyType == (int)PANZER) pArmy.Upgrade();
+                if (draftedArmyType == "panzer") pArmy.Upgrade();
                 if (ArmourMedalLevel > 1)
                 {
-                    if (draftedArmyType == (int)TANK) pArmy.Upgrade();
-                    if (ArmourMedalLevel > 2 && draftedArmyType == (int)HEAVY_TANK) pArmy.Upgrade();
+                    if (draftedArmyType == "tank") pArmy.Upgrade();
+                    if (ArmourMedalLevel > 2 && draftedArmyType == "heavytank") pArmy.Upgrade();
                 }
             }
         }

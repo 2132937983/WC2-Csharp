@@ -9,7 +9,7 @@ public sealed partial class CFight
     /// <param name="attacker">attacking country</param>
     /// <param name="TargetAreaId">target area</param>
     /// <param name="type">payload type (1 air strike, 2 bomber, 3 nuclear)</param>
-    public void AirStrikesAttack(CCountry attacker, int TargetAreaId, int type)
+    public void AirStrikesAttack(CCountry attacker, int TargetAreaId, int type, int attackArmyId = -1)
     {
         CArea target_area = g_Scene.GetArea(TargetAreaId);
         targetAreaId = TargetAreaId;
@@ -18,16 +18,21 @@ public sealed partial class CFight
         int minAttack, maxAttack;
         ArmyDef tmpArmyDef;
 
-        // types 1 and 2 are air strike and bombing, each with its own values
+        // Card effects pass their exact flat ArmyDef id. Unit-launched attacks retain the
+        // payload fallback because their damage comes from the launching unit's profile.
         if (type == 1 || type == 2)
         {
-            if (type == 1)
+            if (attackArmyId >= 0)
             {
-                tmpArmyDef = CObjectDef.Instance().GetArmyDef((int)AIRSTRIKE_ARMY, attacker.name);
+                tmpArmyDef = CObjectDef.Instance().GetArmyDef(attackArmyId);
+            }
+            else if (type == 1)
+            {
+                tmpArmyDef = CObjectDef.Instance().GetArmyDef((int)AIRSTRIKE_ARMY);
             }
             else
             {
-                tmpArmyDef = CObjectDef.Instance().GetArmyDef((int)BOMBER_ARMY, attacker.name);
+                tmpArmyDef = CObjectDef.Instance().GetArmyDef((int)BOMBER_ARMY);
             }
             if (tmpArmyDef != null)
             {

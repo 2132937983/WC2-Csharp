@@ -230,7 +230,7 @@ public sealed class GUICard : GUIElement
             textMovement.SetColor(0xFF4BA8E4u);
             if (g_GameManager.GetPlayerCountry() != null && !g_GameManager.GetPlayerCountry().ai)
             {
-                ArmyDef tmp_army_def = CObjectDef.Instance().GetArmyDef(cardDef.relatedArmyId, g_GameManager.GetPlayerCountry().name);
+                ArmyDef tmp_army_def = CObjectDef.Instance().GetArmyDef(cardDef.relatedArmyId);
                 if (tmp_army_def != null)
                 {
                     tmp_this_char = Sprintf("%d-%d", tmp_army_def.minAttack, tmp_army_def.maxAttack);

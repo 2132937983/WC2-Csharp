@@ -230,7 +230,7 @@ public sealed partial class CGameManager
         {
             Designation = 0;
         }
-        ArmyDef ArmyDef = CObjectDef.Instance().GetArmyDef(ArmyType, curCountry.name);
+        ArmyDef ArmyDef = CObjectDef.Instance().GetArmyDef(ArmyType);
         if (ArmyDef == null)
         {
             // the scenario references an unloaded custom unit: skip it instead of passing a null definition

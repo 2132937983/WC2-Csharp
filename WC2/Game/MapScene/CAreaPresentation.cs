@@ -116,7 +116,6 @@ public sealed partial class CArea
 
         bool isNavy = armyIn.IsNavy();
         g_GameRes.RenderArmyWithNavy(
-            country.name,
             country.alliance,
             armyCountIn,
             x,

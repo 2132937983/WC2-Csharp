@@ -62,12 +62,9 @@ public static class DebugTools
         if (cards.LoadFile())
         {
             int n = 0;
-            for (var c = cards.FirstChildElement("cards")?.FirstChildElement("country"); c != null; c = c.NextSiblingElement("country"))
-                for (var card = c.FirstChildElement("card"); card != null; card = card.NextSiblingElement("card"))
-                {
-                    n++;
-                    if (card.Attribute("name") == "Rocket") Console.WriteLine("Rocket card image attr = " + card.Attribute("image") + " relatedArmyId=" + card.Attribute("relatedArmyId"));
-                }
+            var definitions = cards.FirstChildElement("cards")?.FirstChildElement("definitions");
+            for (var card = definitions?.FirstChildElement("card");
+                 card != null; card = card.NextSiblingElement("card")) n++;
             Console.WriteLine("cards parsed: " + n);
         }
         TestCardEffects();
@@ -84,6 +81,35 @@ public static class DebugTools
         CObjectDef definitions = CObjectDef.Instance();
         definitions.LoadArmyDef();
         definitions.LoadCardDef();
+
+        if (definitions.armyDefsById.Count != 57)
+            throw new InvalidOperationException(
+                $"flat ArmyDef count mismatch: {definitions.armyDefsById.Count}");
+        ArmyDef panzerDef = definitions.GetArmyDef((int)PANZER);
+        ArmyDef infantryDef = definitions.GetArmyDef((int)INFANTRY);
+        if (panzerDef?.unitType != "armor" || panzerDef.armyType != "panzer" ||
+            infantryDef?.unitType != "infantry" || infantryDef.armyType != "infantry")
+            throw new InvalidOperationException("ArmyDef three-level classification was not loaded");
+        if (Math.Abs(GetCombatDamageRate(panzerDef.combat, infantryDef,
+                COMBAT_DAMAGE_ATTACK) - 1.3f) > 0.001f)
+            throw new InvalidOperationException("unit-type combat damage rule was not loaded");
+        SetCombatDamageRate(panzerDef.combat, COMBAT_DAMAGE_ATTACK,
+            ArmyDamageTargetKind.ARMY_TYPE, "infantry", 1.4);
+        SetCombatDamageRate(panzerDef.combat, COMBAT_DAMAGE_ATTACK,
+            ArmyDamageTargetKind.ARMY_ID, "infantry", 1.5);
+        if (Math.Abs(GetCombatDamageRate(panzerDef.combat, infantryDef,
+                COMBAT_DAMAGE_ATTACK) - 1.5f) > 0.001f)
+            throw new InvalidOperationException("army-id combat damage rule did not take precedence");
+        ClearCombatDamageRate(panzerDef.combat, COMBAT_DAMAGE_ATTACK,
+            ArmyDamageTargetKind.ARMY_ID, "infantry");
+        if (Math.Abs(GetCombatDamageRate(panzerDef.combat, infantryDef,
+                COMBAT_DAMAGE_ATTACK) - 1.4f) > 0.001f)
+            throw new InvalidOperationException("army-type combat damage rule did not take precedence");
+        ClearCombatDamageRate(panzerDef.combat, COMBAT_DAMAGE_ATTACK,
+            ArmyDamageTargetKind.ARMY_TYPE, "infantry");
+        if (!armydef_internal.TryResolveArmyTypeId("am-airstrike", out int amAirstrikeId) ||
+            !armydef_internal.TryResolveArmyTypeId("de-bomber", out int deBomberId))
+            throw new InvalidOperationException("flat air mission ArmyDefs were not registered");
 
         CardDef infantry = definitions.GetCardDef(INFANTRY_CARD);
         CardDef airstrike = definitions.GetCardDef(AIR_STRIKE_CARD);
@@ -114,6 +140,16 @@ public static class DebugTools
             effect.armyTypeId == (int)INFANTRY && effect.capture);
         RequireEffect<StrategicStrikeEffectDef>(nuclear, "nuclear-bomb", effect =>
             effect.payload == COMBAT_AIRSTRIKE_PAYLOAD_NUCLEAR);
+        RequireEffect<StrategicStrikeEffectDef>(definitions.GetCardDef("am-airstrike"),
+            "am-airstrike", effect => effect.armyTypeId == amAirstrikeId);
+        RequireEffect<StrategicStrikeEffectDef>(definitions.GetCardDef("de-bomber"),
+            "de-bomber", effect => effect.armyTypeId == deBomberId);
+
+        var amCountry = new CCountry { name = "am" };
+        List<CARD_ID>[] amTabs = definitions.GetCardTab(amCountry);
+        if (!amTabs[0].Contains(definitions.GetCardDef("am-infantry").id) ||
+            !amTabs[2].Contains(definitions.GetCardDef("am-airstrike").id))
+            throw new InvalidOperationException("AM card tabs do not use flat card variants");
         RequireConstructionEffect(city, "city", CITY);
         RequireConstructionEffect(industry, "industry", INDUSTRY);
         RequireConstructionEffect(airport, "airport", AIRPORT);

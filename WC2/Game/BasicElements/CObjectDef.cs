@@ -17,7 +17,7 @@ public sealed partial class CObjectDef
         return m_Instance;
     }
 
-    public Dictionary<string, ArmyDefList> mapArmyDefList = new();
+    public Dictionary<int, ArmyDef> armyDefsById = new();
     public DeprecatedCardDef[] arrayCardDef = NewCardArray();
     public Dictionary<string, UnitMotions> mapUnitMotions = new();
     public Dictionary<string, UnitPositions> mapUnitPos = new();
@@ -28,6 +28,8 @@ public sealed partial class CObjectDef
     public Dictionary<int, CardDef> cardDefsById = new();
     public Dictionary<string, CardDef> cardDefsByKey = new(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, CountryCardTabs> countryCardTabs = new(StringComparer.OrdinalIgnoreCase);
+    public HashSet<string> unitTypes = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, string> armyTypeUnitTypes = new(StringComparer.OrdinalIgnoreCase);
     /// <summary>Weapon/armor damage multipliers keyed by MakeWeaponArmorRuleKey, value = rate * 1000.</summary>
     public Dictionary<ushort, ushort> weaponArmorDamageRates = new();
 

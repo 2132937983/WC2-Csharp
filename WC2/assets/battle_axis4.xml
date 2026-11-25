@@ -13,13 +13,13 @@
             <army type="panzer" level="1" cards="1" />
         </area>
         <area id="1061" construction="airport" level="1" installation="fort" country="gb">
-            <army type="infantry" level="2" cards="3" />
-            <army type="artillery" level="2" cards="3" />
+            <army type="gb-infantry" level="2" cards="3" />
+            <army type="gb-artillery" level="2" cards="3" />
         </area>
         <area id="1062" construction="city" level="3" installation="entrenchment" country="gb">
-            <army type="tank" level="2" cards="1" />
-            <army type="infantry" level="2" cards="3" />
-            <army type="panzer" level="2" cards="2" />
+            <army type="gb-tank" level="2" cards="1" />
+            <army type="gb-infantry" level="2" cards="3" />
+            <army type="gb-panzer" level="2" cards="2" />
         </area>
         <area id="1063" construction="city" level="4" installation="entrenchment" country="ro">
             <army type="artillery" level="0" cards="11" />
@@ -35,10 +35,10 @@
             <army type="infantry" level="2" cards="3" />
         </area>
         <area id="1068" construction="city" level="2" installation="entrenchment" country="it2">
-            <army type="tank" level="0" cards="3" />
+            <army type="it-tank" level="0" cards="3" />
         </area>
         <area id="1069" construction="industry" level="2" installation="none" country="it2">
-            <army type="panzer" level="1" cards="3" />
+            <army type="it-panzer" level="1" cards="3" />
         </area>
         <area id="1073" construction="none" level="0" installation="none" country="it2" />
         <area id="1074" construction="none" level="0" installation="none" country="it2" />
@@ -65,7 +65,7 @@
             <army type="infantry" level="1" cards="2" />
         </area>
         <area id="1087" construction="city" level="4" installation="radar" country="it2">
-            <army type="tank" level="0" cards="11" />
+            <army type="it-tank" level="0" cards="11" />
         </area>
         <area id="1095" construction="none" level="0" installation="fort" country="it2" />
         <area id="1096" construction="airport" level="1" installation="none" country="it2" />
@@ -98,13 +98,13 @@
             <army type="destroyer" level="0" cards="3" />
         </area>
         <area id="1111" construction="city" level="1" installation="fort" country="it2">
-            <army type="infantry" level="1" cards="5" />
+            <army type="it-infantry" level="1" cards="5" />
         </area>
         <area id="1254" construction="none" level="0" installation="none" country="it1">
             <army type="destroyer" level="0" cards="3" />
         </area>
         <area id="1259" construction="none" level="0" installation="none" country="gb">
-            <army type="aircraft carrier" level="0" cards="8" />
+            <army type="aircraftcarrier" level="0" cards="8" />
         </area>
         <area id="1262" construction="none" level="0" installation="none" country="gb">
             <army type="destroyer" level="0" cards="3" />

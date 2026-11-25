@@ -13,7 +13,7 @@ public sealed partial class CArea
         // no owner, no drafting
         if (country == null) return null;
 
-        ArmyDef armyDef = CObjectDef.Instance().GetArmyDef(armyType, country.name);
+        ArmyDef armyDef = CObjectDef.Instance().GetArmyDef(armyType);
         if (armyDef == null) return null;
 
         var pArmy = new CArmy();

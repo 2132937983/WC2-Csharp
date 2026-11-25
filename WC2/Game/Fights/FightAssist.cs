@@ -228,7 +228,7 @@ public sealed partial class CFight
         // New system: unit type damage relations (attack phase) and weapon/armor relations.
         dmgRate *= GetCombatDamageRate(
             startArmy.basicAbilities.combat,
-            targetArmy.basicAbilities.unitType,
+            targetArmy.basicAbilities,
             COMBAT_DAMAGE_ATTACK);
         dmgRate *= GetWeaponArmorDamageRate(
             CObjectDef.Instance().weaponArmorDamageRates,
@@ -250,7 +250,7 @@ public sealed partial class CFight
         // counter phase unit type relations and weapon/armor relations
         dmgRate *= GetCombatDamageRate(
             targetArmy.basicAbilities.combat,
-            startArmy.basicAbilities.unitType,
+            startArmy.basicAbilities,
             COMBAT_DAMAGE_COUNTER);
         dmgRate *= GetWeaponArmorDamageRate(
             CObjectDef.Instance().weaponArmorDamageRates,
@@ -277,7 +277,9 @@ public sealed partial class CFight
             {
                 g_Scene.AdjacentAreasEncirclement(dmgDstArea.id);
             }
-            dmgSrcArea.country.AddDestroy(dmgDstArmyType);
+
+            // 击杀统计：扁平化之后不得不暂时注释的部分
+            // dmgSrcArea.country.AddDestroy(dmgDstArmyType);
         }
         return death;
     }

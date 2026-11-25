@@ -172,7 +172,6 @@ public static class GameGlobals
     public const uint ARMY_COMBAT_TRAIT_CANNOT_OCCUPY = 1u << 3;
     public const byte COMBAT_DAMAGE_ATTACK = 1;
     public const byte COMBAT_DAMAGE_COUNTER = 2;
-    public const byte ARMY_UNIT_TYPE_UNSPECIFIED = 0;
     public const ushort DAMAGE_RATE_INFINITY = 0xFFFF;
 
     // ---- alliance ------------------------------------------------------------------------

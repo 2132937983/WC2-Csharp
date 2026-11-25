@@ -368,7 +368,7 @@ public sealed partial class CArea
             // rebuild the armies; the ArmyDef is looked up by id so new ArmyDef fields need no save handling
             for (int i = 0; i < saveAreaInfo.armyCount; i++)
             {
-                ArmyDef def = CObjectDef.Instance().GetArmyDef(saveAreaInfo.army[i].id, country.name);
+                ArmyDef def = CObjectDef.Instance().GetArmyDef(saveAreaInfo.army[i].id);
                 if (def == null) continue;
                 var Army = new CArmy();
                 Army.Init(def, country);

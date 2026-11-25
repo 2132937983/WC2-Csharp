@@ -471,6 +471,27 @@ public sealed class ArmyCombatProfile
     }
 }
 
+public enum ArmyDamageTargetKind
+{
+    UNIT_TYPE,
+    ARMY_TYPE,
+    ARMY_ID,
+}
+
+public sealed class ArmyCombatDamageRates
+{
+    public Dictionary<string, ushort> unitTypes = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, ushort> armyTypes = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<int, ushort> armyIds = new();
+
+    public void Clear()
+    {
+        unitTypes.Clear();
+        armyTypes.Clear();
+        armyIds.Clear();
+    }
+}
+
 public sealed class ArmyCombatRules
 {
     public ArmyCombatProfile attack = new();
@@ -481,21 +502,23 @@ public sealed class ArmyCombatRules
     public int constructionLevelDegrade;
     public int constructionLevelDegradeChance;
     public int movementRestoreAfterKill;
-    /// <summary>Sparse conditional damage table keyed by MakeDamageRuleKey(phase, targetType).</summary>
-    public Dictionary<ushort, ushort> damageRates = new();
+    /// <summary>Damage multipliers indexed by all three ArmyDef classification levels.</summary>
+    public ArmyCombatDamageRates attackDamageRates = new();
+    public ArmyCombatDamageRates counterDamageRates = new();
     public int aiNoCounterBonus = 300;
 }
 
 public sealed class ArmyDef
 {
     public string name = "";
+    public string unitType = "";
+    public string armyType = "";
     public int id;
     public int hp;
     public int movement;
     public int minAttack;
     public int maxAttack;
     public ArmyCombatRules combat = new();
-    public byte unitType;
     public uint weaponType;
     public byte armorType;
     public string imageName = "";
@@ -507,15 +530,9 @@ public sealed class ArmyDef
     public bool IsNavy() => isNavy;
 }
 
-public sealed class ArmyDefList
-{
-    public Dictionary<int, ArmyDef> def = new();
-}
-
 /// <summary>Free functions of ArmyDef.h (implemented in ArmyDefCombatRules.cs).</summary>
 public static partial class ArmyDefFunctions
 {
-    public static ushort MakeDamageRuleKey(byte phase, byte targetType) => (ushort)((phase << 8) | targetType);
     public static ushort MakeWeaponArmorRuleKey(byte weaponType, byte armorType) => (ushort)((weaponType << 8) | armorType);
 }
 

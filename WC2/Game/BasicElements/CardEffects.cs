@@ -105,7 +105,13 @@ public sealed class TargetArmyIdConditionDef : CardConditionDef
 
 public sealed class TargetArmyUnitTypeConditionDef : CardConditionDef
 {
-    public byte unitType;
+    public string unitType = "";
+    public bool mustEqual;
+}
+
+public sealed class TargetArmyArmyTypeConditionDef : CardConditionDef
+{
+    public string armyType = "";
     public bool mustEqual;
 }
 
@@ -190,6 +196,7 @@ public sealed class DraftArmyEffectDef : CardEffectDef
 public sealed class StrategicStrikeEffectDef : CardEffectDef
 {
     public COMBAT_AIRSTRIKE_PAYLOAD payload;
+    public int armyTypeId;
 }
 
 public sealed class AirborneDeployEffectDef : CardEffectDef
@@ -308,8 +315,10 @@ public sealed class StrategicStrikeEffectHandler : ICardEffectHandler
 {
     public bool CanApply(CardEffectContext context, CardEffectDef effect, out string errorCode)
     {
-        if (effect is not StrategicStrikeEffectDef)
+        if (effect is not StrategicStrikeEffectDef strike)
         { errorCode = "invalid-effect-definition"; return false; }
+        if (CObjectDef.Instance().GetArmyDef(strike.armyTypeId) == null)
+        { errorCode = "unknown-army-type"; return false; }
         if (!AirCardTargetRules.ValidateCommon(context, out CArea area, out errorCode)) return false;
         // 不能打击自己
         if (area.country == context.sourceCountry) { errorCode = "target-is-friendly"; return false; }
@@ -322,8 +331,9 @@ public sealed class StrategicStrikeEffectHandler : ICardEffectHandler
     {
         if (!CanApply(context, effect, out string errorCode)) return CardEffectResult.Fail(errorCode);
         var fight = new CFight();
+        var strike = (StrategicStrikeEffectDef)effect;
         fight.AirStrikesAttack(context.sourceCountry, context.targetAreaId,
-            (int)((StrategicStrikeEffectDef)effect).payload);
+            (int)strike.payload, strike.armyTypeId);
         fight.ApplyResult();
         return CardEffectResult.Ok();
     }
@@ -338,7 +348,7 @@ public sealed class AirborneDeployEffectHandler : ICardEffectHandler
         { errorCode = "invalid-effect-definition"; return false; }
         if (!AirCardTargetRules.ValidateCommon(context, out CArea area, out errorCode)) return false;
         if (area.info.sea) { errorCode = "target-wrong-terrain"; return false; }
-        if (CObjectDef.Instance().GetArmyDef(deploy.armyTypeId, context.sourceCountry.name) == null)
+        if (CObjectDef.Instance().GetArmyDef(deploy.armyTypeId) == null)
         { errorCode = "unknown-army-type"; return false; }
         if (!deploy.capture && area.country != context.sourceCountry)
         { errorCode = "airborne-capture-disabled"; return false; }
@@ -388,7 +398,7 @@ public sealed class DraftArmyEffectHandler : ICardEffectHandler
         { errorCode = "target-wrong-owner"; return false; }
         if (area.armyCount >= AREA_RENDER_ARMY_LIMIT)
         { errorCode = "target-army-capacity"; return false; }
-        ArmyDef armyDef = CObjectDef.Instance().GetArmyDef(draft.armyTypeId, context.sourceCountry.name);
+        ArmyDef armyDef = CObjectDef.Instance().GetArmyDef(draft.armyTypeId);
         if (armyDef == null) { errorCode = "unknown-army-type"; return false; }
         bool navyCard = context.card.type == NAVY_TYPE_CARD;
         if (navyCard != armyDef.IsNavy())
@@ -515,8 +525,15 @@ public static class CardConditionEvaluator
                 return true;
             case TargetArmyUnitTypeConditionDef unitType:
                 if (army?.basicAbilities == null) { errorCode = "missing-target-army"; return false; }
-                if ((army.basicAbilities.unitType == unitType.unitType) != unitType.mustEqual)
+                if (string.Equals(army.basicAbilities.unitType, unitType.unitType,
+                        StringComparison.OrdinalIgnoreCase) != unitType.mustEqual)
                 { errorCode = "target-army-unit-type-mismatch"; return false; }
+                return true;
+            case TargetArmyArmyTypeConditionDef armyType:
+                if (army?.basicAbilities == null) { errorCode = "missing-target-army"; return false; }
+                if (string.Equals(army.basicAbilities.armyType, armyType.armyType,
+                        StringComparison.OrdinalIgnoreCase) != armyType.mustEqual)
+                { errorCode = "target-army-army-type-mismatch"; return false; }
                 return true;
             case TargetAreaLevelConditionDef areaLevel:
                 if (context?.targetArea == null) { errorCode = "missing-target-area"; return false; }

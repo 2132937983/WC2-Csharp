@@ -147,12 +147,6 @@ public static partial class armydef_internal
         return EncodeDamageRate(value, percentValue);
     }
 
-    public static byte ParseCombatUnitType(string text, byte fallback)
-    {
-        if (!XmlValueParser.ParseUInt8Text(text, out byte parsed) || parsed > 254u) return fallback;
-        return parsed;
-    }
-
     public static uint ParseWeaponTypeMask(string text)
     {
         // empty text: no weapon type (rate 1.0 against every armor; configuring one is recommended)
